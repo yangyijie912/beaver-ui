@@ -16,6 +16,6 @@
     "strict": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "stories"],
-  "exclude": ["node_modules", "dist", ".storybook"]
+  "include": ["src", "stories", ".storybook/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
