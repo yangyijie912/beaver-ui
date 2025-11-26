@@ -8,6 +8,9 @@ declare module '@storybook/*';
 declare module 'storybook/*';
 declare module 'storybook/test';
 declare module 'react/jsx-runtime';
+declare module '@swc/core';
+declare module '@swc/*';
+declare module '*.cts';
 export {};
 
 // 如果编辑器仍无法找到 JSX 类型，提供一个宽松的后备声明
