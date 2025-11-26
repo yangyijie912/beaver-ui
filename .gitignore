@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.env
+.DS_Store
+pnpm-lock.yaml
+.vscode/
+node_modules
+
+*storybook.log
+storybook-static
