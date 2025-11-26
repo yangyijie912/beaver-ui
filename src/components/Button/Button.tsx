@@ -1,24 +1,26 @@
 import React from 'react';
-import vars from '../../tokens';
+import './Button.css';
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'ghost';
+  children?: React.ReactNode;
 };
 
-const Button: React.FC<ButtonProps> = ({ children, style, ...props }) => {
-  const baseStyle: React.CSSProperties = {
-    backgroundColor: vars.color.primary,
-    color: 'white',
-    padding: vars.space.md,
-    borderRadius: 6,
-    border: 'none',
-    cursor: 'pointer',
-  };
-  return (
-    <button style={{ ...baseStyle, ...style }} {...props}>
-      {children}
-    </button>
-  );
-};
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children, className, variant = 'primary', disabled, ...props }, ref) => {
+    const classList = ['beaver-button'];
+    if (variant === 'ghost') classList.push('beaver-button--ghost');
+    if (disabled) classList.push('beaver-button--disabled');
+    if (className) classList.push(className);
+
+    return (
+      <button ref={ref} className={classList.join(' ')} disabled={disabled} {...props}>
+        {children}
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';
 
 export default Button;

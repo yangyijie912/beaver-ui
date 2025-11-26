@@ -1,17 +1,19 @@
 import React from 'react';
-import vars from '../../tokens';
+import './Input.css';
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {};
-
-const Input: React.FC<InputProps> = (props) => {
-  const style: React.CSSProperties = {
-    padding: vars.space.md,
-    border: '1px solid #d1d5db',
-    borderRadius: 6,
-    color: vars.color.text,
-    outline: 'none',
-  };
-  return <input style={style} {...props} />;
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  validation?: 'error' | 'success' | undefined;
 };
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, validation, ...props }, ref) => {
+  const classList = ['beaver-input'];
+  if (validation === 'error') classList.push('beaver-input--error');
+  if (validation === 'success') classList.push('beaver-input--success');
+  if (className) classList.push(className);
+
+  return <input ref={ref} className={classList.join(' ')} aria-invalid={validation === 'error'} {...props} />;
+});
+
+Input.displayName = 'Input';
 
 export default Input;

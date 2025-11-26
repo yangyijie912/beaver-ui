@@ -1,0 +1,11 @@
+/* Plain CSS replacement for previous vanilla-extract checkbox styles */
+.beaver-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #9ca3af;
+  border-radius: 3px;
+  display: inline-block;
+  vertical-align: middle;
+  background: white;
+  cursor: pointer;
+}

@@ -1,0 +1,16 @@
+/* Plain CSS replacement for previous vanilla-extract input styles */
+.beaver-input {
+  padding: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #111827;
+  outline: none;
+}
+
+.beaver-input--error {
+  border: 1px solid #ef4444;
+}
+
+.beaver-input--success {
+  border: 1px solid #10b981;
+}

@@ -1,0 +1,22 @@
+/* Plain CSS replacement for previous vanilla-extract styles */
+.beaver-button {
+  background-color: #0ea5e9;
+  color: white;
+  padding: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.beaver-button--ghost {
+  background-color: transparent;
+  color: #0ea5e9;
+  border: 1px solid #0ea5e9;
+}
+
+.beaver-button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
