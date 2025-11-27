@@ -1,0 +1,11 @@
+:root {
+  /* Core color tokens (kept in sync with src/tokens/vars.ts) */
+  --beaver-color-primary: #0eaae0;
+  --beaver-color-on-primary: #ffffff;
+
+  /* Text / semantic tokens (optional defaults) */
+  --beaver-color-text: #111827;
+}
+
+/* You can import this file in Storybook preview or component styles to ensure
+   CSS variables exist even when the library entrypoint is not imported. */

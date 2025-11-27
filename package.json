@@ -7,8 +7,10 @@
     "dev": "vite",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build": "tsup",
+    "gen:tokens": "ts-node scripts/generate-tokens-css.ts",
+    "build": "pnpm run gen:tokens && tsup",
     "test": "vitest",
+    "check:tokens": "ts-node scripts/check-tokens-sync.ts",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "format": "prettier --write ."
   },
@@ -41,6 +43,7 @@
     "prettier": "^3.6.2",
     "storybook": "10.0.8",
     "tsup": "^8.5.1",
+    "ts-node": "^10.9.1",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.14"

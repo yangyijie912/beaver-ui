@@ -1,6 +1,6 @@
 export const vars = {
   color: {
-    primary: '#0ea5e9',
+    primary: '#0eaae0',
     text: '#111827',
   },
   space: {
