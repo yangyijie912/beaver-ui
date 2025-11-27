@@ -1,15 +1,45 @@
 .beaver-input {
-  padding: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  color: #111827;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--beaver-color-border);
+  border-radius: var(--beaver-radius-md);
+  color: var(--beaver-color-text);
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.2;
   outline: none;
+  transition:
+    box-shadow 120ms ease,
+    border-color 120ms ease;
+}
+
+.beaver-input:focus {
+  border-color: var(--beaver-color-primary);
+  box-shadow: 0 0 0 4px rgba(var(--beaver-color-primary-rgb), 0.12);
 }
 
 .beaver-input--error {
-  border: 1px solid #e44444;
+  border-color: var(--beaver-color-error);
+  box-shadow: 0 0 0 4px rgba(228, 68, 68, 0.08);
 }
 
 .beaver-input--success {
-  border: 1px solid #10b981;
+  border-color: var(--beaver-color-success);
+  box-shadow: 0 0 0 4px rgba(16, 185, 135, 0.08);
+}
+
+.beaver-input[disabled],
+.beaver-input:disabled {
+  background: #f9fafb;
+  color: var(--beaver-color-disabled);
+  cursor: not-allowed;
+}
+
+/* Textarea specific tweaks */
+.beaver-input--textarea {
+  min-height: 88px;
+  padding: 10px 12px;
+  resize: vertical;
+  font-family: inherit;
 }

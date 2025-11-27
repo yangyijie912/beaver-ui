@@ -6,14 +6,22 @@ export default {
   component: Input,
 };
 
-export const Default = (args: any) => <Input {...args} />;
-Default.args = { placeholder: 'Type here' };
+export const Default = {
+  args: { placeholder: 'Type here' },
+};
 
-export const WithValue = (args: any) => <Input {...args} />;
-WithValue.args = { defaultValue: 'Hello' };
+export const WithValue = {
+  args: { defaultValue: 'Hello' },
+};
 
-export const Disabled = (args: any) => <Input {...args} />;
-Disabled.args = { placeholder: 'Disabled', disabled: true };
+export const Disabled = {
+  args: { placeholder: 'Disabled', disabled: true },
+};
 
-export const Error = (args: any) => <Input {...args} />;
-Error.args = { placeholder: 'Error', validation: 'error' };
+export const Error = {
+  args: { placeholder: 'Error', validation: 'error' },
+};
+
+export const Textarea = {
+  args: { textarea: true, placeholder: 'Type here...' },
+};
