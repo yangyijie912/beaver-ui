@@ -1,11 +1,14 @@
 :root {
-  --checkbox-size: 16px;
-  --checkbox-border: #9ca3af;
-  --checkbox-checked-bg: #2563eb;
+  --checkbox-size: var(--beaver-width-checkbox);
+  --checkbox-border: var(--beaver-color-border);
+  --checkbox-checked-bg: var(--beaver-color-primary);
   /* 中间态条颜色默认使用选中背景色以保证在未选中（白底）时有足够对比 */
   --checkbox-mark-color: var(--checkbox-checked-bg);
-  --checkbox-gap: 8px;
-  --checkbox-focus-outline: rgba(59, 130, 246, 0.6);
+  --checkbox-gap: var(--beaver-space-sm);
+  --checkbox-focus-outline: rgb(var(--beaver-color-primary-rgb) / 0.6);
+  --checkbox-focus-color: rgb(var(--beaver-color-primary-rgb) / 0.8);
+  --checkbox-label-color: var(--beaver-color-text);
+  --checkbox-label-disabled: var(--beaver-color-disabled);
 }
 
 /* 隐藏原生输入框但保持其可聚焦；使用相邻的span（.beaver-checkbox）作为视觉元素 */
@@ -39,13 +42,13 @@
 .beaver-checkbox-input:focus-visible + .beaver-checkbox {
   outline: 2px solid var(--checkbox-focus-outline);
   outline-offset: 2px;
-  border-color: rgba(59, 130, 246, 0.8);
+  border-color: var(--checkbox-focus-color);
 }
 
 /* 鼠标划入时的样式 */
 .beaver-checkbox-input:not(:disabled):hover + .beaver-checkbox,
 .beaver-checkbox:not(:disabled):hover {
-  border-color: rgba(59, 130, 246, 0.8);
+  border-color: var(--checkbox-focus-color);
 }
 
 /* 复选框选中状态 */
@@ -114,6 +117,12 @@
   transform: translate(-50%, -50%) scale(0.6);
 }
 
+label .beaver-checkbox + span {
+  line-height: 1;
+  vertical-align: middle;
+  color: var(--checkbox-label-color);
+}
+
 /* 当输入框被禁用时改变视觉样式 */
 .beaver-checkbox-input:disabled + .beaver-checkbox,
 .beaver-checkbox:disabled {
@@ -123,26 +132,10 @@
   opacity: 0.9;
 }
 
-label .beaver-checkbox + span {
-  line-height: 1;
-  vertical-align: middle;
-}
-
-/* 禁用 */
-.beaver-checkbox--disabled,
-label .beaver-checkbox--disabled,
-.beaver-checkbox-wrapper .beaver-checkbox--disabled {
-  color: #9ca3af;
-  cursor: not-allowed;
-}
-
-/* 纯CSS选择器，用于在输入框被禁用时将标签文本变灰。
-   匹配：input[disabled] + .beaver-checkbox + span（第二个span）。
-   上面的不删以确保可靠性。
-   */
+/* 同时将标签文本变灰 */
 label input[disabled] + .beaver-checkbox + span,
 .beaver-checkbox-wrapper input[disabled] + .beaver-checkbox + span {
-  color: #9ca3af;
+  color: var(--checkbox-label-disabled);
   cursor: not-allowed;
 }
 

@@ -22,14 +22,20 @@ import { fileURLToPath } from 'url';
         const val = obj[key];
         const name = prefix ? `${prefix}-${key}` : key;
         if (val && typeof val === 'object') Object.assign(out, flatten(val, name));
-        else out[`--beaver-${name}`] = String(val);
+        else out[name] = String(val);
       });
       return out;
     };
 
-    const flat = flatten({ beaver: vars });
+    // Flatten vars without adding an extra 'beaver' wrapper to avoid duplicated prefixes.
+    const flat = flatten(vars);
+    const toKebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
     const css = `:root {\n${Object.entries(flat)
-      .map(([k, v]) => `  ${k}: ${v};`)
+      .map(([k, v]) => {
+        const parts = k.split('-').map((p) => toKebab(p));
+        const name = parts.join('-');
+        return `  --beaver-${name}: ${v};`;
+      })
       .join('\n')}\n}\n`;
     const outPath = fileURLToPath(new URL('../src/tokens/tokens.css', import.meta.url));
     fs.writeFileSync(outPath, css, 'utf8');

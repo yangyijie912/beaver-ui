@@ -1,7 +1,17 @@
 :root {
-  --beaver-beaver-color-primary: #0eaae0;
-  --beaver-beaver-color-text: #111827;
-  --beaver-beaver-space-sm: 8px;
-  --beaver-beaver-space-md: 16px;
-  --beaver-beaver-space-lg: 24px;
+  --beaver-color-primary: #0eaae0;
+  --beaver-color-primary-rgb: 14 170 224;
+  --beaver-color-text: #333;
+  --beaver-color-border: #aaa;
+  --beaver-color-disabled: #9ca3af;
+  --beaver-color-success: #10b987;
+  --beaver-color-warning: #f59e00;
+  --beaver-color-error: #e44444;
+  --beaver-radius-sm: 4px;
+  --beaver-radius-md: 6px;
+  --beaver-radius-lg: 8px;
+  --beaver-space-sm: 8px;
+  --beaver-space-md: 12px;
+  --beaver-space-lg: 16px;
+  --beaver-width-checkbox: 16px;
 }

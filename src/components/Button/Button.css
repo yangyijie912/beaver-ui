@@ -1,9 +1,7 @@
-@import '../../tokens/tokens.css';
-
 .beaver-button {
   background-color: var(--beaver-color-primary);
   color: var(--beaver-color-on-primary, #fff);
-  border-radius: 6px;
+  border-radius: var(--beaver-radius-md);
   border: none;
   cursor: pointer;
   line-height: 1;

@@ -62,7 +62,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           {...props}
         />
         <span className={boxClass} aria-hidden="true" />
-        {label ? <span className={disabled ? 'beaver-checkbox--disabled' : ''}>{label}</span> : null}
+        {label ? <span>{label}</span> : null}
       </label>
     );
   }
