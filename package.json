@@ -7,10 +7,10 @@
     "dev": "vite",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "gen:tokens": "ts-node scripts/generate-tokens-css.ts",
+    "gen:tokens": "node scripts/generate-tokens-css.mjs",
     "build": "pnpm run gen:tokens && tsup",
     "test": "vitest",
-    "check:tokens": "ts-node scripts/check-tokens-sync.ts",
+    "check:tokens": "node scripts/check-tokens-sync.mjs",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "format": "prettier --write ."
   },

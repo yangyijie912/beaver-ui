@@ -1,12 +1,10 @@
 import '../src/tokens/tokens.css';
 
-export const parameters = {
-  actions: { argTypesRegex: '^on[A-Z].*' },
-};
 // Keep preview minimal: do NOT import .css.ts tokens here to avoid runtime
 // evaluation before the vanilla-extract Vite plugin processes files.
 export const parameters = {
   controls: { expanded: true },
+  actions: { argTypesRegex: '^on[A-Z].*' },
 };
 import type { Preview } from '@storybook/react-vite';
 
