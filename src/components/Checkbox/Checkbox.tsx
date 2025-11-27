@@ -23,8 +23,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         }
       } else {
         try {
-          // Avoid using the deprecated MutableRefObject type. Use a safe cast to assign
-          // to the forwarded ref's `current` property when it's an object ref.
+          // MutableRefObject 已经弃用，当对象 ref 时，使用安全类型转换赋值给转发 ref 的 `current` 属性。
           (ref as unknown as { current: HTMLInputElement | null }).current = el;
         } catch (e) {
           // ignore
@@ -34,7 +33,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
 
     useEffect(() => {
       if (localRef.current && 'indeterminate' in localRef.current) {
-        // Set the DOM property so the browser renders indeterminate state visually where supported.
+        // 设置 DOM 属性，以便浏览器在支持的情况下视觉上渲染中间态
         localRef.current.indeterminate = !!indeterminate;
         try {
           if (indeterminate) localRef.current.setAttribute('data-indeterminate', 'true');
