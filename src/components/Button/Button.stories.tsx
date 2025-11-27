@@ -6,11 +6,26 @@ export default {
   component: Button,
 };
 
-export const Primary = (args: any) => <Button {...args} />;
-Primary.args = { children: 'Primary', variant: 'primary' };
+export const Primary = {
+  args: { children: 'Primary', variant: 'primary' },
+};
 
-export const Ghost = (args: any) => <Button {...args} />;
-Ghost.args = { children: 'Ghost', variant: 'ghost' };
+export const Ghost = {
+  args: { children: 'Ghost', variant: 'ghost' },
+};
 
-export const Disabled = (args: any) => <Button {...args} />;
-Disabled.args = { children: 'Disabled', disabled: true };
+export const Disabled = {
+  args: { children: 'Disabled', disabled: true },
+};
+
+export const Large = {
+  args: { children: 'Large', size: 'large' },
+};
+
+export const Medium = {
+  args: { children: 'Medium', size: 'medium' },
+};
+
+export const Small = {
+  args: { children: 'Small', size: 'small' },
+};
