@@ -1,11 +1,165 @@
-/* Plain CSS replacement for previous vanilla-extract checkbox styles */
+:root {
+  --checkbox-size: 16px;
+  --checkbox-border: #9ca3af;
+  --checkbox-checked-bg: #2563eb;
+  /* 中间态条颜色默认使用选中背景色以保证在未选中（白底）时有足够对比 */
+  --checkbox-mark-color: var(--checkbox-checked-bg);
+  --checkbox-gap: 8px;
+  --checkbox-focus-outline: rgba(59, 130, 246, 0.6);
+}
+
+/* 隐藏原生输入框但保持其可聚焦；使用相邻的span（.beaver-checkbox）作为视觉元素 */
+.beaver-checkbox-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
 .beaver-checkbox {
-  width: 16px;
-  height: 16px;
-  border: 1px solid #9ca3af;
-  border-radius: 3px;
+  box-sizing: border-box;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  border: 1px solid var(--checkbox-border);
+  border-radius: 4px;
   display: inline-block;
   vertical-align: middle;
-  background: white;
+  background: #fff;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+/* 焦点可见时的样式 */
+.beaver-checkbox-input:focus-visible + .beaver-checkbox {
+  outline: 2px solid var(--checkbox-focus-outline);
+  outline-offset: 2px;
+  border-color: rgba(59, 130, 246, 0.8);
+}
+
+/* 鼠标划入时的样式 */
+.beaver-checkbox-input:not(:disabled):hover + .beaver-checkbox,
+.beaver-checkbox:not(:disabled):hover {
+  border-color: rgba(59, 130, 246, 0.8);
+}
+
+/* 复选框选中状态 */
+.beaver-checkbox-input:checked + .beaver-checkbox {
+  background: var(--checkbox-checked-bg);
+  border-color: var(--checkbox-checked-bg);
+}
+
+/* 复选框选中状态 */
+.beaver-checkbox::after {
+  /* 使用内联SVG白色勾选作为视觉标记。默认隐藏，选中时缩放显示。 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 72% 72%;
+  transform: scale(0);
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.beaver-checkbox-input:checked + .beaver-checkbox::after {
+  /* SVG路径：描边为白色（#fff），编码为%23 */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l5 5L19 7'/></svg>");
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 中间态样式：一个较小的居中方块 */
+.beaver-checkbox::before {
+  content: '';
+  position: absolute;
+  width: calc(var(--checkbox-size) * 0.5);
+  height: calc(var(--checkbox-size) * 0.5);
+  background: var(--checkbox-checked-bg);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  border-radius: 3px;
+  opacity: 0;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    background 120ms ease;
+  pointer-events: none;
+}
+
+/* Indeterminate: 优先使用包装器下的作用域选择器以增加特异性而不使用!important。
+   这样可以避免与全局应用样式的冲突，同时仍然可以通过主题变量进行覆盖。
+   */
+.beaver-checkbox-wrapper input.beaver-checkbox-input[data-indeterminate='true'] + .beaver-checkbox::before,
+.beaver-checkbox-wrapper .beaver-checkbox.beaver-checkbox--indeterminate::before {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  background: var(--checkbox-checked-bg);
+}
+
+/* 当输入框被选中时隐藏中间态视觉（原生选中状态优先） */
+.beaver-checkbox-wrapper input.beaver-checkbox-input:checked + .beaver-checkbox::before {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.6);
+}
+
+/* 当输入框被禁用时改变视觉样式 */
+.beaver-checkbox-input:disabled + .beaver-checkbox,
+.beaver-checkbox:disabled {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+label .beaver-checkbox + span {
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* 禁用 */
+.beaver-checkbox--disabled,
+label .beaver-checkbox--disabled,
+.beaver-checkbox-wrapper .beaver-checkbox--disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* 纯CSS选择器，用于在输入框被禁用时将标签文本变灰。
+   匹配：input[disabled] + .beaver-checkbox + span（第二个span）。
+   上面的不删以确保可靠性。
+   */
+label input[disabled] + .beaver-checkbox + span,
+.beaver-checkbox-wrapper input[disabled] + .beaver-checkbox + span {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.beaver-checkbox-wrapper .beaver-checkbox + span {
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* 从内联移到类进行包裹，更好地主题化 */
+.beaver-checkbox-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--checkbox-gap);
+  position: relative;
+}
+
+/* 自定义样式示例 */
+.custom-checkbox {
+  border-color: #16a34a;
 }
