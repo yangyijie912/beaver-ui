@@ -29,4 +29,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          pnpm publish --access public
+          # CI runs on a detached HEAD for tag events; pnpm by default blocks publish when
+          # HEAD is detached and publish-branch is set. Use --no-git-checks to skip that check
+          # (alternative: checkout the target branch or commit a lockfile). This is safe here
+          # because we already validated build & tests in earlier steps.
+          pnpm publish --access public --no-git-checks
