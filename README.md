@@ -1,6 +1,6 @@
 # beaver-ui
 
-个人演示用 React + TypeScript UI 组件库骨架（tsup + vanilla-extract + Storybook）。
+个人用的组件库，React + TypeScript + tsup + Storybook。
 
 快速开始
 
@@ -14,3 +14,11 @@
 - `src/components`：组件实现
 - `src/tokens`：vanilla-extract tokens
 - `.storybook/`：Storybook 配置
+
+当前实现的组件有：
+
+Button  
+Checkbox  
+Input
+
+正在更新中......
