@@ -7,4 +7,7 @@ coverage/
 node_modules
 
 *storybook.log
-storybook-static
+storybook-static/
+
+# Ignore Storybook build cache
+/.cache/storybook
