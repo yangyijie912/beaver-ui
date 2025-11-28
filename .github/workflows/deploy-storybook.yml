@@ -35,31 +35,11 @@ jobs:
       - name: Build Storybook
         run: pnpm run build-storybook
 
-      - name: Deploy to GitHub Pages (push using PAT)
-        env:
-          GH_PAGES_PAT: ${{ secrets.GH_PAGES_PAT }}
-          REPO: ${{ github.repository }}
-          COMMIT_NAME: 'github-actions[bot]'
-          COMMIT_EMAIL: '41898282+github-actions[bot]@users.noreply.github.com'
-        run: |
-          set -euo pipefail
-          echo "Preparing deploy commit from ./storybook-static"
-          # create ephemeral repo containing built files
-          rm -rf .deploy || true
-          mkdir .deploy
-          cp -r ./storybook-static/. .deploy/ || true
-          cd .deploy
-          git init
-          git checkout -b gh-pages || git symbolic-ref HEAD refs/heads/gh-pages
-          git config user.name "${COMMIT_NAME}"
-          git config user.email "${COMMIT_EMAIL}"
-          # ensure we have something to commit
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes in storybook build to deploy"
-          else
-            git add --all
-            git commit -m "ci: deploy Storybook ${GITHUB_SHA}"
-          fi
-          echo "Pushing to gh-pages branch on remote ${REPO}"
-          # Use x-access-token to avoid exposing the token in remote URL
-          git push --force "https://x-access-token:${GH_PAGES_PAT}@github.com/${REPO}.git" gh-pages
+      - name: Deploy to GitHub Pages (peaceiris)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.GH_PAGES_PAT }}
+          publish_dir: ./storybook-static
+          publish_branch: gh-pages
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com
