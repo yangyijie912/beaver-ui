@@ -36,7 +36,7 @@ jobs:
         run: pnpm run build-storybook
 
       - name: Upload Storybook build as Pages artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./storybook-static
 
