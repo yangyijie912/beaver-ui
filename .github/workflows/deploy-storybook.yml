@@ -5,8 +5,8 @@ on:
     branches:
       - master
 
+# Minimal permissions: allow Pages deployment
 permissions:
-  contents: write
   pages: write
   id-token: write
 
@@ -35,11 +35,10 @@ jobs:
       - name: Build Storybook
         run: pnpm run build-storybook
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Storybook build as Pages artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./storybook-static
-          publish_branch: gh-pages
-          user_name: github-actions[bot]
-          user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          path: ./storybook-static
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
