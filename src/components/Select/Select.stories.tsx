@@ -14,8 +14,14 @@ type Story = StoryObj<typeof Select>;
 
 const sampleOptions: SelectOption[] = [
   { label: 'Apple', value: 'apple' },
+  { label: 'Apricot', value: 'apricot' },
   { label: 'Banana', value: 'banana' },
+  { label: 'Blueberry', value: 'blueberry' },
+  { label: 'Blackberry', value: 'blackberry' },
   { label: 'Cherry', value: 'cherry' },
+  { label: 'Cantaloupe', value: 'cantaloupe' },
+  { label: 'Date', value: 'date' },
+  { label: 'Fig', value: 'fig' },
 ];
 
 export const Default: Story = {
@@ -66,23 +72,17 @@ export const Loading: Story = {
 
 export const Searchable: Story = {
   args: {
-    options: [
-      { label: 'Apple', value: 'apple' },
-      { label: 'Apricot', value: 'apricot' },
-      { label: 'Banana', value: 'banana' },
-      { label: 'Blueberry', value: 'blueberry' },
-      { label: 'Blackberry', value: 'blackberry' },
-      { label: 'Cherry', value: 'cherry' },
-      { label: 'Cantaloupe', value: 'cantaloupe' },
-      { label: 'Date', value: 'date' },
-      { label: 'Fig', value: 'fig' },
-    ],
+    options: sampleOptions,
     placeholder: '搜索并选择水果',
     searchable: true,
   },
 };
 
 export const Controlled: Story = {
+  args: {
+    options: sampleOptions,
+    placeholder: '请选择',
+  },
   render: (args: React.ComponentProps<typeof Select>) => {
     const [val, setVal] = React.useState<string | undefined>('banana');
     return (

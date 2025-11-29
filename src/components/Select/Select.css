@@ -40,10 +40,11 @@
   position: relative;
 }
 
-.beaver-select__control[disabled] {
+.beaver-select__control.is-disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background-color: #f7f7f7;
+  pointer-events: none;
 }
 
 .beaver-select__display {
@@ -53,8 +54,8 @@
   overflow: hidden;
 }
 
-.beaver-select__control:not([disabled]):focus,
-.beaver-select__control:not([disabled]):hover {
+.beaver-select__control:not(.is-disabled):focus,
+.beaver-select__control:not(.is-disabled):hover {
   outline: none;
   box-shadow: var(--beaver-select-focus);
   border-color: var(--beaver-select-hover);
