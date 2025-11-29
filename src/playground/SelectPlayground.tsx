@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Select from '../components/Select/Select';
 import '../components/Select/Select.css';
+import '../tokens/tokens.css';
 
 const options = [
   { label: 'Apple', value: 'apple' },

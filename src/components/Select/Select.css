@@ -55,6 +55,7 @@
 }
 
 .beaver-select-wrapper:not(.beaver-select--disabled) .beaver-select__control:focus,
+.beaver-select-wrapper:not(.beaver-select--disabled) .beaver-select__control:focus-visible,
 .beaver-select-wrapper:not(.beaver-select--disabled) .beaver-select__control:hover {
   outline: none;
   box-shadow: var(--beaver-select-focus);
