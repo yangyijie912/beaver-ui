@@ -66,6 +66,7 @@ const Select: React.FC<SelectProps> = ({
   const searchTimer = useRef<number | null>(null);
   const searchRef = useRef<HTMLInputElement | null>(null);
   const committedRef = useRef<boolean>(false);
+  const userTypedRef = useRef<boolean>(false);
   const [inputFocused, setInputFocused] = useState(false);
 
   // 同步受控值
@@ -85,7 +86,8 @@ const Select: React.FC<SelectProps> = ({
 
   // 根据 query 过滤 options
   function filteredOptions() {
-    if (!query) return options;
+    // 仅当用户实际输入过（而不是程序预置的回显）时才按 query 过滤
+    if (!query || !userTypedRef.current) return options;
     const q = query.trim().toLowerCase();
 
     // 如果用户提供了自定义过滤函数，优先使用
@@ -166,6 +168,8 @@ const Select: React.FC<SelectProps> = ({
     if (!open) {
       // 如果之前是显式选择（由 handleSelectByValue 处理），则跳过 close 时的自动提交/清空行为
       if (committedRef.current) {
+        // 已由用户显式选择，清除标记并重置高亮
+        // 保留 query 以便在下次打开时回显选中项，但不把回显视为用户输入（见 handleSelectByValue）
         committedRef.current = false;
         setHighlighted(null);
         return;
@@ -243,8 +247,11 @@ const Select: React.FC<SelectProps> = ({
     // 仅当可搜索时预置 query（便于用户再次聚焦编辑）；非搜索模式不要保留 query，
     // 否则下次打开会按 query 过滤导致其它选项消失（单选场景的 bug）
     const displayText = opt ? (opt.label ?? value) : value;
-    if (searchable) setQuery(displayText);
-    else setQuery('');
+    if (searchable) {
+      // 在单选可搜索模式下，回显被选中项但不视为用户输入（因此不触发过滤）
+      userTypedRef.current = false;
+      setQuery(displayText);
+    } else setQuery('');
     // 标记为已由用户显式选择，防止 close/blur effect 重复提交或清空
     committedRef.current = true;
     setOpen(false);
@@ -287,6 +294,7 @@ const Select: React.FC<SelectProps> = ({
     } else if (open && e.key === 'Backspace') {
       e.preventDefault();
       const newQ = query.slice(0, -1);
+      userTypedRef.current = true;
       setQuery(newQ);
       if (searchTimer.current) window.clearTimeout(searchTimer.current);
       searchTimer.current = window.setTimeout(() => setQuery(''), 700) as unknown as number;
@@ -303,6 +311,7 @@ const Select: React.FC<SelectProps> = ({
       // 在下拉打开时输入字符进行类型搜索
       e.preventDefault();
       const newQ = query + e.key;
+      userTypedRef.current = true;
       setQuery(newQ);
       if (searchTimer.current) window.clearTimeout(searchTimer.current);
       searchTimer.current = window.setTimeout(() => setQuery(''), 700) as unknown as number;
@@ -374,6 +383,7 @@ const Select: React.FC<SelectProps> = ({
                   className="beaver-select__input"
                   value={query}
                   onChange={(e) => {
+                    userTypedRef.current = true;
                     setQuery(e.target.value);
                     setHighlighted(0);
                   }}
@@ -443,6 +453,7 @@ const Select: React.FC<SelectProps> = ({
                 className="beaver-select__input"
                 value={query}
                 onChange={(e) => {
+                  userTypedRef.current = true;
                   setQuery(e.target.value);
                   setHighlighted(0);
                 }}
