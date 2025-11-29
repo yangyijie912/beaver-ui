@@ -106,3 +106,41 @@ label input[disabled] + .beaver-radio + span,
   gap: var(--radio-gap);
   position: relative;
 }
+
+/* 给每个 radio wrapper 添加右侧间距，便于多个单选项之间留空隙 */
+.beaver-radio-wrapper {
+  margin-right: var(--beaver-space-md);
+}
+
+.beaver-radio-wrapper:last-child {
+  margin-right: 0;
+}
+
+/* Radio group container: 默认水平布局 */
+.beaver-radio-group {
+  display: flex;
+  align-items: center;
+}
+
+/* 垂直排列时：让子项纵向堆叠并使用垂直间距 */
+.beaver-radio-group--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* 当在 group 内时，重写单个 wrapper 的水平外边距，并在垂直模式下使用底部间距 */
+.beaver-radio-group > .beaver-radio-wrapper {
+  margin-right: var(--beaver-space-md);
+}
+
+.beaver-radio-group > .beaver-radio-wrapper:last-child {
+  margin-right: 0;
+}
+
+.beaver-radio-group--vertical > .beaver-radio-wrapper {
+  margin-bottom: var(--beaver-space-md);
+}
+
+.beaver-radio-group--vertical > .beaver-radio-wrapper:last-child {
+  margin-bottom: 0;
+}

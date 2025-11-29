@@ -1,5 +1,6 @@
 export { default as Button } from './components/Button/Button';
 export { default as Radio } from './components/Radio/Radio';
+export { default as RadioGroup } from './components/Radio/RadioGroup';
 export { default as Checkbox } from './components/Checkbox/Checkbox';
 export { default as Input } from './components/Input/Input';
 export * from './tokens';
