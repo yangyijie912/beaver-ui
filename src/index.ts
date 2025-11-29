@@ -3,6 +3,7 @@ export { default as Radio } from './components/Radio/Radio';
 export { default as RadioGroup } from './components/Radio/RadioGroup';
 export { default as Checkbox } from './components/Checkbox/Checkbox';
 export { default as Input } from './components/Input/Input';
+export { default as Select } from './components/Select/Select';
 export * from './tokens';
 
 // 在运行时应用 CSS 变量，以便组件可以使用 `var(--beaver-color-primary)`

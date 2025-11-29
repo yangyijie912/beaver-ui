@@ -21,6 +21,7 @@ export const vars = {
   },
   width: {
     checkbox: '16px',
+    select: '200px',
   },
 };
 

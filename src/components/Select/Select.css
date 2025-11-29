@@ -1,0 +1,141 @@
+:root {
+  --beaver-select-bg: var(--beaver-color-bg, #ffffff);
+  --beaver-select-text: var(--beaver-color-text, #111);
+  --beaver-select-border: var(--beaver-color-border, #dcdcdc);
+  --beaver-select-hover: var(--beaver-color-primary);
+  --beaver-select-radius: var(--beaver-radius-lg);
+  --beaver-select-focus: 0 0 0 4px rgba(33, 150, 243, 0.12);
+  --beaver-select-arrow: currentColor;
+  --beaver-select-width: var(--beaver-width-select, 200px);
+}
+
+/* Wrapper + control (replaces native select visuals) */
+.beaver-select-wrapper {
+  position: relative;
+  display: inline-block;
+  min-width: var(--beaver-select-width);
+}
+
+.beaver-select__control {
+  width: 100%;
+  text-align: left;
+  padding: 10px 20px 10px 12px;
+  font-size: 14px;
+  border-radius: var(--beaver-select-radius);
+  border: 1px solid var(--beaver-select-border);
+  background: var(--beaver-select-bg);
+  color: var(--beaver-select-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.beaver-select__control[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f7f7f7;
+}
+
+.beaver-select__control:not([disabled]):focus,
+.beaver-select__control:not([disabled]):hover {
+  outline: none;
+  box-shadow: var(--beaver-select-focus);
+  border-color: var(--beaver-select-hover);
+}
+
+.beaver-select__value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--beaver-select-text);
+}
+.beaver-select__placeholder {
+  color: #9aa3ad;
+}
+
+.beaver-select__arrow {
+  margin-left: 8px;
+  transition:
+    transform 160ms ease,
+    color 120ms ease;
+  color: var(--beaver-select-arrow);
+  font-size: 20px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* loading spinner */
+.beaver-select__spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  border-top-color: var(--beaver-select-arrow);
+  box-sizing: border-box;
+  animation: beaver-spin 800ms linear infinite;
+  display: inline-block;
+}
+
+@keyframes beaver-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.beaver-select__arrow.is-open {
+  transform: rotate(180deg);
+}
+
+/* Menu */
+.beaver-select__menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  background: var(--beaver-select-bg);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(20, 30, 50, 0.12);
+  z-index: 60;
+  max-height: 260px;
+  overflow: auto;
+  padding: 6px 4px;
+}
+
+.beaver-select__option {
+  list-style: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--beaver-select-text);
+}
+.beaver-select__option + .beaver-select__option {
+  margin-top: 4px;
+}
+
+.beaver-select__option.is-highlighted {
+  background: rgba(33, 150, 243, 0.12);
+}
+.beaver-select__option.is-selected {
+  background: var(--beaver-color-primary, #0b66d1);
+  color: white;
+}
+.beaver-select__option.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Size helpers */
+.beaver-select--small .beaver-select__control {
+  padding: 6px 16px 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+.beaver-select--large .beaver-select__control {
+  padding: 12px 24px 12px 14px;
+  font-size: 16px;
+  border-radius: 10px;
+}
