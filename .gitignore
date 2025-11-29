@@ -11,3 +11,6 @@ storybook-static/
 
 # Ignore Storybook build cache
 /.cache/storybook
+
+# Ignore packed tarballs produced by `npm pack` / `pnpm pack`
+beaver-ui-*.tgz
