@@ -198,6 +198,21 @@
   pointer-events: none;
 }
 
+.beaver-select__option--new {
+  font-style: italic;
+  color: #475569;
+}
+.beaver-select__create-label {
+  color: #64748b;
+}
+
+.beaver-select__no-data {
+  color: #94a3b8;
+  cursor: default;
+  background: transparent;
+  pointer-events: none;
+}
+
 /* 大小控制 */
 .beaver-select--small .beaver-select__control {
   padding: 6px 16px 6px 10px;

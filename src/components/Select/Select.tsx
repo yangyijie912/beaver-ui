@@ -16,6 +16,8 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   onChange?: (value: string) => void;
   /** 是否在下拉中显示搜索框 */
   searchable?: boolean;
+  /** 是否允许在没有匹配项时创建自定义输入项（默认 false） */
+  allowCreate?: boolean;
   /** 定制过滤函数：如果提供，将优先使用 */
   filterOption?: (input: string, option: SelectOption) => boolean;
   /** 搜索策略：'label' 只按 label 搜索，'value' 只按 value，'both' 按 label 与 value 搜索但优先 label 匹配 */
@@ -35,6 +37,7 @@ const Select: React.FC<SelectProps> = ({
   defaultValue,
   onChange,
   searchable = false,
+  allowCreate = false,
   filterOption,
   searchBy = 'both',
   disabled = false,
@@ -54,6 +57,7 @@ const Select: React.FC<SelectProps> = ({
   const listRef = useRef<HTMLUListElement | null>(null);
   const searchTimer = useRef<number | null>(null);
   const searchRef = useRef<HTMLInputElement | null>(null);
+  const committedRef = useRef<boolean>(false);
   const [inputFocused, setInputFocused] = useState(false);
 
   // 同步受控值
@@ -95,6 +99,24 @@ const Select: React.FC<SelectProps> = ({
     return [...labelMatches, ...valueOnlyMatches];
   }
 
+  // 展示用的选项列表：当没有匹配项且有 query 时，提供一个用于创建自定义值的候选项
+  function displayOptions() {
+    const src = filteredOptions();
+    const q = query.trim();
+    if (allowCreate && q && src.length === 0) {
+      return [
+        {
+          label: q,
+          value: q,
+          // 标记为新建项（用于渲染），类型上暂时忽略
+          // @ts-ignore
+          __isNew: true,
+        } as SelectOption & { __isNew?: true },
+      ];
+    }
+    return src;
+  }
+
   // 高亮渲染 label 中匹配的子串
   function renderHighlightedLabel(label: string) {
     const q = query.trim();
@@ -117,7 +139,7 @@ const Select: React.FC<SelectProps> = ({
   // 打开下拉时，设置初始高亮项（基于过滤后的列表）
   useEffect(() => {
     if (open && highlighted === null) {
-      const src = filteredOptions();
+      const src = displayOptions();
       const idx = src.findIndex((o) => o.value === internalValue);
       const firstIdx = src.findIndex((o) => !o.disabled);
       setHighlighted(idx >= 0 ? idx : firstIdx >= 0 ? firstIdx : 0);
@@ -131,6 +153,24 @@ const Select: React.FC<SelectProps> = ({
   // 下拉关闭时清空查询并重置高亮
   useEffect(() => {
     if (!open) {
+      // 如果之前是显式选择（由 handleSelectByValue 处理），则跳过 close 时的自动提交/清空行为
+      if (committedRef.current) {
+        committedRef.current = false;
+        setHighlighted(null);
+        return;
+      }
+      // 如果允许创建且有未提交的 query，则尝试提交（选中或创建）
+      if (allowCreate && query.trim()) {
+        const q = query.trim();
+        const match = options.find((o) => o.value === q || o.label === q);
+        if (match && !match.disabled) {
+          if (controlledValue === undefined) setInternalValue(match.value);
+          onChange?.(match.value);
+        } else {
+          if (controlledValue === undefined) setInternalValue(q);
+          onChange?.(q);
+        }
+      }
       setQuery('');
       setHighlighted(null);
     }
@@ -158,9 +198,14 @@ const Select: React.FC<SelectProps> = ({
   // 处理选中项
   function handleSelectByValue(value: string) {
     const opt = options.find((o) => o.value === value);
-    if (!opt || opt.disabled) return;
-    if (controlledValue === undefined) setInternalValue(opt.value);
-    onChange?.(opt.value);
+    if (opt && opt.disabled) return;
+    if (controlledValue === undefined) setInternalValue(value);
+    onChange?.(value);
+    // 在显式选择时，把输入框的 query 预置为所选文本（label 或 value），便于用户再次聚焦编辑
+    const displayText = opt ? (opt.label ?? value) : value;
+    setQuery(displayText);
+    // 标记为已由用户显式选择，防止 close/blur effect 重复提交或清空
+    committedRef.current = true;
     setOpen(false);
   }
 
@@ -174,7 +219,7 @@ const Select: React.FC<SelectProps> = ({
         return;
       }
       setHighlighted((h) => {
-        const src = filteredOptions();
+        const src = displayOptions();
         const next = h === null ? 0 : Math.min(src.length - 1, h + 1);
         return next;
       });
@@ -185,7 +230,7 @@ const Select: React.FC<SelectProps> = ({
         return;
       }
       setHighlighted((h) => {
-        const src = filteredOptions();
+        const src = displayOptions();
         const next = h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
         return next;
       });
@@ -194,7 +239,7 @@ const Select: React.FC<SelectProps> = ({
       if (!open) {
         setOpen(true);
       } else if (highlighted !== null) {
-        const src = filteredOptions();
+        const src = displayOptions();
         const opt = src[highlighted];
         if (opt) handleSelectByValue(opt.value);
       }
@@ -266,25 +311,50 @@ const Select: React.FC<SelectProps> = ({
                 setQuery(e.target.value);
                 setHighlighted(0);
               }}
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               onFocus={() => setInputFocused(true)}
-              onBlur={() => setInputFocused(false)}
+              onBlur={(e) => {
+                e.stopPropagation();
+                // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
+                if (committedRef.current) {
+                  committedRef.current = false;
+                  setInputFocused(false);
+                  return;
+                }
+                // 在失焦时，如果启用了 allowCreate，尝试提交输入
+                const q = query.trim();
+                if (allowCreate && q) {
+                  const match = options.find((o) => o.value === q || o.label === q);
+                  if (match && !match.disabled) {
+                    if (controlledValue === undefined) setInternalValue(match.value);
+                    onChange?.(match.value);
+                  } else {
+                    if (controlledValue === undefined) setInternalValue(q);
+                    onChange?.(q);
+                  }
+                }
+                // 清空查询以避免同一次交互被重复提交
+                setQuery('');
+                setInputFocused(false);
+              }}
               onKeyDown={(e) => {
                 e.stopPropagation();
                 if (e.key === 'ArrowDown') {
                   e.preventDefault();
                   setHighlighted((h) => {
-                    const src = filteredOptions();
+                    const src = displayOptions();
                     return h === null ? 0 : Math.min(src.length - 1, h + 1);
                   });
                 } else if (e.key === 'ArrowUp') {
                   e.preventDefault();
                   setHighlighted((h) => {
-                    const src = filteredOptions();
+                    const src = displayOptions();
                     return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
                   });
                 } else if (e.key === 'Enter') {
                   e.preventDefault();
-                  const src = filteredOptions();
+                  const src = displayOptions();
                   const opt = src[highlighted ?? 0];
                   if (opt) handleSelectByValue(opt.value);
                 } else if (e.key === 'Escape') {
@@ -294,8 +364,14 @@ const Select: React.FC<SelectProps> = ({
               placeholder={placeholder}
             />
           ) : (
-            <span className={`beaver-select__value ${!selectedOption ? 'beaver-select__placeholder' : ''}`}>
-              {selectedOption ? selectedOption.label : placeholder}
+            <span
+              className={`beaver-select__value ${!(internalValue ?? selectedOption) ? 'beaver-select__placeholder' : ''}`}
+            >
+              {internalValue
+                ? (options.find((o) => o.value === internalValue)?.label ?? internalValue)
+                : selectedOption
+                  ? selectedOption.label
+                  : placeholder}
             </span>
           )}
         </div>
@@ -341,19 +417,45 @@ const Select: React.FC<SelectProps> = ({
           tabIndex={-1}
           aria-activedescendant={highlighted !== null ? `beaver-select-opt-${highlighted}` : undefined}
         >
-          {filteredOptions().map((opt, i) => (
-            <li
-              id={`beaver-select-opt-${i}`}
-              role="option"
-              aria-selected={opt.value === internalValue}
-              key={opt.value}
-              className={`beaver-select__option ${opt.value === internalValue ? 'beaver-select__option--selected' : ''} ${opt.disabled ? 'beaver-select__option--disabled' : ''} ${highlighted === i ? 'beaver-select__option--highlighted' : ''}`}
-              onMouseEnter={() => setHighlighted(i)}
-              onClick={() => !opt.disabled && handleSelectByValue(opt.value)}
-            >
-              <span className="beaver-select__opt-label">{renderHighlightedLabel(opt.label)}</span>
+          {displayOptions().map((opt, i) => {
+            const isNew = (opt as any).__isNew === true;
+            const key = isNew ? `__create-${opt.value}` : opt.value;
+            return (
+              <li
+                id={`beaver-select-opt-${i}`}
+                role="option"
+                aria-selected={opt.value === internalValue}
+                key={key}
+                className={`beaver-select__option ${opt.value === internalValue ? 'beaver-select__option--selected' : ''} ${'disabled' in opt && (opt as any).disabled ? 'beaver-select__option--disabled' : ''} ${highlighted === i ? 'beaver-select__option--highlighted' : ''} ${isNew ? 'beaver-select__option--new' : ''}`}
+                onMouseEnter={() => setHighlighted(i)}
+                onMouseDown={(e) => {
+                  // 在 mousedown 时立即处理选择，避免 input 的 blur/close 逻辑覆盖选择行为
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if ((opt as any).disabled) return;
+                  handleSelectByValue(opt.value);
+                }}
+                onClick={(e) => {
+                  // 防止冒泡造成其它处理
+                  e.stopPropagation();
+                }}
+              >
+                <span className="beaver-select__opt-label">
+                  {isNew ? (
+                    <span className="beaver-select__create-label">{`使用 "${opt.label}"`}</span>
+                  ) : (
+                    renderHighlightedLabel(opt.label)
+                  )}
+                </span>
+              </li>
+            );
+          })}
+          {/* 如果没有任何选项，且处于可搜索状态，显示无匹配项提示 */}
+          {displayOptions().length === 0 && searchable && (
+            <li className="beaver-select__option beaver-select__no-data" aria-disabled key="__no_matches">
+              <span className="beaver-select__opt-label">无匹配项</span>
             </li>
-          ))}
+          )}
         </ul>
       )}
 

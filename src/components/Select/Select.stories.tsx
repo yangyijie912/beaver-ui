@@ -78,6 +78,41 @@ export const Searchable: Story = {
   },
 };
 
+export const AllowCreateDisabledByDefault: Story = {
+  args: {
+    options: sampleOptions,
+    placeholder: '默认不允许创建',
+    searchable: true,
+  },
+};
+
+export const AllowCreate: Story = {
+  args: {
+    options: sampleOptions,
+    placeholder: '输入不存在的项并回车创建',
+    searchable: true,
+    allowCreate: true,
+  },
+};
+
+export const AllowCreateControlled: Story = {
+  args: {
+    options: sampleOptions,
+    placeholder: 'Controlled: 可以创建',
+    searchable: true,
+    allowCreate: true,
+  },
+  render: (args: React.ComponentProps<typeof Select>) => {
+    const [val, setVal] = React.useState<string | undefined>(undefined);
+    return (
+      <div style={{ width: 360 }}>
+        <Select {...args} value={val} onChange={(v) => setVal(v)} />
+        <div style={{ marginTop: 12 }}>当前值: {String(val)}</div>
+      </div>
+    );
+  },
+};
+
 export const Controlled: Story = {
   args: {
     options: sampleOptions,
