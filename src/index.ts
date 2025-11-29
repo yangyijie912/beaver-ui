@@ -1,13 +1,12 @@
 export { default as Button } from './components/Button/Button';
 export * from './tokens';
 
-// apply CSS variables at runtime so components can use `var(--beaver-color-primary)`
-// This is safe to import in browsers; it's no-op in SSR environments.
+// 在运行时应用 CSS 变量，以便组件可以使用 `var(--beaver-color-primary)`
+// 在浏览器中安全导入，在 SSR 环境中无操作
 try {
-  // dynamic import so bundlers/tree-shakers can remove in non-browser targets
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // 动态导入，以便bundlers/tree-shakers可以在非浏览器目标中移除
   const applyTokens = require('./tokens/applyTokens').default;
   if (typeof applyTokens === 'function') applyTokens();
 } catch (e) {
-  // ignore (e.g., server-side or tests without DOM)
+  // 忽略错误（例如，服务器端或没有 DOM 的测试环境）
 }

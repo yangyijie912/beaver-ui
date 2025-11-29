@@ -27,7 +27,7 @@ import { fileURLToPath } from 'url';
       return out;
     };
 
-    // Flatten vars without adding an extra 'beaver' wrapper to avoid duplicated prefixes.
+    // 展开铺平 vars，不添加额外的 'beaver'，避免重复的前缀
     const flat = flatten(vars);
     const toKebab = (s) => s.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
     const css = `:root {\n${Object.entries(flat)

@@ -1,7 +1,6 @@
 import '../src/tokens/tokens.css';
 
-// Keep preview minimal: do NOT import .css.ts tokens here to avoid runtime
-// evaluation before the vanilla-extract Vite plugin processes files.
+// 不要在此处导入 .css.ts tokens，以避免在vanilla-extract Vite插件处理文件之前进行运行时评估
 export const parameters = {
   controls: { expanded: true },
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -18,9 +17,9 @@ const preview: Preview = {
     },
 
     a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
+      // 'todo' - 仅在测试 UI 中显示 a11y 违规
+      // 'error' - 在 CI 上因 a11y 违规而失败
+      // 'off' - 完全跳过 a11y 检查
       test: 'todo',
     },
   },
