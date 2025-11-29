@@ -13,7 +13,6 @@ import { fileURLToPath } from 'url';
     if (!match) throw new Error('无法从 vars.ts 中解析 vars');
     const objText = match[1];
     // 使用 Function 在模块作用域内求值（比 eval 更安全些）
-    // eslint-disable-next-line no-new-func
     const vars = new Function(`return (${objText})`)();
 
     const flatten = (obj, prefix = '') => {

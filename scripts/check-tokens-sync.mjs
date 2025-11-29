@@ -11,14 +11,20 @@ import { fileURLToPath } from 'url';
     const match = varsText.match(/export\s+const\s+vars\s*=\s*({[\s\S]*?})\s*;/m);
     if (!match) throw new Error('无法从 vars.ts 中解析 vars');
     const objText = match[1];
-    // eslint-disable-next-line no-new-func
+
     const vars = new Function(`return (${objText})`)();
 
+    const toKebab = (s) =>
+      String(s)
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+        .replace(/_/g, '-')
+        .toLowerCase();
     const flatten = (obj, prefix = '') => {
       const out = {};
       Object.keys(obj).forEach((key) => {
         const val = obj[key];
-        const name = prefix ? `${prefix}-${key}` : key;
+        const rawName = prefix ? `${prefix}-${key}` : key;
+        const name = toKebab(rawName);
         if (val && typeof val === 'object') Object.assign(out, flatten(val, name));
         else out[`--beaver-${name}`] = String(val).trim();
       });
@@ -36,7 +42,7 @@ import { fileURLToPath } from 'url';
     };
 
     const varsObj = vars;
-    const flat = flatten({ beaver: varsObj });
+    const flat = flatten(varsObj);
     const cssPath = fileURLToPath(new URL('../src/tokens/tokens.css', import.meta.url));
     if (!fs.existsSync(cssPath)) {
       console.error(`tokens.css 未找到：${cssPath}。请先运行 pnpm run gen:tokens 生成。`);

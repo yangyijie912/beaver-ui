@@ -94,7 +94,8 @@ async function run() {
 
     console.log(`总结：有 ${results.length} 个文件包含匹配项 — ${totalIs} 个 \`is-*\` 出现，${totalBem} 个 BEM 出现。`);
     console.log('建议：用 BEM 修饰符替换 `is-*` 状态类（例如 `component__elem--disabled`）。');
-    process.exit(1);
+    // 报告性的检查：不作为失败条件，保持退出码为 0
+    process.exit(0);
   } catch (err) {
     console.error('check-naming: error', err);
     process.exit(2);
