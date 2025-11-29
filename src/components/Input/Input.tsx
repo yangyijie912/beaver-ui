@@ -3,14 +3,14 @@ import './Input.css';
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   validation?: 'error' | 'success' | 'none';
-  /** Render a textarea instead of input */
   textarea?: boolean;
-  /** Default rows for textarea */
   rows?: number;
+  /** textarea 的 CSS resize，例如 'none' | 'both' | 'horizontal' | 'vertical' */
+  resize?: React.CSSProperties['resize'];
 };
 
 const Input = React.forwardRef<HTMLElement, InputProps>(
-  ({ className, validation = 'none', textarea, rows = 3, ...props }, ref) => {
+  ({ className, validation = 'none', textarea, rows = 3, resize = 'none', ...props }, ref) => {
     const classList = ['beaver-input'];
     if (validation === 'error') classList.push('beaver-input--error');
     if (validation === 'success') classList.push('beaver-input--success');
@@ -18,13 +18,17 @@ const Input = React.forwardRef<HTMLElement, InputProps>(
     if (className) classList.push(className);
 
     if (textarea) {
+      const { style, ...rest } = props as React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+      const mergedStyle = { ...(style as React.CSSProperties), resize };
+
       return (
         <textarea
           ref={ref as React.Ref<HTMLTextAreaElement>}
           className={classList.join(' ')}
           aria-invalid={validation === 'error'}
           rows={rows}
-          {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+          style={mergedStyle}
+          {...(rest as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
       );
     }
