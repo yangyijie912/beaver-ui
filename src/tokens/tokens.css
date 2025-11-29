@@ -15,4 +15,9 @@
   --beaver-space-lg: 16px;
   --beaver-width-checkbox: 16px;
   --beaver-width-select: 200px;
+  --beaver-select-icon-size: 18px;
+  --beaver-select-arrow-size: 14px;
+  --beaver-select-arrow-offset: 0px;
+  --beaver-select-spinner-size: 18px;
+  --beaver-select-spinner-border-width: 2px;
 }

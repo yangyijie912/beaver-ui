@@ -5,19 +5,25 @@
   --beaver-select-hover: var(--beaver-color-primary);
   --beaver-select-radius: var(--beaver-radius-lg);
   --beaver-select-focus: 0 0 0 4px rgba(33, 150, 243, 0.12);
-  --beaver-select-arrow: currentColor;
+  --beaver-select-arrow: var(--beaver-select-border);
+  /* 图标的动画、大小和对齐 */
+  --beaver-select-icon-size: var(--beaver-select-icon-size, 18px);
+  --beaver-select-arrow-size: var(--beaver-select-arrow-size, 14px);
+  --beaver-select-spinner-size: var(--beaver-select-spinner-size, 18px);
+  --beaver-select-spinner-border-width: var(--beaver-select-spinner-border-width, 2px);
   --beaver-select-width: var(--beaver-width-select, 200px);
 }
 
-/* Wrapper + control (replaces native select visuals) */
 .beaver-select-wrapper {
   position: relative;
   display: inline-block;
   min-width: var(--beaver-select-width);
+  width: var(--beaver-select-width);
 }
 
 .beaver-select__control {
   width: 100%;
+  box-sizing: border-box;
   text-align: left;
   padding: 10px 20px 10px 12px;
   font-size: 14px;
@@ -30,12 +36,21 @@
   justify-content: space-between;
   gap: 8px;
   cursor: pointer;
+  overflow: hidden;
+  position: relative;
 }
 
 .beaver-select__control[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
   background-color: #f7f7f7;
+}
+
+.beaver-select__display {
+  flex: 1 1 auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .beaver-select__control:not([disabled]):focus,
@@ -51,29 +66,32 @@
   text-overflow: ellipsis;
   color: var(--beaver-select-text);
 }
+.beaver-select__value {
+  flex: 1 1 auto;
+  min-width: 0;
+}
 .beaver-select__placeholder {
   color: #9aa3ad;
 }
 
 .beaver-select__arrow {
   margin-left: 8px;
-  transition:
-    transform 160ms ease,
-    color 120ms ease;
   color: var(--beaver-select-arrow);
-  font-size: 20px;
-  line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  position: relative;
 }
 
-/* loading spinner */
+/* loading */
 .beaver-select__spinner {
-  width: 18px;
-  height: 18px;
+  width: var(--beaver-select-spinner-size, 18px);
+  height: var(--beaver-select-spinner-size, 18px);
   border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.12);
+  border: var(--beaver-select-spinner-border-width, 2px) solid rgba(0, 0, 0, 0.12);
   border-top-color: var(--beaver-select-arrow);
   box-sizing: border-box;
   animation: beaver-spin 800ms linear infinite;
@@ -85,15 +103,26 @@
     transform: rotate(360deg);
   }
 }
-.beaver-select__arrow.is-open {
+.beaver-select__arrow svg.beaver-select__arrow-svg {
+  width: var(--beaver-select-arrow-size, 14px);
+  height: var(--beaver-select-arrow-size, 14px);
+  display: block;
+  transform-origin: center center;
+  transition:
+    transform 180ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 120ms ease;
+}
+
+.beaver-select__arrow.is-open svg.beaver-select__arrow-svg {
   transform: rotate(180deg);
 }
 
-/* Menu */
+/* 下拉菜单 */
 .beaver-select__menu {
   position: absolute;
   left: 0;
-  right: 0;
+  right: auto;
+  width: 100%;
   margin-top: 8px;
   background: var(--beaver-select-bg);
   border-radius: 8px;
@@ -103,6 +132,44 @@
   max-height: 260px;
   overflow: auto;
   padding: 6px 4px;
+  box-sizing: border-box;
+}
+
+.beaver-select__input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--beaver-select-text);
+  padding: 0;
+}
+
+.beaver-select__icons {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 8px;
+  flex-shrink: 0;
+}
+
+/* 让自定义图标的动画、大小和对齐与默认的保持一致 */
+.beaver-select__icon,
+.beaver-select__loading-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--beaver-select-icon-size, 18px);
+  height: var(--beaver-select-icon-size, 18px);
+  flex: 0 0 auto;
+}
+.beaver-select__icon svg,
+.beaver-select__loading-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .beaver-select__option {
@@ -128,7 +195,7 @@
   cursor: not-allowed;
 }
 
-/* Size helpers */
+/* 大小控制 */
 .beaver-select--small .beaver-select__control {
   padding: 6px 16px 6px 10px;
   font-size: 12px;

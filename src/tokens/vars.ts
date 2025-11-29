@@ -1,3 +1,8 @@
+/**
+ * UI 设计系统的基础变量
+ * 这些变量会被注入为 CSS 变量，供组件使用，也可以直接在 JS/TS 中引用
+ * 更新完这些变量后，运行 `npm run gen:tokens` 来生成对应的 CSS 变量文件
+ */
 export const vars = {
   color: {
     primary: '#0eaae0',
@@ -22,6 +27,13 @@ export const vars = {
   width: {
     checkbox: '16px',
     select: '200px',
+  },
+  select: {
+    'icon-size': '18px',
+    'arrow-size': '14px',
+    'arrow-offset': '0px',
+    'spinner-size': '18px',
+    'spinner-border-width': '2px',
   },
 };
 
