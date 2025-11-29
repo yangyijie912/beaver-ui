@@ -244,13 +244,11 @@ const Select: React.FC<SelectProps> = ({
     }
     if (controlledValue === undefined) setInternalValue(value);
     onChange?.(value);
-    // 仅当可搜索时预置 query（便于用户再次聚焦编辑）；非搜索模式不要保留 query，
-    // 否则下次打开会按 query 过滤导致其它选项消失（单选场景的 bug）
-    const displayText = opt ? (opt.label ?? value) : value;
+    // 对单选可搜索场景，不把已选 label 写入 `query`（避免影响搜索）；
+    // 改为保留 `query` 为空，并把已选项通过 placeholder 的方式展示。
     if (searchable) {
-      // 在单选可搜索模式下，回显被选中项但不视为用户输入（因此不触发过滤）
       userTypedRef.current = false;
-      setQuery(displayText);
+      setQuery('');
     } else setQuery('');
     // 标记为已由用户显式选择，防止 close/blur effect 重复提交或清空
     committedRef.current = true;
@@ -293,7 +291,10 @@ const Select: React.FC<SelectProps> = ({
       }
     } else if (open && e.key === 'Backspace') {
       e.preventDefault();
-      const newQ = query.slice(0, -1);
+      // 如果此前 query 是由程序回显（userTypedRef === false），按 Backspace 时清空回显并视为首次用户输入；
+      // 否则按正常逻辑删除最后一个字符。
+      const wasUserTyped = userTypedRef.current;
+      const newQ = wasUserTyped ? query.slice(0, -1) : '';
       userTypedRef.current = true;
       setQuery(newQ);
       if (searchTimer.current) window.clearTimeout(searchTimer.current);
@@ -310,7 +311,9 @@ const Select: React.FC<SelectProps> = ({
     } else if (open && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
       // 在下拉打开时输入字符进行类型搜索
       e.preventDefault();
-      const newQ = query + e.key;
+      // 如果当前 query 是回显（非用户输入）且为单选可搜索场景，则把首次按键视为替换（不做 append），
+      // 避免之前选中项文字影响新的搜索输入。
+      const newQ = !userTypedRef.current && !multiple && searchable ? e.key : query + e.key;
       userTypedRef.current = true;
       setQuery(newQ);
       if (searchTimer.current) window.clearTimeout(searchTimer.current);
@@ -389,7 +392,13 @@ const Select: React.FC<SelectProps> = ({
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={(e) => e.stopPropagation()}
-                  onFocus={() => setInputFocused(true)}
+                  onFocus={() => {
+                    setInputFocused(true);
+                    // 如果当前是由选中项回显（非用户输入），在聚焦时选中全部文本，方便直接替换输入
+                    if (!userTypedRef.current && searchable && !multiple && query) {
+                      setTimeout(() => searchRef.current?.select(), 0);
+                    }
+                  }}
                   onBlur={(e) => {
                     e.stopPropagation();
                     // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
@@ -453,13 +462,30 @@ const Select: React.FC<SelectProps> = ({
                 className="beaver-select__input"
                 value={query}
                 onChange={(e) => {
+                  const raw = e.target.value;
+                  // 首次用户编辑时，如果当前 query 是组件回显（userTypedRef === false）且为单选可搜索场景，
+                  // 我们只取新输入/粘贴的部分，避免回显文本被当作搜索前缀影响结果。
+                  if (!userTypedRef.current && !multiple && searchable) {
+                    // 尝试从 raw 中去除回显的原始 query，保留新增部分
+                    let added = raw.replace(query, '');
+                    if (added === '') added = raw; // 回退：若无法提取新增部分，则使用 raw
+                    userTypedRef.current = true;
+                    setQuery(added);
+                    setHighlighted(0);
+                    return;
+                  }
                   userTypedRef.current = true;
-                  setQuery(e.target.value);
+                  setQuery(raw);
                   setHighlighted(0);
                 }}
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
-                onFocus={() => setInputFocused(true)}
+                onFocus={() => {
+                  setInputFocused(true);
+                  if (!userTypedRef.current && searchable && !multiple && query) {
+                    setTimeout(() => searchRef.current?.select(), 0);
+                  }
+                }}
                 onBlur={(e) => {
                   e.stopPropagation();
                   // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
@@ -507,7 +533,13 @@ const Select: React.FC<SelectProps> = ({
                     setOpen(false);
                   }
                 }}
-                placeholder={query ? '' : placeholder}
+                placeholder={
+                  query
+                    ? ''
+                    : internalValue
+                      ? (options.find((o) => o.value === (internalValue as string))?.label ?? String(internalValue))
+                      : placeholder
+                }
               />
             )
           ) : Array.isArray(internalValue) ? (
