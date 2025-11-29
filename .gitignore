@@ -1,16 +1,10 @@
 node_modules/
 dist/
-coverage/
 .env
-.DS_Store
 .vscode/
 node_modules
-
 *storybook.log
 storybook-static/
-
-# Ignore Storybook build cache
 /.cache/storybook
-
-# Ignore packed tarballs produced by `npm pack` / `pnpm pack`
 beaver-ui-*.tgz
+docs/

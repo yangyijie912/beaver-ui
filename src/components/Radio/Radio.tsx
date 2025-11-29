@@ -16,8 +16,17 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
 
     // 组合 classNames
     const inputExtraClass = inputClassName || '';
-    const wrapperClass = ['beaver-radio-wrapper', className].filter(Boolean).join(' ');
-    const radioClass = ['beaver-radio', inputExtraClass].filter(Boolean).join(' ').trim();
+    const wrapperClass = [
+      'beaver-radio-wrapper',
+      className,
+      (disabled ?? ctx?.disabled) ? 'beaver-radio-wrapper--disabled' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
+    const radioClass = ['beaver-radio', inputExtraClass, (disabled ?? ctx?.disabled) ? 'beaver-radio--disabled' : '']
+      .filter(Boolean)
+      .join(' ')
+      .trim();
 
     // 首选prop，否则从上下文中获取
     const inputName = (props as any).name ?? ctx?.name;
@@ -57,7 +66,7 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
     };
 
     return (
-      <label className={wrapperClass}>
+      <label className={wrapperClass} aria-disabled={disabled ?? ctx?.disabled}>
         <input {...inputProps} />
         <span className={radioClass} aria-hidden="true" />
         {label ? <span>{label}</span> : null}

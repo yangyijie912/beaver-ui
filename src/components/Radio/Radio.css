@@ -87,15 +87,19 @@ label .beaver-radio + span {
 }
 
 .beaver-radio-input:disabled + .beaver-radio,
-.beaver-radio:disabled {
+.beaver-radio:disabled,
+.beaver-radio-wrapper--disabled .beaver-radio,
+.beaver-radio--disabled {
   background: #f3f4f6;
   border-color: #e5e7eb;
   cursor: not-allowed;
   opacity: 0.9;
+  pointer-events: none;
 }
 
 label input[disabled] + .beaver-radio + span,
-.beaver-radio-wrapper input[disabled] + .beaver-radio + span {
+.beaver-radio-wrapper input[disabled] + .beaver-radio + span,
+.beaver-radio-wrapper--disabled .beaver-radio + span {
   color: var(--radio-label-disabled);
   cursor: not-allowed;
 }

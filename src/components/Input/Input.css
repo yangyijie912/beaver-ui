@@ -29,6 +29,7 @@
   box-shadow: 0 0 0 4px rgba(16, 185, 135, 0.08);
 }
 
+.beaver-input--disabled,
 .beaver-input[disabled],
 .beaver-input:disabled {
   background: #f9fafb;

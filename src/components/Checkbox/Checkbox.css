@@ -125,16 +125,20 @@ label .beaver-checkbox + span {
 
 /* 当输入框被禁用时改变视觉样式 */
 .beaver-checkbox-input:disabled + .beaver-checkbox,
-.beaver-checkbox:disabled {
+.beaver-checkbox:disabled,
+.beaver-checkbox-wrapper--disabled .beaver-checkbox,
+.beaver-checkbox--disabled {
   background: #f3f4f6;
   border-color: #e5e7eb;
   cursor: not-allowed;
   opacity: 0.9;
+  pointer-events: none;
 }
 
 /* 同时将标签文本变灰 */
 label input[disabled] + .beaver-checkbox + span,
-.beaver-checkbox-wrapper input[disabled] + .beaver-checkbox + span {
+.beaver-checkbox-wrapper input[disabled] + .beaver-checkbox + span,
+.beaver-checkbox-wrapper--disabled .beaver-checkbox + span {
   color: var(--checkbox-label-disabled);
   cursor: not-allowed;
 }

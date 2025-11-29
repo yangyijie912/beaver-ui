@@ -10,11 +10,12 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const Input = React.forwardRef<HTMLElement, InputProps>(
-  ({ className, validation = 'none', textarea, rows = 3, resize = 'none', ...props }, ref) => {
+  ({ className, validation = 'none', textarea, rows = 3, resize = 'none', disabled, ...props }, ref) => {
     const classList = ['beaver-input'];
     if (validation === 'error') classList.push('beaver-input--error');
     if (validation === 'success') classList.push('beaver-input--success');
     if (textarea) classList.push('beaver-input--textarea');
+    if (disabled) classList.push('beaver-input--disabled');
     if (className) classList.push(className);
 
     if (textarea) {
@@ -38,6 +39,7 @@ const Input = React.forwardRef<HTMLElement, InputProps>(
         ref={ref as React.Ref<HTMLInputElement>}
         className={classList.join(' ')}
         aria-invalid={validation === 'error'}
+        disabled={disabled}
         {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
       />
     );

@@ -233,12 +233,21 @@ const Select: React.FC<SelectProps> = ({
 
   return (
     <div
-      className={['beaver-select-wrapper', `beaver-select--${size}`, className || ''].filter(Boolean).join(' ')}
+      className={[
+        'beaver-select-wrapper',
+        `beaver-select--${size}`,
+        isDisabled ? 'beaver-select--disabled' : '',
+        open ? 'beaver-select--open' : '',
+        className || '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
       ref={rootRef}
+      aria-disabled={isDisabled}
     >
       <div
         role="button"
-        className={`beaver-select__control ${disabled ? 'is-disabled' : ''}`}
+        className={`beaver-select__control`}
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={toggleOpen}
@@ -290,8 +299,6 @@ const Select: React.FC<SelectProps> = ({
             </span>
           )}
         </div>
-
-        {/* 图标区 */}
         <div className="beaver-select__icons">
           {loading ? (
             loadingIcon ? (
@@ -302,7 +309,7 @@ const Select: React.FC<SelectProps> = ({
           ) : icon ? (
             <span className="beaver-select__icon">{icon}</span>
           ) : (
-            <span className={`beaver-select__arrow ${open ? 'is-open' : ''}`} aria-hidden>
+            <span className="beaver-select__arrow" aria-hidden>
               <svg
                 className="beaver-select__arrow-svg"
                 width="14"
@@ -340,9 +347,9 @@ const Select: React.FC<SelectProps> = ({
               role="option"
               aria-selected={opt.value === internalValue}
               key={opt.value}
-              className={`beaver-select__option ${opt.value === internalValue ? 'is-selected' : ''} ${opt.disabled ? 'is-disabled' : ''} ${highlighted === i ? 'is-highlighted' : ''}`}
+              className={`beaver-select__option ${opt.value === internalValue ? 'beaver-select__option--selected' : ''} ${opt.disabled ? 'beaver-select__option--disabled' : ''} ${highlighted === i ? 'beaver-select__option--highlighted' : ''}`}
               onMouseEnter={() => setHighlighted(i)}
-              onClick={() => handleSelectByValue(opt.value)}
+              onClick={() => !opt.disabled && handleSelectByValue(opt.value)}
             >
               <span className="beaver-select__opt-label">{renderHighlightedLabel(opt.label)}</span>
             </li>

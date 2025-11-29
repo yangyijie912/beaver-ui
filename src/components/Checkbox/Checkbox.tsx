@@ -45,14 +45,21 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     }, [indeterminate]);
 
     const inputExtraClass = inputClassName || '';
-    const wrapperClass = ['beaver-checkbox-wrapper', className].filter(Boolean).join(' ');
-    const boxClass = ['beaver-checkbox', inputExtraClass, indeterminate ? 'beaver-checkbox--indeterminate' : '']
+    const wrapperClass = ['beaver-checkbox-wrapper', className, disabled ? 'beaver-checkbox-wrapper--disabled' : '']
+      .filter(Boolean)
+      .join(' ');
+    const boxClass = [
+      'beaver-checkbox',
+      inputExtraClass,
+      indeterminate ? 'beaver-checkbox--indeterminate' : '',
+      disabled ? 'beaver-checkbox--disabled' : '',
+    ]
       .filter(Boolean)
       .join(' ')
       .trim();
 
     return (
-      <label className={wrapperClass}>
+      <label className={wrapperClass} aria-disabled={disabled}>
         <input
           ref={setRef}
           type="checkbox"

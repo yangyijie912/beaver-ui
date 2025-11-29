@@ -40,7 +40,7 @@
   position: relative;
 }
 
-.beaver-select__control.is-disabled {
+.beaver-select--disabled .beaver-select__control {
   opacity: 0.6;
   cursor: not-allowed;
   background-color: #f7f7f7;
@@ -54,8 +54,8 @@
   overflow: hidden;
 }
 
-.beaver-select__control:not(.is-disabled):focus,
-.beaver-select__control:not(.is-disabled):hover {
+.beaver-select-wrapper:not(.beaver-select--disabled) .beaver-select__control:focus,
+.beaver-select-wrapper:not(.beaver-select--disabled) .beaver-select__control:hover {
   outline: none;
   box-shadow: var(--beaver-select-focus);
   border-color: var(--beaver-select-hover);
@@ -114,7 +114,7 @@
     opacity 120ms ease;
 }
 
-.beaver-select__arrow.is-open svg.beaver-select__arrow-svg {
+.beaver-select--open .beaver-select__arrow svg.beaver-select__arrow-svg {
   transform: rotate(180deg);
 }
 
@@ -184,16 +184,17 @@
   margin-top: 4px;
 }
 
-.beaver-select__option.is-highlighted {
+.beaver-select__option--highlighted {
   background: rgba(33, 150, 243, 0.12);
 }
-.beaver-select__option.is-selected {
+.beaver-select__option--selected {
   background: var(--beaver-color-primary, #0b66d1);
   color: white;
 }
-.beaver-select__option.is-disabled {
+.beaver-select__option--disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* 大小控制 */
