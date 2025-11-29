@@ -197,3 +197,23 @@ export const Multiple: Story = {
     );
   },
 };
+
+export const MultipleFilterSelected: Story = {
+  args: {
+    options: sampleOptions,
+    placeholder: '多选并隐藏已选项，选中后关闭',
+    multiple: true,
+    searchable: false,
+    allowCreate: false,
+    filterSelected: true,
+  },
+  render: (args: React.ComponentProps<typeof Select>) => {
+    const [val, setVal] = React.useState<string[] | undefined>(['apple']);
+    return (
+      <div style={{ width: 420 }}>
+        <Select {...args} width={420} value={val} onChange={(v) => setVal(Array.isArray(v) ? v : v ? [v] : [])} />
+        <div style={{ marginTop: 12 }}>当前值: {JSON.stringify(val)}</div>
+      </div>
+    );
+  },
+};

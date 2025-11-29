@@ -10,10 +10,13 @@ export type SelectOption = {
 export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange' | 'size'> & {
   /** 下拉选项列表 */
   options?: SelectOption[];
+  /** 占位符 */
   placeholder?: string;
   /** 单选时为 string，复选时为 string[] */
   value?: string | string[];
+  /** 默认值 */
   defaultValue?: string | string[];
+  /** 事件回调，参数为选中的值 */
   onChange?: (value: string | string[]) => void;
   /** 是否支持多选 */
   multiple?: boolean;
@@ -25,7 +28,11 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   filterOption?: (input: string, option: SelectOption) => boolean;
   /** 搜索策略：'label' 只按 label 搜索，'value' 只按 value，'both' 按 label 与 value 搜索但优先 label 匹配 */
   searchBy?: 'label' | 'value' | 'both';
-  size?: 'small' | 'medium' | 'large';
+  /** 仅在 `multiple` 为 true 时生效：在下拉中隐藏已选项，并在每次多选后关闭下拉。 */
+  filterSelected?: boolean;
+  /** 是否禁用 */
+  disabled?: boolean;
+  /** 是否加载中 */
   loading?: boolean;
   /** 自定义箭头/后缀图标（传入 ReactNode） */
   icon?: React.ReactNode;
@@ -33,6 +40,8 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   loadingIcon?: React.ReactNode;
   /** 直接设置组件宽度，支持 number(像素) 或 字符串(如 '50%','200px') */
   width?: number | string;
+  /** 组件尺寸 */
+  size?: 'small' | 'medium' | 'large';
 };
 
 const Select: React.FC<SelectProps> = ({
@@ -55,6 +64,7 @@ const Select: React.FC<SelectProps> = ({
   width,
   style,
   multiple = false,
+  filterSelected = false,
   ...rest
 }) => {
   const [open, setOpen] = useState(false);
@@ -86,27 +96,34 @@ const Select: React.FC<SelectProps> = ({
 
   // 根据 query 过滤 options
   function filteredOptions() {
+    const selectedVals = Array.isArray(internalValue) ? (internalValue as string[]) : [];
     // 仅当用户实际输入过（而不是程序预置的回显）时才按 query 过滤
-    if (!query || !userTypedRef.current) return options;
+    if (!query || !userTypedRef.current) {
+      const base = options;
+      return multiple && filterSelected ? base.filter((o) => !selectedVals.includes(o.value)) : base;
+    }
     const q = query.trim().toLowerCase();
 
     // 如果用户提供了自定义过滤函数，优先使用
+    let res: SelectOption[];
     if (filterOption) {
-      return options.filter((o) => filterOption(q, o));
+      res = options.filter((o) => filterOption(q, o));
+    } else {
+      const strategy = searchBy || 'both';
+      if (strategy === 'label') {
+        res = options.filter((o) => o.label.toLowerCase().includes(q));
+      } else if (strategy === 'value') {
+        res = options.filter((o) => o.value.toLowerCase().includes(q));
+      } else {
+        // 'both'：优先把 label 匹配的项放前面，这样视觉上和输入更一致
+        const labelMatches = options.filter((o) => o.label.toLowerCase().includes(q));
+        const valueOnlyMatches = options.filter(
+          (o) => !o.label.toLowerCase().includes(q) && o.value.toLowerCase().includes(q)
+        );
+        res = [...labelMatches, ...valueOnlyMatches];
+      }
     }
-    const strategy = searchBy || 'both';
-    if (strategy === 'label') {
-      return options.filter((o) => o.label.toLowerCase().includes(q));
-    }
-    if (strategy === 'value') {
-      return options.filter((o) => o.value.toLowerCase().includes(q));
-    }
-    // 'both'：优先把 label 匹配的项放前面，这样视觉上和输入更一致
-    const labelMatches = options.filter((o) => o.label.toLowerCase().includes(q));
-    const valueOnlyMatches = options.filter(
-      (o) => !o.label.toLowerCase().includes(q) && o.value.toLowerCase().includes(q)
-    );
-    return [...labelMatches, ...valueOnlyMatches];
+    return multiple && filterSelected ? res.filter((o) => !selectedVals.includes(o.value)) : res;
   }
 
   // 展示用的选项列表：当没有匹配项且有 query 时，提供一个用于创建自定义值的候选项
@@ -239,7 +256,10 @@ const Select: React.FC<SelectProps> = ({
       onChange?.(prev);
       setQuery('');
       committedRef.current = true;
-      // 多选时保持下拉菜单打开
+      // 多选时：默认保持下拉打开；如果启用了 filterSelected，则每次选完后关闭下拉（按需行为）
+      if (filterSelected) {
+        setOpen(false);
+      }
       return;
     }
     if (controlledValue === undefined) setInternalValue(value);
@@ -328,6 +348,8 @@ const Select: React.FC<SelectProps> = ({
       setOpen(false);
     }
   }
+
+  const menuOptions = displayOptions();
 
   return (
     <div
@@ -617,7 +639,7 @@ const Select: React.FC<SelectProps> = ({
           tabIndex={-1}
           aria-activedescendant={highlighted !== null ? `beaver-select-opt-${highlighted}` : undefined}
         >
-          {displayOptions().map((opt, i) => {
+          {menuOptions.map((opt, i) => {
             const isNew = (opt as any).__isNew === true;
             const key = isNew ? `__create-${opt.value}` : opt.value;
             const isSelected = Array.isArray(internalValue)
@@ -655,10 +677,21 @@ const Select: React.FC<SelectProps> = ({
               </li>
             );
           })}
-          {/* 如果没有任何选项，且处于可搜索状态，显示无匹配项提示 */}
-          {displayOptions().length === 0 && searchable && (
-            <li className="beaver-select__option beaver-select__no-data" aria-disabled key="__no_matches">
-              <span className="beaver-select__opt-label">无匹配项</span>
+          {/*
+            当 menuOptions 为空时显示提示：
+            - 如果 props.options 为空：'暂无数据'
+            - 否则如果是因搜索导致没有匹配（用户已输入 query 且 searchable）：'无匹配项'
+            - 其他情况（例如 all selected 并且 filterSelected 导致无可选项）：'暂无数据'
+          */}
+          {menuOptions.length === 0 && (
+            <li className="beaver-select__option beaver-select__no-data" aria-disabled key="__no_data_or_match">
+              <span className="beaver-select__opt-label">
+                {options.length === 0
+                  ? '暂无数据'
+                  : searchable && userTypedRef.current && query.trim()
+                    ? '无匹配项'
+                    : '暂无数据'}
+              </span>
             </li>
           )}
         </ul>
