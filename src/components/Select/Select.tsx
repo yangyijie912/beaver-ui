@@ -31,6 +31,8 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   icon?: React.ReactNode;
   /** 自定义 loading 图标（传入 ReactNode），优先于默认 spinner */
   loadingIcon?: React.ReactNode;
+  /** 直接设置组件宽度，支持 number(像素) 或 字符串(如 '50%','200px') */
+  width?: number | string;
 };
 
 const Select: React.FC<SelectProps> = ({
@@ -50,6 +52,8 @@ const Select: React.FC<SelectProps> = ({
   className,
   size = 'medium',
   name,
+  width,
+  style,
   multiple = false,
   ...rest
 }) => {
@@ -326,6 +330,10 @@ const Select: React.FC<SelectProps> = ({
         .join(' ')}
       ref={rootRef}
       aria-disabled={isDisabled}
+      style={{
+        ...(style as React.CSSProperties),
+        ...(width !== undefined ? { width: typeof width === 'number' ? `${width}px` : width } : {}),
+      }}
     >
       <div
         role="button"

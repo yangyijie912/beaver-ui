@@ -7,10 +7,12 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   rows?: number;
   /** textarea 的 CSS resize，例如 'none' | 'both' | 'horizontal' | 'vertical' */
   resize?: React.CSSProperties['resize'];
+  /** 直接设置宽度，支持 number(像素) 或 字符串(如 '100%','200px') */
+  width?: number | string;
 };
 
 const Input = React.forwardRef<HTMLElement, InputProps>(
-  ({ className, validation = 'none', textarea, rows = 3, resize = 'none', disabled, ...props }, ref) => {
+  ({ className, validation = 'none', textarea, rows = 3, resize = 'none', disabled, width, ...props }, ref) => {
     const classList = ['beaver-input'];
     if (validation === 'error') classList.push('beaver-input--error');
     if (validation === 'success') classList.push('beaver-input--success');
@@ -20,7 +22,11 @@ const Input = React.forwardRef<HTMLElement, InputProps>(
 
     if (textarea) {
       const { style, ...rest } = props as React.TextareaHTMLAttributes<HTMLTextAreaElement>;
-      const mergedStyle = { ...(style as React.CSSProperties), resize };
+      const mergedStyle: React.CSSProperties = {
+        ...(style as React.CSSProperties),
+        resize,
+        ...(width !== undefined ? { width: typeof width === 'number' ? `${width}px` : width } : {}),
+      };
 
       return (
         <textarea
@@ -34,13 +40,20 @@ const Input = React.forwardRef<HTMLElement, InputProps>(
       );
     }
 
+    const { style, ...restInput } = props as React.InputHTMLAttributes<HTMLInputElement>;
+    const mergedStyle: React.CSSProperties = {
+      ...(style as React.CSSProperties),
+      ...(width !== undefined ? { width: typeof width === 'number' ? `${width}px` : width } : {}),
+    };
+
     return (
       <input
         ref={ref as React.Ref<HTMLInputElement>}
         className={classList.join(' ')}
         aria-invalid={validation === 'error'}
         disabled={disabled}
-        {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
+        style={mergedStyle}
+        {...(restInput as React.InputHTMLAttributes<HTMLInputElement>)}
       />
     );
   }

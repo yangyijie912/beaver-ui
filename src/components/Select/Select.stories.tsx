@@ -78,20 +78,13 @@ export const Searchable: Story = {
   },
 };
 
-export const AllowCreateDisabledByDefault: Story = {
-  args: {
-    options: sampleOptions,
-    placeholder: '默认不允许创建',
-    searchable: true,
-  },
-};
-
 export const AllowCreate: Story = {
   args: {
     options: sampleOptions,
     placeholder: '输入不存在的项并回车创建',
     searchable: true,
     allowCreate: true,
+    width: 420,
   },
 };
 
@@ -108,6 +101,7 @@ export const AllowCreateControlled: Story = {
       <div style={{ width: 360 }}>
         <Select
           {...args}
+          width={420}
           value={val}
           onChange={(v) => setVal(Array.isArray(v) ? (v[0] as string | undefined) : (v as string | undefined))}
         />
@@ -147,7 +141,7 @@ export const CustomIcon: Story = {
       </svg>
     );
     return (
-      <div style={{ width: 320 }}>
+      <div>
         <Select {...args} options={sampleOptions} placeholder="自定义图标" icon={MyArrow} />
       </div>
     );
@@ -191,13 +185,13 @@ export const Multiple: Story = {
     placeholder: '请选择多个水果',
     multiple: true,
     searchable: false,
-    allowCreate: false
+    allowCreate: false,
   },
   render: (args: React.ComponentProps<typeof Select>) => {
     const [val, setVal] = React.useState<string[] | undefined>(['apple', 'banana']);
     return (
       <div style={{ width: 420 }}>
-        <Select {...args} value={val} onChange={(v) => setVal(Array.isArray(v) ? v : v ? [v] : [])} />
+        <Select {...args} width={420} value={val} onChange={(v) => setVal(Array.isArray(v) ? v : v ? [v] : [])} />
         <div style={{ marginTop: 12 }}>当前值: {JSON.stringify(val)}</div>
       </div>
     );
