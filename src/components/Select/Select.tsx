@@ -11,9 +11,12 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   /** 下拉选项列表 */
   options?: SelectOption[];
   placeholder?: string;
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
+  /** 单选时为 string，复选时为 string[] */
+  value?: string | string[];
+  defaultValue?: string | string[];
+  onChange?: (value: string | string[]) => void;
+  /** 是否支持多选 */
+  multiple?: boolean;
   /** 是否在下拉中显示搜索框 */
   searchable?: boolean;
   /** 是否允许在没有匹配项时创建自定义输入项（默认 false） */
@@ -47,12 +50,13 @@ const Select: React.FC<SelectProps> = ({
   className,
   size = 'medium',
   name,
+  multiple = false,
   ...rest
 }) => {
   const [open, setOpen] = useState(false);
   const [highlighted, setHighlighted] = useState<number | null>(null);
   const [query, setQuery] = useState('');
-  const [internalValue, setInternalValue] = useState<string | undefined>(controlledValue ?? defaultValue);
+  const [internalValue, setInternalValue] = useState<string | string[] | undefined>(controlledValue ?? defaultValue);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
   const searchTimer = useRef<number | null>(null);
@@ -140,7 +144,10 @@ const Select: React.FC<SelectProps> = ({
   useEffect(() => {
     if (open && highlighted === null) {
       const src = displayOptions();
-      const idx = src.findIndex((o) => o.value === internalValue);
+      const idx = src.findIndex((o) => {
+        if (Array.isArray(internalValue)) return internalValue.includes(o.value);
+        return o.value === internalValue;
+      });
       const firstIdx = src.findIndex((o) => !o.disabled);
       setHighlighted(idx >= 0 ? idx : firstIdx >= 0 ? firstIdx : 0);
     }
@@ -184,7 +191,21 @@ const Select: React.FC<SelectProps> = ({
   }, []);
 
   // 选中的选项
-  const selectedOption = options.find((o) => o.value === internalValue);
+  const selectedOption = Array.isArray(internalValue)
+    ? options.find((o) => o.value === (internalValue as string[])[0])
+    : options.find((o) => o.value === internalValue);
+
+  const selectedValues: string[] = Array.isArray(internalValue) ? (internalValue as string[]) : [];
+
+  // 从选中数组中移除某项（用于 tag 删除）
+  function removeTag(value: string, e?: React.MouseEvent) {
+    e?.stopPropagation();
+    const prev = Array.isArray(internalValue) ? [...internalValue] : [];
+    const idx = prev.indexOf(value);
+    if (idx >= 0) prev.splice(idx, 1);
+    if (controlledValue === undefined) setInternalValue(prev);
+    onChange?.(prev);
+  }
 
   // 是否禁用
   const isDisabled = disabled || loading;
@@ -199,11 +220,27 @@ const Select: React.FC<SelectProps> = ({
   function handleSelectByValue(value: string) {
     const opt = options.find((o) => o.value === value);
     if (opt && opt.disabled) return;
+    // 如果是多选，切换该项
+    const isMultiple = multiple === true;
+    if (isMultiple) {
+      const prev = Array.isArray(internalValue) ? [...internalValue] : [];
+      const foundIdx = prev.indexOf(value);
+      if (foundIdx >= 0) prev.splice(foundIdx, 1);
+      else prev.push(value);
+      if (controlledValue === undefined) setInternalValue(prev);
+      onChange?.(prev);
+      setQuery('');
+      committedRef.current = true;
+      // 多选时保持下拉菜单打开
+      return;
+    }
     if (controlledValue === undefined) setInternalValue(value);
     onChange?.(value);
-    // 在显式选择时，把输入框的 query 预置为所选文本（label 或 value），便于用户再次聚焦编辑
+    // 仅当可搜索时预置 query（便于用户再次聚焦编辑）；非搜索模式不要保留 query，
+    // 否则下次打开会按 query 过滤导致其它选项消失（单选场景的 bug）
     const displayText = opt ? (opt.label ?? value) : value;
-    setQuery(displayText);
+    if (searchable) setQuery(displayText);
+    else setQuery('');
     // 标记为已由用户显式选择，防止 close/blur effect 重复提交或清空
     committedRef.current = true;
     setOpen(false);
@@ -302,67 +339,179 @@ const Select: React.FC<SelectProps> = ({
       >
         {/* 展示区 */}
         <div className="beaver-select__display">
-          {open && searchable ? (
-            <input
-              ref={searchRef}
-              className="beaver-select__input"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setHighlighted(0);
-              }}
-              onMouseDown={(e) => e.stopPropagation()}
-              onClick={(e) => e.stopPropagation()}
-              onFocus={() => setInputFocused(true)}
-              onBlur={(e) => {
-                e.stopPropagation();
-                // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
-                if (committedRef.current) {
-                  committedRef.current = false;
-                  setInputFocused(false);
-                  return;
-                }
-                // 在失焦时，如果启用了 allowCreate，尝试提交输入
-                const q = query.trim();
-                if (allowCreate && q) {
-                  const match = options.find((o) => o.value === q || o.label === q);
-                  if (match && !match.disabled) {
-                    if (controlledValue === undefined) setInternalValue(match.value);
-                    onChange?.(match.value);
-                  } else {
-                    if (controlledValue === undefined) setInternalValue(q);
-                    onChange?.(q);
+          {searchable && open ? (
+            multiple ? (
+              <div className={`beaver-select__tags-input`}>
+                <div className="beaver-select__tags">
+                  {selectedValues.length === 0
+                    ? null
+                    : selectedValues.map((v: string) => (
+                        <span className="beaver-select__tag" key={v} onClick={(e) => e.stopPropagation()}>
+                          <span className="beaver-select__tag-label">
+                            {options.find((o) => o.value === v)?.label ?? v}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label={`remove ${v}`}
+                            className="beaver-select__tag-remove"
+                            onClick={(e) => removeTag(v, e)}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                </div>
+                <input
+                  ref={searchRef}
+                  className="beaver-select__input"
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setHighlighted(0);
+                  }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                  onFocus={() => setInputFocused(true)}
+                  onBlur={(e) => {
+                    e.stopPropagation();
+                    // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
+                    if (committedRef.current) {
+                      committedRef.current = false;
+                      setInputFocused(false);
+                      return;
+                    }
+                    // 在失焦时，如果启用了 allowCreate，尝试提交输入（多选模式下把新值加入数组）
+                    const q = query.trim();
+                    if (allowCreate && q) {
+                      const match = options.find((o) => o.value === q || o.label === q);
+                      if (match && !match.disabled) {
+                        handleSelectByValue(match.value);
+                      } else {
+                        handleSelectByValue(q);
+                      }
+                    }
+                    // 清空查询以避免同一次交互被重复提交
+                    setQuery('');
+                    setInputFocused(false);
+                  }}
+                  onKeyDown={(e) => {
+                    e.stopPropagation();
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      setHighlighted((h) => {
+                        const src = displayOptions();
+                        return h === null ? 0 : Math.min(src.length - 1, h + 1);
+                      });
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      setHighlighted((h) => {
+                        const src = displayOptions();
+                        return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
+                      });
+                    } else if (e.key === 'Enter') {
+                      e.preventDefault();
+                      const q = query.trim();
+                      if (allowCreate && q) {
+                        const exact = options.find((o) => o.value === q || o.label === q);
+                        if (!exact) {
+                          handleSelectByValue(q);
+                          setQuery('');
+                          return;
+                        }
+                      }
+                      const src = displayOptions();
+                      const opt = src[highlighted ?? 0];
+                      if (opt) handleSelectByValue(opt.value);
+                    } else if (e.key === 'Escape') {
+                      setOpen(false);
+                    }
+                  }}
+                  placeholder={selectedValues.length === 0 && !query ? placeholder : ''}
+                />
+              </div>
+            ) : (
+              <input
+                ref={searchRef}
+                className="beaver-select__input"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setHighlighted(0);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
+                onFocus={() => setInputFocused(true)}
+                onBlur={(e) => {
+                  e.stopPropagation();
+                  // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
+                  if (committedRef.current) {
+                    committedRef.current = false;
+                    setInputFocused(false);
+                    return;
                   }
-                }
-                // 清空查询以避免同一次交互被重复提交
-                setQuery('');
-                setInputFocused(false);
-              }}
-              onKeyDown={(e) => {
-                e.stopPropagation();
-                if (e.key === 'ArrowDown') {
-                  e.preventDefault();
-                  setHighlighted((h) => {
+                  // 在失焦时，如果启用了 allowCreate，尝试提交输入
+                  const q = query.trim();
+                  if (allowCreate && q) {
+                    const match = options.find((o) => o.value === q || o.label === q);
+                    if (match && !match.disabled) {
+                      if (controlledValue === undefined) setInternalValue(match.value);
+                      onChange?.(match.value);
+                    } else {
+                      if (controlledValue === undefined) setInternalValue(q);
+                      onChange?.(q);
+                    }
+                  }
+                  // 清空查询以避免同一次交互被重复提交
+                  setQuery('');
+                  setInputFocused(false);
+                }}
+                onKeyDown={(e) => {
+                  e.stopPropagation();
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setHighlighted((h) => {
+                      const src = displayOptions();
+                      return h === null ? 0 : Math.min(src.length - 1, h + 1);
+                    });
+                  } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setHighlighted((h) => {
+                      const src = displayOptions();
+                      return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
+                    });
+                  } else if (e.key === 'Enter') {
+                    e.preventDefault();
                     const src = displayOptions();
-                    return h === null ? 0 : Math.min(src.length - 1, h + 1);
-                  });
-                } else if (e.key === 'ArrowUp') {
-                  e.preventDefault();
-                  setHighlighted((h) => {
-                    const src = displayOptions();
-                    return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
-                  });
-                } else if (e.key === 'Enter') {
-                  e.preventDefault();
-                  const src = displayOptions();
-                  const opt = src[highlighted ?? 0];
-                  if (opt) handleSelectByValue(opt.value);
-                } else if (e.key === 'Escape') {
-                  setOpen(false);
-                }
-              }}
-              placeholder={placeholder}
-            />
+                    const opt = src[highlighted ?? 0];
+                    if (opt) handleSelectByValue(opt.value);
+                  } else if (e.key === 'Escape') {
+                    setOpen(false);
+                  }
+                }}
+                placeholder={query ? '' : placeholder}
+              />
+            )
+          ) : Array.isArray(internalValue) ? (
+            // 关闭态（下拉未打开）时，在多选且无已选项时显示占位符
+            selectedValues.length === 0 ? (
+              <span className={`beaver-select__value beaver-select__placeholder`}>{placeholder}</span>
+            ) : (
+              <div className="beaver-select__tags">
+                {selectedValues.map((v: string) => (
+                  <span className="beaver-select__tag" key={v} onClick={(e) => e.stopPropagation()}>
+                    <span className="beaver-select__tag-label">{options.find((o) => o.value === v)?.label ?? v}</span>
+                    <button
+                      type="button"
+                      aria-label={`remove ${v}`}
+                      className="beaver-select__tag-remove"
+                      onClick={(e) => removeTag(v, e)}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )
           ) : (
             <span
               className={`beaver-select__value ${!(internalValue ?? selectedOption) ? 'beaver-select__placeholder' : ''}`}
@@ -420,13 +569,16 @@ const Select: React.FC<SelectProps> = ({
           {displayOptions().map((opt, i) => {
             const isNew = (opt as any).__isNew === true;
             const key = isNew ? `__create-${opt.value}` : opt.value;
+            const isSelected = Array.isArray(internalValue)
+              ? internalValue.includes(opt.value)
+              : opt.value === internalValue;
             return (
               <li
                 id={`beaver-select-opt-${i}`}
                 role="option"
-                aria-selected={opt.value === internalValue}
+                aria-selected={isSelected}
                 key={key}
-                className={`beaver-select__option ${opt.value === internalValue ? 'beaver-select__option--selected' : ''} ${'disabled' in opt && (opt as any).disabled ? 'beaver-select__option--disabled' : ''} ${highlighted === i ? 'beaver-select__option--highlighted' : ''} ${isNew ? 'beaver-select__option--new' : ''}`}
+                className={`beaver-select__option ${isSelected ? 'beaver-select__option--selected' : ''} ${'disabled' in opt && (opt as any).disabled ? 'beaver-select__option--disabled' : ''} ${highlighted === i ? 'beaver-select__option--highlighted' : ''} ${isNew ? 'beaver-select__option--new' : ''}`}
                 onMouseEnter={() => setHighlighted(i)}
                 onMouseDown={(e) => {
                   // 在 mousedown 时立即处理选择，避免 input 的 blur/close 逻辑覆盖选择行为
@@ -440,6 +592,8 @@ const Select: React.FC<SelectProps> = ({
                   e.stopPropagation();
                 }}
               >
+                {/* 在多选模式下显示选中勾选 */}
+                <span className="beaver-select__opt-prefix">{isSelected ? '✔' : ''}</span>
                 <span className="beaver-select__opt-label">
                   {isNew ? (
                     <span className="beaver-select__create-label">{`使用 "${opt.label}"`}</span>
@@ -460,15 +614,29 @@ const Select: React.FC<SelectProps> = ({
       )}
 
       {/* 隐藏的原生 select，用于保持表单兼容性 */}
-      <select
-        name={name}
-        value={internalValue ?? ''}
-        onChange={(e) => {
-          handleSelectByValue(e.target.value);
-        }}
-        style={{ display: 'none' }}
-        aria-hidden
-      />
+      {multiple === true ? (
+        <select name={name} multiple style={{ display: 'none' }} aria-hidden>
+          {options.map((o) => (
+            <option
+              key={o.value}
+              value={o.value}
+              selected={Array.isArray(internalValue) ? internalValue.includes(o.value) : false}
+            >
+              {o.label}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <select
+          name={name}
+          value={(Array.isArray(internalValue) ? (internalValue as string[])[0] : internalValue) ?? ''}
+          onChange={(e) => {
+            handleSelectByValue(e.target.value);
+          }}
+          style={{ display: 'none' }}
+          aria-hidden
+        />
+      )}
     </div>
   );
 };

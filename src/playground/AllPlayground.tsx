@@ -86,7 +86,7 @@ function App() {
           <Select
             options={options}
             value={selectValue}
-            onChange={(v) => setSelectValue(v)}
+            onChange={(v) => setSelectValue(Array.isArray(v) ? v[0] : v)}
             placeholder="请选择"
             searchable
           />

@@ -33,11 +33,50 @@
   color: var(--beaver-select-text);
   display: flex;
   align-items: center;
+
+  .beaver-select__opt-prefix {
+    width: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    color: inherit;
+    flex: 0 0 auto;
+  }
+
+  .beaver-select__tags {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .beaver-select__tag {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--beaver-select-text);
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
   justify-content: space-between;
   gap: 8px;
   cursor: pointer;
   overflow: hidden;
   position: relative;
+}
+
+.beaver-select__tag-label {
+  display: inline-block;
+}
+.beaver-select__tag-remove {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  font-size: 14px;
 }
 
 .beaver-select--disabled .beaver-select__control {

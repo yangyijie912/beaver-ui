@@ -106,7 +106,11 @@ export const AllowCreateControlled: Story = {
     const [val, setVal] = React.useState<string | undefined>(undefined);
     return (
       <div style={{ width: 360 }}>
-        <Select {...args} value={val} onChange={(v) => setVal(v)} />
+        <Select
+          {...args}
+          value={val}
+          onChange={(v) => setVal(Array.isArray(v) ? (v[0] as string | undefined) : (v as string | undefined))}
+        />
         <div style={{ marginTop: 12 }}>当前值: {String(val)}</div>
       </div>
     );
@@ -122,7 +126,11 @@ export const Controlled: Story = {
     const [val, setVal] = React.useState<string | undefined>('banana');
     return (
       <div style={{ width: 320 }}>
-        <Select {...args} value={val} onChange={(v) => setVal(v)} />
+        <Select
+          {...args}
+          value={val}
+          onChange={(v) => setVal(Array.isArray(v) ? (v[0] as string | undefined) : (v as string | undefined))}
+        />
         <div style={{ marginTop: 12 }}>当前值: {val}</div>
       </div>
     );
@@ -172,6 +180,25 @@ export const CustomLoadingAndOffset: Story = {
         }}
       >
         <Select {...args} options={sampleOptions} placeholder="加载中（自定义）" loading loadingIcon={MySpinner} />
+      </div>
+    );
+  },
+};
+
+export const Multiple: Story = {
+  args: {
+    options: sampleOptions,
+    placeholder: '请选择多个水果',
+    multiple: true,
+    searchable: false,
+    allowCreate: false
+  },
+  render: (args: React.ComponentProps<typeof Select>) => {
+    const [val, setVal] = React.useState<string[] | undefined>(['apple', 'banana']);
+    return (
+      <div style={{ width: 420 }}>
+        <Select {...args} value={val} onChange={(v) => setVal(Array.isArray(v) ? v : v ? [v] : [])} />
+        <div style={{ marginTop: 12 }}>当前值: {JSON.stringify(val)}</div>
       </div>
     );
   },
