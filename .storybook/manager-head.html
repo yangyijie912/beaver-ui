@@ -1,0 +1,26 @@
+<!-- 用于github打开文档时重定向到欢迎页 -->
+<script>
+  (function () {
+    try {
+      // 仅在打开根路径时重定向（无查询参数且无哈希）
+      const hasSearch = location.search && location.search !== '';
+      const hasHash = location.hash && location.hash !== '';
+      if (hasSearch || hasHash) return;
+
+      // 某些 Storybook 设置会生成一个“未附加”的 MDX 文档条目，在开发环境中无法可靠地导航到该条目
+      // 作为回退，优先选择始终存在的故事条目（`欢迎--welcome`）。
+      const candidates = [
+        { mode: 'docs', id: '%E6%AC%A2%E8%BF%8E--docs' }, // 欢迎--docs
+        { mode: 'story', id: '%E6%AC%A2%E8%BF%8E--welcome' }, // 欢迎--welcome
+      ];
+
+      const chosen = candidates[1];
+      const target = `?path=/${chosen.mode}/${chosen.id}`;
+
+      // 使用 replace 以便后退按钮行为正常
+      location.replace(target);
+    } catch (e) {
+      console.warn('Redirect to docs failed', e);
+    }
+  })();
+</script>

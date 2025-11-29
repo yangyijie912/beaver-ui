@@ -7,12 +7,7 @@ const isProdBuild =
   String(process.env.STORYBOOK_BUILD).toLowerCase() === 'true';
 
 const stories = isProdBuild
-  ? [
-      // 确保在生产构建中首先索引 Welcome/docs，便于文档重定向到欢迎页
-      '../src/docs/Welcome.stories.@(js|jsx|ts|tsx)',
-      '../src/docs/**/*.stories.@(js|jsx|ts|tsx)',
-      '../src/components/**/*.stories.@(js|jsx|ts|tsx)',
-    ]
+  ? ['../src/docs/**/*.stories.@(js|jsx|ts|tsx)', '../src/components/**/*.stories.@(js|jsx|ts|tsx)']
   : [
       // 项目根 stories（示例、health 等）
       '../stories/**/*.mdx',
