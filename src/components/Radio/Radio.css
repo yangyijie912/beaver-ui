@@ -1,0 +1,108 @@
+:root {
+  --radio-size: var(--beaver-width-radio, 16px);
+  --radio-border: var(--beaver-color-border);
+  --radio-checked-bg: var(--beaver-color-primary);
+  --radio-dot-color: #fff;
+  --radio-gap: var(--beaver-space-sm);
+  --radio-focus-outline: rgb(var(--beaver-color-primary-rgb) / 0.6);
+  --radio-focus-color: rgb(var(--beaver-color-primary-rgb) / 0.8);
+  --radio-label-color: var(--beaver-color-text);
+  --radio-label-disabled: var(--beaver-color-disabled);
+}
+
+/* 隐藏原生 input，但保持可聚焦 */
+.beaver-radio-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--radio-size);
+  height: var(--radio-size);
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.beaver-radio {
+  box-sizing: border-box;
+  width: var(--radio-size);
+  height: var(--radio-size);
+  border: 1px solid var(--radio-border);
+  border-radius: 999px;
+  display: inline-block;
+  vertical-align: middle;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+/* 焦点可见样式 */
+.beaver-radio-input:focus-visible + .beaver-radio {
+  outline: 2px solid var(--radio-focus-outline);
+  outline-offset: 2px;
+  border-color: var(--radio-focus-color);
+}
+
+/* hover */
+.beaver-radio-input:not(:disabled):hover + .beaver-radio,
+.beaver-radio:not(:disabled):hover {
+  border-color: var(--radio-focus-color);
+}
+
+/* 选中时在中间显示一个点 */
+.beaver-radio::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: calc(var(--radio-size) * 0.5);
+  height: calc(var(--radio-size) * 0.5);
+  border-radius: 999px;
+  background: var(--radio-dot-color);
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    background 120ms ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.beaver-radio-input:checked + .beaver-radio {
+  background: var(--radio-checked-bg);
+  border-color: var(--radio-checked-bg);
+}
+
+.beaver-radio-input:checked + .beaver-radio::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+label .beaver-radio + span {
+  line-height: 1;
+  vertical-align: middle;
+  color: var(--radio-label-color);
+}
+
+.beaver-radio-input:disabled + .beaver-radio,
+.beaver-radio:disabled {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+label input[disabled] + .beaver-radio + span,
+.beaver-radio-wrapper input[disabled] + .beaver-radio + span {
+  color: var(--radio-label-disabled);
+  cursor: not-allowed;
+}
+
+.beaver-radio-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--radio-gap);
+  position: relative;
+}

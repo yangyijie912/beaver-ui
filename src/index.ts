@@ -1,4 +1,7 @@
 export { default as Button } from './components/Button/Button';
+export { default as Radio } from './components/Radio/Radio';
+export { default as Checkbox } from './components/Checkbox/Checkbox';
+export { default as Input } from './components/Input/Input';
 export * from './tokens';
 
 // 在运行时应用 CSS 变量，以便组件可以使用 `var(--beaver-color-primary)`
