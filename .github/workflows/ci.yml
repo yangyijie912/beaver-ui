@@ -40,6 +40,6 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
       - name: Run browser tests
-        run: pnpm test -- --run
+        run: pnpm test -- -c vitest.browser.config.ts --run
       - name: Build
         run: pnpm run build
