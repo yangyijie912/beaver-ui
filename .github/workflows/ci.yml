@@ -21,7 +21,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run unit tests (node env)
-        run: pnpm test -- --run --env=node
+        # vitest CLI does not accept `--env`; use config defaults (node) or `--environment`.
+        run: pnpm test -- --run
 
   e2e:
     name: E2E / Browser Tests + Build
