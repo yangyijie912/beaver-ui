@@ -1,11 +1,19 @@
 import React from 'react';
 import Select from './Select';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 import type { SelectOption } from './Select';
 
 const meta: Meta<typeof Select> = {
   title: 'Components/Select',
   component: Select,
+  // 加一个装饰器设置全局默认宽度为 200px，方便在 Storybook 中预览
+  decorators: [
+    (Story: StoryFn) => (
+      <div style={{ ['--beaver-select-width' as any]: '200px' }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
