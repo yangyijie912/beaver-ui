@@ -1,5 +1,5 @@
 :root {
-  --checkbox-size: var(--beaver-width-checkbox);
+  --checkbox-size: var(--beaver-checkbox-width);
   --checkbox-border: var(--beaver-color-border);
   --checkbox-checked-bg: var(--beaver-color-primary);
   /* 中间态条颜色默认使用选中背景色以保证在未选中（白底）时有足够对比 */
@@ -29,7 +29,7 @@
   width: var(--checkbox-size);
   height: var(--checkbox-size);
   border: 1px solid var(--checkbox-border);
-  border-radius: 4px;
+  border-radius: var(--beaver-radius-sm);
   display: inline-block;
   vertical-align: middle;
   background: #fff;
@@ -40,8 +40,7 @@
 
 /* 焦点可见时的样式 */
 .beaver-checkbox-input:focus-visible + .beaver-checkbox {
-  outline: 2px solid var(--checkbox-focus-outline);
-  outline-offset: 2px;
+  box-shadow: 0 0 0 var(--beaver-focus-ring) var(--checkbox-focus-outline);
   border-color: var(--checkbox-focus-color);
 }
 
@@ -92,7 +91,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) scale(0.6);
-  border-radius: 3px;
+  border-radius: var(--beaver-radius-sm);
   opacity: 0;
   transition:
     transform 120ms ease,

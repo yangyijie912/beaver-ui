@@ -4,20 +4,20 @@
   --beaver-select-border: var(--beaver-color-border, #dcdcdc);
   --beaver-select-hover: var(--beaver-color-primary);
   --beaver-select-radius: var(--beaver-radius-lg);
-  --beaver-select-focus: 0 0 0 4px rgba(33, 150, 243, 0.12);
+  --beaver-select-focus: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
   --beaver-select-arrow: var(--beaver-select-border);
   /* 图标的动画、大小和对齐 */
   --beaver-select-icon-size: var(--beaver-select-icon-size, 18px);
   --beaver-select-arrow-size: var(--beaver-select-arrow-size, 14px);
   --beaver-select-spinner-size: var(--beaver-select-spinner-size, 18px);
   --beaver-select-spinner-border-width: var(--beaver-select-spinner-border-width, 2px);
-  --beaver-select-width: var(--beaver-width-select, 200px);
+  /* no default width; when wanting a default, set `--beaver-select-width` externally or pass `width` prop */
 }
 
 .beaver-select-wrapper {
   position: relative;
   display: inline-block;
-  min-width: var(--beaver-select-width);
+  /* width only applied when --beaver-select-width is set externally or via inline style */
   width: var(--beaver-select-width);
 }
 
@@ -25,58 +25,66 @@
   width: 100%;
   box-sizing: border-box;
   text-align: left;
-  padding: 10px 20px 10px 12px;
-  font-size: 14px;
+  padding: 10px 20px 10px var(--beaver-space-md);
+  font-size: var(--beaver-font-size-md);
   border-radius: var(--beaver-select-radius);
   border: 1px solid var(--beaver-select-border);
-  background: var(--beaver-select-bg);
+  --beaver-select-focus: 0 0 0 var(--beaver-focus-ring) rgba(33, 150, 243, 0.12);
   color: var(--beaver-select-text);
   display: flex;
   align-items: center;
-
-  .beaver-select__opt-prefix {
-    width: 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 8px;
-    color: inherit;
-    flex: 0 0 auto;
-  }
-
-  .beaver-select__tags {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .beaver-select__tag {
-    background: rgba(0, 0, 0, 0.06);
-    color: var(--beaver-select-text);
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-size: 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  justify-content: space-between;
-  gap: 8px;
-  cursor: pointer;
-  overflow: hidden;
-  position: relative;
 }
 
-.beaver-select__tag-label {
-  display: inline-block;
+/* 子元素平铺选择器，避免嵌套语法 */
+.beaver-select__control .beaver-select__opt-prefix {
+  width: var(--beaver-select-icon-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--beaver-space-sm);
+  padding: var(--beaver-space-xs) var(--beaver-space-sm);
+  flex: 0 0 auto;
 }
+
+.beaver-select__control .beaver-select__tags {
+  display: flex;
+  gap: var(--beaver-space-sm);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.beaver-select__control .beaver-select__tag {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--beaver-select-text);
+  padding: var(--beaver-space-xs) var(--beaver-space-sm);
+  border-radius: 999px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--beaver-space-sm);
+}
+
 .beaver-select__tag-remove {
+  /* reset default button appearance to avoid browser UA border/background */
+  appearance: none;
+  -webkit-appearance: none;
   border: none;
   background: transparent;
+  color: inherit;
+  padding: var(--beaver-space-xs) var(--beaver-space-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 0 4px;
   line-height: 1;
   font-size: 14px;
+}
+
+/* 可聚焦时给删除按钮提供可见的无侵入聚焦轮廓，保持可访问性 */
+.beaver-select__tag-remove:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
+  border-radius: 4px;
 }
 
 .beaver-select--disabled .beaver-select__control {
@@ -116,13 +124,13 @@
 }
 
 .beaver-select__arrow {
-  margin-left: 8px;
+  margin-left: var(--beaver-space-sm);
   color: var(--beaver-select-arrow);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: var(--beaver-select-arrow-container-size);
+  height: var(--beaver-select-arrow-container-size);
   flex: 0 0 auto;
   position: relative;
 }
@@ -164,15 +172,15 @@
   left: 0;
   right: auto;
   width: 100%;
-  margin-top: 8px;
+  margin-top: var(--beaver-space-sm);
   background: var(--beaver-select-bg);
-  border-radius: 8px;
+  border-radius: var(--beaver-radius-lg);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 8px 24px rgba(20, 30, 50, 0.12);
+  box-shadow: var(--beaver-shadows-lg);
   z-index: 60;
-  max-height: 260px;
+  max-height: var(--beaver-select-max-height);
   overflow: auto;
-  padding: 6px 4px;
+  padding: var(--beaver-space-xs2) var(--beaver-space-xs);
   box-sizing: border-box;
 }
 
@@ -182,7 +190,7 @@
   border: none;
   outline: none;
   background: transparent;
-  font-size: 14px;
+  font-size: var(--beaver-font-size-md);
   color: var(--beaver-select-text);
   padding: 0;
 }
@@ -191,8 +199,8 @@
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-left: 8px;
+  gap: var(--beaver-space-sm);
+  padding-left: var(--beaver-space-sm);
   flex-shrink: 0;
 }
 
@@ -215,13 +223,14 @@
 
 .beaver-select__option {
   list-style: none;
-  padding: 10px 14px;
-  border-radius: 6px;
+  padding: var(--beaver-space-xs3) var(--beaver-space-sm2);
+  border-radius: var(--beaver-radius-md);
   cursor: pointer;
   color: var(--beaver-select-text);
+  font-size: var(--beaver-font-size-md);
 }
 .beaver-select__option + .beaver-select__option {
-  margin-top: 4px;
+  margin-top: var(--beaver-space-xs);
 }
 
 .beaver-select__option--highlighted {
@@ -254,12 +263,12 @@
 
 /* 大小控制 */
 .beaver-select--small .beaver-select__control {
-  padding: 6px 16px 6px 10px;
+  padding: var(--beaver-space-xs2) var(--beaver-space-lg) var(--beaver-space-xs2) var(--beaver-space-xs3);
   font-size: 12px;
-  border-radius: 6px;
+  border-radius: var(--beaver-radius-md);
 }
 .beaver-select--large .beaver-select__control {
-  padding: 12px 24px 12px 14px;
+  padding: var(--beaver-space-md) 24px var(--beaver-space-md) var(--beaver-space-sm2);
   font-size: 16px;
-  border-radius: 10px;
+  border-radius: var(--beaver-radius-xl);
 }

@@ -19,7 +19,8 @@ import { fileURLToPath } from 'url';
       const out = {};
       Object.keys(obj).forEach((key) => {
         const val = obj[key];
-        const name = prefix ? `${prefix}-${key}` : key;
+        // 如果是顶层的 `components` 分组，跳过该层（以便生成的变量是 `--beaver-<component>-...`）
+        const name = prefix === '' && key === 'components' ? '' : prefix ? `${prefix}-${key}` : key;
         if (val && typeof val === 'object') Object.assign(out, flatten(val, name));
         else out[name] = String(val);
       });

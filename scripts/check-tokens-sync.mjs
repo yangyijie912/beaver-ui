@@ -23,7 +23,8 @@ import { fileURLToPath } from 'url';
       const out = {};
       Object.keys(obj).forEach((key) => {
         const val = obj[key];
-        const rawName = prefix ? `${prefix}-${key}` : key;
+        // 顶层的 `components` 分组在最终变量名中不应出现（与生成脚本保持一致）
+        const rawName = prefix === '' && key === 'components' ? '' : prefix ? `${prefix}-${key}` : key;
         const name = toKebab(rawName);
         if (val && typeof val === 'object') Object.assign(out, flatten(val, name));
         else out[`--beaver-${name}`] = String(val).trim();

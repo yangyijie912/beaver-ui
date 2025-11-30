@@ -1,5 +1,5 @@
 :root {
-  --radio-size: var(--beaver-width-radio, 16px);
+  --radio-size: var(--beaver-radio-width, 16px);
   --radio-border: var(--beaver-color-border);
   --radio-checked-bg: var(--beaver-color-primary);
   --radio-dot-color: #fff;
@@ -40,8 +40,7 @@
 
 /* 焦点可见样式 */
 .beaver-radio-input:focus-visible + .beaver-radio {
-  outline: 2px solid var(--radio-focus-outline);
-  outline-offset: 2px;
+  box-shadow: 0 0 0 var(--beaver-focus-ring) var(--radio-focus-outline);
   border-color: var(--radio-focus-color);
 }
 

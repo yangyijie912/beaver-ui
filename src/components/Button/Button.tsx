@@ -2,9 +2,9 @@ import React from 'react';
 import './Button.css';
 
 const sizes: Record<string, React.CSSProperties> = {
-  small: { padding: '6px 12px', fontSize: 12 },
-  medium: { padding: '8px 16px', fontSize: 14 },
-  large: { padding: '12px 20px', fontSize: 16 },
+  small: { padding: 'var(--beaver-space-xs2) var(--beaver-space-md)', fontSize: 'var(--beaver-font-size-sm)' },
+  medium: { padding: 'var(--beaver-space-sm) var(--beaver-space-lg)', fontSize: 'var(--beaver-font-size-md)' },
+  large: { padding: 'var(--beaver-space-md) var(--beaver-space-xl)', fontSize: 'var(--beaver-font-size-lg)' },
 };
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {

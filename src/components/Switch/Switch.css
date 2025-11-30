@@ -12,11 +12,11 @@
   /* 轨道选中时的背景色（选中状态） */
   --switch-track-checked-bg: var(--beaver-color-primary, #1e88e5);
   /* 拇指相对于轨道的偏移值（左侧） */
-  --switch-thumb-offset: 2px;
-  /* 各尺寸对应的拇指直径 */
-  --switch-thumb-size-sm: 14px;
-  --switch-thumb-size-md: 22px;
-  --switch-thumb-size-lg: 30px;
+  --switch-thumb-offset: var(--beaver-switch-thumb-offset, 2px);
+  /* 各尺寸对应的拇指直径（从全局 token 回退到原始值） */
+  --switch-thumb-size-sm: var(--beaver-switch-thumb-size-sm, 14px);
+  --switch-thumb-size-md: var(--beaver-switch-thumb-size-md, 22px);
+  --switch-thumb-size-lg: var(--beaver-switch-thumb-size-lg, 30px);
   /* 默认拇指大小（中号） */
   --switch-thumb-size: var(--switch-thumb-size-md);
   /* 标签颜色：选中/未选中 */
@@ -35,7 +35,7 @@
 .beaver-switch {
   display: inline-flex;
   align-items: center;
-  gap: 8px; /* 按钮文字或外部元素间距（如果存在） */
+  gap: var(--beaver-space-sm); /* 按钮文字或外部元素间距（如果存在） */
   background: transparent;
   border: none;
   padding: 0;
@@ -56,8 +56,8 @@
 */
 .beaver-switch__track {
   width: auto; /* 根据标签自适应宽度 */
-  min-width: 48px; /* 最小宽度，保证没有标签时也有基本尺寸 */
-  height: 28px;
+  min-width: var(--beaver-switch-track-min-width-md, 48px); /* 最小宽度，保证没有标签时也有基本尺寸 */
+  height: var(--beaver-switch-track-height-md, 28px);
   background: var(--switch-track-bg);
   border-radius: 999px; /* 圆角轨道 */
   position: relative; /* 使拇指的绝对定位相对于轨道 */
@@ -66,32 +66,32 @@
   align-items: center;
   justify-content: center; /* 激活标签居中显示 */
   /* 为拇指预留空间：半个拇指宽 + 小间隙 */
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + 2px);
+  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-md, 2px));
   box-sizing: border-box; /* 包括 padding 在 min-width 内 */
 }
 
 /* 尺寸变体：分别覆盖 min-width、height 与拇指尺寸变量 */
 .beaver-switch--sm .beaver-switch__track,
 .beaver-switch--small .beaver-switch__track {
-  min-width: 36px;
-  height: 18px;
+  min-width: var(--beaver-switch-track-min-width-sm, 36px);
+  height: var(--beaver-switch-track-height-sm, 18px);
   --switch-thumb-size: var(--switch-thumb-size-sm);
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + 1px);
+  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-sm, 1px));
 }
 
 .beaver-switch--md .beaver-switch__track {
-  min-width: 48px;
-  height: 28px;
+  min-width: var(--beaver-switch-track-min-width-md, 48px);
+  height: var(--beaver-switch-track-height-md, 28px);
   --switch-thumb-size: var(--switch-thumb-size-md);
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + 2px);
+  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-md, 2px));
 }
 
 .beaver-switch--lg .beaver-switch__track,
 .beaver-switch--large .beaver-switch__track {
-  min-width: 60px;
-  height: 32px;
+  min-width: var(--beaver-switch-track-min-width-lg, 60px);
+  height: var(--beaver-switch-track-height-lg, 32px);
   --switch-thumb-size: var(--switch-thumb-size-lg);
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + 3px);
+  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-lg, 3px));
 }
 
 /* 选中状态改变轨道背景色 */
@@ -167,7 +167,7 @@
 */
 .beaver-switch__label {
   position: relative;
-  font-size: 12px;
+  font-size: var(--beaver-font-size-sm);
   line-height: 1;
   pointer-events: none; /* 标签不可交互，避免捕获事件 */
   transition:
@@ -179,7 +179,7 @@
   text-align: center;
   z-index: 2; /* 确保标签位于拇指之上 */
   flex: 0 0 auto; /* 不缩放，保持固有宽度 */
-  padding: 0 4px; /* 标签内部左右间距 */
+  padding: 0 var(--beaver-space-xs); /* 标签内部左右间距 */
   min-width: 0;
 }
 

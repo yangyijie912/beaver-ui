@@ -1,12 +1,12 @@
 .beaver-input {
   box-sizing: border-box;
   width: 100%;
-  padding: 8px 12px;
+  padding: var(--beaver-space-sm) var(--beaver-space-md);
   border: 1px solid var(--beaver-color-border);
   border-radius: var(--beaver-radius-md);
   color: var(--beaver-color-text);
   background: #fff;
-  font-size: 14px;
+  font-size: var(--beaver-font-size-md);
   line-height: 1.2;
   outline: none;
   transition:
@@ -17,17 +17,17 @@
 .beaver-input:focus,
 .beaver-input:focus-visible {
   border-color: var(--beaver-color-primary);
-  box-shadow: 0 0 0 4px rgba(var(--beaver-color-primary-rgb), 0.12);
+  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
 }
 
 .beaver-input--error {
   border-color: var(--beaver-color-error);
-  box-shadow: 0 0 0 4px rgba(228, 68, 68, 0.08);
+  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(228, 68, 68, 0.08);
 }
 
 .beaver-input--success {
   border-color: var(--beaver-color-success);
-  box-shadow: 0 0 0 4px rgba(16, 185, 135, 0.08);
+  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(16, 185, 135, 0.08);
 }
 
 .beaver-input--disabled,
@@ -40,8 +40,8 @@
 
 /* Textarea specific tweaks */
 .beaver-input--textarea {
-  min-height: 88px;
-  padding: 10px 12px;
+  min-height: var(--beaver-input-min-height, 88px);
+  padding: var(--beaver-space-xs3) var(--beaver-space-md);
   resize: vertical;
   font-family: inherit;
 }
