@@ -1,10 +1,21 @@
 import React from 'react';
 import Input from './Input';
+import type { Meta, StoryFn } from '@storybook/react';
 
-export default {
+const meta: Meta<typeof Input> = {
   title: 'Components/Input',
   component: Input,
+  // 加一个装饰器设置全局默认宽度为 300px，方便在 Storybook 中预览
+  decorators: [
+    (Story: StoryFn) => (
+      <div style={{ width: 300 }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
+
+export default meta;
 
 export const Default = {
   args: { placeholder: 'Type here' },
