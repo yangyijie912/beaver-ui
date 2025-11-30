@@ -45,6 +45,33 @@ const OptionList: React.FC<OptionListProps> = ({
       ref={listRef}
       tabIndex={-1}
       aria-activedescendant={highlighted !== null ? `beaver-select-opt-${highlighted}` : undefined}
+      /**
+       * 捕获阶段阻止触摸/指针事件到达已禁用的选项：
+       * 当不能依赖 pointer-events: none时（会从 hit-testing 中移除元素），
+       * 通过检查事件的 composedPath() 来判断路径中是否包含带有 `data-disabled` 的元素，
+       * 若包含则阻止默认与冒泡，防止选择逻辑在后续阶段触发。
+       */
+      onPointerDownCapture={(e) => {
+        // 如果事件路径中包含 data-disabled 的元素，阻止交互行为
+        const path = (e as any).composedPath ? (e as any).composedPath() : (e as unknown as Event).composedPath?.();
+        if (path && Array.isArray(path)) {
+          const hasDisabled = path.some((n: any) => n && n.getAttribute && n.getAttribute('data-disabled') === 'true');
+          if (hasDisabled) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }
+      }}
+      onTouchStartCapture={(e) => {
+        const path = (e as any).composedPath ? (e as any).composedPath() : (e as unknown as Event).composedPath?.();
+        if (path && Array.isArray(path)) {
+          const hasDisabled = path.some((n: any) => n && n.getAttribute && n.getAttribute('data-disabled') === 'true');
+          if (hasDisabled) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }
+      }}
     >
       {menuOptions.map((opt, i) => {
         const isNew = (opt as any).__isNew === true;
@@ -61,7 +88,10 @@ const OptionList: React.FC<OptionListProps> = ({
             highlighted={highlighted}
             isSelected={isSelected}
             onMouseEnter={(idx) => onHighlight(idx)}
-            onMouseDown={() => onSelectByValue(opt.value)}
+            onMouseDown={(e, _value, disabled) => {
+              if (disabled) return;
+              onSelectByValue(opt.value);
+            }}
             renderHighlightedLabel={renderHighlightedLabel}
           />
         );

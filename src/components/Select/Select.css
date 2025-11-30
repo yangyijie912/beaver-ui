@@ -243,7 +243,8 @@
 .beaver-select__option--disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  pointer-events: none;
+  /* 保障元素在命中测试中，以便捕获事件可以检测到。不要使用 pointer-events: none。 */
+  pointer-events: auto;
 }
 
 .beaver-select__option--new {

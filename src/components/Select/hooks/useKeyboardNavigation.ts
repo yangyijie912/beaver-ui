@@ -45,7 +45,7 @@ export default function useKeyboardNavigation({
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (isDisabled) return;
-      // delegate backspace/char to external handlers if provided
+      // 如果菜单打开且按下 Backspace 键，阻止默认行为并调用外部 onBackspace 处理器
       if (open && e.key === 'Backspace') {
         e.preventDefault();
         if (onBackspace) {
@@ -54,7 +54,7 @@ export default function useKeyboardNavigation({
         }
       }
       if (open && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        // character input for typeahead
+        // 如果菜单打开且输入字符，阻止默认行为并调用外部 onChar 处理器
         if (onChar) {
           e.preventDefault();
           onChar(e);
@@ -69,8 +69,13 @@ export default function useKeyboardNavigation({
         }
         setHighlighted((h) => {
           const src = displayOptions;
-          const next = h === null ? 0 : Math.min(src.length - 1, h + 1);
-          return next;
+          // 查找当前高亮项之后的下一个可用索引（如果 h 为 null，则从头开始）
+          const start = h === null ? -1 : h;
+          for (let i = start + 1; i < src.length; i++) {
+            if (!src[i].disabled) return i;
+          }
+          // 没有下一个可用项，保持当前高亮
+          return h;
         });
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
@@ -80,8 +85,11 @@ export default function useKeyboardNavigation({
         }
         setHighlighted((h) => {
           const src = displayOptions;
-          const next = h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
-          return next;
+          const start = h === null ? src.length : h;
+          for (let i = start - 1; i >= 0; i--) {
+            if (!src[i].disabled) return i;
+          }
+          return h;
         });
       } else if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -89,7 +97,7 @@ export default function useKeyboardNavigation({
           setOpen(true);
         } else if (highlighted !== null) {
           const opt = displayOptions[highlighted];
-          if (opt) handleSelectByValue(opt.value);
+          if (opt && !opt.disabled) handleSelectByValue(opt.value);
         }
       } else if (e.key === 'Escape') {
         setOpen(false);
@@ -99,7 +107,8 @@ export default function useKeyboardNavigation({
         setHighlighted(firstIdx >= 0 ? firstIdx : 0);
       } else if (e.key === 'End') {
         e.preventDefault();
-        setHighlighted(displayOptions.length - 1);
+        const lastIdx = displayOptions.map((o) => (o.disabled ? -1 : 1)).lastIndexOf(1);
+        setHighlighted(lastIdx >= 0 ? lastIdx : displayOptions.length - 1);
       }
     },
     [displayOptions, open, setOpen, handleSelectByValue, highlighted, isDisabled, onBackspace, onChar]

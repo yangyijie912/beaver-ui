@@ -98,8 +98,11 @@ const Select: React.FC<SelectProps> = ({
       if (!rootRef.current.contains(e.target as Node)) setOpen(false);
     }
     document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, []);
+    // 注册外部点击关闭处理
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+    };
+  }, [open]);
 
   // 过滤 & 展示逻辑抽离到 hook
   const { filteredOptions, displayOptions } = useFilteredOptions({
@@ -356,13 +359,21 @@ const Select: React.FC<SelectProps> = ({
       e.preventDefault();
       setHighlighted((h) => {
         const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
-        return h === null ? 0 : Math.min(src.length - 1, h + 1);
+        const start = h === null ? -1 : h;
+        for (let i = start + 1; i < src.length; i++) {
+          if (!src[i].disabled) return i;
+        }
+        return h;
       });
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setHighlighted((h) => {
         const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
-        return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
+        const start = h === null ? src.length : h;
+        for (let i = start - 1; i >= 0; i--) {
+          if (!src[i].disabled) return i;
+        }
+        return h;
       });
     } else if (e.key === 'Enter') {
       e.preventDefault();
@@ -377,7 +388,7 @@ const Select: React.FC<SelectProps> = ({
       }
       const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
       const opt = src[highlighted ?? 0];
-      if (opt) handleSelectByValue(opt.value);
+      if (opt && !opt.disabled) handleSelectByValue(opt.value);
     } else if (e.key === 'Escape') {
       setOpen(false);
     }

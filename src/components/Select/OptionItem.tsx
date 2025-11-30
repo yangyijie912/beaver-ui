@@ -36,16 +36,38 @@ const OptionItem: React.FC<OptionItemProps> = ({
     <li
       id={id}
       role="option"
+      aria-disabled={disabled}
       aria-selected={isSelected}
       key={option.value}
       className={`beaver-select__option ${isSelected ? 'beaver-select__option--selected' : ''} ${disabled ? 'beaver-select__option--disabled' : ''} ${highlighted === index ? 'beaver-select__option--highlighted' : ''} ${isNew ? 'beaver-select__option--new' : ''}`}
-      onMouseEnter={() => onMouseEnter(index)}
+      data-disabled={disabled ? 'true' : undefined}
+      tabIndex={-1}
+      onMouseEnter={() => {
+        if (disabled) return;
+        onMouseEnter(index);
+      }}
       onMouseDown={(e) => {
+        if (disabled) return; // 先检查 disabled，避免对手势/滚动造成影响
         // 在 mousedown 时立即处理选择，避免 input 的 blur/close 逻辑覆盖选择行为
         e.preventDefault();
         e.stopPropagation();
-        if (disabled) return;
         onMouseDown(e, option.value, disabled);
+      }}
+      // 触摸/Pointer 设备上也要屏蔽交互，保证 disabled 状态下不会触发选择
+      // keep pointer/touch handlers to support devices where mouse events differ
+      onPointerDown={(e: React.PointerEvent) => {
+        if ((option as any).disabled) return; // 再次保护
+        e.preventDefault();
+        e.stopPropagation();
+        // @ts-ignore - 兼容传入函数签名
+        onMouseDown(e as unknown as React.MouseEvent, option.value, disabled);
+      }}
+      onTouchStart={(e: React.TouchEvent) => {
+        if ((option as any).disabled) return;
+        e.preventDefault();
+        e.stopPropagation();
+        // @ts-ignore - 兼容传入函数签名
+        onMouseDown(e as unknown as React.MouseEvent, option.value, disabled);
       }}
       onClick={(e) => e.stopPropagation()}
     >
