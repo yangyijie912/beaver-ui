@@ -1,4 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import useSelectState from './hooks/useSelectState';
+import useFilteredOptions, { SelectOptionWithNew } from './hooks/useFilteredOptions';
+import useKeyboardNavigation from './hooks/useKeyboardNavigation';
+import useTypeahead from './hooks/useTypeahead';
+import OptionList from './OptionList';
+import SearchInput from './SearchInput';
 import './Select.css';
 
 export type SelectOption = {
@@ -67,22 +73,23 @@ const Select: React.FC<SelectProps> = ({
   filterSelected = false,
   ...rest
 }) => {
-  const [open, setOpen] = useState(false);
-  const [highlighted, setHighlighted] = useState<number | null>(null);
-  const [query, setQuery] = useState('');
-  const [internalValue, setInternalValue] = useState<string | string[] | undefined>(controlledValue ?? defaultValue);
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const listRef = useRef<HTMLUListElement | null>(null);
-  const searchTimer = useRef<number | null>(null);
-  const searchRef = useRef<HTMLInputElement | null>(null);
-  const committedRef = useRef<boolean>(false);
-  const userTypedRef = useRef<boolean>(false);
-  const [inputFocused, setInputFocused] = useState(false);
-
-  // 同步受控值
-  useEffect(() => {
-    if (controlledValue !== undefined) setInternalValue(controlledValue);
-  }, [controlledValue]);
+  const [open, setOpen] = useState(false); // 下拉打开状态
+  const [query, setQuery] = useState(''); // 当前输入的查询文本
+  // 受控/非受控值同步逻辑由 hook 统一管理
+  const { internalValue, setInternalValue } = useSelectState({
+    controlledValue,
+    defaultValue,
+    multiple,
+  });
+  const rootRef = useRef<HTMLDivElement | null>(null); // 组件根节点 ref
+  const listRef = useRef<HTMLUListElement | null>(null); // 下拉列表 ref
+  const searchTimer = useRef<number | null>(null); // 搜索定时器 ref
+  const searchRef = useRef<HTMLInputElement | null>(null); // 搜索框 ref
+  const committedRef = useRef<boolean>(false); // 标记是否已由用户显式选择（用于区分 close/blur 时的自动提交行为）
+  const userTypedRef = useRef<boolean>(false); // 标记用户是否有真实输入行为
+  // 用于 typeahead 的输入缓冲与定时清除
+  const { handleBackspace, handleChar, clear: clearTypeahead } = useTypeahead(700, userTypedRef);
+  const [inputFocused, setInputFocused] = useState(false); // 输入框聚焦状态
 
   // 点击外部关闭下拉
   useEffect(() => {
@@ -94,55 +101,18 @@ const Select: React.FC<SelectProps> = ({
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
 
-  // 根据 query 过滤 options
-  function filteredOptions() {
-    const selectedVals = Array.isArray(internalValue) ? (internalValue as string[]) : [];
-    // 仅当用户实际输入过（而不是程序预置的回显）时才按 query 过滤
-    if (!query || !userTypedRef.current) {
-      const base = options;
-      return multiple && filterSelected ? base.filter((o) => !selectedVals.includes(o.value)) : base;
-    }
-    const q = query.trim().toLowerCase();
-
-    // 如果用户提供了自定义过滤函数，优先使用
-    let res: SelectOption[];
-    if (filterOption) {
-      res = options.filter((o) => filterOption(q, o));
-    } else {
-      const strategy = searchBy || 'both';
-      if (strategy === 'label') {
-        res = options.filter((o) => o.label.toLowerCase().includes(q));
-      } else if (strategy === 'value') {
-        res = options.filter((o) => o.value.toLowerCase().includes(q));
-      } else {
-        // 'both'：优先把 label 匹配的项放前面，这样视觉上和输入更一致
-        const labelMatches = options.filter((o) => o.label.toLowerCase().includes(q));
-        const valueOnlyMatches = options.filter(
-          (o) => !o.label.toLowerCase().includes(q) && o.value.toLowerCase().includes(q)
-        );
-        res = [...labelMatches, ...valueOnlyMatches];
-      }
-    }
-    return multiple && filterSelected ? res.filter((o) => !selectedVals.includes(o.value)) : res;
-  }
-
-  // 展示用的选项列表：当没有匹配项且有 query 时，提供一个用于创建自定义值的候选项
-  function displayOptions() {
-    const src = filteredOptions();
-    const q = query.trim();
-    if (allowCreate && q && src.length === 0) {
-      return [
-        {
-          label: q,
-          value: q,
-          // 标记为新建项（用于渲染），类型上暂时忽略
-          // @ts-ignore
-          __isNew: true,
-        } as SelectOption & { __isNew?: true },
-      ];
-    }
-    return src;
-  }
+  // 过滤 & 展示逻辑抽离到 hook
+  const { filteredOptions, displayOptions } = useFilteredOptions({
+    options,
+    query,
+    userTyped: userTypedRef.current,
+    filterOption,
+    searchBy,
+    allowCreate,
+    multiple,
+    filterSelected,
+    internalValue,
+  });
 
   // 高亮渲染 label 中匹配的子串
   function renderHighlightedLabel(label: string) {
@@ -162,23 +132,6 @@ const Select: React.FC<SelectProps> = ({
       </>
     );
   }
-
-  // 打开下拉时，设置初始高亮项（基于过滤后的列表）
-  useEffect(() => {
-    if (open && highlighted === null) {
-      const src = displayOptions();
-      const idx = src.findIndex((o) => {
-        if (Array.isArray(internalValue)) return internalValue.includes(o.value);
-        return o.value === internalValue;
-      });
-      const firstIdx = src.findIndex((o) => !o.disabled);
-      setHighlighted(idx >= 0 ? idx : firstIdx >= 0 ? firstIdx : 0);
-    }
-    if (open && searchable) {
-      // 当下拉菜单打开时，聚焦内联输入框
-      setTimeout(() => searchRef.current?.focus(), 0);
-    }
-  }, [open]);
 
   // 下拉关闭时清空查询并重置高亮
   useEffect(() => {
@@ -220,17 +173,8 @@ const Select: React.FC<SelectProps> = ({
     ? options.find((o) => o.value === (internalValue as string[])[0])
     : options.find((o) => o.value === internalValue);
 
+  // 多选时的已选值数组
   const selectedValues: string[] = Array.isArray(internalValue) ? (internalValue as string[]) : [];
-
-  // 从选中数组中移除某项（用于 tag 删除）
-  function removeTag(value: string, e?: React.MouseEvent) {
-    e?.stopPropagation();
-    const prev = Array.isArray(internalValue) ? [...internalValue] : [];
-    const idx = prev.indexOf(value);
-    if (idx >= 0) prev.splice(idx, 1);
-    if (controlledValue === undefined) setInternalValue(prev);
-    onChange?.(prev);
-  }
 
   // 是否禁用
   const isDisabled = disabled || loading;
@@ -275,81 +219,169 @@ const Select: React.FC<SelectProps> = ({
     setOpen(false);
   }
 
-  // 处理键盘事件
-  function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (isDisabled) return;
+  // 键盘导航由 hook 处理（高亮项/按键事件）
+  const { highlighted, setHighlighted, onKeyDown } = useKeyboardNavigation({
+    displayOptions: displayOptions as (SelectOption | SelectOptionWithNew)[],
+    open,
+    setOpen,
+    handleSelectByValue,
+    isDisabled,
+    multiple,
+    onBackspace: (e: React.KeyboardEvent) => {
+      e.preventDefault();
+      handleBackspace({ query, setQuery, options, setHighlighted });
+    },
+    onChar: (e: React.KeyboardEvent) => {
+      e.preventDefault();
+      handleChar({ key: e.key, query, setQuery, options, multiple, searchable, setHighlighted });
+    },
+  });
+
+  // 打开下拉时，设置初始高亮项（基于过滤后的列表）
+  useEffect(() => {
+    if (open && highlighted === null) {
+      const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
+      const idx = src.findIndex((o) => {
+        if (Array.isArray(internalValue)) return internalValue.includes(o.value);
+        return o.value === internalValue;
+      });
+      const firstIdx = src.findIndex((o) => !o.disabled);
+      setHighlighted(idx >= 0 ? idx : firstIdx >= 0 ? firstIdx : 0);
+    }
+    if (open && searchable) {
+      // 当下拉菜单打开时，聚焦内联输入框
+      setTimeout(() => searchRef.current?.focus(), 0);
+    }
+  }, [open]);
+
+  // 传入 OptionList 的菜单选项
+  const menuOptions = displayOptions as (SelectOption | SelectOptionWithNew)[];
+
+  // 从选中数组中移除某项（用于 tag 删除）
+  function removeTag(value: string, e?: React.MouseEvent) {
+    e?.stopPropagation();
+    const prev = Array.isArray(internalValue) ? [...internalValue] : [];
+    const idx = prev.indexOf(value);
+    if (idx >= 0) prev.splice(idx, 1);
+    if (controlledValue === undefined) setInternalValue(prev);
+    onChange?.(prev);
+  }
+
+  /**
+   * 处理多选tag删除事件
+   * @param v 被删除的tag的值
+   * @param e 触发事件
+   */
+  const handleTagsRemove = (v: string, e?: React.MouseEvent) => {
+    removeTag(v, e);
+  };
+
+  // ---------- 输入区事件处理器（用于传入 SearchInput） ----------
+  // multi / single 共用部分逻辑被抽出为函数以保持行为一致
+
+  /**  处理多选输入变化事件
+   *  多选时每次输入变化均视为用户输入，直接更新 query 并重置高亮
+   */
+  const handleMultiInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    userTypedRef.current = true;
+    setQuery(e.target.value);
+    setHighlighted(0);
+  };
+
+  /**  处理单选输入变化事件
+   * @param e 输入变化事件
+   */
+  const handleSingleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (!userTypedRef.current && !multiple && searchable) {
+      let added = raw.replace(query, '');
+      if (added === '') added = raw;
+      userTypedRef.current = true;
+      setQuery(added);
+      setHighlighted(0);
+      return;
+    }
+    userTypedRef.current = true;
+    setQuery(raw);
+    setHighlighted(0);
+  };
+
+  /**  处理输入区聚焦事件  */
+  const handleInputFocus = () => {
+    setInputFocused(true);
+    if (!userTypedRef.current && searchable && !multiple && query) {
+      setTimeout(() => searchRef.current?.select(), 0);
+    }
+  };
+
+  /**
+   *  处理输入区失焦事件
+   *  @param e 失焦事件
+   */
+  const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    if (committedRef.current) {
+      committedRef.current = false;
+      setInputFocused(false);
+      return;
+    }
+    const q = query.trim();
+    if (allowCreate && q) {
+      const match = options.find((o) => o.value === q || o.label === q);
+      if (match && !match.disabled) {
+        if (multiple) handleSelectByValue(match.value);
+        else {
+          if (controlledValue === undefined) setInternalValue(match.value);
+          onChange?.(match.value);
+        }
+      } else {
+        if (multiple) handleSelectByValue(q);
+        else {
+          if (controlledValue === undefined) setInternalValue(q);
+          onChange?.(q);
+        }
+      }
+    }
+    setQuery('');
+    setInputFocused(false);
+  };
+
+  /**
+   * 处理输入区键盘事件
+   * @param e 键盘事件
+   */
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.stopPropagation();
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      if (!open) {
-        setOpen(true);
-        return;
-      }
       setHighlighted((h) => {
-        const src = displayOptions();
-        const next = h === null ? 0 : Math.min(src.length - 1, h + 1);
-        return next;
+        const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
+        return h === null ? 0 : Math.min(src.length - 1, h + 1);
       });
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      if (!open) {
-        setOpen(true);
-        return;
-      }
       setHighlighted((h) => {
-        const src = displayOptions();
-        const next = h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
-        return next;
+        const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
+        return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
       });
-    } else if (e.key === 'Enter' || e.key === ' ') {
+    } else if (e.key === 'Enter') {
       e.preventDefault();
-      if (!open) {
-        setOpen(true);
-      } else if (highlighted !== null) {
-        const src = displayOptions();
-        const opt = src[highlighted];
-        if (opt) handleSelectByValue(opt.value);
+      const q = query.trim();
+      if (allowCreate && q) {
+        const exact = options.find((o) => o.value === q || o.label === q);
+        if (!exact) {
+          handleSelectByValue(q);
+          setQuery('');
+          return;
+        }
       }
-    } else if (open && e.key === 'Backspace') {
-      e.preventDefault();
-      // 如果此前 query 是由程序回显（userTypedRef === false），按 Backspace 时清空回显并视为首次用户输入；
-      // 否则按正常逻辑删除最后一个字符。
-      const wasUserTyped = userTypedRef.current;
-      const newQ = wasUserTyped ? query.slice(0, -1) : '';
-      userTypedRef.current = true;
-      setQuery(newQ);
-      if (searchTimer.current) window.clearTimeout(searchTimer.current);
-      searchTimer.current = window.setTimeout(() => setQuery(''), 700) as unknown as number;
-      const src = newQ
-        ? options.filter(
-            (o) =>
-              o.label.toLowerCase().includes(newQ.trim().toLowerCase()) ||
-              o.value.toLowerCase().includes(newQ.trim().toLowerCase())
-          )
-        : options;
-      const firstIdx = src.findIndex((o) => !o.disabled);
-      setHighlighted(firstIdx >= 0 ? firstIdx : 0);
-    } else if (open && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      // 在下拉打开时输入字符进行类型搜索
-      e.preventDefault();
-      // 如果当前 query 是回显（非用户输入）且为单选可搜索场景，则把首次按键视为替换（不做 append），
-      // 避免之前选中项文字影响新的搜索输入。
-      const newQ = !userTypedRef.current && !multiple && searchable ? e.key : query + e.key;
-      userTypedRef.current = true;
-      setQuery(newQ);
-      if (searchTimer.current) window.clearTimeout(searchTimer.current);
-      searchTimer.current = window.setTimeout(() => setQuery(''), 700) as unknown as number;
-      const q = newQ.trim().toLowerCase();
-      const src = q
-        ? options.filter((o) => o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q))
-        : options;
-      const firstIdx = src.findIndex((o) => !o.disabled);
-      setHighlighted(firstIdx >= 0 ? firstIdx : 0);
+      const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
+      const opt = src[highlighted ?? 0];
+      if (opt) handleSelectByValue(opt.value);
     } else if (e.key === 'Escape') {
       setOpen(false);
     }
-  }
-
-  const menuOptions = displayOptions();
+  };
 
   return (
     <div
@@ -382,188 +414,27 @@ const Select: React.FC<SelectProps> = ({
         {/* 展示区 */}
         <div className="beaver-select__display">
           {searchable && open ? (
-            multiple ? (
-              <div className={`beaver-select__tags-input`}>
-                <div className="beaver-select__tags">
-                  {selectedValues.length === 0
-                    ? null
-                    : selectedValues.map((v: string) => (
-                        <span className="beaver-select__tag" key={v} onClick={(e) => e.stopPropagation()}>
-                          <span className="beaver-select__tag-label">
-                            {options.find((o) => o.value === v)?.label ?? v}
-                          </span>
-                          <button
-                            type="button"
-                            aria-label={`remove ${v}`}
-                            className="beaver-select__tag-remove"
-                            onClick={(e) => removeTag(v, e)}
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                </div>
-                <input
-                  ref={searchRef}
-                  className="beaver-select__input"
-                  value={query}
-                  onChange={(e) => {
-                    userTypedRef.current = true;
-                    setQuery(e.target.value);
-                    setHighlighted(0);
-                  }}
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onClick={(e) => e.stopPropagation()}
-                  onFocus={() => {
-                    setInputFocused(true);
-                    // 如果当前是由选中项回显（非用户输入），在聚焦时选中全部文本，方便直接替换输入
-                    if (!userTypedRef.current && searchable && !multiple && query) {
-                      setTimeout(() => searchRef.current?.select(), 0);
-                    }
-                  }}
-                  onBlur={(e) => {
-                    e.stopPropagation();
-                    // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
-                    if (committedRef.current) {
-                      committedRef.current = false;
-                      setInputFocused(false);
-                      return;
-                    }
-                    // 在失焦时，如果启用了 allowCreate，尝试提交输入（多选模式下把新值加入数组）
-                    const q = query.trim();
-                    if (allowCreate && q) {
-                      const match = options.find((o) => o.value === q || o.label === q);
-                      if (match && !match.disabled) {
-                        handleSelectByValue(match.value);
-                      } else {
-                        handleSelectByValue(q);
-                      }
-                    }
-                    // 清空查询以避免同一次交互被重复提交
-                    setQuery('');
-                    setInputFocused(false);
-                  }}
-                  onKeyDown={(e) => {
-                    e.stopPropagation();
-                    if (e.key === 'ArrowDown') {
-                      e.preventDefault();
-                      setHighlighted((h) => {
-                        const src = displayOptions();
-                        return h === null ? 0 : Math.min(src.length - 1, h + 1);
-                      });
-                    } else if (e.key === 'ArrowUp') {
-                      e.preventDefault();
-                      setHighlighted((h) => {
-                        const src = displayOptions();
-                        return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
-                      });
-                    } else if (e.key === 'Enter') {
-                      e.preventDefault();
-                      const q = query.trim();
-                      if (allowCreate && q) {
-                        const exact = options.find((o) => o.value === q || o.label === q);
-                        if (!exact) {
-                          handleSelectByValue(q);
-                          setQuery('');
-                          return;
-                        }
-                      }
-                      const src = displayOptions();
-                      const opt = src[highlighted ?? 0];
-                      if (opt) handleSelectByValue(opt.value);
-                    } else if (e.key === 'Escape') {
-                      setOpen(false);
-                    }
-                  }}
-                  placeholder={selectedValues.length === 0 && !query ? placeholder : ''}
-                />
-              </div>
-            ) : (
-              <input
-                ref={searchRef}
-                className="beaver-select__input"
-                value={query}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  // 首次用户编辑时，如果当前 query 是组件回显（userTypedRef === false）且为单选可搜索场景，
-                  // 我们只取新输入/粘贴的部分，避免回显文本被当作搜索前缀影响结果。
-                  if (!userTypedRef.current && !multiple && searchable) {
-                    // 尝试从 raw 中去除回显的原始 query，保留新增部分
-                    let added = raw.replace(query, '');
-                    if (added === '') added = raw; // 回退：若无法提取新增部分，则使用 raw
-                    userTypedRef.current = true;
-                    setQuery(added);
-                    setHighlighted(0);
-                    return;
-                  }
-                  userTypedRef.current = true;
-                  setQuery(raw);
-                  setHighlighted(0);
-                }}
-                onMouseDown={(e) => e.stopPropagation()}
-                onClick={(e) => e.stopPropagation()}
-                onFocus={() => {
-                  setInputFocused(true);
-                  if (!userTypedRef.current && searchable && !multiple && query) {
-                    setTimeout(() => searchRef.current?.select(), 0);
-                  }
-                }}
-                onBlur={(e) => {
-                  e.stopPropagation();
-                  // 如果是在显式选择后触发的 blur（mousedown 先发生），则跳过 blur 的提交/清空逻辑
-                  if (committedRef.current) {
-                    committedRef.current = false;
-                    setInputFocused(false);
-                    return;
-                  }
-                  // 在失焦时，如果启用了 allowCreate，尝试提交输入
-                  const q = query.trim();
-                  if (allowCreate && q) {
-                    const match = options.find((o) => o.value === q || o.label === q);
-                    if (match && !match.disabled) {
-                      if (controlledValue === undefined) setInternalValue(match.value);
-                      onChange?.(match.value);
-                    } else {
-                      if (controlledValue === undefined) setInternalValue(q);
-                      onChange?.(q);
-                    }
-                  }
-                  // 清空查询以避免同一次交互被重复提交
-                  setQuery('');
-                  setInputFocused(false);
-                }}
-                onKeyDown={(e) => {
-                  e.stopPropagation();
-                  if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    setHighlighted((h) => {
-                      const src = displayOptions();
-                      return h === null ? 0 : Math.min(src.length - 1, h + 1);
-                    });
-                  } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    setHighlighted((h) => {
-                      const src = displayOptions();
-                      return h === null ? Math.max(0, src.length - 1) : Math.max(0, h - 1);
-                    });
-                  } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const src = displayOptions();
-                    const opt = src[highlighted ?? 0];
-                    if (opt) handleSelectByValue(opt.value);
-                  } else if (e.key === 'Escape') {
-                    setOpen(false);
-                  }
-                }}
-                placeholder={
-                  query
-                    ? ''
-                    : internalValue
-                      ? (options.find((o) => o.value === (internalValue as string))?.label ?? String(internalValue))
-                      : placeholder
-                }
-              />
-            )
+            <SearchInput
+              multiple={multiple}
+              query={query}
+              onChangeEvent={multiple ? handleMultiInputChange : handleSingleInputChange}
+              searchRef={searchRef}
+              onKeyDown={handleInputKeyDown}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              placeholder={
+                query
+                  ? ''
+                  : internalValue && !Array.isArray(internalValue)
+                    ? (options.find((o) => o.value === (internalValue as string))?.label ?? String(internalValue))
+                    : placeholder
+              }
+              selectedValues={selectedValues}
+              options={options}
+              removeTag={handleTagsRemove}
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+            />
           ) : Array.isArray(internalValue) ? (
             // 关闭态（下拉未打开）时，在多选且无已选项时显示占位符
             selectedValues.length === 0 ? (
@@ -597,6 +468,7 @@ const Select: React.FC<SelectProps> = ({
             </span>
           )}
         </div>
+        {/* 图标区 */}
         <div className="beaver-select__icons">
           {loading ? (
             loadingIcon ? (
@@ -632,69 +504,22 @@ const Select: React.FC<SelectProps> = ({
 
       {/* 下拉菜单 */}
       {open && (
-        <ul
-          role="listbox"
-          className="beaver-select__menu"
-          ref={listRef}
-          tabIndex={-1}
-          aria-activedescendant={highlighted !== null ? `beaver-select-opt-${highlighted}` : undefined}
-        >
-          {menuOptions.map((opt, i) => {
-            const isNew = (opt as any).__isNew === true;
-            const key = isNew ? `__create-${opt.value}` : opt.value;
-            const isSelected = Array.isArray(internalValue)
-              ? internalValue.includes(opt.value)
-              : opt.value === internalValue;
-            return (
-              <li
-                id={`beaver-select-opt-${i}`}
-                role="option"
-                aria-selected={isSelected}
-                key={key}
-                className={`beaver-select__option ${isSelected ? 'beaver-select__option--selected' : ''} ${'disabled' in opt && (opt as any).disabled ? 'beaver-select__option--disabled' : ''} ${highlighted === i ? 'beaver-select__option--highlighted' : ''} ${isNew ? 'beaver-select__option--new' : ''}`}
-                onMouseEnter={() => setHighlighted(i)}
-                onMouseDown={(e) => {
-                  // 在 mousedown 时立即处理选择，避免 input 的 blur/close 逻辑覆盖选择行为
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if ((opt as any).disabled) return;
-                  handleSelectByValue(opt.value);
-                }}
-                onClick={(e) => {
-                  // 防止冒泡造成其它处理
-                  e.stopPropagation();
-                }}
-              >
-                {/* 在多选模式下显示选中勾选 */}
-                <span className="beaver-select__opt-prefix">{isSelected ? '✔' : ''}</span>
-                <span className="beaver-select__opt-label">
-                  {isNew ? (
-                    <span className="beaver-select__create-label">{`使用 "${opt.label}"`}</span>
-                  ) : (
-                    renderHighlightedLabel(opt.label)
-                  )}
-                </span>
-              </li>
-            );
-          })}
-          {/*
-            当 menuOptions 为空时显示提示：
-            - 如果 props.options 为空：'暂无数据'
-            - 否则如果是因搜索导致没有匹配（用户已输入 query 且 searchable）：'无匹配项'
-            - 其他情况（例如 all selected 并且 filterSelected 导致无可选项）：'暂无数据'
-          */}
-          {menuOptions.length === 0 && (
-            <li className="beaver-select__option beaver-select__no-data" aria-disabled key="__no_data_or_match">
-              <span className="beaver-select__opt-label">
-                {options.length === 0
-                  ? '暂无数据'
-                  : searchable && userTypedRef.current && query.trim()
-                    ? '无匹配项'
-                    : '暂无数据'}
-              </span>
-            </li>
-          )}
-        </ul>
+        <OptionList
+          menuOptions={menuOptions}
+          highlighted={highlighted}
+          internalValue={internalValue}
+          onHighlight={(i) => setHighlighted(i)}
+          onSelectByValue={(v) => handleSelectByValue(v)}
+          renderHighlightedLabel={renderHighlightedLabel}
+          noDataLabel={
+            options.length === 0
+              ? '暂无数据'
+              : searchable && userTypedRef.current && query.trim()
+                ? '无匹配项'
+                : '暂无数据'
+          }
+          listRef={listRef}
+        />
       )}
 
       {/* 隐藏的原生 select，用于保持表单兼容性 */}

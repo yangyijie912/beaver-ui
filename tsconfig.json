@@ -14,7 +14,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "node", "vitest", "vitest/globals"]
   },
   "include": ["src", "stories", ".storybook/**/*"],
   "exclude": ["node_modules", "dist", "**/*.css.ts"]
