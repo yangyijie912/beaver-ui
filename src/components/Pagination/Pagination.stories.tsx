@@ -58,6 +58,9 @@ export const WithEnglish: Story = {
     showQuickJumper: true,
     showSizeChanger: true,
     locale: en,
+    width: {
+      sizeChanger: 94,
+    },
   },
 };
 

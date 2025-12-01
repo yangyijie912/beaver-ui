@@ -24,6 +24,11 @@ export type PaginationProps = {
   align?: 'left' | 'center' | 'right';
   /** 是否禁用整个分页控件 */
   disabled?: boolean;
+  /** 可选的宽度配置 */
+  width?: {
+    sizeChanger?: number | string;
+    quickJumper?: number | string;
+  };
 };
 
 // 创建一个闭区间的数字数组，例如 range(2,4) -> [2,3,4]
@@ -44,7 +49,10 @@ const Pagination: React.FC<PaginationProps> = ({
   locale: localeProp,
   align = 'left',
   disabled = false,
+  width,
 }) => {
+  // 将 number -> "NNpx"，string 原样返回
+  const normalizeWidth = (w?: number | string) => (typeof w === 'number' ? `${w}px` : w);
   const locale = React.useMemo(() => ({ ...defaultLocale, ...(localeProp || {}) }), [localeProp]);
   // current: 当前页（组件内部状态，可被受控 prop 覆盖）
   const [current, setCurrent] = React.useState<number>(propCurrent ?? 1);
@@ -223,7 +231,7 @@ const Pagination: React.FC<PaginationProps> = ({
               }}
               disabled={disabled}
               size="small"
-              width={84}
+              width={width?.sizeChanger ?? 84}
               aria-label="page-size"
             />
           </div>
@@ -250,6 +258,7 @@ const Pagination: React.FC<PaginationProps> = ({
                   handleJumpFromInput();
                 }}
                 aria-label="quick-jump"
+                style={width?.quickJumper ? { width: normalizeWidth(width.quickJumper) } : undefined}
               />
               {locale.page}
             </label>
