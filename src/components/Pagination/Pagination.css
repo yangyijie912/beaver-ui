@@ -8,6 +8,17 @@
   flex-wrap: nowrap;
 }
 
+/* 对齐变体 */
+.beaver-pagination--align-left {
+  justify-content: flex-start;
+}
+.beaver-pagination--align-center {
+  justify-content: center;
+}
+.beaver-pagination--align-right {
+  justify-content: flex-end;
+}
+
 .beaver-pagination__controls {
   display: flex;
   align-items: center;

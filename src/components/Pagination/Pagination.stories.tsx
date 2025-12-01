@@ -6,6 +6,13 @@ import type { Meta, StoryObj } from '@storybook/react';
 const meta: Meta<typeof Pagination> = {
   title: 'Components/Pagination',
   component: Pagination,
+  argTypes: {
+    align: {
+      control: { type: 'radio' },
+      options: ['left', 'center', 'right'],
+      description: 'Alignment of the pagination container',
+    },
+  },
 };
 
 export default meta;
@@ -28,6 +35,20 @@ export const WithQuickJumper: Story = {
   args: {
     total: 78,
     showQuickJumper: true,
+  },
+};
+
+export const AlignCenter: Story = {
+  args: {
+    total: 100,
+    align: 'center',
+  },
+};
+
+export const AlignRight: Story = {
+  args: {
+    total: 100,
+    align: 'right',
   },
 };
 

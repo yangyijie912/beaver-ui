@@ -20,6 +20,8 @@ export type PaginationProps = {
   showSizeChanger?: boolean;
   // 国际化配置，可覆盖默认文案
   locale?: Partial<PaginationLocale>;
+  // 对齐方向：'left' | 'center' | 'right'（默认 'left'）
+  align?: 'left' | 'center' | 'right';
 };
 
 // 创建一个闭区间的数字数组，例如 range(2,4) -> [2,3,4]
@@ -38,6 +40,7 @@ const Pagination: React.FC<PaginationProps> = ({
   showQuickJumper = false,
   showSizeChanger = false,
   locale: localeProp,
+  align = 'left',
 }) => {
   const locale = React.useMemo(() => ({ ...defaultLocale, ...(localeProp || {}) }), [localeProp]);
   // current: 当前页（组件内部状态，可被受控 prop 覆盖）
@@ -105,8 +108,10 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const pagesList = makePageList();
 
+  const rootClass = React.useMemo(() => `beaver-pagination beaver-pagination--align-${align}`, [align]);
+
   return (
-    <div className="beaver-pagination">
+    <div className={rootClass}>
       <div className="beaver-pagination__controls">
         {/* 上一页 */}
         <button
@@ -116,7 +121,23 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={current === 1}
           aria-label={locale.prev}
         >
-          ‹
+          <svg
+            className="beaver-pagination__icon"
+            width="1em"
+            height="1em"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M10 3L5 8L10 13"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
 
         {/* 页码列表（包含省略号） */}
@@ -149,7 +170,23 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={current === pages}
           aria-label={locale.next}
         >
-          ›
+          <svg
+            className="beaver-pagination__icon"
+            width="1em"
+            height="1em"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M6 3L11 8L6 13"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </button>
       </div>
 
