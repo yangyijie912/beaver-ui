@@ -49,4 +49,10 @@
   --beaver-switch-thumb-gap-sm: 1px;
   --beaver-switch-thumb-gap-md: 2px;
   --beaver-switch-thumb-gap-lg: 3px;
+  --beaver-pagination-item-size: 32px;
+  --beaver-pagination-gap: 8px;
+  --beaver-pagination-control-size: 32px;
+  --beaver-pagination-font-size: 14px;
+  --beaver-pagination-input-width: 48px;
+  --beaver-pagination-border: #d1d5db;
 }

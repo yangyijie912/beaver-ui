@@ -80,6 +80,15 @@ export const vars = {
       'thumb-gap-md': '2px',
       'thumb-gap-lg': '3px',
     },
+    pagination: {
+      'item-size': '32px',
+      gap: '8px',
+      'control-size': '32px',
+      'font-size': '14px',
+      'input-width': '48px',
+      // 分页专属边框色（优先于全局 border）
+      border: '#d1d5db',
+    },
   },
 };
 

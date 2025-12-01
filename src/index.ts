@@ -5,6 +5,7 @@ export { default as Checkbox } from './components/Checkbox/Checkbox';
 export { default as Input } from './components/Input/Input';
 export { default as Select } from './components/Select/Select';
 export { default as Switch } from './components/Switch/Switch';
+export { default as Pagination } from './components/Pagination/Pagination';
 export * from './tokens';
 
 // 在运行时应用 CSS 变量，以便组件可以使用 `var(--beaver-color-primary)`
