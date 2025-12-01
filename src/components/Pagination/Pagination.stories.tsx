@@ -61,6 +61,15 @@ export const WithEnglish: Story = {
   },
 };
 
+export const Disabled: Story = {
+  args: {
+    total: 150,
+    showQuickJumper: true,
+    showSizeChanger: true,
+    disabled: true,
+  },
+};
+
 export const Controlled: Story = {
   render: () => {
     const [page, setPage] = React.useState(3);

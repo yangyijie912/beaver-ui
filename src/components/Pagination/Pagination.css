@@ -44,7 +44,7 @@
     box-shadow 140ms ease;
 }
 
-.beaver-pagination__control:hover:not(:disabled) {
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__control:hover:not(:disabled) {
   background: rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.06);
 }
 
@@ -84,15 +84,15 @@
     transform 120ms ease;
 }
 
-.beaver-pagination__item:hover {
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item:hover {
   background: var(--beaver-color-bg, #fff);
   color: var(--beaver-color-primary, #0eaae0);
   border-color: var(--beaver-color-primary, #0eaae0);
   transform: translateY(-1px);
 }
 
-.beaver-pagination__item:focus-visible,
-.beaver-pagination__control:focus-visible {
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item:focus-visible,
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__control:focus-visible {
   outline: none;
   box-shadow: 0 0 0 var(--beaver-focus-ring, 4px) rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
 }
@@ -104,14 +104,14 @@
   box-shadow: 0 2px 8px rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
 }
 
-.beaver-pagination__item--active:hover {
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item--active:hover {
   background: var(--beaver-color-primary, #0eaae0);
   color: var(--beaver-color-on-primary, #fff);
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.18);
 }
 
-.beaver-pagination__item--active:focus-visible {
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item--active:focus-visible {
   outline: none;
   color: var(--beaver-color-on-primary, #fff);
   box-shadow:
@@ -256,11 +256,11 @@
   color: var(--beaver-color-text, #333);
 }
 
-.beaver-pagination__jump-input:hover {
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__jump-input:hover {
   border-color: var(--beaver-color-primary, #0eaae0);
 }
 
-.beaver-pagination__jump-input:focus {
+.beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__jump-input:focus {
   outline: none;
   border-color: var(--beaver-color-primary, #0eaae0);
   box-shadow: 0 0 0 var(--beaver-focus-ring, 4px) rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
@@ -276,4 +276,26 @@
   .beaver-pagination__list {
     gap: 6px;
   }
+}
+
+/* disabled相关样式 */
+.beaver-pagination--disabled {
+  opacity: 0.7;
+}
+
+.beaver-pagination--disabled .beaver-pagination__control,
+.beaver-pagination--disabled .beaver-pagination__item,
+.beaver-pagination--disabled .beaver-pagination__jump-input,
+.beaver-pagination--disabled .beaver-select__control {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.beaver-pagination--disabled .beaver-pagination__item--active {
+  /* Make active state visually muted when disabled */
+  background: var(--beaver-pagination-disabled-active-bg, #f3f4f6);
+  color: var(--beaver-color-text, #333);
+  border-color: var(--beaver-pagination-border, var(--beaver-color-border, #d1d5db));
+  box-shadow: none;
 }

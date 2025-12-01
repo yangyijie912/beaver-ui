@@ -22,6 +22,8 @@ export type PaginationProps = {
   locale?: Partial<PaginationLocale>;
   /** 对齐方向：'left' | 'center' | 'right'（默认 'left'） */
   align?: 'left' | 'center' | 'right';
+  /** 是否禁用整个分页控件 */
+  disabled?: boolean;
 };
 
 // 创建一个闭区间的数字数组，例如 range(2,4) -> [2,3,4]
@@ -41,6 +43,7 @@ const Pagination: React.FC<PaginationProps> = ({
   showSizeChanger = false,
   locale: localeProp,
   align = 'left',
+  disabled = false,
 }) => {
   const locale = React.useMemo(() => ({ ...defaultLocale, ...(localeProp || {}) }), [localeProp]);
   // current: 当前页（组件内部状态，可被受控 prop 覆盖）
@@ -69,6 +72,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   // 触发页码变化的统一方法：更新内部 state 并回调 onChange
   const triggerChange = (page: number, size?: number) => {
+    if (disabled) return;
     setCurrent(page);
     if (typeof onChange === 'function') onChange(page, size ?? pageSize);
   };
@@ -110,15 +114,20 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const rootClass = React.useMemo(() => `beaver-pagination beaver-pagination--align-${align}`, [align]);
 
+  // 根 class 包含禁用状态
+  const rootClassFinal = React.useMemo(
+    () => `${rootClass}${disabled ? ' beaver-pagination--disabled' : ''}`,
+    [rootClass, disabled]
+  );
   return (
-    <div className={rootClass}>
+    <div className={rootClassFinal}>
       <div className="beaver-pagination__controls">
         {/* 上一页 */}
         <button
           type="button"
           className="beaver-pagination__control"
           onClick={() => triggerChange(Math.max(1, current - 1))}
-          disabled={current === 1}
+          disabled={disabled || current === 1}
           aria-label={locale.prev}
         >
           <svg
@@ -153,6 +162,7 @@ const Pagination: React.FC<PaginationProps> = ({
                     .filter(Boolean)
                     .join(' ')}
                   onClick={() => triggerChange(p as number)}
+                  disabled={disabled}
                   aria-current={current === p ? 'page' : undefined}
                 >
                   {p}
@@ -167,7 +177,7 @@ const Pagination: React.FC<PaginationProps> = ({
           type="button"
           className="beaver-pagination__control"
           onClick={() => triggerChange(Math.min(pages, current + 1))}
-          disabled={current === pages}
+          disabled={disabled || current === pages}
           aria-label={locale.next}
         >
           <svg
@@ -211,6 +221,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 // 切换每页数量后回到第 1 页
                 triggerChange(1, sz);
               }}
+              disabled={disabled}
               size="small"
               width={84}
               aria-label="page-size"
@@ -226,6 +237,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 name="beaver-jump"
                 ref={jumpRef}
                 className="beaver-pagination__jump-input"
+                disabled={disabled}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
