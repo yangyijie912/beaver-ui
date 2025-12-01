@@ -33,6 +33,7 @@
   color: var(--beaver-select-text);
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 /* 子元素平铺选择器，避免嵌套语法 */
@@ -193,6 +194,7 @@
   font-size: var(--beaver-font-size-md);
   color: var(--beaver-select-text);
   padding: 0;
+  cursor: text;
 }
 
 .beaver-select__icons {
