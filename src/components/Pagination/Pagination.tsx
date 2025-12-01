@@ -4,23 +4,23 @@ import Select from '../Select/Select';
 import { defaultLocale, PaginationLocale } from './locales';
 
 export type PaginationProps = {
-  // 总条目数
+  /** 总条目数 */
   total: number;
-  // 初始每页数量（可选，默认 10）
+  /** 初始每页数量（可选，默认 10） */
   pageSize?: number;
-  // 受控当前页（可选）
+  /** 受控当前页（可选） */
   current?: number;
-  // 页码或 pageSize 变化回调：onChange(page, pageSize)
+  /** 页码或 pageSize 变化回调 */
   onChange?: (page: number, pageSize?: number) => void;
-  // 下拉可选的 pageSize 值
+  /** 下拉可选的 pageSize 值 */
   pageSizeOptions?: number[];
-  // 是否显示快速跳转输入框
+  /** 是否显示快速跳转输入框 */
   showQuickJumper?: boolean;
-  // 是否显示每页数量切换器
+  /** 是否显示每页数量切换器 */
   showSizeChanger?: boolean;
-  // 国际化配置，可覆盖默认文案
+  /** 国际化配置，可覆盖默认文案 */
   locale?: Partial<PaginationLocale>;
-  // 对齐方向：'left' | 'center' | 'right'（默认 'left'）
+  /** 对齐方向：'left' | 'center' | 'right'（默认 'left'） */
   align?: 'left' | 'center' | 'right';
 };
 
