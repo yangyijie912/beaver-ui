@@ -1,6 +1,7 @@
 import React from 'react';
 import './Pagination.css';
 import Select from '../Select/Select';
+import { defaultLocale, PaginationLocale } from './locales';
 
 export type PaginationProps = {
   // 总条目数
@@ -17,6 +18,8 @@ export type PaginationProps = {
   showQuickJumper?: boolean;
   // 是否显示每页数量切换器
   showSizeChanger?: boolean;
+  // 国际化配置，可覆盖默认文案
+  locale?: Partial<PaginationLocale>;
 };
 
 // 创建一个闭区间的数字数组，例如 range(2,4) -> [2,3,4]
@@ -34,7 +37,9 @@ const Pagination: React.FC<PaginationProps> = ({
   pageSizeOptions = [10, 20, 50, 100],
   showQuickJumper = false,
   showSizeChanger = false,
+  locale: localeProp,
 }) => {
+  const locale = React.useMemo(() => ({ ...defaultLocale, ...(localeProp || {}) }), [localeProp]);
   // current: 当前页（组件内部状态，可被受控 prop 覆盖）
   const [current, setCurrent] = React.useState<number>(propCurrent ?? 1);
   // pageSize: 当前每页条目数（内部状态，以 prop 为初始值）
@@ -109,7 +114,7 @@ const Pagination: React.FC<PaginationProps> = ({
           className="beaver-pagination__control"
           onClick={() => triggerChange(Math.max(1, current - 1))}
           disabled={current === 1}
-          aria-label="prev"
+          aria-label={locale.prev}
         >
           ‹
         </button>
@@ -142,7 +147,7 @@ const Pagination: React.FC<PaginationProps> = ({
           className="beaver-pagination__control"
           onClick={() => triggerChange(Math.min(pages, current + 1))}
           disabled={current === pages}
-          aria-label="next"
+          aria-label={locale.next}
         >
           ›
         </button>
@@ -157,7 +162,10 @@ const Pagination: React.FC<PaginationProps> = ({
               当选中新 pageSize 时，更新状态并重置到第一页（triggerChange(1, sz)）。
             */}
             <Select
-              options={pageSizeOptions.map((s) => ({ label: `${s} / 页`, value: String(s) }))}
+              options={pageSizeOptions.map((s) => ({
+                label: locale.itemsPerPage ? locale.itemsPerPage(s) : `${s}`,
+                value: String(s),
+              }))}
               value={String(pageSize)}
               onChange={(v) => {
                 const val = Array.isArray(v) ? v[0] : (v as string);
@@ -176,7 +184,7 @@ const Pagination: React.FC<PaginationProps> = ({
         {showQuickJumper && (
           <div className="beaver-pagination__jumper">
             <label>
-              跳到
+              {locale.jumpTo}
               <input
                 name="beaver-jump"
                 ref={jumpRef}
@@ -194,7 +202,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 }}
                 aria-label="quick-jump"
               />
-              页
+              {locale.page}
             </label>
           </div>
         )}

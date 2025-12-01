@@ -1,5 +1,6 @@
 import React from 'react';
 import Pagination from './Pagination';
+import { en } from './locales';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Pagination> = {
@@ -27,6 +28,15 @@ export const WithQuickJumper: Story = {
   args: {
     total: 78,
     showQuickJumper: true,
+  },
+};
+
+export const WithEnglish: Story = {
+  args: {
+    total: 150,
+    showQuickJumper: true,
+    showSizeChanger: true,
+    locale: en,
   },
 };
 
