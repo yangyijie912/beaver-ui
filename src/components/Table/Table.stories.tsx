@@ -339,3 +339,165 @@ export const ColumnLevelRender = {
   render: ColumnLevelRenderTemplate,
   args: {},
 };
+
+// 跨行/跨列示例
+const spanColumns: Column[] = [
+  { key: 'unique_id', title: 'ID编号' },
+  { key: 'orderNumber', title: '订单号' },
+  { key: 'quantityOrdered', title: '订购数量' },
+  { key: 'priceEach', title: '单价' },
+];
+
+const dataWithSpans = [
+  {
+    id: 'r1',
+    unique_id: { value: 1, rowSpan: 2 },
+    orderNumber: { value: 'ORD-100', colSpan: 2 },
+    quantityOrdered: 10,
+    priceEach: 9.9,
+  },
+  {
+    id: 'r2',
+    // unique_id 被上行 rowSpan 覆盖，这里无需提供 unique_id
+    orderNumber: 'ORD-101',
+    quantityOrdered: 2,
+    priceEach: 19.9,
+  },
+  {
+    id: 'r3',
+    unique_id: 3,
+    orderNumber: { value: 'MULTI-COL', colSpan: 3 },
+    quantityOrdered: 5,
+    priceEach: 29.9,
+  },
+  {
+    id: 'r4',
+    unique_id: 4,
+    orderNumber: 'ORD-200',
+    quantityOrdered: 8,
+    priceEach: 39.9,
+  },
+];
+
+const SpanDemoTemplate = (args: any) => (
+  <div>
+    <div style={{ marginBottom: 12 }}>
+      演示如何在数据中为单元格提供 <code>{`{ value, colSpan, rowSpan }`}</code> 来控制合并。
+    </div>
+    <Table columns={spanColumns} data={dataWithSpans} rowKey="id" {...args} />
+  </div>
+);
+
+export const SpanDemo = {
+  name: '跨行/跨列 演示',
+  render: SpanDemoTemplate,
+  args: {},
+};
+
+// 更明显的跨行/跨列示例，带可视化样式以便在 Storybook 中能一眼看出合并效果
+const visibleSpanColumns: Column[] = [
+  { key: 'a', title: '列 A' },
+  { key: 'b', title: '列 B' },
+  { key: 'c', title: '列 C' },
+  { key: 'd', title: '列 D' },
+  { key: 'e', title: '列 E' },
+];
+
+const visibleSpanData = [
+  // 第一行：A 跨两行（rowSpan=2），B 跨三列（colSpan=3）
+  {
+    id: 'v1',
+    a: { value: 'A: rowspan 2', rowSpan: 2 },
+    b: { value: 'B: colspan 3', colSpan: 3 },
+    c: '',
+    d: '',
+    e: 'E1',
+  },
+  // 第二行：A 被上一行占用，B/C/D 被上一行的 colspan 覆盖，只显示 E
+  {
+    id: 'v2',
+    // a: 被覆盖
+    b: 'should be covered',
+    c: 'should be covered',
+    d: 'should be covered',
+    e: { value: 'E2', colSpan: 1 },
+  },
+  // 第三行：C 跨两列
+  {
+    id: 'v3',
+    a: 'A3',
+    b: 'B3',
+    c: { value: 'C: colspan 2', colSpan: 2 },
+    d: '',
+    e: 'E3',
+  },
+  // 第四行：无合并
+  {
+    id: 'v4',
+    a: 'A4',
+    b: 'B4',
+    c: 'C4',
+    d: 'D4',
+    e: 'E4',
+  },
+];
+
+const VisibleSpanTemplate = (args: any) => (
+  <div>
+    <div style={{ marginBottom: 12 }}>
+      更明显的跨行/跨列示例，使用 <code>{`{ value, colSpan, rowSpan }`}</code>，并通过 <code>renderCell</code>{' '}
+      高亮合并单元格。
+    </div>
+    <Table
+      columns={visibleSpanColumns}
+      data={visibleSpanData}
+      rowKey="id"
+      renderCell={(row, col) => {
+        const raw = row[col.key];
+        if (raw && typeof raw === 'object' && ('colSpan' in raw || 'rowSpan' in raw)) {
+          return (
+            <div style={{ background: 'rgba(14, 165, 233, 0.12)', padding: '10px 12px', borderRadius: 6 }}>
+              {(raw as any).value ?? ''}
+            </div>
+          );
+        }
+        return row[col.key];
+      }}
+      {...args}
+    />
+  </div>
+);
+
+export const VisibleSpan = {
+  name: '跨行/跨列 - 可视化示例',
+  render: VisibleSpanTemplate,
+  args: {},
+};
+
+// 示例：使用 column.span API 动态计算合并（按索引合并示例）
+const columnSpanColumns: Column[] = [
+  { key: 'name', title: '名称', span: (row, rowIndex) => (rowIndex === 0 ? { rowSpan: 2 } : undefined) },
+  { key: 'info', title: '信息' },
+  { key: 'extra', title: '额外' },
+];
+
+const columnSpanData = [
+  { id: 'c1', name: '合并的名称', info: 'info1', extra: 'extra1' },
+  { id: 'c2', name: '被覆盖', info: 'info2', extra: 'extra2' },
+  { id: 'c3', name: '正常', info: 'info3', extra: 'extra3' },
+];
+
+const ColumnSpanTemplate = (args: any) => (
+  <div>
+    <div style={{ marginBottom: 12 }}>
+      演示如何在列定义中通过 <code>span</code> 回调控制 rowSpan/colSpan。
+    </div>
+    <Table columns={columnSpanColumns} data={columnSpanData} rowKey="id" {...args} />
+  </div>
+);
+
+export const ColumnSpanAPI = {
+  name: '列级 span 回调 示例',
+  render: ColumnSpanTemplate,
+  args: {},
+};

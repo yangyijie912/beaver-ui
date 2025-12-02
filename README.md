@@ -46,6 +46,7 @@ Input
 Radio  
 Select  
 Switch  
-Pagination
+Pagination  
+Table
 
 正在更新中......

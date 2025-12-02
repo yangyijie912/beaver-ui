@@ -9,6 +9,8 @@ export type Column = {
   align?: 'left' | 'center' | 'right';
   /** 可选的列级渲染器：接收当前单元格值、整行数据、行索引和列定义，返回自定义渲染内容 */
   render?: (value: any, row: Row, rowIndex: number, column: Column) => React.ReactNode | null | undefined;
+  /** 可选的单元格合并函数：返回当前单元格的 colSpan / rowSpan */
+  span?: (row: Row, rowIndex: number, column: Column) => { colSpan?: number; rowSpan?: number } | undefined;
 };
 
 export type Row = Record<string, any>;
@@ -285,30 +287,27 @@ const Table: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {data.map((row, idx) => {
-            const key = String(row[rowKey] ?? idx);
-            const isSelected = !!selectedMap[key];
-            const rowClass = [
-              isSelected ? 'beaver-table__row--selected' : '',
-              showCheckbox ? 'beaver-table__row--clickable' : '',
-            ]
-              .filter(Boolean)
-              .join(' ');
-            return (
-              <tr
-                key={key}
-                className={rowClass}
-                onClick={(e) => {
-                  const target = e.target as HTMLElement;
-                  const skip = !!target.closest(
-                    'input,button,a,textarea,select,.beaver-checkbox,.beaver-checkbox-wrapper,.beaver-checkbox-input'
-                  );
-                  if (skip) return;
-                  if (showCheckbox) toggle(key, !isSelected);
-                }}
-              >
-                {showCheckbox ? (
-                  <td className="beaver-table__select-col">
+          {
+            // 使用占位映射来处理跨行/跨列：当某个单元格被上/左侧的合并覆盖时跳过渲染
+          }
+          {(() => {
+            const occupied: Record<string, boolean> = {};
+            return data.map((row, idx) => {
+              const key = String(row[rowKey] ?? idx);
+              const isSelected = !!selectedMap[key];
+              const rowClass = [
+                isSelected ? 'beaver-table__row--selected' : '',
+                showCheckbox ? 'beaver-table__row--clickable' : '',
+              ]
+                .filter(Boolean)
+                .join(' ');
+
+              const cells: React.ReactNode[] = [];
+
+              // 处理复选框列（固定存在于每一行的首列）
+              if (showCheckbox) {
+                cells.push(
+                  <td key={`__select_${key}`} className="beaver-table__select-col">
                     <span onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                         checked={isSelected}
@@ -316,33 +315,101 @@ const Table: React.FC<Props> = ({
                       />
                     </span>
                   </td>
-                ) : null}
-                {columns.map((col) => {
-                  const align = col.align ?? defaultAlign ?? 'left';
-                  // 优先使用列级 render，再使用全局 renderCell，最后回退到原始值
-                  const renderedByColumn =
-                    typeof col.render === 'function' ? col.render(row[col.key], row, idx, col) : undefined;
-                  const renderedByGlobal =
-                    renderedByColumn == null && typeof renderCell === 'function'
-                      ? renderCell(row, col, idx)
-                      : undefined;
-                  return (
-                    <td
-                      key={col.key}
-                      className={`beaver-table__td beaver-table__td--${align}`}
-                      style={{ textAlign: align }}
-                    >
-                      {renderedByColumn != null
-                        ? renderedByColumn
-                        : renderedByGlobal != null
-                          ? renderedByGlobal
-                          : row[col.key]}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+                );
+              }
+
+              for (let colIdx = 0; colIdx < columns.length; colIdx++) {
+                const occKey = `${idx}-${colIdx}`;
+                if (occupied[occKey]) continue; // 被合并的格子，跳过
+
+                const col = columns[colIdx];
+                const align = col.align ?? defaultAlign ?? 'left';
+
+                // 支持两种方式提供 span：
+                // 1) 行数据在对应字段处以对象形式提供 { value, colSpan, rowSpan }
+                // 2) 列定义提供 span 函数 column.span(row, rowIndex, column)
+                let rawCell = row[col.key];
+                let cellValue: any = rawCell;
+                let colSpan = 1;
+                let rowSpan = 1;
+
+                if (
+                  rawCell &&
+                  typeof rawCell === 'object' &&
+                  ('colSpan' in rawCell || 'rowSpan' in rawCell || 'value' in rawCell)
+                ) {
+                  if ('value' in rawCell) cellValue = (rawCell as any).value;
+                  if ('colSpan' in rawCell) colSpan = Math.max(1, Number((rawCell as any).colSpan) || 1);
+                  if ('rowSpan' in rawCell) rowSpan = Math.max(1, Number((rawCell as any).rowSpan) || 1);
+                }
+
+                if (typeof col.span === 'function') {
+                  try {
+                    const s = col.span(row, idx, col);
+                    if (s) {
+                      if (s.colSpan != null) colSpan = Math.max(1, Number(s.colSpan) || 1);
+                      if (s.rowSpan != null) rowSpan = Math.max(1, Number(s.rowSpan) || 1);
+                    }
+                  } catch (e) {
+                    // 如果调用自定义 span 出错，不阻塞渲染，保持默认 1
+                    if (process.env.NODE_ENV !== 'production') console.warn('[Table] span function error', e);
+                  }
+                }
+
+                // 边界保护：不要跨出列或行范围
+                colSpan = Math.min(colSpan, columns.length - colIdx);
+                rowSpan = Math.min(rowSpan, data.length - idx);
+
+                // 标记被当前合并覆盖的格子（除了锚点自身）
+                for (let r = idx; r < idx + rowSpan; r++) {
+                  for (let c = colIdx; c < colIdx + colSpan; c++) {
+                    const k = `${r}-${c}`;
+                    if (r === idx && c === colIdx) continue; // 锚点自身由当前渲染
+                    occupied[k] = true;
+                  }
+                }
+
+                // 计算渲染内容：优先列 render，其次全局 renderCell，最后回退到 cellValue
+                const renderedByColumn =
+                  typeof col.render === 'function' ? col.render(cellValue, row, idx, col) : undefined;
+                const renderedByGlobal =
+                  renderedByColumn == null && typeof renderCell === 'function' ? renderCell(row, col, idx) : undefined;
+
+                cells.push(
+                  <td
+                    key={`${col.key}_${colIdx}`}
+                    className={`beaver-table__td beaver-table__td--${align}`}
+                    style={{ textAlign: align }}
+                    {...(colSpan > 1 ? { colSpan } : {})}
+                    {...(rowSpan > 1 ? { rowSpan } : {})}
+                  >
+                    {renderedByColumn != null
+                      ? renderedByColumn
+                      : renderedByGlobal != null
+                        ? renderedByGlobal
+                        : cellValue}
+                  </td>
+                );
+              }
+
+              return (
+                <tr
+                  key={key}
+                  className={rowClass}
+                  onClick={(e) => {
+                    const target = e.target as HTMLElement;
+                    const skip = !!target.closest(
+                      'input,button,a,textarea,select,.beaver-checkbox,.beaver-checkbox-wrapper,.beaver-checkbox-input'
+                    );
+                    if (skip) return;
+                    if (showCheckbox) toggle(key, !isSelected);
+                  }}
+                >
+                  {cells}
+                </tr>
+              );
+            });
+          })()}
         </tbody>
       </table>
     </div>
