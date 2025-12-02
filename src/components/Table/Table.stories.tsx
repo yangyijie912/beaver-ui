@@ -4,6 +4,17 @@ import Table, { Column } from './Table';
 export default {
   title: 'Components/Table',
   component: Table,
+  argTypes: {
+    columns: { table: { disable: true } },
+    data: { table: { disable: true } },
+    rowKey: { table: { disable: true } },
+    renderCell: { table: { disable: true } },
+    onSelectionChange: { table: { disable: true } },
+    selectedKeys: { table: { disable: true } },
+    showCheckbox: { control: 'boolean' },
+    preservePxAsMin: { control: 'boolean' },
+    minColumnPx: { control: 'number' },
+  },
 };
 
 const columns: Column[] = [
@@ -28,15 +39,37 @@ const columnsWithAlign: Column[] = [
   { key: 'statusName', title: '状态', align: 'center' },
 ];
 
-const columnsWithWidth: Column[] = [
-  { key: 'unique_id', title: 'ID编号', width: '30%' },
-  { key: 'orderNumber', title: '订单号', width: '30%' },
-  { key: 'quantityOrdered', title: '订购数量' },
-  { key: 'priceEach', title: '单价' },
-  { key: 'orderGoods', title: '订单货物' },
-  { key: 'sales', title: '销售额' },
-  { key: 'orderDate', title: '订单日期', width: '50%' },
-  { key: 'statusName', title: '状态' },
+const columnsWithPx: Column[] = [
+  { key: 'unique_id', title: 'ID编号', width: '100px' },
+  { key: 'orderNumber', title: '订单号', width: '100px' },
+  { key: 'quantityOrdered', title: '订购数量', width: '100px' },
+  { key: 'priceEach', title: '单价', width: '100px' },
+  { key: 'orderGoods', title: '订单货物', width: '700px' },
+  { key: 'sales', title: '销售额', width: '100px' },
+  { key: 'orderDate', title: '订单日期', width: '150px' },
+  { key: 'statusName', title: '状态', width: '100px' },
+];
+
+const columnsWithPercent: Column[] = [
+  { key: 'unique_id', title: 'ID编号', width: '10%' },
+  { key: 'orderNumber', title: '订单号', width: '10%' },
+  { key: 'quantityOrdered', title: '订购数量', width: '10%' },
+  { key: 'priceEach', title: '单价', width: '10%' },
+  { key: 'orderGoods', title: '订单货物', width: '40%' },
+  { key: 'sales', title: '销售额', width: '10%' },
+  { key: 'orderDate', title: '订单日期', width: '10%' },
+  { key: 'statusName', title: '状态', width: '10%' },
+];
+
+const columnsWithMix: Column[] = [
+  { key: 'unique_id', title: 'ID编号', width: '100px' },
+  { key: 'orderNumber', title: '订单号', width: '10%' },
+  { key: 'quantityOrdered', title: '订购数量', width: '10%' },
+  { key: 'priceEach', title: '单价', width: '10%' },
+  { key: 'orderGoods', title: '订单货物', width: '50%' },
+  { key: 'sales', title: '销售额', width: '10%' },
+  { key: 'orderDate', title: '订单日期', width: '10%' },
+  { key: 'statusName', title: '状态', width: '100px' },
 ];
 
 const data = [
@@ -165,17 +198,55 @@ const userCss = `
   }
   `;
 
-export const Default = () => {
-  return <Table columns={columns} data={data} rowKey="id" />;
+const DefaultTemplate = (args: any) => <Table columns={columns} data={data} rowKey="id" {...args} />;
+export const Default = DefaultTemplate.bind({});
+(Default as any).args = {};
+
+const WithCheckboxesTemplate = (args: any) => <Table columns={columns} data={data} rowKey="id" {...args} />;
+export const WithCheckboxes = WithCheckboxesTemplate.bind({});
+(WithCheckboxes as any).args = {
+  showCheckbox: true,
 };
 
-export const WithCheckboxes = () => <Table columns={columns} data={data} rowKey="id" showCheckbox />;
+const AlignDemoTemplate = (args: any) => <Table columns={columnsWithAlign} data={data} rowKey="id" {...args} />;
+export const AlignDemo = AlignDemoTemplate.bind({});
+(AlignDemo as any).args = {};
 
-export const AlignDemo = () => <Table columns={columnsWithAlign} data={data} rowKey="id" />;
+const PXTemplate = (args: any) => (
+  <div>
+    <div style={{ marginBottom: 12 }}>固定宽度示例（宽度和内容无关）</div>
+    <Table columns={columnsWithPx} data={data} rowKey="id" {...args} />
+  </div>
+);
+export const CustomWidths_PX = PXTemplate.bind({});
+(CustomWidths_PX as any).args = {};
 
-export const CustomWidths = () => <Table columns={columnsWithWidth} data={data} rowKey="id" showCheckbox />;
+const PercentTemplate = (args: any) => (
+  <div>
+    <div style={{ marginBottom: 12 }}>百分比宽度示例（根据表格宽度自适应变化）</div>
+    <Table columns={columnsWithPercent} data={data} rowKey="id" {...args} />
+  </div>
+);
+export const CustomWidths_Percent = PercentTemplate.bind({});
+(CustomWidths_Percent as any).args = {};
 
-export const ControlledSelection = () => {
+const MixTemplate = (args: any) => (
+  <div>
+    <div style={{ marginBottom: 12 }}>
+      <p>混合宽度示例</p>
+      <p>preservePxAsMin = false：只要包含 px 列且总宽超出容器就触发横向滚动</p>
+    </div>
+    <Table columns={columnsWithMix} data={data} rowKey="id" showCheckbox {...args} />
+  </div>
+);
+
+export const CustomWidths_Mix = MixTemplate.bind({});
+(CustomWidths_Mix as any).args = {
+  preservePxAsMin: false,
+  minColumnPx: 80,
+};
+
+const ControlledSelectionTemplate = (args: any) => {
   const [selected, setSelected] = React.useState<string[]>(['1']);
   return (
     <div>
@@ -184,15 +255,19 @@ export const ControlledSelection = () => {
         columns={columns}
         data={data}
         rowKey="id"
-        showCheckbox
         selectedKeys={selected}
         onSelectionChange={(keys) => setSelected(keys)}
+        {...args}
       />
     </div>
   );
 };
+export const ControlledSelection = ControlledSelectionTemplate.bind({});
+(ControlledSelection as any).args = {
+  showCheckbox: true,
+};
 
-export const UserInjectedStyles = () => {
+const UserInjectedStylesTemplate = (args: any) => {
   return (
     <div>
       <style>{userCss}</style>
@@ -211,12 +286,15 @@ export const UserInjectedStyles = () => {
           }
           return row[col.key];
         }}
+        {...args}
       />
     </div>
   );
 };
+export const UserInjectedStyles = UserInjectedStylesTemplate.bind({});
+(UserInjectedStyles as any).args = {};
 
-export const ColumnLevelRender = () => {
+const ColumnLevelRenderTemplate = (args: any) => {
   const colsWithRender: Column[] = columns.map((c) =>
     c.key === 'statusName'
       ? {
@@ -232,7 +310,9 @@ export const ColumnLevelRender = () => {
   return (
     <div>
       <style>{userCss}</style>
-      <Table columns={colsWithRender} data={data} rowKey="id" />
+      <Table columns={colsWithRender} data={data} rowKey="id" {...args} />
     </div>
   );
 };
+export const ColumnLevelRender = ColumnLevelRenderTemplate.bind({});
+(ColumnLevelRender as any).args = {};

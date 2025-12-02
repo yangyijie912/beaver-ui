@@ -30,6 +30,14 @@ type Props = {
   onSelectionChange?: (keys: string[]) => void;
   /** 可选的单元格渲染器：如果返回非 null/undefined，则使用其结果作为单元格内容 */
   renderCell?: (row: Row, column: Column, rowIndex: number) => React.ReactNode | null | undefined;
+  /**
+   * 当混合使用 px 与 百分比/未设置宽度时，是否保证 px 列的最小宽度，且尽量避免滚动（默认 true）。
+   * 为 true 时，只有当 px 列总宽超过容器时才触发横向滚动，否则 px 列作为最小宽保留，百分比列保持弹性分配。
+   * 为 false 时，则按常规逻辑：只要包含 px 列且总宽超出容器就触发横向滚动。
+   */
+  preservePxAsMin?: boolean;
+  /** 未指定或无法换算宽度时的保守最小像素（默认 80） */
+  minColumnPx?: number;
 };
 
 const Table: React.FC<Props> = ({
@@ -41,6 +49,8 @@ const Table: React.FC<Props> = ({
   selectedKeys,
   onSelectionChange,
   renderCell,
+  preservePxAsMin = true,
+  minColumnPx = 80,
 }) => {
   const [internalSelected, setInternalSelected] = useState<Record<string, boolean>>({});
   const isControlled = Array.isArray(selectedKeys);
@@ -129,10 +139,13 @@ const Table: React.FC<Props> = ({
   // 列宽处理：如果有任何列指定了宽度，则使用固定布局和 colgroup
   const hasAnyWidth = columns.some((c) => !!c.width);
 
-  // 归一化百分比宽度，并为未指定宽度的列保留最小像素以保持可见
+  // 归一化百分比宽度，并为未指定宽度的列保留最小像素以保持可见。
+  // 同时计算在容器宽度下是否需要横向滚动（例如大量 px 固定宽或混合单位时）。
   const computedColumnWidths = React.useMemo(() => {
-    type ColWithWidth = { key: string; raw?: string; kind: 'percent' | 'other'; value?: number };
-    const cols: ColWithWidth[] = columns.map((c) => {
+    type ColInfo = { key: string; raw?: string; kind: 'percent' | 'other'; value?: number };
+    const MIN_PX_PER_UNSPECIFIED = typeof minColumnPx === 'number' && minColumnPx > 0 ? minColumnPx : 80;
+
+    const cols: ColInfo[] = columns.map((c) => {
       const raw = c.width?.trim();
       if (raw && raw.endsWith('%')) {
         const n = parseFloat(raw.slice(0, -1));
@@ -141,34 +154,97 @@ const Table: React.FC<Props> = ({
       return { key: c.key, raw: raw ?? undefined, kind: 'other' };
     });
 
+    // 先处理百分比超出 100% 的按比例缩放（保留为百分比字符串）
     const totalPercent = cols.reduce((s, c) => s + (c.kind === 'percent' && c.value ? c.value : 0), 0);
     const unspecifiedCount = cols.filter((c) => c.kind === 'other' && !c.raw).length;
-    const MIN_PX_PER_UNSPECIFIED = 80;
     const minTotalPercentReserved =
       wrapWidth && wrapWidth > 0 ? (unspecifiedCount * MIN_PX_PER_UNSPECIFIED * 100) / wrapWidth : unspecifiedCount * 3;
     const maxPercentBudget = Math.max(0, 100 - minTotalPercentReserved);
 
+    let scaledCols: { key: string; width?: string }[];
     if (totalPercent > 0 && totalPercent > maxPercentBudget) {
       const scale = maxPercentBudget / totalPercent;
-      return cols.map((c) => {
+      scaledCols = cols.map((c) => {
         if (c.kind === 'percent' && c.value) {
           return { key: c.key, width: `${(c.value * scale).toFixed(4).replace(/\.0+$/, '')}%` };
         }
         return { key: c.key, width: c.raw };
       });
+    } else {
+      scaledCols = cols.map((c) => ({ key: c.key, width: c.raw }));
     }
 
-    return cols.map((c) => ({ key: c.key, width: c.raw }));
-  }, [columns, wrapWidth]);
+    // 计算混合单位时的像素总和（尽可能使用容器宽度将百分比换算为 px）
+    let desiredPxTotal = 0;
+    let containsPx = false;
+    let pxFixedTotal = 0; // 仅统计明确以 px 指定的列宽
+    scaledCols.forEach((c) => {
+      const w = c.width;
+      if (!w) {
+        desiredPxTotal += MIN_PX_PER_UNSPECIFIED;
+        return;
+      }
+      const ws = w.trim();
+      if (ws.endsWith('px')) {
+        const n = parseFloat(ws.slice(0, -2));
+        if (!Number.isNaN(n)) {
+          containsPx = true;
+          desiredPxTotal += n;
+          pxFixedTotal += n;
+          return;
+        }
+      }
+      if (ws.endsWith('%')) {
+        const n = parseFloat(ws.slice(0, -1));
+        if (!Number.isNaN(n) && wrapWidth && wrapWidth > 0) {
+          desiredPxTotal += (n / 100) * wrapWidth;
+          return;
+        }
+      }
+      // 对于其他单位（em/rem/auto）或无容器宽度的百分比，保守地分配最小像素
+      desiredPxTotal += MIN_PX_PER_UNSPECIFIED;
+    });
+
+    // 考虑复选框列宽
+    if (showCheckbox) {
+      desiredPxTotal += 40;
+      pxFixedTotal += 40; // 复选框是固定像素，占用空间
+    }
+
+    // 如果 caller 希望把 px 列作为最小保证宽（preservePxAsMin），则：
+    // - 当 pxFixedTotal > wrapWidth 时强制滚动（因为最小保证本身就超出容器）
+    // - 否则不强制滚动，允许百分比/未设置列弹性分配剩余空间
+    if (preservePxAsMin && wrapWidth && wrapWidth > 0 && pxFixedTotal > 0) {
+      if (pxFixedTotal > wrapWidth) {
+        // px 最小保证超出容器：触发滚动，并且以更保守的 desiredPxTotal 作为表格宽
+        return { cols: scaledCols, needsHScroll: true, tableWidth: Math.ceil(desiredPxTotal) + 'px' };
+      }
+      // pxFixedTotal <= wrapWidth：不强制滚动，保留弹性（不设置 tableWidth）
+      return { cols: scaledCols, needsHScroll: false, tableWidth: undefined };
+    }
+
+    // 否则按原有策略：只有当包含 px 且预计总宽超出容器时触发横向滚动
+    const needsHScroll = !!(wrapWidth && desiredPxTotal > wrapWidth && containsPx);
+    const tableWidth = needsHScroll ? Math.ceil(desiredPxTotal) + 'px' : undefined;
+
+    return { cols: scaledCols, needsHScroll, tableWidth };
+  }, [columns, wrapWidth, showCheckbox, preservePxAsMin, minColumnPx]);
 
   return (
-    <div className="beaver-table__wrap" ref={wrapRef}>
-      <table className="beaver-table" style={{ tableLayout: hasAnyWidth ? 'fixed' : 'auto' }}>
+    <div
+      className="beaver-table__wrap"
+      ref={wrapRef}
+      style={{ overflowX: computedColumnWidths.needsHScroll ? 'auto' : undefined }}
+    >
+      <table
+        className="beaver-table"
+        style={{ tableLayout: hasAnyWidth ? 'fixed' : 'auto', width: computedColumnWidths.tableWidth }}
+      >
         {hasAnyWidth ? (
           <colgroup>
             {showCheckbox ? <col key="__select_col__" style={{ width: '40px' }} /> : null}
             {columns.map((c) => {
-              const cw = computedColumnWidths.find((x) => x.key === c.key)?.width;
+              const cw = computedColumnWidths.cols.find((x) => x.key === c.key)?.width;
               return <col key={c.key} style={cw ? { width: cw } : undefined} />;
             })}
           </colgroup>
@@ -194,7 +270,7 @@ const Table: React.FC<Props> = ({
               if (process.env.NODE_ENV !== 'production') {
                 console.debug('[Table] column align:', col.key, align);
               }
-              const cw = computedColumnWidths.find((x) => x.key === col.key)?.width;
+              const cw = computedColumnWidths.cols.find((x) => x.key === col.key)?.width;
               return (
                 <th
                   key={col.key}
