@@ -8,26 +8,32 @@ export default {
 };
 
 export const Default = {
+  name: '默认',
   args: {},
 };
 
 export const Checked = {
+  name: '选中',
   args: { defaultChecked: true },
 };
 
 export const WithLabel = {
+  name: '带标签',
   args: { label: 'Option A' },
 };
 
 export const Disabled = {
+  name: '禁用',
   args: { disabled: true, label: 'Option (disabled)' },
 };
 
 export const InputClassName = {
+  name: '输入类名',
   args: { inputClassName: 'custom-radio', label: 'Custom input class' },
 };
 
 export const GroupUncontrolled = {
+  name: '分组（非受控）',
   render: () => (
     <RadioGroup defaultValue="b">
       <Radio value="a" label="Option A" />
@@ -38,6 +44,7 @@ export const GroupUncontrolled = {
 };
 
 export const GroupControlled = {
+  name: '分组（受控）',
   render: () => {
     const Example: React.FC = () => {
       const [val, setVal] = React.useState<string | number>('a');
@@ -54,6 +61,7 @@ export const GroupControlled = {
 };
 
 export const GroupDisabled = {
+  name: '分组（禁用）',
   render: () => (
     <RadioGroup defaultValue="a" disabled>
       <Radio value="a" label="Option A" />
@@ -63,6 +71,7 @@ export const GroupDisabled = {
 };
 
 export const NameBased = {
+  name: '基于 name',
   render: () => (
     <div>
       <Radio name="plain" value="1" label="One" />
@@ -72,6 +81,7 @@ export const NameBased = {
 };
 
 export const GroupVertical = {
+  name: '分组（垂直）',
   render: () => (
     <RadioGroup defaultValue="a" vertical>
       <Radio value="a" label="Option A" />
@@ -82,6 +92,7 @@ export const GroupVertical = {
 };
 
 export const GroupVerticalControlled = {
+  name: '分组（垂直受控）',
   render: () => {
     const Example: React.FC = () => {
       const [val, setVal] = React.useState<string | number>('b');

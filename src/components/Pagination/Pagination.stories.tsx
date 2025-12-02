@@ -19,12 +19,14 @@ export default meta;
 type Story = StoryObj<typeof Pagination>;
 
 export const Default: Story = {
+  name: '默认',
   args: {
     total: 234,
   },
 };
 
 export const WithSizeChanger: Story = {
+  name: '带尺寸切换',
   args: {
     total: 123,
     showSizeChanger: true,
@@ -32,6 +34,7 @@ export const WithSizeChanger: Story = {
 };
 
 export const WithQuickJumper: Story = {
+  name: '带跳转',
   args: {
     total: 78,
     showQuickJumper: true,
@@ -39,6 +42,7 @@ export const WithQuickJumper: Story = {
 };
 
 export const AlignCenter: Story = {
+  name: '居中对齐',
   args: {
     total: 100,
     align: 'center',
@@ -46,6 +50,7 @@ export const AlignCenter: Story = {
 };
 
 export const AlignRight: Story = {
+  name: '右对齐',
   args: {
     total: 100,
     align: 'right',
@@ -53,6 +58,7 @@ export const AlignRight: Story = {
 };
 
 export const WithEnglish: Story = {
+  name: '英文',
   args: {
     total: 150,
     showQuickJumper: true,
@@ -65,6 +71,7 @@ export const WithEnglish: Story = {
 };
 
 export const Disabled: Story = {
+  name: '禁用',
   args: {
     total: 150,
     showQuickJumper: true,
@@ -74,6 +81,7 @@ export const Disabled: Story = {
 };
 
 export const Controlled: Story = {
+  name: '受控',
   render: () => {
     const [page, setPage] = React.useState(3);
     return (

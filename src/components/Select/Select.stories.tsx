@@ -33,6 +33,7 @@ const sampleOptions: SelectOption[] = [
 ];
 
 export const Default: Story = {
+  name: '默认',
   args: {
     options: sampleOptions,
     placeholder: '请选择一个水果',
@@ -40,6 +41,7 @@ export const Default: Story = {
 };
 
 export const Disabled: Story = {
+  name: '禁用',
   args: {
     options: sampleOptions,
     disabled: true,
@@ -47,6 +49,7 @@ export const Disabled: Story = {
 };
 
 export const WithDisabledOption: Story = {
+  name: '带不可选项',
   args: {
     options: [
       { label: '请选择', value: '', disabled: true },
@@ -57,6 +60,7 @@ export const WithDisabledOption: Story = {
 };
 
 export const Small: Story = {
+  name: '小',
   args: {
     options: sampleOptions,
     size: 'small',
@@ -64,6 +68,7 @@ export const Small: Story = {
 };
 
 export const Large: Story = {
+  name: '大',
   args: {
     options: sampleOptions,
     size: 'large',
@@ -71,6 +76,7 @@ export const Large: Story = {
 };
 
 export const Loading: Story = {
+  name: '加载中',
   args: {
     options: sampleOptions,
     placeholder: '加载中...',
@@ -79,6 +85,7 @@ export const Loading: Story = {
 };
 
 export const Searchable: Story = {
+  name: '可搜索',
   args: {
     options: sampleOptions,
     placeholder: '搜索并选择水果',
@@ -87,6 +94,7 @@ export const Searchable: Story = {
 };
 
 export const AllowCreate: Story = {
+  name: '允许创建',
   args: {
     options: sampleOptions,
     placeholder: '输入不存在的项并回车创建',
@@ -97,6 +105,7 @@ export const AllowCreate: Story = {
 };
 
 export const AllowCreateControlled: Story = {
+  name: '允许创建（受控）',
   args: {
     options: sampleOptions,
     placeholder: 'Controlled: 可以创建',
@@ -120,6 +129,7 @@ export const AllowCreateControlled: Story = {
 };
 
 export const Controlled: Story = {
+  name: '受控',
   args: {
     options: sampleOptions,
     placeholder: '请选择',
@@ -140,6 +150,7 @@ export const Controlled: Story = {
 };
 
 export const CustomIcon: Story = {
+  name: '自定义图标',
   render: (args: React.ComponentProps<typeof Select>) => {
     // 更明显不同的图标：圆环外框 + 向下实心 caret，视觉上与默认 chevron 区分明显
     const MyArrow = (
@@ -157,6 +168,7 @@ export const CustomIcon: Story = {
 };
 
 export const CustomLoadingAndOffset: Story = {
+  name: '自定义加载与偏移',
   render: (args: React.ComponentProps<typeof Select>) => {
     const MySpinner = (
       <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -188,6 +200,7 @@ export const CustomLoadingAndOffset: Story = {
 };
 
 export const Multiple: Story = {
+  name: '多选',
   args: {
     options: sampleOptions,
     placeholder: '请选择多个水果',
@@ -207,6 +220,7 @@ export const Multiple: Story = {
 };
 
 export const MultipleFilterSelected: Story = {
+  name: '多选（过滤已选）',
   args: {
     options: sampleOptions,
     placeholder: '多选并隐藏已选项，选中后关闭',

@@ -199,18 +199,25 @@ const userCss = `
   `;
 
 const DefaultTemplate = (args: any) => <Table columns={columns} data={data} rowKey="id" {...args} />;
-export const Default = DefaultTemplate.bind({});
-(Default as any).args = {};
+export const Default = {
+  name: '默认',
+  render: DefaultTemplate,
+  args: {},
+};
 
 const WithCheckboxesTemplate = (args: any) => <Table columns={columns} data={data} rowKey="id" {...args} />;
-export const WithCheckboxes = WithCheckboxesTemplate.bind({});
-(WithCheckboxes as any).args = {
-  showCheckbox: true,
+export const WithCheckboxes = {
+  name: '带复选框',
+  render: WithCheckboxesTemplate,
+  args: { showCheckbox: true },
 };
 
 const AlignDemoTemplate = (args: any) => <Table columns={columnsWithAlign} data={data} rowKey="id" {...args} />;
-export const AlignDemo = AlignDemoTemplate.bind({});
-(AlignDemo as any).args = {};
+export const AlignDemo = {
+  name: '对齐演示',
+  render: AlignDemoTemplate,
+  args: {},
+};
 
 const PXTemplate = (args: any) => (
   <div>
@@ -218,8 +225,11 @@ const PXTemplate = (args: any) => (
     <Table columns={columnsWithPx} data={data} rowKey="id" {...args} />
   </div>
 );
-export const CustomWidths_PX = PXTemplate.bind({});
-(CustomWidths_PX as any).args = {};
+export const CustomWidths_PX = {
+  name: '自定义宽度 - 像素',
+  render: PXTemplate,
+  args: {},
+};
 
 const PercentTemplate = (args: any) => (
   <div>
@@ -227,8 +237,11 @@ const PercentTemplate = (args: any) => (
     <Table columns={columnsWithPercent} data={data} rowKey="id" {...args} />
   </div>
 );
-export const CustomWidths_Percent = PercentTemplate.bind({});
-(CustomWidths_Percent as any).args = {};
+export const CustomWidths_Percent = {
+  name: '自定义宽度 - 百分比',
+  render: PercentTemplate,
+  args: {},
+};
 
 const MixTemplate = (args: any) => (
   <div>
@@ -240,10 +253,13 @@ const MixTemplate = (args: any) => (
   </div>
 );
 
-export const CustomWidths_Mix = MixTemplate.bind({});
-(CustomWidths_Mix as any).args = {
-  preservePxAsMin: false,
-  minColumnPx: 80,
+export const CustomWidths_Mix = {
+  name: '混合宽度',
+  render: MixTemplate,
+  args: {
+    preservePxAsMin: false,
+    minColumnPx: 80,
+  },
 };
 
 const ControlledSelectionTemplate = (args: any) => {
@@ -262,9 +278,10 @@ const ControlledSelectionTemplate = (args: any) => {
     </div>
   );
 };
-export const ControlledSelection = ControlledSelectionTemplate.bind({});
-(ControlledSelection as any).args = {
-  showCheckbox: true,
+export const ControlledSelection = {
+  name: '受控选择',
+  render: ControlledSelectionTemplate,
+  args: { showCheckbox: true },
 };
 
 const UserInjectedStylesTemplate = (args: any) => {
@@ -291,8 +308,11 @@ const UserInjectedStylesTemplate = (args: any) => {
     </div>
   );
 };
-export const UserInjectedStyles = UserInjectedStylesTemplate.bind({});
-(UserInjectedStyles as any).args = {};
+export const UserInjectedStyles = {
+  name: '用户注入样式',
+  render: UserInjectedStylesTemplate,
+  args: {},
+};
 
 const ColumnLevelRenderTemplate = (args: any) => {
   const colsWithRender: Column[] = columns.map((c) =>
@@ -314,5 +334,8 @@ const ColumnLevelRenderTemplate = (args: any) => {
     </div>
   );
 };
-export const ColumnLevelRender = ColumnLevelRenderTemplate.bind({});
-(ColumnLevelRender as any).args = {};
+export const ColumnLevelRender = {
+  name: '列级渲染',
+  render: ColumnLevelRenderTemplate,
+  args: {},
+};

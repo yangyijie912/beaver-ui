@@ -18,21 +18,26 @@ const meta: Meta<typeof Input> = {
 export default meta;
 
 export const Default = {
+  name: '默认',
   args: { placeholder: 'Type here' },
 };
 
 export const WithValue = {
+  name: '有值',
   args: { defaultValue: 'Hello' },
 };
 
 export const Disabled = {
+  name: '禁用',
   args: { placeholder: 'Disabled', disabled: true },
 };
 
 export const Error = {
+  name: '错误',
   args: { placeholder: 'Error', validation: 'error' },
 };
 
 export const Textarea = {
+  name: '多行',
   args: { textarea: true, placeholder: 'Type here...' },
 };

@@ -7,10 +7,12 @@ export default {
 };
 
 export const Default = {
+  name: '默认',
   args: {},
 };
 
 export const Controlled = {
+  name: '受控',
   render: (args: any) => {
     const [val, setVal] = React.useState(true);
     return <Switch {...args} checked={val} onChange={(c: boolean) => setVal(c)} />;
@@ -18,14 +20,17 @@ export const Controlled = {
 };
 
 export const Disabled = {
+  name: '禁用',
   args: { disabled: true },
 };
 
 export const Loading = {
+  name: '加载中',
   args: { loading: true },
 };
 
 export const Sizes = {
+  name: '尺寸',
   render: () => (
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
       <Switch size="sm" defaultChecked />
@@ -36,6 +41,7 @@ export const Sizes = {
 };
 
 export const WithIconsAndText = {
+  name: '带图标与文本',
   render: () => (
     <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
       <Switch
