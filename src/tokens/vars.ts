@@ -89,6 +89,12 @@ export const vars = {
       // 分页专属边框色（优先于全局 border）
       border: '#d1d5db',
     },
+    table: {
+      // 表格相关变量：表头背景、行 hover 背景
+      'header-bg': '#f8fafc',
+      'row-hover-bg': '#ecf4fe',
+      'selected-bg': '#f7fcfe',
+    },
   },
 };
 

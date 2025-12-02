@@ -55,4 +55,7 @@
   --beaver-pagination-font-size: 14px;
   --beaver-pagination-input-width: 48px;
   --beaver-pagination-border: #d1d5db;
+  --beaver-table-header-bg: #f8fafc;
+  --beaver-table-row-hover-bg: #ecf4fe;
+  --beaver-table-selected-bg: #f7fcfe;
 }

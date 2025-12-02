@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import './Checkbox.css';
 
 export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
@@ -31,7 +31,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       }
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (localRef.current && 'indeterminate' in localRef.current) {
         // 设置 DOM 属性，以便浏览器在支持的情况下视觉上渲染中间态
         localRef.current.indeterminate = !!indeterminate;
