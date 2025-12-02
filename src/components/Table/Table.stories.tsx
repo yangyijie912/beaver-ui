@@ -14,6 +14,9 @@ export default {
     showCheckbox: { control: 'boolean' },
     preservePxAsMin: { control: 'boolean' },
     minColumnPx: { control: 'number' },
+    fixedHeader: { control: 'boolean' },
+    fixedColumnCount: { control: 'number' },
+    fixedRightCount: { control: 'number' },
   },
 };
 
@@ -48,17 +51,6 @@ const columnsWithPx: Column[] = [
   { key: 'sales', title: '销售额', width: '100px' },
   { key: 'orderDate', title: '订单日期', width: '150px' },
   { key: 'statusName', title: '状态', width: '100px' },
-];
-
-const columnsWithPercent: Column[] = [
-  { key: 'unique_id', title: 'ID编号', width: '10%' },
-  { key: 'orderNumber', title: '订单号', width: '10%' },
-  { key: 'quantityOrdered', title: '订购数量', width: '10%' },
-  { key: 'priceEach', title: '单价', width: '10%' },
-  { key: 'orderGoods', title: '订单货物', width: '40%' },
-  { key: 'sales', title: '销售额', width: '10%' },
-  { key: 'orderDate', title: '订单日期', width: '10%' },
-  { key: 'statusName', title: '状态', width: '10%' },
 ];
 
 const columnsWithMix: Column[] = [
@@ -214,52 +206,9 @@ export const WithCheckboxes = {
 
 const AlignDemoTemplate = (args: any) => <Table columns={columnsWithAlign} data={data} rowKey="id" {...args} />;
 export const AlignDemo = {
-  name: '对齐演示',
+  name: '对齐方式',
   render: AlignDemoTemplate,
   args: {},
-};
-
-const PXTemplate = (args: any) => (
-  <div>
-    <div style={{ marginBottom: 12 }}>固定宽度示例（宽度和内容无关）</div>
-    <Table columns={columnsWithPx} data={data} rowKey="id" {...args} />
-  </div>
-);
-export const CustomWidths_PX = {
-  name: '自定义宽度 - 像素',
-  render: PXTemplate,
-  args: {},
-};
-
-const PercentTemplate = (args: any) => (
-  <div>
-    <div style={{ marginBottom: 12 }}>百分比宽度示例（根据表格宽度自适应变化）</div>
-    <Table columns={columnsWithPercent} data={data} rowKey="id" {...args} />
-  </div>
-);
-export const CustomWidths_Percent = {
-  name: '自定义宽度 - 百分比',
-  render: PercentTemplate,
-  args: {},
-};
-
-const MixTemplate = (args: any) => (
-  <div>
-    <div style={{ marginBottom: 12 }}>
-      <p>混合宽度示例</p>
-      <p>preservePxAsMin = false：只要包含 px 列且总宽超出容器就触发横向滚动</p>
-    </div>
-    <Table columns={columnsWithMix} data={data} rowKey="id" showCheckbox {...args} />
-  </div>
-);
-
-export const CustomWidths_Mix = {
-  name: '混合宽度',
-  render: MixTemplate,
-  args: {
-    preservePxAsMin: false,
-    minColumnPx: 80,
-  },
 };
 
 const ControlledSelectionTemplate = (args: any) => {
@@ -284,7 +233,85 @@ export const ControlledSelection = {
   args: { showCheckbox: true },
 };
 
-const UserInjectedStylesTemplate = (args: any) => {
+const MixTemplate = (args: any) => (
+  <div>
+    <div style={{ marginBottom: 12 }}>
+      <p>自定义宽度示例</p>
+      <p>可以尝试更改 preservePxAsMin 参数查看</p>
+      <p>preservePxAsMin = false：只要包含 px 列且总宽超出容器就触发横向滚动</p>
+    </div>
+    <Table columns={columnsWithMix} data={data} rowKey="id" showCheckbox {...args} />
+  </div>
+);
+
+export const CustomWidths = {
+  name: '自定义宽度',
+  render: MixTemplate,
+  args: {
+    preservePxAsMin: true,
+    minColumnPx: 80,
+  },
+};
+
+// 固定表头示例：将表格放在一个固定高度的容器中以演示 sticky header
+const FixedHeaderTemplate = (args: any) => {
+  // 制造更多行以便出现纵向滚动（确保每条记录有唯一 id）
+  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
+    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+  );
+  return (
+    <div style={{ height: 240, overflow: 'auto', border: '1px solid rgba(0,0,0,0.04)', borderRadius: 6 }}>
+      <Table columns={columns} data={many} rowKey="id" fixedHeader {...args} />
+    </div>
+  );
+};
+
+export const FixedHeader = {
+  name: '固定表头',
+  render: FixedHeaderTemplate,
+  args: {},
+};
+
+// 同时固定左右两侧列示例
+const FixedBothSidesTemplate = (args: any) => (
+  <div style={{ maxWidth: 1000 }}>
+    <Table
+      columns={columnsWithPx}
+      data={data}
+      rowKey="id"
+      showCheckbox
+      fixedColumnCount={1}
+      fixedRightCount={2}
+      {...args}
+    />
+  </div>
+);
+
+export const FixedBothSides = {
+  name: '左右固定列',
+  render: FixedBothSidesTemplate,
+  args: {},
+};
+
+// 同时固定表头与左列
+const FixedHeaderAndColumnsTemplate = (args: any) => {
+  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
+    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+  );
+  return (
+    <div style={{ height: 240, overflow: 'auto', border: '1px solid rgba(0,0,0,0.04)', borderRadius: 6 }}>
+      <Table columns={columnsWithPx} data={many} rowKey="id" showCheckbox fixedHeader fixedColumnCount={2} {...args} />
+    </div>
+  );
+};
+
+export const FixedHeaderAndColumns = {
+  name: '固定表头 & 左列',
+  render: FixedHeaderAndColumnsTemplate,
+  args: {},
+};
+
+const RenderCellInjectedStylesTemplate = (args: any) => {
   return (
     <div>
       <style>{userCss}</style>
@@ -308,9 +335,9 @@ const UserInjectedStylesTemplate = (args: any) => {
     </div>
   );
 };
-export const UserInjectedStyles = {
-  name: '用户注入样式',
-  render: UserInjectedStylesTemplate,
+export const RenderCellInjectedStyles = {
+  name: 'renderCell渲染',
+  render: RenderCellInjectedStylesTemplate,
   args: {},
 };
 
@@ -337,60 +364,6 @@ const ColumnLevelRenderTemplate = (args: any) => {
 export const ColumnLevelRender = {
   name: '列级渲染',
   render: ColumnLevelRenderTemplate,
-  args: {},
-};
-
-// 跨行/跨列示例
-const spanColumns: Column[] = [
-  { key: 'unique_id', title: 'ID编号' },
-  { key: 'orderNumber', title: '订单号' },
-  { key: 'quantityOrdered', title: '订购数量' },
-  { key: 'priceEach', title: '单价' },
-];
-
-const dataWithSpans = [
-  {
-    id: 'r1',
-    unique_id: { value: 1, rowSpan: 2 },
-    orderNumber: { value: 'ORD-100', colSpan: 2 },
-    quantityOrdered: 10,
-    priceEach: 9.9,
-  },
-  {
-    id: 'r2',
-    // unique_id 被上行 rowSpan 覆盖，这里无需提供 unique_id
-    orderNumber: 'ORD-101',
-    quantityOrdered: 2,
-    priceEach: 19.9,
-  },
-  {
-    id: 'r3',
-    unique_id: 3,
-    orderNumber: { value: 'MULTI-COL', colSpan: 3 },
-    quantityOrdered: 5,
-    priceEach: 29.9,
-  },
-  {
-    id: 'r4',
-    unique_id: 4,
-    orderNumber: 'ORD-200',
-    quantityOrdered: 8,
-    priceEach: 39.9,
-  },
-];
-
-const SpanDemoTemplate = (args: any) => (
-  <div>
-    <div style={{ marginBottom: 12 }}>
-      演示如何在数据中为单元格提供 <code>{`{ value, colSpan, rowSpan }`}</code> 来控制合并。
-    </div>
-    <Table columns={spanColumns} data={dataWithSpans} rowKey="id" {...args} />
-  </div>
-);
-
-export const SpanDemo = {
-  name: '跨行/跨列 演示',
-  render: SpanDemoTemplate,
   args: {},
 };
 

@@ -1,24 +1,33 @@
-.beaver-table__wrap {
-  /*
+/*
     表格外层容器：
     - 使用设计 tokens 提供的背景与圆角
-    - overflow: auto 以便在列宽过大时出现横向滚动
+    - 内部通过组件行内样式控制 overflow（避免创建独立滚动上下文，保证 sticky 生效）
   */
+.beaver-table__wrap {
   background: var(--beaver-color-bg);
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: var(--beaver-radius-sm);
-  overflow: auto;
+  overflow: visible;
 }
 
 .beaver-table {
   width: 100%;
-  border-collapse: collapse;
+  /* 使用 separate 避免在同时固定表头和固定列时 border-collapse 导致的 sticky 行为异常 */
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: var(--beaver-font-size-md);
   color: var(--beaver-color-text);
 }
 
+/* 确保宽度包括 padding/border，这样列宽与单元格内容匹配 */
+.beaver-table,
+.beaver-table th,
+.beaver-table td {
+  box-sizing: border-box;
+}
+
 .beaver-table thead th {
-  /* 表头单元格样式：较小字体、半粗体、与内容单元格不同的内边距 */
+  /* 表头单元格样式 */
   text-align: left;
   font-weight: 600;
   padding: 12px 16px;
@@ -27,8 +36,17 @@
   font-size: 12px;
 }
 
-/* 防止内容在固定布局下溢出并重叠：使用单行省略回退。
-   但不要对选择列（复选框列）应用省略，至少让用户能看见该列存在。 */
+/* 固定表头 */
+.beaver-table--fixed-header thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* 表头应高于粘性列，由样式表统一控制 */
+  background: var(--beaver-table-header-bg, #f8fafc) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  color: rgba(51, 51, 51, 0.85);
+}
+
+/* 防止内容在固定布局下溢出并重叠 */
 .beaver-table thead th:not(.beaver-table__select-col),
 .beaver-table tbody td:not(.beaver-table__select-col) {
   white-space: nowrap;
@@ -44,26 +62,79 @@
   width: 40px;
 }
 
-/* header 背景色，浅灰以区分内容区域 */
+/* header 背景色 */
 .beaver-table thead {
-  /* 表头背景色：可从 tokens 中抽象配置（已在 vars.ts 中添加） */
   background: var(--beaver-table-header-bg, #f8fafc);
 }
 
+/* 复选框列宽与内边距 */
 .beaver-table__select-col {
-  /* 复选框列宽与内边距：为复选框留出稳定宽度 */
   width: 40px;
   padding: 8px 12px;
 }
 
-.beaver-table__th--center,
-.beaver-table__td--center {
-  text-align: center;
+/* 固定列样式：为粘性列提供背景、分隔阴影与层级规则 */
+.beaver-table thead .beaver-table__cell--sticky,
+.beaver-table thead .beaver-table__cell--sticky--left,
+.beaver-table thead .beaver-table__cell--sticky--right {
+  background: var(--beaver-table-header-bg, #f8fafc);
 }
-.beaver-table__th--right,
-.beaver-table__td--right {
-  text-align: right;
+
+.beaver-table tbody .beaver-table__cell--sticky,
+.beaver-table tbody .beaver-table__cell--sticky--left,
+.beaver-table tbody .beaver-table__cell--sticky--right {
+  background: var(--beaver-table-fixed-bg, #fff);
+  z-index: 200; /* body 粘性单元格层级（低于表头） */
+  background-clip: padding-box;
+  transition:
+    box-shadow 160ms ease,
+    background 160ms ease;
 }
+
+/* 细化层级：确保边缘粘性单元格覆盖内部相邻粘性单元格，但仍低于表头 */
+.beaver-table tbody .beaver-table__cell--sticky--left,
+.beaver-table tbody .beaver-table__cell--sticky--right {
+  z-index: 210;
+}
+
+.beaver-table__cell--sticky-edge-left,
+.beaver-table__cell--sticky-edge-right {
+  z-index: 220; /* 稍高以覆盖相邻粘性单元格的缝隙阴影 */
+}
+
+/* 表头粘性单元格应高于表体粘性单元格，避免被表体粘性列遮挡 */
+.beaver-table--fixed-header thead .beaver-table__cell--sticky,
+.beaver-table--fixed-header thead .beaver-table__cell--sticky--left,
+.beaver-table--fixed-header thead .beaver-table__cell--sticky--right {
+  z-index: 1100;
+}
+
+/* 边缘粘性单元格保持稍强的分隔效果 */
+.beaver-table__cell--sticky-edge-left {
+  box-shadow: 2px 0 8px -6px rgba(0, 0, 0, 0.08);
+  position: relative;
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* 内侧左侧粘性单元格：在右边缘添加微妙的内阴影 */
+.beaver-table tbody .beaver-table__cell--sticky--left:not(.beaver-table__cell--sticky-edge-left) {
+  box-shadow: inset -3px 0 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+/* 内侧右侧粘性单元格：在左边缘添加微妙的内阴影 */
+.beaver-table tbody .beaver-table__cell--sticky--right:not(.beaver-table__cell--sticky-edge-right) {
+  box-shadow: inset 3px 0 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+/* （已合并到上方） */
+
+/* 注意：侧边覆盖的伪元素在下方单独定义，避免使用大的公共规则导致视觉错位。 */
+.beaver-table__cell--sticky-edge-right {
+  box-shadow: -2px 0 8px -6px rgba(0, 0, 0, 0.08);
+  position: relative;
+  border-left: 1px solid rgba(0, 0, 0, 0.04);
+}
+
 .beaver-table__th--left,
 .beaver-table__td--left {
   text-align: left !important;
@@ -84,12 +155,19 @@
   background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
 }
 
+/* 使粘性列在行 hover 或选中时也能显式变化，保持一致性 */
+.beaver-table tbody tr:hover .beaver-table__cell--sticky--left,
+.beaver-table tbody tr:hover .beaver-table__cell--sticky--right,
+.beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--left,
+.beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--right {
+  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+}
+
 /* 当表格处于可选择行模式时，使整行可点击的光标提示 */
 .beaver-table__row--clickable {
   cursor: pointer;
 }
 
-/* small niceties */
 .beaver-table__td {
   color: var(--beaver-color-text);
 }
