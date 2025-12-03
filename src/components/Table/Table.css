@@ -6,6 +6,7 @@
 .beaver-table__wrap {
   background: var(--beaver-color-bg);
   border: 1px solid rgba(0, 0, 0, 0.06);
+  border-right: none; /* 移除右边框以避免滚动条产生的视觉线条 */
   border-radius: var(--beaver-radius-sm);
   overflow: visible;
 }
