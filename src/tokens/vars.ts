@@ -94,6 +94,11 @@ export const vars = {
       'header-bg': '#f8fafc',
       'row-hover-bg': '#ecf4fe',
       'selected-bg': '#f7fcfe',
+      // 表格固定（粘性）列的背景
+      'fixed-bg': '#ffffff',
+      // 层级：表头与粘性列的 z-index
+      'z-index-header': '3000',
+      'z-index-sticky': '1000',
     },
   },
 };

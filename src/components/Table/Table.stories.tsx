@@ -275,44 +275,49 @@ export const FixedHeader = {
   args: {},
 };
 
-// // 同时固定左右两侧列示例
-// const FixedBothSidesTemplate = (args: TableArgs) => (
-//   <div style={{ maxWidth: 1000 }}>
-//     <Table
-//       columns={columnsWithPx}
-//       data={data}
-//       rowKey="id"
-//       showCheckbox
-//       fixedColumnCount={1}
-//       fixedRightCount={2}
-//       {...args}
-//     />
-//   </div>
-// );
+// 同时固定左右两侧列示例
+const FixedBothSidesTemplate = (args: TableArgs) => (
+  <Table
+    columns={columnsWithPx}
+    data={data}
+    rowKey="id"
+    showCheckbox
+    fixedColumnCount={1}
+    fixedRightCount={2}
+    {...args}
+  />
+);
 
-// export const FixedBothSides = {
-//   name: '左右固定列',
-//   render: FixedBothSidesTemplate,
-//   args: {},
-// };
+export const FixedBothSides = {
+  name: '左右固定列',
+  render: FixedBothSidesTemplate,
+  args: {},
+};
 
-// // 同时固定表头与左列
-// const FixedHeaderAndColumnsTemplate = (args: TableArgs) => {
-//   const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
-//     data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
-//   );
-//   return (
-//     <div style={{ height: 240, overflow: 'auto' }}>
-//       <Table columns={columnsWithPx} data={many} rowKey="id" showCheckbox fixedHeader fixedColumnCount={2} {...args} />
-//     </div>
-//   );
-// };
+// 同时固定表头与左列
+const FixedHeaderAndColumnsTemplate = (args: TableArgs) => {
+  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
+    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+  );
+  return (
+    <Table
+      columns={columnsWithPx}
+      data={many}
+      rowKey="id"
+      showCheckbox
+      fixedHeader
+      fixedColumnCount={2}
+      maxHeight={240}
+      {...args}
+    />
+  );
+};
 
-// export const FixedHeaderAndColumns = {
-//   name: '固定表头 & 左列',
-//   render: FixedHeaderAndColumnsTemplate,
-//   args: {},
-// };
+export const FixedHeaderAndColumns = {
+  name: '固定表头 & 左列',
+  render: FixedHeaderAndColumnsTemplate,
+  args: {},
+};
 
 const RenderCellInjectedStylesTemplate = (args: TableArgs) => {
   return (

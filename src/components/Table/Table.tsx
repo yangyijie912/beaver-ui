@@ -46,6 +46,10 @@ type Props = {
   headerOffset?: number;
   /** 表格容器最大高度，设置后启用纵向滚动以配合粘性表头。示例：300 或 '50vh' */
   maxHeight?: number | string;
+  /** 固定左侧的列数量（不含选择列），默认 0 */
+  fixedColumnCount?: number;
+  /** 固定右侧的列数量，默认 0 */
+  fixedRightCount?: number;
 };
 
 const Table: React.FC<Props> = ({
@@ -62,6 +66,8 @@ const Table: React.FC<Props> = ({
   fixedHeader = false,
   headerOffset = 0,
   maxHeight,
+  fixedColumnCount = 0,
+  fixedRightCount = 0,
 }) => {
   const [internalSelected, setInternalSelected] = useState<Record<string, boolean>>({});
   const isControlled = Array.isArray(selectedKeys);
@@ -241,6 +247,44 @@ const Table: React.FC<Props> = ({
     return { cols: scaledCols, needsHScroll, tableWidth };
   }, [columns, wrapWidth, showCheckbox, preservePxAsMin, minColumnPx]);
 
+  // 计算左右固定列的像素偏移
+  const columnPxOffsets = React.useMemo(() => {
+    const MIN_PX_PER_UNSPECIFIED = typeof minColumnPx === 'number' && minColumnPx > 0 ? minColumnPx : 80;
+
+    const perColPx: number[] = columns.map((c) => {
+      const w = computedColumnWidths.cols.find((x) => x.key === c.key)?.width || c.width;
+      if (!w) return MIN_PX_PER_UNSPECIFIED;
+      const ws = String(w).trim();
+      if (ws.endsWith('px')) {
+        const n = parseFloat(ws.slice(0, -2));
+        return Number.isNaN(n) ? MIN_PX_PER_UNSPECIFIED : n;
+      }
+      if (ws.endsWith('%') && wrapWidth && wrapWidth > 0) {
+        const n = parseFloat(ws.slice(0, -1));
+        return Number.isNaN(n) ? MIN_PX_PER_UNSPECIFIED : (n / 100) * wrapWidth;
+      }
+      return MIN_PX_PER_UNSPECIFIED;
+    });
+
+    const checkboxPx = showCheckbox ? 40 : 0;
+
+    const leftOffsets: number[] = new Array(columns.length).fill(0);
+    let acc = checkboxPx;
+    for (let i = 0; i < columns.length; i++) {
+      leftOffsets[i] = acc;
+      acc += perColPx[i];
+    }
+
+    const rightOffsets: number[] = new Array(columns.length).fill(0);
+    acc = 0;
+    for (let i = columns.length - 1; i >= 0; i--) {
+      rightOffsets[i] = acc;
+      acc += perColPx[i];
+    }
+
+    return { leftOffsets, rightOffsets };
+  }, [columns, computedColumnWidths, wrapWidth, showCheckbox, minColumnPx]);
+
   return (
     <div
       className="beaver-table__wrap"
@@ -248,6 +292,8 @@ const Table: React.FC<Props> = ({
       style={{
         overflowX: computedColumnWidths.needsHScroll ? 'auto' : undefined,
         overflowY: fixedHeader ? 'auto' : undefined,
+        // 为固定表头场景提供滚动条安全内边距，避免遮挡内容
+        paddingBottom: fixedHeader ? 12 : undefined,
         maxHeight:
           fixedHeader && maxHeight != null ? (typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight) : undefined,
       }}
@@ -270,16 +316,23 @@ const Table: React.FC<Props> = ({
           <tr>
             {showCheckbox ? (
               <th
-                className="beaver-table__select-col"
+                className={`beaver-table__select-col ${
+                  fixedColumnCount > 0
+                    ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
+                    : ''
+                }`}
                 style={
                   fixedHeader
                     ? {
-                        position: 'sticky',
+                        position: fixedColumnCount > 0 ? 'sticky' : undefined,
                         top: headerOffset,
-                        zIndex: 1000,
+                        zIndex: 1100,
+                        ...(fixedColumnCount > 0 ? { left: 0 } : {}),
                         background: 'var(--beaver-table-header-bg, #f8fafc)',
                       }
-                    : undefined
+                    : fixedColumnCount > 0
+                      ? { position: 'sticky', left: 0 }
+                      : undefined
                 }
               >
                 <span onClick={(e) => e.stopPropagation()}>
@@ -293,12 +346,29 @@ const Table: React.FC<Props> = ({
               </th>
             ) : null}
 
-            {columns.map((col) => {
+            {columns.map((col, colIdx) => {
               const align = col.align ?? defaultAlign ?? 'left';
               if (process.env.NODE_ENV !== 'production') {
                 console.debug('[Table] column align:', col.key, align);
               }
               const cw = computedColumnWidths.cols.find((x) => x.key === col.key)?.width;
+              const isStickyLeft = fixedColumnCount > 0 && colIdx < fixedColumnCount;
+              const isStickyRight = fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount;
+              const stickyStyle: React.CSSProperties = {};
+              const stickyClasses: string[] = [];
+              if (isStickyLeft) {
+                stickyStyle.position = 'sticky';
+                stickyStyle.left = columnPxOffsets.leftOffsets[colIdx];
+                stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--left');
+                if (colIdx === fixedColumnCount - 1) stickyClasses.push('beaver-table__cell--sticky-edge-left');
+              }
+              if (isStickyRight) {
+                stickyStyle.position = 'sticky';
+                stickyStyle.right = columnPxOffsets.rightOffsets[colIdx];
+                stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--right');
+                if (colIdx === columns.length - fixedRightCount)
+                  stickyClasses.push('beaver-table__cell--sticky-edge-right');
+              }
               return (
                 <th
                   key={col.key}
@@ -313,8 +383,9 @@ const Table: React.FC<Props> = ({
                           background: 'var(--beaver-table-header-bg, #f8fafc)',
                         }
                       : {}),
+                    ...stickyStyle,
                   }}
-                  className={`beaver-table__th beaver-table__th--${align}`}
+                  className={`beaver-table__th beaver-table__th--${align} ${stickyClasses.join(' ')}`}
                 >
                   {col.title}
                 </th>
@@ -344,7 +415,15 @@ const Table: React.FC<Props> = ({
               // 处理复选框列（固定存在于每一行的首列）
               if (showCheckbox) {
                 cells.push(
-                  <td key={`__select_${key}`} className="beaver-table__select-col">
+                  <td
+                    key={`__select_${key}`}
+                    className={`beaver-table__select-col ${
+                      fixedColumnCount > 0
+                        ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
+                        : ''
+                    }`}
+                    style={fixedColumnCount > 0 ? { position: 'sticky', left: 0 } : undefined}
+                  >
                     <span onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                         checked={isSelected}
@@ -415,8 +494,26 @@ const Table: React.FC<Props> = ({
                 cells.push(
                   <td
                     key={`${col.key}_${colIdx}`}
-                    className={`beaver-table__td beaver-table__td--${align}`}
-                    style={{ textAlign: align }}
+                    className={`beaver-table__td beaver-table__td--${align} ${
+                      fixedColumnCount > 0 && colIdx < fixedColumnCount
+                        ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left' +
+                          (colIdx === fixedColumnCount - 1 ? ' beaver-table__cell--sticky-edge-left' : '')
+                        : fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
+                          ? 'beaver-table__cell--sticky beaver-table__cell--sticky--right' +
+                            (colIdx === columns.length - fixedRightCount
+                              ? ' beaver-table__cell--sticky-edge-right'
+                              : '')
+                          : ''
+                    }`}
+                    style={{
+                      textAlign: align,
+                      ...(fixedColumnCount > 0 && colIdx < fixedColumnCount
+                        ? { position: 'sticky', left: columnPxOffsets.leftOffsets[colIdx] }
+                        : {}),
+                      ...(fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
+                        ? { position: 'sticky', right: columnPxOffsets.rightOffsets[colIdx] }
+                        : {}),
+                    }}
                     {...(colSpan > 1 ? { colSpan } : {})}
                     {...(rowSpan > 1 ? { rowSpan } : {})}
                   >

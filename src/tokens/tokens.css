@@ -58,4 +58,7 @@
   --beaver-table-header-bg: #f8fafc;
   --beaver-table-row-hover-bg: #ecf4fe;
   --beaver-table-selected-bg: #f7fcfe;
+  --beaver-table-fixed-bg: #ffffff;
+  --beaver-table-z-index-header: 3000;
+  --beaver-table-z-index-sticky: 1000;
 }

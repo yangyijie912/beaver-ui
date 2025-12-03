@@ -40,8 +40,10 @@
 .beaver-table--fixed-header thead th {
   position: sticky;
   top: 0;
-  z-index: 1000; /* 表头应高于粘性列，由样式表统一控制 */
+  z-index: var(--beaver-table-z-index-header, 3000); /* 使用变量以便外部统一调节 */
   background: var(--beaver-table-header-bg, #f8fafc);
+  background-clip: padding-box; /* 防止阴影/边框被裁剪时出现视觉穿透 */
+  /* 恢复原始视觉：轻微投影，而非边框 */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   color: rgba(51, 51, 51, 0.85);
 }
@@ -60,6 +62,23 @@
   overflow: visible;
   text-overflow: clip;
   width: 40px;
+  background: var(--beaver-table-fixed-bg, #fff);
+}
+
+/* 即使不固定，也保持与表头/行一致的视觉 */
+.beaver-table thead .beaver-table__select-col {
+  background: var(--beaver-table-header-bg, #f8fafc);
+}
+
+.beaver-table tbody tr:hover .beaver-table__select-col {
+  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+}
+.beaver-table tbody tr.beaver-table__row--selected .beaver-table__select-col {
+  background: var(--beaver-table-selected-bg, #f7fcfe);
+}
+/* 选中后再 hover，应以 hover 背景为准 */
+.beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__select-col {
+  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
 }
 
 /* header 背景色 */
@@ -84,55 +103,50 @@
 .beaver-table tbody .beaver-table__cell--sticky--left,
 .beaver-table tbody .beaver-table__cell--sticky--right {
   background: var(--beaver-table-fixed-bg, #fff);
-  z-index: 200; /* body 粘性单元格层级（低于表头） */
+  z-index: var(--beaver-table-z-index-sticky, 1000);
   background-clip: padding-box;
-  transition:
-    box-shadow 160ms ease,
-    background 160ms ease;
 }
 
 /* 细化层级：确保边缘粘性单元格覆盖内部相邻粘性单元格，但仍低于表头 */
 .beaver-table tbody .beaver-table__cell--sticky--left,
 .beaver-table tbody .beaver-table__cell--sticky--right {
-  z-index: 210;
+  z-index: 650;
 }
 
 .beaver-table__cell--sticky-edge-left,
 .beaver-table__cell--sticky-edge-right {
-  z-index: 220; /* 稍高以覆盖相邻粘性单元格的缝隙阴影 */
+  z-index: 700; /* 更高以覆盖相邻粘性单元格的缝隙阴影 */
 }
 
 /* 表头粘性单元格应高于表体粘性单元格，避免被表体粘性列遮挡 */
 .beaver-table--fixed-header thead .beaver-table__cell--sticky,
 .beaver-table--fixed-header thead .beaver-table__cell--sticky--left,
 .beaver-table--fixed-header thead .beaver-table__cell--sticky--right {
-  z-index: 1100;
+  z-index: calc(var(--beaver-table-z-index-header, 3000) + 50);
 }
 
 /* 边缘粘性单元格保持稍强的分隔效果 */
 .beaver-table__cell--sticky-edge-left {
-  box-shadow: 2px 0 8px -6px rgba(0, 0, 0, 0.08);
   position: relative;
-  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 /* 内侧左侧粘性单元格：在右边缘添加微妙的内阴影 */
 .beaver-table tbody .beaver-table__cell--sticky--left:not(.beaver-table__cell--sticky-edge-left) {
-  box-shadow: inset -3px 0 6px -4px rgba(0, 0, 0, 0.04);
+  border-right: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 /* 内侧右侧粘性单元格：在左边缘添加微妙的内阴影 */
 .beaver-table tbody .beaver-table__cell--sticky--right:not(.beaver-table__cell--sticky-edge-right) {
-  box-shadow: inset 3px 0 6px -4px rgba(0, 0, 0, 0.04);
+  border-left: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 /* （已合并到上方） */
 
 /* 注意：侧边覆盖的伪元素在下方单独定义，避免使用大的公共规则导致视觉错位。 */
 .beaver-table__cell--sticky-edge-right {
-  box-shadow: -2px 0 8px -6px rgba(0, 0, 0, 0.08);
   position: relative;
-  border-left: 1px solid rgba(0, 0, 0, 0.04);
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .beaver-table__th--left,
@@ -157,9 +171,18 @@
 
 /* 使粘性列在行 hover 或选中时也能显式变化，保持一致性 */
 .beaver-table tbody tr:hover .beaver-table__cell--sticky--left,
-.beaver-table tbody tr:hover .beaver-table__cell--sticky--right,
+.beaver-table tbody tr:hover .beaver-table__cell--sticky--right {
+  /* 粘性列在 hover 时使用 hover 背景 */
+  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+}
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--left,
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--right {
+  /* 粘性列在选中时使用选中背景（更淡的蓝色） */
+  background: var(--beaver-table-selected-bg, #f7fcfe);
+}
+/* 选中后再 hover 时，粘性列也切换为 hover 背景 */
+.beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__cell--sticky--left,
+.beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__cell--sticky--right {
   background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
 }
 
