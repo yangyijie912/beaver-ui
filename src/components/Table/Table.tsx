@@ -40,12 +40,12 @@ type Props = {
   preservePxAsMin?: boolean;
   /** 未指定或无法换算宽度时的保守最小像素（默认 80） */
   minColumnPx?: number;
-  /** 是否固定表头（position: sticky） */
+  /** 是否固定表头（粘性表头），默认 false */
   fixedHeader?: boolean;
-  /** 左侧固定列数量（不包含复选框列，默认 0） */
-  fixedColumnCount?: number;
-  /** 右侧固定列数量（不包含复选框列，默认 0） */
-  fixedRightCount?: number;
+  /** 表头距离容器顶部的偏移（例如有上方工具栏时），默认 0 */
+  headerOffset?: number;
+  /** 表格容器最大高度，设置后启用纵向滚动以配合粘性表头。示例：300 或 '50vh' */
+  maxHeight?: number | string;
 };
 
 const Table: React.FC<Props> = ({
@@ -60,14 +60,9 @@ const Table: React.FC<Props> = ({
   preservePxAsMin = true,
   minColumnPx = 80,
   fixedHeader = false,
-  fixedColumnCount = 0,
-  fixedRightCount = 0,
+  headerOffset = 0,
+  maxHeight,
 }) => {
-  // 表格根元素引用，用于测量列偏移
-  const tableRef = useRef<HTMLTableElement | null>(null);
-  const [fixedOffsets, setFixedOffsets] = useState<number[]>([]);
-  const [fixedRightOffsets, setFixedRightOffsets] = useState<number[]>([]);
-  const [measuredColWidths, setMeasuredColWidths] = useState<number[]>([]);
   const [internalSelected, setInternalSelected] = useState<Record<string, boolean>>({});
   const isControlled = Array.isArray(selectedKeys);
 
@@ -227,7 +222,7 @@ const Table: React.FC<Props> = ({
       pxFixedTotal += 40; // 复选框是固定像素，占用空间
     }
 
-    // 如果保证 px 列的最小宽度（preservePxAsMin = true），则：
+    // 如果 caller 希望把 px 列作为最小保证宽（preservePxAsMin），则：
     // - 当 pxFixedTotal > wrapWidth 时强制滚动（因为最小保证本身就超出容器）
     // - 否则不强制滚动，允许百分比/未设置列弹性分配剩余空间
     if (preservePxAsMin && wrapWidth && wrapWidth > 0 && pxFixedTotal > 0) {
@@ -246,185 +241,80 @@ const Table: React.FC<Props> = ({
     return { cols: scaledCols, needsHScroll, tableWidth };
   }, [columns, wrapWidth, showCheckbox, preservePxAsMin, minColumnPx]);
 
-  // 计算固定列的 left / right 偏移（基于 thead th 的 offsetLeft 和表宽）
-  useLayoutEffect(() => {
-    const tbl = tableRef.current;
-    const wrapEl = wrapRef.current;
-    if (!tbl || !wrapEl) {
-      setFixedOffsets([]);
-      setFixedRightOffsets([]);
-      return;
-    }
-    const ths = Array.from(tbl.querySelectorAll('thead th')) as HTMLElement[];
-    // 计算基于列宽的累计偏移，避免 offsetLeft 在不同滚动容器/边距下产生多余间隙
-    const cumulativeLefts: number[] = [];
-    let acc = 0;
-    for (let i = 0; i < ths.length; i++) {
-      cumulativeLefts[i] = acc;
-      acc += ths[i].offsetWidth || 0;
-    }
-    // 存储测量到的列宽以用于对齐和 `colgroup`
-    try {
-      setMeasuredColWidths(ths.map((t) => t.offsetWidth || 0));
-    } catch (e) {
-      // 忽略测量异常
-    }
-
-    const tableW = tbl.clientWidth || tbl.getBoundingClientRect().width || 0;
-    // 右侧偏移按原有策略：从右侧依次累加列宽
-    const cumulativeRights: number[] = [];
-    let accR = 0;
-    for (let i = ths.length - 1; i >= 0; i--) {
-      cumulativeRights[i] = accR;
-      accR += ths[i].offsetWidth || 0;
-    }
-
-    setFixedOffsets(cumulativeLefts);
-    setFixedRightOffsets(cumulativeRights.map((v) => (v ? v : 0)));
-
-    // 重新测量的触发器：当表格尺寸变更时重新计算
-    let ro: ResizeObserver | null = null;
-    try {
-      ro = new ResizeObserver(() => {
-        const ths2 = Array.from(tbl.querySelectorAll('thead th')) as HTMLElement[];
-        const cumulativeLefts2: number[] = [];
-        let acc2 = 0;
-        for (let i = 0; i < ths2.length; i++) {
-          cumulativeLefts2[i] = acc2;
-          acc2 += ths2[i].offsetWidth || 0;
-        }
-        const cumulativeRights2: number[] = [];
-        let accR2 = 0;
-        for (let i = ths2.length - 1; i >= 0; i--) {
-          cumulativeRights2[i] = accR2;
-          accR2 += ths2[i].offsetWidth || 0;
-        }
-        setFixedOffsets(cumulativeLefts2);
-        setFixedRightOffsets(cumulativeRights2.map((v) => (v ? v : 0)));
-        try {
-          setMeasuredColWidths(ths2.map((t) => t.offsetWidth || 0));
-        } catch (e) {}
-      });
-      ro.observe(tbl);
-    } catch (e) {
-      // ignore
-    }
-
-    return () => {
-      if (ro) ro.disconnect();
-    };
-  }, [tableRef, columns, showCheckbox, computedColumnWidths.tableWidth, wrapWidth, fixedColumnCount, fixedRightCount]);
-
-  // 左侧固定列不包含复选框列，但是当启用复选框列时会额外增加一个粘性列。
-  // 右侧固定列则不受影响，始终按用户指定数量固定数据列。
-  const requestedLeft = Math.max(0, Math.floor(fixedColumnCount || 0));
-  const leftFixedCount = requestedLeft > 0 && showCheckbox ? requestedLeft + 1 : requestedLeft;
-  const rightFixedCount = Math.max(0, Math.floor(fixedRightCount || 0));
-  const totalHeaderCount = columns.length + (showCheckbox ? 1 : 0);
-
   return (
     <div
       className="beaver-table__wrap"
       ref={wrapRef}
-      // 如果启用了 fixedHeader，不要在内部创建独立的横向滚动容器，
-      // 否则会产生不同的滚动上下文，导致同时固定表头与固定列失效。
-      style={{ overflowX: computedColumnWidths.needsHScroll && !fixedHeader ? 'auto' : undefined }}
+      style={{
+        overflowX: computedColumnWidths.needsHScroll ? 'auto' : undefined,
+        overflowY: fixedHeader ? 'auto' : undefined,
+        maxHeight:
+          fixedHeader && maxHeight != null ? (typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight) : undefined,
+      }}
     >
       <table
-        ref={tableRef}
         className={`beaver-table ${fixedHeader ? 'beaver-table--fixed-header' : ''}`}
-        style={{
-          tableLayout: hasAnyWidth || leftFixedCount > 0 || rightFixedCount > 0 ? 'fixed' : 'auto',
-          width: computedColumnWidths.tableWidth,
-        }}
+        style={{ tableLayout: hasAnyWidth ? 'fixed' : 'auto', width: computedColumnWidths.tableWidth }}
       >
-        {hasAnyWidth || leftFixedCount > 0 || rightFixedCount > 0 ? (
+        {hasAnyWidth ? (
           <colgroup>
             {showCheckbox ? <col key="__select_col__" style={{ width: '40px' }} /> : null}
             {columns.map((c) => {
               const cw = computedColumnWidths.cols.find((x) => x.key === c.key)?.width;
-              // 确定表头中的测量索引（含复选框列）
-              const idx = (showCheckbox ? 1 : 0) + columns.findIndex((cc) => cc.key === c.key);
-              const measured = measuredColWidths && measuredColWidths[idx] ? measuredColWidths[idx] + 'px' : undefined;
-              return <col key={c.key} style={cw ? { width: cw } : measured ? { width: measured } : undefined} />;
+              return <col key={c.key} style={cw ? { width: cw } : undefined} />;
             })}
           </colgroup>
         ) : null}
 
         <thead>
           <tr>
-            {showCheckbox
-              ? (() => {
-                  const idx = 0;
-                  const isLeftSticky = idx < leftFixedCount;
-                  const isRightSticky = idx >= totalHeaderCount - rightFixedCount;
-                  const left = isLeftSticky && fixedOffsets[idx] != null ? fixedOffsets[idx] : undefined;
-                  const right = isRightSticky && fixedRightOffsets[idx] != null ? fixedRightOffsets[idx] : undefined;
-                  // 计算层叠 z-index：左侧固定列越靠左层级越高；右侧固定列越靠右层级越高。
-                  // 提高表头基数以确保表头始终位于粘性列之上
-                  // 只保留粘性定位和偏移，层级使用 CSS 控制
-                  const style = isLeftSticky
-                    ? ({ position: 'sticky' as const, left: left != null ? left + 'px' : 0 } as React.CSSProperties)
-                    : isRightSticky
-                      ? ({
-                          position: 'sticky' as const,
-                          right: right != null ? right + 'px' : 0,
-                        } as React.CSSProperties)
-                      : undefined;
-                  const leftEdgeIndex = leftFixedCount - 1;
-                  const rightEdgeStart = totalHeaderCount - rightFixedCount;
-                  const classes: string[] = [];
-                  if (isLeftSticky) classes.push('beaver-table__cell--sticky--left');
-                  if (isRightSticky) classes.push('beaver-table__cell--sticky--right');
-                  if (isLeftSticky && idx === leftEdgeIndex) classes.push('beaver-table__cell--sticky-edge-left');
-                  if (isRightSticky && idx === rightEdgeStart) classes.push('beaver-table__cell--sticky-edge-right');
-                  const stickyClass = classes.join(' ');
-                  return (
-                    <th key="__select_col__" className={`beaver-table__select-col ${stickyClass}`} style={style}>
-                      <span onClick={(e) => e.stopPropagation()}>
-                        <Checkbox
-                          aria-label="select-all"
-                          checked={headerChecked}
-                          indeterminate={headerIndeterminate}
-                          onChange={(e) => toggleAll((e.target as HTMLInputElement).checked)}
-                        />
-                      </span>
-                    </th>
-                  );
-                })()
-              : null}
+            {showCheckbox ? (
+              <th
+                className="beaver-table__select-col"
+                style={
+                  fixedHeader
+                    ? {
+                        position: 'sticky',
+                        top: headerOffset,
+                        zIndex: 1000,
+                        background: 'var(--beaver-table-header-bg, #f8fafc)',
+                      }
+                    : undefined
+                }
+              >
+                <span onClick={(e) => e.stopPropagation()}>
+                  <Checkbox
+                    aria-label="select-all"
+                    checked={headerChecked}
+                    indeterminate={headerIndeterminate}
+                    onChange={(e) => toggleAll((e.target as HTMLInputElement).checked)}
+                  />
+                </span>
+              </th>
+            ) : null}
 
-            {columns.map((col, ci) => {
+            {columns.map((col) => {
               const align = col.align ?? defaultAlign ?? 'left';
               if (process.env.NODE_ENV !== 'production') {
                 console.debug('[Table] column align:', col.key, align);
               }
               const cw = computedColumnWidths.cols.find((x) => x.key === col.key)?.width;
-              const idxInAll = (showCheckbox ? 1 : 0) + ci;
-              const isLeftSticky = idxInAll < leftFixedCount;
-              const isRightSticky = idxInAll >= totalHeaderCount - rightFixedCount;
-              const left = isLeftSticky && fixedOffsets[idxInAll] != null ? fixedOffsets[idxInAll] : undefined;
-              const right =
-                isRightSticky && fixedRightOffsets[idxInAll] != null ? fixedRightOffsets[idxInAll] : undefined;
-              // 只保留粘性定位和偏移，层级由样式表统一管理
-              const stickyStyle = isLeftSticky
-                ? ({ position: 'sticky' as const, left: left != null ? left + 'px' : 0 } as React.CSSProperties)
-                : isRightSticky
-                  ? ({ position: 'sticky' as const, right: right != null ? right + 'px' : 0 } as React.CSSProperties)
-                  : undefined;
-              const leftEdgeIndex = leftFixedCount - 1;
-              const rightEdgeStart = totalHeaderCount - rightFixedCount;
-              const classes: string[] = [];
-              if (isLeftSticky) classes.push('beaver-table__cell--sticky--left');
-              if (isRightSticky) classes.push('beaver-table__cell--sticky--right');
-              if (isLeftSticky && idxInAll === leftEdgeIndex) classes.push('beaver-table__cell--sticky-edge-left');
-              if (isRightSticky && idxInAll === rightEdgeStart) classes.push('beaver-table__cell--sticky-edge-right');
-              const stickyClass = classes.join(' ');
               return (
                 <th
                   key={col.key}
-                  style={{ width: cw ?? col.width, textAlign: align, ...(stickyStyle || {}) }}
-                  className={`beaver-table__th beaver-table__th--${align} ${stickyClass}`}
+                  style={{
+                    width: cw ?? col.width,
+                    textAlign: align,
+                    ...(fixedHeader
+                      ? {
+                          position: 'sticky',
+                          top: headerOffset,
+                          zIndex: 1000,
+                          background: 'var(--beaver-table-header-bg, #f8fafc)',
+                        }
+                      : {}),
+                  }}
+                  className={`beaver-table__th beaver-table__th--${align}`}
                 >
                   {col.title}
                 </th>
@@ -453,27 +343,8 @@ const Table: React.FC<Props> = ({
 
               // 处理复选框列（固定存在于每一行的首列）
               if (showCheckbox) {
-                const idx = 0;
-                const isLeftSticky = idx < leftFixedCount;
-                const isRightSticky = idx >= totalHeaderCount - rightFixedCount;
-                const left = isLeftSticky && fixedOffsets[idx] != null ? fixedOffsets[idx] : undefined;
-                const right = isRightSticky && fixedRightOffsets[idx] != null ? fixedRightOffsets[idx] : undefined;
-                // 只保留粘性定位和偏移，层级由样式表统一管理
-                const style = isLeftSticky
-                  ? ({ position: 'sticky' as const, left: left != null ? left + 'px' : 0 } as React.CSSProperties)
-                  : isRightSticky
-                    ? ({ position: 'sticky' as const, right: right != null ? right + 'px' : 0 } as React.CSSProperties)
-                    : undefined;
-                const leftEdgeIndex = leftFixedCount - 1;
-                const rightEdgeStart = totalHeaderCount - rightFixedCount;
-                const classesSel: string[] = [];
-                if (isLeftSticky) classesSel.push('beaver-table__cell--sticky--left');
-                if (isRightSticky) classesSel.push('beaver-table__cell--sticky--right');
-                if (isLeftSticky && idx === leftEdgeIndex) classesSel.push('beaver-table__cell--sticky-edge-left');
-                if (isRightSticky && idx === rightEdgeStart) classesSel.push('beaver-table__cell--sticky-edge-right');
-                const stickyClass = classesSel.join(' ');
                 cells.push(
-                  <td key={`__select_${key}`} className={`beaver-table__select-col ${stickyClass}`} style={style}>
+                  <td key={`__select_${key}`} className="beaver-table__select-col">
                     <span onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                         checked={isSelected}
@@ -541,33 +412,11 @@ const Table: React.FC<Props> = ({
                 const renderedByGlobal =
                   renderedByColumn == null && typeof renderCell === 'function' ? renderCell(row, col, idx) : undefined;
 
-                const idxInAll = (showCheckbox ? 1 : 0) + colIdx;
-                const isLeftSticky = idxInAll < leftFixedCount;
-                const isRightSticky = idxInAll >= totalHeaderCount - rightFixedCount;
-                const left = isLeftSticky && fixedOffsets[idxInAll] != null ? fixedOffsets[idxInAll] : undefined;
-                const right =
-                  isRightSticky && fixedRightOffsets[idxInAll] != null ? fixedRightOffsets[idxInAll] : undefined;
-                // 只保留粘性定位和偏移，层级由样式表统一管理
-                const stickyStyle = isLeftSticky
-                  ? ({ position: 'sticky' as const, left: left != null ? left + 'px' : 0 } as React.CSSProperties)
-                  : isRightSticky
-                    ? ({ position: 'sticky' as const, right: right != null ? right + 'px' : 0 } as React.CSSProperties)
-                    : undefined;
-                const leftEdgeIndexBody = leftFixedCount - 1;
-                const rightEdgeStartBody = totalHeaderCount - rightFixedCount;
-                const classesBody: string[] = [];
-                if (isLeftSticky) classesBody.push('beaver-table__cell--sticky--left');
-                if (isRightSticky) classesBody.push('beaver-table__cell--sticky--right');
-                if (isLeftSticky && idxInAll === leftEdgeIndexBody)
-                  classesBody.push('beaver-table__cell--sticky-edge-left');
-                if (isRightSticky && idxInAll === rightEdgeStartBody)
-                  classesBody.push('beaver-table__cell--sticky-edge-right');
-                const stickyClass = classesBody.join(' ');
                 cells.push(
                   <td
                     key={`${col.key}_${colIdx}`}
-                    className={`beaver-table__td beaver-table__td--${align} ${stickyClass}`}
-                    style={{ textAlign: align, ...(stickyStyle || {}) }}
+                    className={`beaver-table__td beaver-table__td--${align}`}
+                    style={{ textAlign: align }}
                     {...(colSpan > 1 ? { colSpan } : {})}
                     {...(rowSpan > 1 ? { rowSpan } : {})}
                   >

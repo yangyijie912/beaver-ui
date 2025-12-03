@@ -134,17 +134,17 @@ function App() {
         <div style={{ marginTop: 8 }}>已选择: {selectedKeys.join(', ') || '无'}</div>
       </Section>
 
-      <Section title="Table - 固定表头与左列（有滚动）">
+      {/* <Section title="Table - 固定表头与左列（有滚动）">
         <div style={{ height: 300, overflow: 'auto' }}>
           <Table columns={tableColumns} data={tableData} rowKey="id" showCheckbox fixedHeader fixedColumnCount={2} />
         </div>
-      </Section>
+      </Section> */}
 
-      <Section title="Table - 横向滚动（宽列）">
+      {/* <Section title="Table - 横向滚动（宽列）">
         <div style={{ maxWidth: 800 }}>
           <Table columns={tableColumns} data={tableData.slice(0, 8)} rowKey="id" showCheckbox />
         </div>
-      </Section>
+      </Section> */}
     </div>
   );
 }
