@@ -5,7 +5,7 @@
   */
 .beaver-table__wrap {
   background: var(--beaver-color-bg);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--beaver-table-border-color);
   border-radius: var(--beaver-radius-sm);
   overflow: visible;
 }
@@ -31,8 +31,8 @@
   text-align: left;
   font-weight: 600;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-  color: rgba(51, 51, 51, 0.7);
+  border-bottom: 1px solid var(--beaver-table-border-color);
+  color: var(--beaver-table-header-color);
   font-size: 12px;
 }
 
@@ -44,8 +44,8 @@
   background: var(--beaver-table-header-bg, #f8fafc);
   background-clip: padding-box; /* 防止阴影/边框被裁剪时出现视觉穿透 */
   /* 恢复原始视觉：轻微投影，而非边框 */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  color: rgba(51, 51, 51, 0.85);
+  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); */
+  color: var(--beaver-table-header-color);
 }
 
 /* 防止内容在固定布局下溢出并重叠 */
@@ -71,14 +71,14 @@
 }
 
 .beaver-table tbody tr:hover .beaver-table__select-col {
-  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+  background: var(--beaver-table-hover-bg);
 }
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__select-col {
   background: var(--beaver-table-selected-bg, #f7fcfe);
 }
 /* 选中后再 hover，应以 hover 背景为准 */
 .beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__select-col {
-  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+  background: var(--beaver-table-hover-bg);
 }
 
 /* header 背景色 */
@@ -116,7 +116,7 @@
   min-width: var(--checkbox-size, 16px);
   min-height: var(--checkbox-size, 16px);
   background: #fff; /* 明确背景，避免被父背景或透明等覆盖 */
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--beaver-table-border-color);
   border-radius: var(--beaver-radius-sm);
   position: relative;
   z-index: 2; /* 保证在粘性层级中可见 */
@@ -158,17 +158,17 @@
 /* 边缘粘性单元格保持稍强的分隔效果 */
 .beaver-table__cell--sticky-edge-left {
   position: relative;
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  border-right: 1px solid var(--beaver-table-border-color);
 }
 
 /* 内侧左侧粘性单元格：在右边缘添加微妙的内阴影 */
 .beaver-table tbody .beaver-table__cell--sticky--left:not(.beaver-table__cell--sticky-edge-left) {
-  border-right: 1px solid rgba(0, 0, 0, 0.04);
+  border-right: 1px solid var(--beaver-table-border-color);
 }
 
 /* 内侧右侧粘性单元格：在左边缘添加微妙的内阴影 */
 .beaver-table tbody .beaver-table__cell--sticky--right:not(.beaver-table__cell--sticky-edge-right) {
-  border-left: 1px solid rgba(0, 0, 0, 0.04);
+  border-left: 1px solid var(--beaver-table-border-color);
 }
 
 /* （已合并到上方） */
@@ -176,7 +176,7 @@
 /* 注意：侧边覆盖的伪元素在下方单独定义，避免使用大的公共规则导致视觉错位。 */
 .beaver-table__cell--sticky-edge-right {
   position: relative;
-  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  border-left: 1px solid var(--beaver-table-border-color);
 }
 
 .beaver-table__th--left,
@@ -186,7 +186,7 @@
 
 .beaver-table tbody td {
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid var(--beaver-table-border-color);
   vertical-align: middle;
 }
 
@@ -196,14 +196,14 @@
 
 /* 行 hover 效果 */
 .beaver-table tbody tr:hover {
-  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+  background: var(--beaver-table-hover-bg);
 }
 
 /* 使粘性列在行 hover 或选中时也能显式变化，保持一致性 */
 .beaver-table tbody tr:hover .beaver-table__cell--sticky--left,
 .beaver-table tbody tr:hover .beaver-table__cell--sticky--right {
   /* 粘性列在 hover 时使用 hover 背景 */
-  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+  background: var(--beaver-table-hover-bg);
 }
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--left,
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--right {
@@ -213,7 +213,7 @@
 /* 选中后再 hover 时，粘性列也切换为 hover 背景 */
 .beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__cell--sticky--left,
 .beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__cell--sticky--right {
-  background: var(--beaver-table-row-hover-bg, rgba(0, 0, 0, 0.02));
+  background: var(--beaver-table-hover-bg);
 }
 
 /* 当表格处于可选择行模式时，使整行可点击的光标提示 */

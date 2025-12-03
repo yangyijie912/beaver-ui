@@ -118,11 +118,7 @@ function App() {
         </div>
       </Section>
 
-      <Section title="Table - 基础表格">
-        <Table columns={tableColumns.slice(0, 5)} data={tableData.slice(0, 5)} rowKey="id" />
-      </Section>
-
-      <Section title="Table - 带复选框">
+      <Section title="Table">
         <Table
           columns={tableColumns.slice(0, 5)}
           data={tableData.slice(0, 5)}
@@ -134,17 +130,24 @@ function App() {
         <div style={{ marginTop: 8 }}>已选择: {selectedKeys.join(', ') || '无'}</div>
       </Section>
 
-      {/* <Section title="Table - 固定表头与左列（有滚动）">
-        <div style={{ height: 300, overflow: 'auto' }}>
-          <Table columns={tableColumns} data={tableData} rowKey="id" showCheckbox fixedHeader fixedColumnCount={2} />
+      <Section title="Table — 固定表头与左右固定列示例">
+        <div style={{ maxWidth: '100%', overflow: 'hidden' }}>
+          <div style={{ marginBottom: 8 }}>演示：固定表头、左侧固定选择列 + 第一列、右侧固定最后一列</div>
+          <Table
+            columns={tableColumns}
+            data={tableData}
+            rowKey="id"
+            showCheckbox
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+            fixedHeader
+            maxHeight={300}
+            fixedColumnCount={1} // 除了选择列外，固定第一列
+            fixedRightCount={1} // 固定最后一列
+          />
+          <div style={{ marginTop: 8 }}>已选择: {selectedKeys.join(', ') || '无'}</div>
         </div>
-      </Section> */}
-
-      {/* <Section title="Table - 横向滚动（宽列）">
-        <div style={{ maxWidth: 800 }}>
-          <Table columns={tableColumns} data={tableData.slice(0, 8)} rowKey="id" showCheckbox />
-        </div>
-      </Section> */}
+      </Section>
     </div>
   );
 }

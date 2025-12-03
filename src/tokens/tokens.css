@@ -56,8 +56,10 @@
   --beaver-pagination-input-width: 48px;
   --beaver-pagination-border: #d1d5db;
   --beaver-table-header-bg: #f8fafc;
-  --beaver-table-row-hover-bg: #ecf4fe;
+  --beaver-table-header-color: #6e6f6f;
+  --beaver-table-hover-bg: #ecf4fe;
   --beaver-table-selected-bg: #f7fcfe;
+  --beaver-table-border-color: #f0f0f0;
   --beaver-table-fixed-bg: #ffffff;
   --beaver-table-z-index-header: 3000;
   --beaver-table-z-index-sticky: 1000;

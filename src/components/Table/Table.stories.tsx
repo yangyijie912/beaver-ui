@@ -282,7 +282,7 @@ const FixedBothSidesTemplate = (args: TableArgs) => (
     data={data}
     rowKey="id"
     showCheckbox
-    fixedColumnCount={1}
+    fixedColumnCount={3}
     fixedRightCount={2}
     {...args}
   />

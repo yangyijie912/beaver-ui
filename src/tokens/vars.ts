@@ -92,8 +92,10 @@ export const vars = {
     table: {
       // 表格相关变量：表头背景、行 hover 背景
       'header-bg': '#f8fafc',
-      'row-hover-bg': '#ecf4fe',
+      'header-color': '#6e6f6f',
+      'hover-bg': '#ecf4fe',
       'selected-bg': '#f7fcfe',
+      'border-color': '#f0f0f0',
       // 表格固定（粘性）列的背景
       'fixed-bg': '#ffffff',
       // 层级：表头与粘性列的 z-index
