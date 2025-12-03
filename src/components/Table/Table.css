@@ -92,6 +92,36 @@
   padding: 8px 12px;
 }
 
+/* 仅当复选框列为粘性/固定列时使内容居中（避免影响非固定表格） */
+.beaver-table__select-col.beaver-table__cell--sticky span,
+.beaver-table__select-col.beaver-table__cell--sticky--left span {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 同时确保粘性复选框列的内容水平居中（不改变单元格的 display） */
+.beaver-table__select-col.beaver-table__cell--sticky,
+.beaver-table__select-col.beaver-table__cell--sticky--left {
+  text-align: center;
+}
+
+/* 确保粘性选择列中的可视复选框始终可见：明确宽高、边框与背景（仅在此上下文生效） */
+.beaver-table__select-col.beaver-table__cell--sticky .beaver-checkbox,
+.beaver-table__select-col.beaver-table__cell--sticky--left .beaver-checkbox {
+  box-sizing: border-box;
+  width: var(--checkbox-size, 16px);
+  height: var(--checkbox-size, 16px);
+  min-width: var(--checkbox-size, 16px);
+  min-height: var(--checkbox-size, 16px);
+  background: #fff; /* 明确背景，避免被父背景或透明等覆盖 */
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--beaver-radius-sm);
+  position: relative;
+  z-index: 2; /* 保证在粘性层级中可见 */
+}
+
 /* 固定列样式：为粘性列提供背景、分隔阴影与层级规则 */
 .beaver-table thead .beaver-table__cell--sticky,
 .beaver-table thead .beaver-table__cell--sticky--left,
