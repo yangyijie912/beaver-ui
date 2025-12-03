@@ -90,14 +90,12 @@ export const vars = {
       border: '#d1d5db',
     },
     table: {
-      // 表格相关变量：表头背景、行 hover 背景
-      'header-bg': '#f8fafc',
-      'header-color': '#6e6f6f',
-      'hover-bg': '#ecf4fe',
-      'selected-bg': '#f7fcfe',
-      'border-color': '#f0f0f0',
-      // 表格固定（粘性）列的背景
-      'fixed-bg': '#ffffff',
+      'header-bg': '#f8fafc', // 表头背景
+      'header-color': '#6e6f6f', // 表头文字颜色
+      'hover-bg': '#ecf4fe', // 表格行 hover 背景
+      'selected-bg': '#f7fcfe', // 表格行 选中 背景
+      'border-color': '#f0f0f0', // 表格边框颜色
+      'fixed-bg': '#ffffff', // 表格固定（粘性）列的背景
       // 层级：表头与粘性列的 z-index
       'z-index-header': '3000',
       'z-index-sticky': '1000',
