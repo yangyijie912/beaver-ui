@@ -1,6 +1,6 @@
 import React from 'react';
 import Input from './Input';
-import type { Meta, StoryFn } from '@storybook/react';
+import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 
 const meta: Meta<typeof Input> = {
   title: 'Components/Input',
@@ -17,27 +17,29 @@ const meta: Meta<typeof Input> = {
 
 export default meta;
 
-export const Default = {
+type Story = StoryObj<typeof Input>;
+
+export const Default: Story = {
   name: '默认',
   args: { placeholder: 'Type here' },
 };
 
-export const WithValue = {
+export const WithValue: Story = {
   name: '有值',
   args: { defaultValue: 'Hello' },
 };
 
-export const Disabled = {
+export const Disabled: Story = {
   name: '禁用',
   args: { placeholder: 'Disabled', disabled: true },
 };
 
-export const Error = {
+export const Error: Story = {
   name: '错误',
   args: { placeholder: 'Error', validation: 'error' },
 };
 
-export const Textarea = {
+export const Textarea: Story = {
   name: '多行',
   args: { textarea: true, placeholder: 'Type here...' },
 };

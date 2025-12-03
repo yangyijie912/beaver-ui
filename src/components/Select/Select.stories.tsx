@@ -3,13 +3,17 @@ import Select from './Select';
 import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 import type { SelectOption } from './Select';
 
+const decoratorStyle: React.CSSProperties & Record<string, string> = {
+  '--beaver-select-width': '200px',
+};
+
 const meta: Meta<typeof Select> = {
   title: 'Components/Select',
   component: Select,
   // 加一个装饰器设置全局默认宽度为 200px，方便在 Storybook 中预览
   decorators: [
     (Story: StoryFn) => (
-      <div style={{ ['--beaver-select-width' as any]: '200px' }}>
+      <div style={decoratorStyle}>
         <Story />
       </div>
     ),
@@ -186,13 +190,13 @@ export const CustomLoadingAndOffset: Story = {
       </svg>
     );
 
+    const styleVar: React.CSSProperties & Record<string, string> = {
+      width: '320px',
+      '--beaver-select-arrow-offset': '1px',
+    };
+
     return (
-      <div
-        style={{
-          width: 320,
-          ['--beaver-select-arrow-offset' as any]: '1px',
-        }}
-      >
+      <div style={styleVar}>
         <Select {...args} options={sampleOptions} placeholder="加载中（自定义）" loading loadingIcon={MySpinner} />
       </div>
     );

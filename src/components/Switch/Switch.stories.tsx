@@ -1,35 +1,40 @@
 import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
 import Switch from './Switch';
 
-export default {
+const meta: Meta<typeof Switch> = {
   title: 'Components/Switch',
   component: Switch,
 };
 
-export const Default = {
+export default meta;
+
+type Story = StoryObj<typeof Switch>;
+
+export const Default: Story = {
   name: '默认',
   args: {},
 };
 
-export const Controlled = {
+export const Controlled: Story = {
   name: '受控',
-  render: (args: any) => {
+  render: (args: React.ComponentProps<typeof Switch>) => {
     const [val, setVal] = React.useState(true);
     return <Switch {...args} checked={val} onChange={(c: boolean) => setVal(c)} />;
   },
 };
 
-export const Disabled = {
+export const Disabled: Story = {
   name: '禁用',
   args: { disabled: true },
 };
 
-export const Loading = {
+export const Loading: Story = {
   name: '加载中',
   args: { loading: true },
 };
 
-export const Sizes = {
+export const Sizes: Story = {
   name: '尺寸',
   render: () => (
     <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -40,7 +45,7 @@ export const Sizes = {
   ),
 };
 
-export const WithIconsAndText = {
+export const WithIconsAndText: Story = {
   name: '带图标与文本',
   render: () => (
     <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>

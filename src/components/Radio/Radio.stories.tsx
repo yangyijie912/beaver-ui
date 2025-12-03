@@ -1,38 +1,43 @@
 import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
 import Radio from './Radio';
 import RadioGroup from './RadioGroup';
 
-export default {
+const meta: Meta<typeof Radio> = {
   title: 'Components/Radio',
   component: Radio,
 };
 
-export const Default = {
+export default meta;
+
+type Story = StoryObj<typeof Radio>;
+
+export const Default: Story = {
   name: '默认',
   args: {},
 };
 
-export const Checked = {
+export const Checked: Story = {
   name: '选中',
   args: { defaultChecked: true },
 };
 
-export const WithLabel = {
+export const WithLabel: Story = {
   name: '带标签',
   args: { label: 'Option A' },
 };
 
-export const Disabled = {
+export const Disabled: Story = {
   name: '禁用',
   args: { disabled: true, label: 'Option (disabled)' },
 };
 
-export const InputClassName = {
+export const InputClassName: Story = {
   name: '输入类名',
   args: { inputClassName: 'custom-radio', label: 'Custom input class' },
 };
 
-export const GroupUncontrolled = {
+export const GroupUncontrolled: Story = {
   name: '分组（非受控）',
   render: () => (
     <RadioGroup defaultValue="b">
@@ -43,7 +48,7 @@ export const GroupUncontrolled = {
   ),
 };
 
-export const GroupControlled = {
+export const GroupControlled: Story = {
   name: '分组（受控）',
   render: () => {
     const Example: React.FC = () => {
@@ -60,7 +65,7 @@ export const GroupControlled = {
   },
 };
 
-export const GroupDisabled = {
+export const GroupDisabled: Story = {
   name: '分组（禁用）',
   render: () => (
     <RadioGroup defaultValue="a" disabled>
@@ -70,7 +75,7 @@ export const GroupDisabled = {
   ),
 };
 
-export const NameBased = {
+export const NameBased: Story = {
   name: '基于 name',
   render: () => (
     <div>
@@ -80,7 +85,7 @@ export const NameBased = {
   ),
 };
 
-export const GroupVertical = {
+export const GroupVertical: Story = {
   name: '分组（垂直）',
   render: () => (
     <RadioGroup defaultValue="a" vertical>
@@ -91,7 +96,7 @@ export const GroupVertical = {
   ),
 };
 
-export const GroupVerticalControlled = {
+export const GroupVerticalControlled: Story = {
   name: '分组（垂直受控）',
   render: () => {
     const Example: React.FC = () => {

@@ -1,7 +1,8 @@
 import React from 'react';
 import Table, { Column } from './Table';
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
+const meta: Meta<typeof Table> = {
   title: 'Components/Table',
   component: Table,
   argTypes: {
@@ -19,6 +20,10 @@ export default {
     fixedRightCount: { control: 'number' },
   },
 };
+
+export default meta;
+
+type Story = StoryObj<typeof Table>;
 
 const columns: Column[] = [
   { key: 'unique_id', title: 'ID编号' },
@@ -190,28 +195,30 @@ const userCss = `
   }
   `;
 
-const DefaultTemplate = (args: any) => <Table columns={columns} data={data} rowKey="id" {...args} />;
-export const Default = {
+type TableArgs = Omit<React.ComponentProps<typeof Table>, 'columns' | 'data' | 'rowKey'>;
+
+const DefaultTemplate = (args: TableArgs) => <Table columns={columns} data={data} rowKey="id" {...args} />;
+export const Default: Story = {
   name: '默认',
   render: DefaultTemplate,
   args: {},
 };
 
-const WithCheckboxesTemplate = (args: any) => <Table columns={columns} data={data} rowKey="id" {...args} />;
-export const WithCheckboxes = {
+const WithCheckboxesTemplate = (args: TableArgs) => <Table columns={columns} data={data} rowKey="id" {...args} />;
+export const WithCheckboxes: Story = {
   name: '带复选框',
   render: WithCheckboxesTemplate,
   args: { showCheckbox: true },
 };
 
-const AlignDemoTemplate = (args: any) => <Table columns={columnsWithAlign} data={data} rowKey="id" {...args} />;
-export const AlignDemo = {
+const AlignDemoTemplate = (args: TableArgs) => <Table columns={columnsWithAlign} data={data} rowKey="id" {...args} />;
+export const AlignDemo: Story = {
   name: '对齐方式',
   render: AlignDemoTemplate,
   args: {},
 };
 
-const ControlledSelectionTemplate = (args: any) => {
+const ControlledSelectionTemplate = (args: TableArgs) => {
   const [selected, setSelected] = React.useState<string[]>(['1']);
   return (
     <div>
@@ -227,13 +234,13 @@ const ControlledSelectionTemplate = (args: any) => {
     </div>
   );
 };
-export const ControlledSelection = {
+export const ControlledSelection: Story = {
   name: '受控选择',
   render: ControlledSelectionTemplate,
   args: { showCheckbox: true },
 };
 
-const MixTemplate = (args: any) => (
+const MixTemplate = (args: TableArgs) => (
   <div>
     <div style={{ marginBottom: 12 }}>
       <p>自定义宽度示例</p>
@@ -254,7 +261,7 @@ export const CustomWidths = {
 };
 
 // 固定表头示例：将表格放在一个固定高度的容器中以演示 sticky header
-const FixedHeaderTemplate = (args: any) => {
+const FixedHeaderTemplate = (args: TableArgs) => {
   // 制造更多行以便出现纵向滚动（确保每条记录有唯一 id）
   const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
     data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
@@ -273,7 +280,7 @@ export const FixedHeader = {
 };
 
 // 同时固定左右两侧列示例
-const FixedBothSidesTemplate = (args: any) => (
+const FixedBothSidesTemplate = (args: TableArgs) => (
   <div style={{ maxWidth: 1000 }}>
     <Table
       columns={columnsWithPx}
@@ -294,7 +301,7 @@ export const FixedBothSides = {
 };
 
 // 同时固定表头与左列
-const FixedHeaderAndColumnsTemplate = (args: any) => {
+const FixedHeaderAndColumnsTemplate = (args: TableArgs) => {
   const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
     data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
   );
@@ -311,7 +318,7 @@ export const FixedHeaderAndColumns = {
   args: {},
 };
 
-const RenderCellInjectedStylesTemplate = (args: any) => {
+const RenderCellInjectedStylesTemplate = (args: TableArgs) => {
   return (
     <div>
       <style>{userCss}</style>
@@ -321,34 +328,38 @@ const RenderCellInjectedStylesTemplate = (args: any) => {
         rowKey="id"
         renderCell={(row, col) => {
           if (col.key === 'statusName') {
-            const cls = String(row.status).toLowerCase().replace(/\s+/g, '');
-            return <span className={`user-status user-status--${cls}`}>{row.statusName}</span>;
+            const cls = String((row as any).status)
+              .toLowerCase()
+              .replace(/\s+/g, '');
+            return <span className={`user-status user-status--${cls}`}>{(row as any).statusName}</span>;
           }
           if (col.key === 'orderDate') {
-            const date = new Date(row.orderDate);
+            const date = new Date((row as any).orderDate);
             return date.toLocaleDateString();
           }
-          return row[col.key];
+          return (row as any)[col.key];
         }}
         {...args}
       />
     </div>
   );
 };
-export const RenderCellInjectedStyles = {
+export const RenderCellInjectedStyles: Story = {
   name: 'renderCell渲染',
   render: RenderCellInjectedStylesTemplate,
   args: {},
 };
 
-const ColumnLevelRenderTemplate = (args: any) => {
+const ColumnLevelRenderTemplate = (args: TableArgs) => {
   const colsWithRender: Column[] = columns.map((c) =>
     c.key === 'statusName'
       ? {
           ...c,
-          render: (value: any, row: any) => {
-            const cls = String(row.status).toLowerCase().replace(/\s+/g, '');
-            return <span className={`user-status user-status--${cls}`}>{value}</span>;
+          render: (value: unknown, row: unknown) => {
+            const cls = String((row as any).status)
+              .toLowerCase()
+              .replace(/\s+/g, '');
+            return <span className={`user-status user-status--${cls}`}>{value as React.ReactNode}</span>;
           },
         }
       : c
@@ -361,7 +372,7 @@ const ColumnLevelRenderTemplate = (args: any) => {
     </div>
   );
 };
-export const ColumnLevelRender = {
+export const ColumnLevelRender: Story = {
   name: '列级渲染',
   render: ColumnLevelRenderTemplate,
   args: {},
@@ -415,7 +426,7 @@ const visibleSpanData = [
   },
 ];
 
-const VisibleSpanTemplate = (args: any) => (
+const VisibleSpanTemplate = (args: TableArgs) => (
   <div>
     <div style={{ marginBottom: 12 }}>
       更明显的跨行/跨列示例，使用 <code>{`{ value, colSpan, rowSpan }`}</code>，并通过 <code>renderCell</code>{' '}
@@ -426,15 +437,17 @@ const VisibleSpanTemplate = (args: any) => (
       data={visibleSpanData}
       rowKey="id"
       renderCell={(row, col) => {
-        const raw = row[col.key];
-        if (raw && typeof raw === 'object' && ('colSpan' in raw || 'rowSpan' in raw)) {
+        const raw = (row as any)[col.key];
+        const isObject = raw && typeof raw === 'object';
+        if (isObject && ('colSpan' in raw || 'rowSpan' in raw || 'value' in raw)) {
+          const r = raw as { value?: React.ReactNode; colSpan?: number; rowSpan?: number };
           return (
             <div style={{ background: 'rgba(14, 165, 233, 0.12)', padding: '10px 12px', borderRadius: 6 }}>
-              {(raw as any).value ?? ''}
+              {r.value ?? ''}
             </div>
           );
         }
-        return row[col.key];
+        return (row as any)[col.key];
       }}
       {...args}
     />
@@ -460,7 +473,7 @@ const columnSpanData = [
   { id: 'c3', name: '正常', info: 'info3', extra: 'extra3' },
 ];
 
-const ColumnSpanTemplate = (args: any) => (
+const ColumnSpanTemplate = (args: TableArgs) => (
   <div>
     <div style={{ marginBottom: 12 }}>
       演示如何在列定义中通过 <code>span</code> 回调控制 rowSpan/colSpan。
