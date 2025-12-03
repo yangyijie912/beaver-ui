@@ -267,7 +267,7 @@ const FixedHeaderTemplate = (args: TableArgs) => {
     data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
   );
   return (
-    <div style={{ height: 240, overflow: 'auto', border: '1px solid rgba(0,0,0,0.04)', borderRadius: 6 }}>
+    <div style={{ height: 240, overflow: 'auto' }}>
       <Table columns={columns} data={many} rowKey="id" fixedHeader {...args} />
     </div>
   );
@@ -306,7 +306,7 @@ const FixedHeaderAndColumnsTemplate = (args: TableArgs) => {
     data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
   );
   return (
-    <div style={{ height: 240, overflow: 'auto', border: '1px solid rgba(0,0,0,0.04)', borderRadius: 6 }}>
+    <div style={{ height: 240, overflow: 'auto' }}>
       <Table columns={columnsWithPx} data={many} rowKey="id" showCheckbox fixedHeader fixedColumnCount={2} {...args} />
     </div>
   );
