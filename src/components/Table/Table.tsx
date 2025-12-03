@@ -324,11 +324,8 @@ const Table: React.FC<Props> = ({
                 style={
                   fixedHeader
                     ? {
-                        position: fixedColumnCount > 0 ? 'sticky' : undefined,
                         top: headerOffset,
-                        zIndex: 1100,
                         ...(fixedColumnCount > 0 ? { left: 0 } : {}),
-                        background: 'var(--beaver-table-header-bg, #f8fafc)',
                       }
                     : fixedColumnCount > 0
                       ? { position: 'sticky', left: 0 }
@@ -375,14 +372,7 @@ const Table: React.FC<Props> = ({
                   style={{
                     width: cw ?? col.width,
                     textAlign: align,
-                    ...(fixedHeader
-                      ? {
-                          position: 'sticky',
-                          top: headerOffset,
-                          zIndex: 1000,
-                          background: 'var(--beaver-table-header-bg, #f8fafc)',
-                        }
-                      : {}),
+                    ...(fixedHeader ? { top: headerOffset } : {}),
                     ...stickyStyle,
                   }}
                   className={`beaver-table__th beaver-table__th--${align} ${stickyClasses.join(' ')}`}
