@@ -44,7 +44,6 @@
   background: var(--beaver-table-header-bg, #f8fafc);
   background-clip: padding-box; /* 防止阴影/边框被裁剪时出现视觉穿透 */
   /* 恢复原始视觉：轻微投影，而非边框 */
-  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); */
   color: var(--beaver-table-header-color);
 }
 
@@ -129,6 +128,17 @@
   background: var(--beaver-table-header-bg, #f8fafc);
 }
 
+/* 表头粘性列添加左右边框，使粘性表头也显示列间分隔线 */
+.beaver-table thead .beaver-table__cell--sticky--left,
+.beaver-table thead .beaver-table__cell--sticky--left.beaver-table__cell--sticky-edge-left {
+  border-right: 1px solid var(--beaver-table-border-color);
+}
+
+.beaver-table thead .beaver-table__cell--sticky--right,
+.beaver-table thead .beaver-table__cell--sticky--right.beaver-table__cell--sticky-edge-right {
+  border-left: 1px solid var(--beaver-table-border-color);
+}
+
 .beaver-table tbody .beaver-table__cell--sticky,
 .beaver-table tbody .beaver-table__cell--sticky--left,
 .beaver-table tbody .beaver-table__cell--sticky--right {
@@ -170,8 +180,6 @@
 .beaver-table tbody .beaver-table__cell--sticky--right:not(.beaver-table__cell--sticky-edge-right) {
   border-left: 1px solid var(--beaver-table-border-color);
 }
-
-/* （已合并到上方） */
 
 /* 注意：侧边覆盖的伪元素在下方单独定义，避免使用大的公共规则导致视觉错位。 */
 .beaver-table__cell--sticky-edge-right {
