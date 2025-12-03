@@ -108,6 +108,7 @@
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
   background: var(--checkbox-checked-bg);
+  border-radius: 0;
 }
 
 /* 当输入框被选中时隐藏中间态视觉（原生选中状态优先） */
@@ -153,9 +154,4 @@ label input[disabled] + .beaver-checkbox + span,
   align-items: center;
   gap: var(--checkbox-gap);
   position: relative;
-}
-
-/* 自定义样式示例 */
-.custom-checkbox {
-  border-color: #16a34a;
 }
