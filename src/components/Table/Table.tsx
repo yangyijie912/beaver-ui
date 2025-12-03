@@ -50,6 +50,8 @@ type Props = {
   fixedColumnCount?: number;
   /** 固定右侧的列数量，默认 0 */
   fixedRightCount?: number;
+  /** 是否展示边框线，默认不展示 */
+  border?: boolean;
 };
 
 const Table: React.FC<Props> = ({
@@ -68,6 +70,7 @@ const Table: React.FC<Props> = ({
   maxHeight,
   fixedColumnCount = 0,
   fixedRightCount = 0,
+  border = false,
 }) => {
   const [internalSelected, setInternalSelected] = useState<Record<string, boolean>>({});
   const isControlled = Array.isArray(selectedKeys);
@@ -287,7 +290,7 @@ const Table: React.FC<Props> = ({
 
   return (
     <div
-      className="beaver-table__wrap"
+      className={`beaver-table__wrap ${border ? 'beaver-table__wrap--bordered' : ''}`}
       ref={wrapRef}
       style={{
         overflowX: computedColumnWidths.needsHScroll ? 'auto' : undefined,
@@ -299,7 +302,9 @@ const Table: React.FC<Props> = ({
       }}
     >
       <table
-        className={`beaver-table ${fixedHeader ? 'beaver-table--fixed-header' : ''}`}
+        className={`beaver-table ${fixedHeader ? 'beaver-table--fixed-header' : ''} ${
+          border ? 'beaver-table--bordered' : ''
+        }`}
         style={{ tableLayout: hasAnyWidth ? 'fixed' : 'auto', width: computedColumnWidths.tableWidth }}
       >
         {hasAnyWidth ? (

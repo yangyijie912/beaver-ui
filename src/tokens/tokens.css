@@ -61,6 +61,8 @@
   --beaver-table-selected-bg: #f7fcfe;
   --beaver-table-border-color: #f0f0f0;
   --beaver-table-fixed-bg: #ffffff;
+  --beaver-table-vertical-border-color: #f0f0f0;
+  --beaver-table-sticky-border-color: #f0f0f0;
   --beaver-table-z-index-header: 3000;
   --beaver-table-z-index-sticky: 1000;
 }

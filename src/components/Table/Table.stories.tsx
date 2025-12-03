@@ -319,6 +319,21 @@ export const FixedHeaderAndColumns = {
   args: {},
 };
 
+const BorderedTemplate = (args: TableArgs) => (
+  <div>
+    <p>
+      通过 <code>border</code> 属性控制列之间的竖向分隔线和粘性列的分隔效果。
+    </p>
+    <Table columns={columns} data={data} rowKey="id" {...args} />
+  </div>
+);
+
+export const Bordered: Story = {
+  name: '带列分隔的 border 示例',
+  render: BorderedTemplate,
+  args: { border: true, showCheckbox: false },
+};
+
 const RenderCellInjectedStylesTemplate = (args: TableArgs) => {
   return (
     <div>

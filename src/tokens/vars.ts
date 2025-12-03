@@ -96,6 +96,8 @@ export const vars = {
       'selected-bg': '#f7fcfe', // 表格行 选中 背景
       'border-color': '#f0f0f0', // 表格边框颜色
       'fixed-bg': '#ffffff', // 表格固定（粘性）列的背景
+      'vertical-border-color': '#f0f0f0', // 列间竖向分隔线颜色
+      'sticky-border-color': '#f0f0f0', // 粘性列专用的分隔线颜色
       // 层级：表头与粘性列的 z-index
       'z-index-header': '3000',
       'z-index-sticky': '1000',
