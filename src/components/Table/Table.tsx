@@ -40,15 +40,21 @@ type Props = {
   preservePxAsMin?: boolean;
   /** 未指定或无法换算宽度时的保守最小像素（默认 80） */
   minColumnPx?: number;
-  /** 是否固定表头（粘性表头），默认 false */
+  /** 是否固定表头，默认 false */
   fixedHeader?: boolean;
   /** 表头距离容器顶部的偏移（例如有上方工具栏时），默认 0 */
   headerOffset?: number;
   /** 表格容器最大高度，设置后启用纵向滚动以配合粘性表头。示例：300 或 '50vh' */
   maxHeight?: number | string;
-  /** 固定左侧的列数量（不含选择列），默认 0 */
+  /** 固定左侧的列数量（不含复选框列），默认 0。
+   * 注意：固定列数量之和要小于总列数，否则为了避免重叠，超出时会自动禁用固定列；
+   * 且当固定列宽度之和超过容器宽度时也会自动禁用固定列并打印警告。
+   */
   fixedColumnCount?: number;
-  /** 固定右侧的列数量，默认 0 */
+  /** 固定右侧的列数量，默认 0。
+   * 注意：固定列数量之和要小于总列数，否则为了避免重叠，超出时会自动禁用固定列；
+   * 且当固定列宽度之和超过容器宽度时也会自动禁用固定列并打印警告。
+   */
   fixedRightCount?: number;
   /** 是否展示边框线，默认不展示 */
   border?: boolean;
@@ -256,6 +262,18 @@ const Table: React.FC<Props> = ({
     return { cols: scaledCols, needsHScroll, tableWidth };
   }, [columns, wrapWidth, showCheckbox, preservePxAsMin, minColumnPx]);
 
+  // 限制固定列：避免左 + 右 固定列数量覆盖或重叠整个表格
+  const totalColumns = columns.length;
+  let leftFixedCount = Math.max(0, Math.min(fixedColumnCount, totalColumns));
+  let rightFixedCount = Math.max(0, Math.min(fixedRightCount, totalColumns));
+  if (leftFixedCount + rightFixedCount >= totalColumns) {
+    console.warn(
+      '[Beaver-UI-Table] fixedColumnCount + fixedRightCount >= columns.length — disabling fixed columns to avoid overlap'
+    );
+    leftFixedCount = 0;
+    rightFixedCount = 0;
+  }
+
   // 简化的左右阴影逻辑：
   // - 初始：左侧无阴影；右侧在内容溢出时初始显示
   // - 交互：监听 scroll/resize，滚动时左侧在 scrollLeft>0 显示，右侧在未到最右端时显示
@@ -269,10 +287,10 @@ const Table: React.FC<Props> = ({
       raf = requestAnimationFrame(() => {
         const scrollLeft = el.scrollLeft || 0;
         const max = Math.max(0, el.scrollWidth - el.clientWidth);
-        setHasLeftShadow(fixedColumnCount > 0 && scrollLeft > 0);
-        setHasRightShadow(fixedRightCount > 0 && scrollLeft < max - 1);
+        setHasLeftShadow(effectiveLeftFixed > 0 && scrollLeft > 0);
+        setHasRightShadow(effectiveRightFixed > 0 && scrollLeft < max - 1);
         // 列边缘阴影：只在非固定表头的情况下显示，当有固定列且发生滚动时
-        const hasFixedColumns = fixedColumnCount > 0 || fixedRightCount > 0;
+        const hasFixedColumns = effectiveLeftFixed > 0 || effectiveRightFixed > 0;
         const isScrolled = scrollLeft > 0 && scrollLeft < max - 1;
         setHasColumnEdgeShadow(!fixedHeader && hasFixedColumns && isScrolled);
         const sbh = Math.max(0, el.offsetHeight - el.clientHeight);
@@ -294,7 +312,7 @@ const Table: React.FC<Props> = ({
     // 初始状态：左侧不显示，右侧根据是否溢出显示；同时测量滚动条高度
     const initialMax = Math.max(0, el.scrollWidth - el.clientWidth);
     setHasLeftShadow(false);
-    setHasRightShadow(fixedRightCount > 0 && initialMax > 1);
+    setHasRightShadow(effectiveRightFixed > 0 && initialMax > 1);
     setHasColumnEdgeShadow(false);
     setScrollbarHeight(Math.max(0, el.offsetHeight - el.clientHeight));
     setScrollbarWidth(Math.max(0, el.offsetWidth - el.clientWidth));
@@ -319,7 +337,7 @@ const Table: React.FC<Props> = ({
       ro.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [wrapWidth, computedColumnWidths.tableWidth, fixedColumnCount, fixedRightCount]);
+  }, [wrapWidth, computedColumnWidths.tableWidth, leftFixedCount, rightFixedCount]);
 
   // 计算左右固定列的像素偏移
   const columnPxOffsets = React.useMemo(() => {
@@ -380,21 +398,49 @@ const Table: React.FC<Props> = ({
 
     let leftW = 0;
     if (showCheckbox) leftW += 40; // checkbox 列宽
-    for (let i = 0; i < Math.max(0, fixedColumnCount); i++) {
+    for (let i = 0; i < Math.max(0, leftFixedCount); i++) {
       const col = columns[i];
       if (!col) break;
       leftW += getColPx(col);
     }
 
     let rightW = 0;
-    for (let i = columns.length - 1; i >= columns.length - fixedRightCount; i--) {
+    for (let i = columns.length - 1; i >= columns.length - rightFixedCount; i--) {
       const col = columns[i];
       if (!col) break;
       rightW += getColPx(col);
     }
 
     return { leftStickyWidth: Math.ceil(leftW), rightStickyWidth: Math.ceil(rightW) };
-  }, [columns, computedColumnWidths, wrapWidth, showCheckbox, fixedColumnCount, fixedRightCount, minColumnPx]);
+  }, [columns, computedColumnWidths, wrapWidth, showCheckbox, leftFixedCount, rightFixedCount, minColumnPx]);
+
+  // 当左右粘性区域宽度之和超过容器宽度时，禁用固定列并在控制台打印警告
+  const [effectiveLeftFixed, setEffectiveLeftFixed] = useState<number>(leftFixedCount);
+  const [effectiveRightFixed, setEffectiveRightFixed] = useState<number>(rightFixedCount);
+
+  useEffect(() => {
+    const wrapW = wrapWidth ?? (wrapRef.current ? wrapRef.current.clientWidth : null);
+    if (wrapW == null) {
+      setEffectiveLeftFixed(leftFixedCount);
+      setEffectiveRightFixed(rightFixedCount);
+      return;
+    }
+    const stickyTotal = leftStickyWidth + rightStickyWidth;
+    if (stickyTotal >= wrapW) {
+      // 禁用固定列
+      if (!(effectiveLeftFixed === 0 && effectiveRightFixed === 0)) {
+        console.warn(
+          `[Beaver-UI-Table] fixed columns disabled: leftStickyWidth(${leftStickyWidth}) + rightStickyWidth(${rightStickyWidth}) >= containerWidth(${wrapW})`
+        );
+      }
+      setEffectiveLeftFixed(0);
+      setEffectiveRightFixed(0);
+    } else {
+      setEffectiveLeftFixed(leftFixedCount);
+      setEffectiveRightFixed(rightFixedCount);
+    }
+    // 仅在相关输入更改时重新计算
+  }, [wrapWidth, leftStickyWidth, rightStickyWidth, leftFixedCount, rightFixedCount]);
 
   return (
     <div
@@ -449,7 +495,7 @@ const Table: React.FC<Props> = ({
               {showCheckbox ? (
                 <th
                   className={`beaver-table__select-col ${
-                    fixedColumnCount > 0
+                    effectiveLeftFixed > 0
                       ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
                       : ''
                   }`}
@@ -458,9 +504,9 @@ const Table: React.FC<Props> = ({
                       ? {
                           position: 'sticky',
                           top: headerOffset,
-                          ...(fixedColumnCount > 0 ? { left: 0 } : {}),
+                          ...(effectiveLeftFixed > 0 ? { left: 0 } : {}),
                         }
-                      : fixedColumnCount > 0
+                      : effectiveLeftFixed > 0
                         ? { position: 'sticky', left: 0 }
                         : undefined
                   }
@@ -478,25 +524,22 @@ const Table: React.FC<Props> = ({
 
               {columns.map((col, colIdx) => {
                 const align = col.align ?? defaultAlign ?? 'left';
-                if (process.env.NODE_ENV !== 'production') {
-                  console.debug('[Table] column align:', col.key, align);
-                }
                 const cw = computedColumnWidths.cols.find((x) => x.key === col.key)?.width;
-                const isStickyLeft = fixedColumnCount > 0 && colIdx < fixedColumnCount;
-                const isStickyRight = fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount;
+                const isStickyLeft = effectiveLeftFixed > 0 && colIdx < effectiveLeftFixed;
+                const isStickyRight = effectiveRightFixed > 0 && colIdx >= columns.length - effectiveRightFixed;
                 const stickyStyle: React.CSSProperties = {};
                 const stickyClasses: string[] = [];
                 if (isStickyLeft) {
                   stickyStyle.position = 'sticky';
                   stickyStyle.left = columnPxOffsets.leftOffsets[colIdx];
                   stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--left');
-                  if (colIdx === fixedColumnCount - 1) stickyClasses.push('beaver-table__cell--sticky-edge-left');
+                  if (colIdx === effectiveLeftFixed - 1) stickyClasses.push('beaver-table__cell--sticky-edge-left');
                 }
                 if (isStickyRight) {
                   stickyStyle.position = 'sticky';
                   stickyStyle.right = columnPxOffsets.rightOffsets[colIdx];
                   stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--right');
-                  if (colIdx === columns.length - fixedRightCount)
+                  if (colIdx === columns.length - effectiveRightFixed)
                     stickyClasses.push('beaver-table__cell--sticky-edge-right');
                 }
                 return (
@@ -541,11 +584,11 @@ const Table: React.FC<Props> = ({
                     <td
                       key={`__select_${key}`}
                       className={`beaver-table__select-col ${
-                        fixedColumnCount > 0
+                        effectiveLeftFixed > 0
                           ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
                           : ''
                       }`}
-                      style={fixedColumnCount > 0 ? { position: 'sticky', left: 0 } : undefined}
+                      style={effectiveLeftFixed > 0 ? { position: 'sticky', left: 0 } : undefined}
                     >
                       <span onClick={(e) => e.stopPropagation()}>
                         <Checkbox
@@ -591,7 +634,8 @@ const Table: React.FC<Props> = ({
                       }
                     } catch (e) {
                       // 如果调用自定义 span 出错，不阻塞渲染，保持默认 1
-                      if (process.env.NODE_ENV !== 'production') console.warn('[Table] span function error', e);
+                      if (process.env.NODE_ENV !== 'production')
+                        console.warn('[Beaver-UI-Table] span function error', e);
                     }
                   }
 
@@ -620,22 +664,22 @@ const Table: React.FC<Props> = ({
                     <td
                       key={`${col.key}_${colIdx}`}
                       className={`beaver-table__td beaver-table__td--${align} ${
-                        fixedColumnCount > 0 && colIdx < fixedColumnCount
+                        effectiveLeftFixed > 0 && colIdx < effectiveLeftFixed
                           ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left' +
-                            (colIdx === fixedColumnCount - 1 ? ' beaver-table__cell--sticky-edge-left' : '')
-                          : fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
+                            (colIdx === effectiveLeftFixed - 1 ? ' beaver-table__cell--sticky-edge-left' : '')
+                          : effectiveRightFixed > 0 && colIdx >= columns.length - effectiveRightFixed
                             ? 'beaver-table__cell--sticky beaver-table__cell--sticky--right' +
-                              (colIdx === columns.length - fixedRightCount
+                              (colIdx === columns.length - effectiveRightFixed
                                 ? ' beaver-table__cell--sticky-edge-right'
                                 : '')
                             : ''
                       }`}
                       style={{
                         textAlign: align,
-                        ...(fixedColumnCount > 0 && colIdx < fixedColumnCount
+                        ...(effectiveLeftFixed > 0 && colIdx < effectiveLeftFixed
                           ? { position: 'sticky', left: columnPxOffsets.leftOffsets[colIdx] }
                           : {}),
-                        ...(fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
+                        ...(effectiveRightFixed > 0 && colIdx >= columns.length - effectiveRightFixed
                           ? { position: 'sticky', right: columnPxOffsets.rightOffsets[colIdx] }
                           : {}),
                       }}
