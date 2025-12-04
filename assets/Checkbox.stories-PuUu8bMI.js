@@ -1,4 +1,4 @@
-import{j as o}from"./jsx-runtime-u17CrQMm.js";import{C as c}from"./Checkbox-DO0xJXZq.js";import"./iframe-DCqk6j9a.js";import"./preload-helper-PPVm8Dsz.js";const g={title:"Components/Checkbox",component:c},e={name:"默认",args:{}},r={name:"选中",args:{defaultChecked:!0}},a={name:"带标签",args:{label:"Accept terms"}},s={name:"不确定态",args:{indeterminate:!0}},p=`.custom-checkbox {
+import{j as o}from"./jsx-runtime-u17CrQMm.js";import{C as c}from"./Checkbox-BPUQtZCd.js";import"./iframe-B59VdXF_.js";import"./preload-helper-PPVm8Dsz.js";const g={title:"Components/Checkbox",component:c},e={name:"默认",args:{}},r={name:"选中",args:{defaultChecked:!0}},a={name:"带标签",args:{label:"Accept terms"}},s={name:"不确定态",args:{indeterminate:!0}},p=`.custom-checkbox {
   border-color: #16a34a;
 }`,d=m=>o.jsxs("div",{children:[o.jsx("style",{children:p}),o.jsx(c,{inputClassName:"custom-checkbox",label:"自定义样式",...m})]}),t={name:"自定义样式",render:d},n={name:"禁用",args:{disabled:!0,label:"Accept terms"}};e.parameters={...e.parameters,docs:{...e.parameters?.docs,source:{originalSource:`{
   name: '默认',
