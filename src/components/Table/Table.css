@@ -10,7 +10,8 @@
   position: absolute;
   top: 0;
   height: var(--beaver-table-scrollable-height, calc(100% - var(--beaver-table-scrollbar-height, 16px)));
-  width: 16px;
+  /* 缩窄阴影宽度，减轻视觉占用 */
+  width: 8px;
   pointer-events: none;
   z-index: calc(var(--beaver-table-z-index-header, 3000) - 1);
   will-change: transform, opacity;
@@ -25,12 +26,12 @@
 
 .beaver-table__frame.has-left-shadow::before {
   left: var(--beaver-table-left-sticky-width, 0);
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0px, rgba(0, 0, 0, 0.05) 10px, transparent 100%);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.06) 0px, rgba(0, 0, 0, 0.02) 6px, transparent 100%);
 }
 
 .beaver-table__frame.has-right-shadow::after {
   right: var(--beaver-table-right-sticky-width, 0);
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.12) 0px, rgba(0, 0, 0, 0.05) 10px, transparent 100%);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.06) 0px, rgba(0, 0, 0, 0.02) 6px, transparent 100%);
 }
 
 .beaver-table__wrap {
