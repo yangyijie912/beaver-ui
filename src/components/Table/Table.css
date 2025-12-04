@@ -7,24 +7,24 @@
 .beaver-table__frame.has-right-shadow::after {
   content: '';
   position: absolute;
-  /* 从表头底部开始，避免表头/表体错位 */
-  top: var(--beaver-table-header-height, 0px);
-  /* 减去表头高度和水平滚动条高度，避免遮挡滚动条交互 */
-  height: calc(100% - var(--beaver-table-header-height, 0px) - var(--beaver-table-scrollbar-height, 0px));
-  width: 28px;
+  /* 覆盖整个可见高度（包含表头与表体），表头使用单独的伪元素绘制相同的窄带阴影以保证对齐 */
+  top: 0;
+  height: calc(100% - var(--beaver-table-scrollbar-height, 0px));
+  width: 12px; /* 更窄的阴影带，避免过度扩散 */
   pointer-events: none;
-  /* 放在表头之下、粘性列之上：使用表头层级减一，保证阴影在表头下方平滑连接 */
+  /* 放在表头之下，表头上方再绘制相同样式的伪元素以实现完美对齐 */
   z-index: calc(var(--beaver-table-z-index-header, 3000) - 1);
 }
 
 .beaver-table__frame.has-left-shadow::before {
   left: var(--beaver-table-left-sticky-width, 0);
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.06) 40%, transparent 100%);
+  /* 简单窄带渐变：靠近边缘较深，快速过渡为透明 */
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.14) 0px, rgba(0, 0, 0, 0.06) 6px, transparent 100%);
 }
 
 .beaver-table__frame.has-right-shadow::after {
   right: var(--beaver-table-right-sticky-width, 0);
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.06) 40%, transparent 100%);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.14) 0px, rgba(0, 0, 0, 0.06) 6px, transparent 100%);
 }
 
 .beaver-table__wrap {
@@ -175,6 +175,29 @@
 .beaver-table--fixed-header thead .beaver-table__cell--sticky--left,
 .beaver-table--fixed-header thead .beaver-table__cell--sticky--right {
   z-index: calc(var(--beaver-table-z-index-header, 3000) + 50);
+}
+
+/* 在表头上方添加窄带阴影以和表体的左右阴影对齐（使用同样的宽度与渐变） */
+.beaver-table--fixed-header thead {
+  position: relative; /* 使伪元素以 thead 为参照 */
+}
+.beaver-table--fixed-header thead::before,
+.beaver-table--fixed-header thead::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  pointer-events: none;
+  z-index: calc(var(--beaver-table-z-index-header, 3000) + 1);
+}
+.beaver-table--fixed-header thead::before {
+  left: var(--beaver-table-left-sticky-width, 0);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.14) 0px, rgba(0, 0, 0, 0.06) 6px, transparent 100%);
+}
+.beaver-table--fixed-header thead::after {
+  right: var(--beaver-table-right-sticky-width, 0);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.14) 0px, rgba(0, 0, 0, 0.06) 6px, transparent 100%);
 }
 
 /* 边缘粘性单元格保持稍强的分隔效果 */
@@ -418,3 +441,49 @@ thead th.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
   th.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
   box-shadow: none;
 }
+
+/* ------------------------------------------------------------------ */
+/* 恢复最外层粘性列的可见边线（覆盖掉之前被移除的 border），
+   以避免像图三那样边线完全消失。使用更高优先级的选择器放在文件末尾。
+*/
+.beaver-table__wrap--bordered .beaver-table tbody .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col),
+.beaver-table__wrap--bordered .beaver-table thead .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
+  /* 左侧边缘显示右侧分隔线 */
+  border-right: 1px solid var(--beaver-table-border-color);
+  box-shadow: none;
+}
+
+.beaver-table__wrap--bordered .beaver-table tbody .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col),
+.beaver-table__wrap--bordered
+  .beaver-table
+  thead
+  .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
+  /* 右侧边缘显示左侧分隔线 */
+  border-left: 1px solid var(--beaver-table-border-color);
+  box-shadow: none;
+}
+
+/* 当行 hover 或选中时，保持粘性边缘的分隔线可见（避免被 hover 背景遮盖） */
+.beaver-table tbody tr:hover .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col),
+.beaver-table
+  tbody
+  tr.beaver-table__row--selected
+  .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
+  border-right: 1px solid var(--beaver-table-border-color);
+}
+.beaver-table tbody tr:hover .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col),
+.beaver-table
+  tbody
+  tr.beaver-table__row--selected
+  .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
+  border-left: 1px solid var(--beaver-table-border-color);
+}
+
+/* 若需要用 box-shadow 做更柔和的分隔线（可选），取消下列注释并注释掉 border 规则：
+.beaver-table__wrap--bordered .beaver-table tbody .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
+  box-shadow: 1px 0 0 rgba(0,0,0,0.06);
+}
+.beaver-table__wrap--bordered .beaver-table tbody .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
+  box-shadow: -1px 0 0 rgba(0,0,0,0.06);
+}
+*/
