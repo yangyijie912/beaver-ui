@@ -30,7 +30,7 @@
 }
 
 .beaver-table__frame.has-right-shadow::after {
-  right: var(--beaver-table-right-sticky-width, 0);
+  right: calc(var(--beaver-table-right-sticky-width, 0) + var(--beaver-table-scrollbar-width, 0));
   background: linear-gradient(270deg, rgba(0, 0, 0, 0.06) 0px, rgba(0, 0, 0, 0.02) 6px, transparent 100%);
 }
 

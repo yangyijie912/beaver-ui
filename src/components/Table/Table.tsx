@@ -82,6 +82,7 @@ const Table: React.FC<Props> = ({
   const [hasRightShadow, setHasRightShadow] = useState(false);
   const [hasColumnEdgeShadow, setHasColumnEdgeShadow] = useState(false);
   const [scrollbarHeight, setScrollbarHeight] = useState(0);
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
 
   useLayoutEffect(() => {
@@ -276,6 +277,8 @@ const Table: React.FC<Props> = ({
         setHasColumnEdgeShadow(!fixedHeader && hasFixedColumns && isScrolled);
         const sbh = Math.max(0, el.offsetHeight - el.clientHeight);
         setScrollbarHeight(sbh);
+        const sbw = Math.max(0, el.offsetWidth - el.clientWidth);
+        setScrollbarWidth(sbw);
         // measure header height inside the table - only for fixed header
         try {
           const tbl = el.querySelector('table');
@@ -294,6 +297,7 @@ const Table: React.FC<Props> = ({
     setHasRightShadow(fixedRightCount > 0 && initialMax > 1);
     setHasColumnEdgeShadow(false);
     setScrollbarHeight(Math.max(0, el.offsetHeight - el.clientHeight));
+    setScrollbarWidth(Math.max(0, el.offsetWidth - el.clientWidth));
     try {
       const tbl = el.querySelector('table');
       const thead = tbl ? (tbl.querySelector('thead') as HTMLElement | null) : null;
@@ -402,6 +406,7 @@ const Table: React.FC<Props> = ({
           ['--beaver-table-left-sticky-width' as any]: `${leftStickyWidth}px`,
           ['--beaver-table-right-sticky-width' as any]: `${rightStickyWidth}px`,
           ['--beaver-table-scrollbar-height' as any]: `${scrollbarHeight}px`,
+          ['--beaver-table-scrollbar-width' as any]: `${scrollbarWidth}px`,
           ['--beaver-table-header-height' as any]: `${headerHeight}px`,
           ['--beaver-table-scrollable-height' as any]: `calc(100% - ${scrollbarHeight}px)`,
         } as React.CSSProperties
@@ -451,6 +456,7 @@ const Table: React.FC<Props> = ({
                   style={
                     fixedHeader
                       ? {
+                          position: 'sticky',
                           top: headerOffset,
                           ...(fixedColumnCount > 0 ? { left: 0 } : {}),
                         }
