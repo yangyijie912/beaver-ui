@@ -1,3 +1,32 @@
+.beaver-table__frame {
+  position: relative;
+}
+
+/* 当容器可横向滚动时，动态显示两侧的渐变阴影以提示还有内容（伪元素放在 frame，不随 scroll 移动） */
+.beaver-table__frame.has-left-shadow::before,
+.beaver-table__frame.has-right-shadow::after {
+  content: '';
+  position: absolute;
+  /* 从表头底部开始，避免表头/表体错位 */
+  top: var(--beaver-table-header-height, 0px);
+  /* 减去表头高度和水平滚动条高度，避免遮挡滚动条交互 */
+  height: calc(100% - var(--beaver-table-header-height, 0px) - var(--beaver-table-scrollbar-height, 0px));
+  width: 28px;
+  pointer-events: none;
+  /* 放在表头之下、粘性列之上：使用表头层级减一，保证阴影在表头下方平滑连接 */
+  z-index: calc(var(--beaver-table-z-index-header, 3000) - 1);
+}
+
+.beaver-table__frame.has-left-shadow::before {
+  left: var(--beaver-table-left-sticky-width, 0);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.06) 40%, transparent 100%);
+}
+
+.beaver-table__frame.has-right-shadow::after {
+  right: var(--beaver-table-right-sticky-width, 0);
+  background: linear-gradient(270deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.06) 40%, transparent 100%);
+}
+
 .beaver-table__wrap {
   background: var(--beaver-color-bg);
   border: 1px solid var(--beaver-table-border-color);
@@ -225,15 +254,11 @@
 /* hover 时边缘粘性列保持阴影效果 */
 .beaver-table tbody tr:hover .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
   background: var(--beaver-table-hover-bg);
-  box-shadow:
-    1px 0 0 0 var(--beaver-table-hover-bg),
-    3px 0 4px -2px rgba(0, 0, 0, 0.18) !important;
+  box-shadow: none !important;
 }
 .beaver-table tbody tr:hover .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
   background: var(--beaver-table-hover-bg);
-  box-shadow:
-    10px 0 0 0 var(--beaver-table-hover-bg),
-    -3px 0 4px -2px rgba(0, 0, 0, 0.18) !important;
+  box-shadow: none !important;
 }
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--left,
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--right {
@@ -340,16 +365,12 @@
 /* 不开启 border 时：轻微的边缘阴影，集中在右边缘 */
 tbody .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col),
 tbody td.beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
-  box-shadow:
-    1px 0 0 0 var(--beaver-table-fixed-bg),
-    3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 thead .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col),
 thead th.beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
-  box-shadow:
-    1px 0 0 0 var(--beaver-table-header-bg),
-    3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 /* 开启 border 时：与不开启时相同 */
@@ -358,9 +379,7 @@ thead th.beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
   .beaver-table
   tbody
   td.beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
-  box-shadow:
-    1px 0 0 0 var(--beaver-table-fixed-bg),
-    3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 .beaver-table__wrap--bordered .beaver-table thead .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col),
@@ -368,25 +387,19 @@ thead th.beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
   .beaver-table
   thead
   th.beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col) {
-  box-shadow:
-    1px 0 0 0 var(--beaver-table-header-bg),
-    3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 /* 右侧粘性列边缘 - 左侧阴影，只在边缘显示，不向下扩散 */
 /* 不开启 border 时：使用足够宽的实体覆盖层挡住内容 + 左边缘阴影 */
 tbody .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col),
 tbody td.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
-  box-shadow:
-    10px 0 0 0 var(--beaver-table-fixed-bg),
-    -3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 thead .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col),
 thead th.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
-  box-shadow:
-    10px 0 0 0 var(--beaver-table-header-bg),
-    -3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 /* 开启 border 时：与不开启时相同 */
@@ -395,9 +408,7 @@ thead th.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
   .beaver-table
   tbody
   td.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
-  box-shadow:
-    10px 0 0 0 var(--beaver-table-fixed-bg),
-    -3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }
 
 .beaver-table__wrap--bordered .beaver-table thead .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col),
@@ -405,7 +416,5 @@ thead th.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
   .beaver-table
   thead
   th.beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
-  box-shadow:
-    10px 0 0 0 var(--beaver-table-header-bg),
-    -3px 0 4px -2px rgba(0, 0, 0, 0.18);
+  box-shadow: none;
 }

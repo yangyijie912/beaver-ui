@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useLayoutEffect } from 'react';
+import React, { useState, useRef, useMemo, useLayoutEffect, useEffect } from 'react';
 import './Table.css';
 import Checkbox from '../Checkbox/Checkbox';
 
@@ -78,6 +78,10 @@ const Table: React.FC<Props> = ({
   // 包装器引用和宽度测量（用于为未指定宽度的列保留最小像素）
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const [wrapWidth, setWrapWidth] = useState<number | null>(null);
+  const [hasLeftShadow, setHasLeftShadow] = useState(false);
+  const [hasRightShadow, setHasRightShadow] = useState(false);
+  const [scrollbarHeight, setScrollbarHeight] = useState(0);
+  const [headerHeight, setHeaderHeight] = useState(0);
 
   useLayoutEffect(() => {
     const el = wrapRef.current;
@@ -250,6 +254,63 @@ const Table: React.FC<Props> = ({
     return { cols: scaledCols, needsHScroll, tableWidth };
   }, [columns, wrapWidth, showCheckbox, preservePxAsMin, minColumnPx]);
 
+  // 简化的左右阴影逻辑：
+  // - 初始：左侧无阴影；右侧在内容溢出时初始显示
+  // - 交互：监听 scroll/resize，滚动时左侧在 scrollLeft>0 显示，右侧在未到最右端时显示
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+
+    let raf = 0;
+    const update = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const scrollLeft = el.scrollLeft || 0;
+        const max = Math.max(0, el.scrollWidth - el.clientWidth);
+        setHasLeftShadow(fixedColumnCount > 0 && scrollLeft > 0);
+        setHasRightShadow(fixedRightCount > 0 && scrollLeft < max - 1);
+        const sbh = Math.max(0, el.offsetHeight - el.clientHeight);
+        setScrollbarHeight(sbh);
+        // measure header height inside the table
+        try {
+          const tbl = el.querySelector('table');
+          const thead = tbl ? (tbl.querySelector('thead') as HTMLElement | null) : null;
+          const hh = thead ? thead.offsetHeight : 0;
+          setHeaderHeight(hh);
+        } catch (e) {
+          setHeaderHeight(0);
+        }
+      });
+    };
+
+    // 初始状态：左侧不显示，右侧根据是否溢出显示；同时测量滚动条高度
+    const initialMax = Math.max(0, el.scrollWidth - el.clientWidth);
+    setHasLeftShadow(false);
+    setHasRightShadow(fixedRightCount > 0 && initialMax > 1);
+    setScrollbarHeight(Math.max(0, el.offsetHeight - el.clientHeight));
+    try {
+      const tbl = el.querySelector('table');
+      const thead = tbl ? (tbl.querySelector('thead') as HTMLElement | null) : null;
+      const hh = thead ? thead.offsetHeight : 0;
+      setHeaderHeight(hh);
+    } catch (e) {
+      setHeaderHeight(0);
+    }
+
+    el.addEventListener('scroll', update, { passive: true });
+
+    const ro = new ResizeObserver(() => {
+      update();
+    });
+    ro.observe(el);
+
+    return () => {
+      el.removeEventListener('scroll', update);
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [wrapWidth, computedColumnWidths.tableWidth, fixedColumnCount, fixedRightCount]);
+
   // 计算左右固定列的像素偏移
   const columnPxOffsets = React.useMemo(() => {
     const MIN_PX_PER_UNSPECIFIED = typeof minColumnPx === 'number' && minColumnPx > 0 ? minColumnPx : 80;
@@ -288,259 +349,316 @@ const Table: React.FC<Props> = ({
     return { leftOffsets, rightOffsets };
   }, [columns, computedColumnWidths, wrapWidth, showCheckbox, minColumnPx]);
 
+  // 计算左侧/右侧粘性区域的总宽度（用于把阴影放置在粘性区域的外侧）
+  const { leftStickyWidth, rightStickyWidth } = React.useMemo(() => {
+    const MIN_PX_PER_UNSPECIFIED = typeof minColumnPx === 'number' && minColumnPx > 0 ? minColumnPx : 80;
+
+    const getColPx = (c: Column) => {
+      const w = computedColumnWidths.cols.find((x) => x.key === c.key)?.width || c.width;
+      if (!w) return MIN_PX_PER_UNSPECIFIED;
+      const ws = String(w).trim();
+      if (ws.endsWith('px')) {
+        const n = parseFloat(ws.slice(0, -2));
+        return Number.isNaN(n) ? MIN_PX_PER_UNSPECIFIED : n;
+      }
+      if (ws.endsWith('%') && wrapWidth && wrapWidth > 0) {
+        const n = parseFloat(ws.slice(0, -1));
+        return Number.isNaN(n) ? MIN_PX_PER_UNSPECIFIED : (n / 100) * wrapWidth;
+      }
+      return MIN_PX_PER_UNSPECIFIED;
+    };
+
+    let leftW = 0;
+    if (showCheckbox) leftW += 40; // checkbox 列宽
+    for (let i = 0; i < Math.max(0, fixedColumnCount); i++) {
+      const col = columns[i];
+      if (!col) break;
+      leftW += getColPx(col);
+    }
+
+    let rightW = 0;
+    for (let i = columns.length - 1; i >= columns.length - fixedRightCount; i--) {
+      const col = columns[i];
+      if (!col) break;
+      rightW += getColPx(col);
+    }
+
+    return { leftStickyWidth: Math.ceil(leftW), rightStickyWidth: Math.ceil(rightW) };
+  }, [columns, computedColumnWidths, wrapWidth, showCheckbox, fixedColumnCount, fixedRightCount, minColumnPx]);
+
   return (
     <div
-      className={`beaver-table__wrap ${border ? 'beaver-table__wrap--bordered' : ''}`}
-      ref={wrapRef}
-      style={{
-        overflowX: computedColumnWidths.needsHScroll ? 'auto' : undefined,
-        overflowY: fixedHeader ? 'auto' : undefined,
-        // 为固定表头场景提供滚动条安全内边距，避免遮挡内容
-        paddingBottom: fixedHeader ? 12 : undefined,
-        maxHeight:
-          fixedHeader && maxHeight != null ? (typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight) : undefined,
-      }}
+      className={`beaver-table__frame ${hasLeftShadow ? 'has-left-shadow' : ''} ${
+        hasRightShadow ? 'has-right-shadow' : ''
+      }`}
+      style={
+        {
+          ['--beaver-table-left-sticky-width' as any]: `${leftStickyWidth}px`,
+          ['--beaver-table-right-sticky-width' as any]: `${rightStickyWidth}px`,
+          ['--beaver-table-scrollbar-height' as any]: `${scrollbarHeight}px`,
+          ['--beaver-table-header-height' as any]: `${headerHeight}px`,
+        } as React.CSSProperties
+      }
     >
-      <table
-        className={`beaver-table ${fixedHeader ? 'beaver-table--fixed-header' : ''} ${
-          border ? 'beaver-table--bordered' : ''
-        }`}
-        style={{ tableLayout: hasAnyWidth ? 'fixed' : 'auto', width: computedColumnWidths.tableWidth }}
+      <div
+        className={`beaver-table__wrap ${border ? 'beaver-table__wrap--bordered' : ''}`}
+        ref={wrapRef}
+        style={{
+          overflowX: computedColumnWidths.needsHScroll ? 'auto' : undefined,
+          overflowY: fixedHeader ? 'auto' : undefined,
+          // 为固定表头场景提供滚动条安全内边距，避免遮挡内容
+          paddingBottom: fixedHeader ? 12 : undefined,
+          maxHeight:
+            fixedHeader && maxHeight != null
+              ? typeof maxHeight === 'number'
+                ? `${maxHeight}px`
+                : maxHeight
+              : undefined,
+        }}
       >
-        {hasAnyWidth ? (
-          <colgroup>
-            {showCheckbox ? <col key="__select_col__" style={{ width: '40px' }} /> : null}
-            {columns.map((c) => {
-              const cw = computedColumnWidths.cols.find((x) => x.key === c.key)?.width;
-              return <col key={c.key} style={cw ? { width: cw } : undefined} />;
-            })}
-          </colgroup>
-        ) : null}
+        <table
+          className={`beaver-table ${fixedHeader ? 'beaver-table--fixed-header' : ''} ${
+            border ? 'beaver-table--bordered' : ''
+          }`}
+          style={{ tableLayout: hasAnyWidth ? 'fixed' : 'auto', width: computedColumnWidths.tableWidth }}
+        >
+          {hasAnyWidth ? (
+            <colgroup>
+              {showCheckbox ? <col key="__select_col__" style={{ width: '40px' }} /> : null}
+              {columns.map((c) => {
+                const cw = computedColumnWidths.cols.find((x) => x.key === c.key)?.width;
+                return <col key={c.key} style={cw ? { width: cw } : undefined} />;
+              })}
+            </colgroup>
+          ) : null}
 
-        <thead>
-          <tr>
-            {showCheckbox ? (
-              <th
-                className={`beaver-table__select-col ${
-                  fixedColumnCount > 0
-                    ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
-                    : ''
-                }`}
-                style={
-                  fixedHeader
-                    ? {
-                        top: headerOffset,
-                        ...(fixedColumnCount > 0 ? { left: 0 } : {}),
-                      }
-                    : fixedColumnCount > 0
-                      ? { position: 'sticky', left: 0 }
-                      : undefined
-                }
-              >
-                <span onClick={(e) => e.stopPropagation()}>
-                  <Checkbox
-                    aria-label="select-all"
-                    checked={headerChecked}
-                    indeterminate={headerIndeterminate}
-                    onChange={(e) => toggleAll((e.target as HTMLInputElement).checked)}
-                  />
-                </span>
-              </th>
-            ) : null}
-
-            {columns.map((col, colIdx) => {
-              const align = col.align ?? defaultAlign ?? 'left';
-              if (process.env.NODE_ENV !== 'production') {
-                console.debug('[Table] column align:', col.key, align);
-              }
-              const cw = computedColumnWidths.cols.find((x) => x.key === col.key)?.width;
-              const isStickyLeft = fixedColumnCount > 0 && colIdx < fixedColumnCount;
-              const isStickyRight = fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount;
-              const stickyStyle: React.CSSProperties = {};
-              const stickyClasses: string[] = [];
-              if (isStickyLeft) {
-                stickyStyle.position = 'sticky';
-                stickyStyle.left = columnPxOffsets.leftOffsets[colIdx];
-                stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--left');
-                if (colIdx === fixedColumnCount - 1) stickyClasses.push('beaver-table__cell--sticky-edge-left');
-              }
-              if (isStickyRight) {
-                stickyStyle.position = 'sticky';
-                stickyStyle.right = columnPxOffsets.rightOffsets[colIdx];
-                stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--right');
-                if (colIdx === columns.length - fixedRightCount)
-                  stickyClasses.push('beaver-table__cell--sticky-edge-right');
-              }
-              return (
+          <thead>
+            <tr>
+              {showCheckbox ? (
                 <th
-                  key={col.key}
-                  style={{
-                    width: cw ?? col.width,
-                    textAlign: align,
-                    ...(fixedHeader ? { top: headerOffset } : {}),
-                    ...stickyStyle,
-                  }}
-                  className={`beaver-table__th beaver-table__th--${align} ${stickyClasses.join(' ')}`}
+                  className={`beaver-table__select-col ${
+                    fixedColumnCount > 0
+                      ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
+                      : ''
+                  }`}
+                  style={
+                    fixedHeader
+                      ? {
+                          top: headerOffset,
+                          ...(fixedColumnCount > 0 ? { left: 0 } : {}),
+                        }
+                      : fixedColumnCount > 0
+                        ? { position: 'sticky', left: 0 }
+                        : undefined
+                  }
                 >
-                  {col.title}
+                  <span onClick={(e) => e.stopPropagation()}>
+                    <Checkbox
+                      aria-label="select-all"
+                      checked={headerChecked}
+                      indeterminate={headerIndeterminate}
+                      onChange={(e) => toggleAll((e.target as HTMLInputElement).checked)}
+                    />
+                  </span>
                 </th>
-              );
-            })}
-          </tr>
-        </thead>
+              ) : null}
 
-        <tbody>
-          {
-            // 使用占位映射来处理跨行/跨列：当某个单元格被上/左侧的合并覆盖时跳过渲染
-          }
-          {(() => {
-            const occupied: Record<string, boolean> = {};
-            return data.map((row, idx) => {
-              const key = String(row[rowKey] ?? idx);
-              const isSelected = !!selectedMap[key];
-              const rowClass = [
-                isSelected ? 'beaver-table__row--selected' : '',
-                showCheckbox ? 'beaver-table__row--clickable' : '',
-              ]
-                .filter(Boolean)
-                .join(' ');
-
-              const cells: React.ReactNode[] = [];
-
-              // 处理复选框列（固定存在于每一行的首列）
-              if (showCheckbox) {
-                cells.push(
-                  <td
-                    key={`__select_${key}`}
-                    className={`beaver-table__select-col ${
-                      fixedColumnCount > 0
-                        ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
-                        : ''
-                    }`}
-                    style={fixedColumnCount > 0 ? { position: 'sticky', left: 0 } : undefined}
-                  >
-                    <span onClick={(e) => e.stopPropagation()}>
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={(e) => toggle(key, (e.target as HTMLInputElement).checked)}
-                      />
-                    </span>
-                  </td>
-                );
-              }
-
-              for (let colIdx = 0; colIdx < columns.length; colIdx++) {
-                const occKey = `${idx}-${colIdx}`;
-                if (occupied[occKey]) continue; // 被合并的格子，跳过
-
-                const col = columns[colIdx];
+              {columns.map((col, colIdx) => {
                 const align = col.align ?? defaultAlign ?? 'left';
-
-                // 支持两种方式提供 span：
-                // 1) 行数据在对应字段处以对象形式提供 { value, colSpan, rowSpan }
-                // 2) 列定义提供 span 函数 column.span(row, rowIndex, column)
-                let rawCell = row[col.key];
-                let cellValue: any = rawCell;
-                let colSpan = 1;
-                let rowSpan = 1;
-
-                if (
-                  rawCell &&
-                  typeof rawCell === 'object' &&
-                  ('colSpan' in rawCell || 'rowSpan' in rawCell || 'value' in rawCell)
-                ) {
-                  if ('value' in rawCell) cellValue = (rawCell as any).value;
-                  if ('colSpan' in rawCell) colSpan = Math.max(1, Number((rawCell as any).colSpan) || 1);
-                  if ('rowSpan' in rawCell) rowSpan = Math.max(1, Number((rawCell as any).rowSpan) || 1);
+                if (process.env.NODE_ENV !== 'production') {
+                  console.debug('[Table] column align:', col.key, align);
                 }
-
-                if (typeof col.span === 'function') {
-                  try {
-                    const s = col.span(row, idx, col);
-                    if (s) {
-                      if (s.colSpan != null) colSpan = Math.max(1, Number(s.colSpan) || 1);
-                      if (s.rowSpan != null) rowSpan = Math.max(1, Number(s.rowSpan) || 1);
-                    }
-                  } catch (e) {
-                    // 如果调用自定义 span 出错，不阻塞渲染，保持默认 1
-                    if (process.env.NODE_ENV !== 'production') console.warn('[Table] span function error', e);
-                  }
+                const cw = computedColumnWidths.cols.find((x) => x.key === col.key)?.width;
+                const isStickyLeft = fixedColumnCount > 0 && colIdx < fixedColumnCount;
+                const isStickyRight = fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount;
+                const stickyStyle: React.CSSProperties = {};
+                const stickyClasses: string[] = [];
+                if (isStickyLeft) {
+                  stickyStyle.position = 'sticky';
+                  stickyStyle.left = columnPxOffsets.leftOffsets[colIdx];
+                  stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--left');
+                  if (colIdx === fixedColumnCount - 1) stickyClasses.push('beaver-table__cell--sticky-edge-left');
                 }
-
-                // 边界保护：不要跨出列或行范围
-                colSpan = Math.min(colSpan, columns.length - colIdx);
-                rowSpan = Math.min(rowSpan, data.length - idx);
-
-                // 标记被当前合并覆盖的格子（除了锚点自身）
-                for (let r = idx; r < idx + rowSpan; r++) {
-                  for (let c = colIdx; c < colIdx + colSpan; c++) {
-                    const k = `${r}-${c}`;
-                    if (r === idx && c === colIdx) continue; // 锚点自身由当前渲染
-                    occupied[k] = true;
-                  }
+                if (isStickyRight) {
+                  stickyStyle.position = 'sticky';
+                  stickyStyle.right = columnPxOffsets.rightOffsets[colIdx];
+                  stickyClasses.push('beaver-table__cell--sticky', 'beaver-table__cell--sticky--right');
+                  if (colIdx === columns.length - fixedRightCount)
+                    stickyClasses.push('beaver-table__cell--sticky-edge-right');
                 }
-
-                // 计算渲染内容：优先列 render，其次全局 renderCell，最后回退到 cellValue
-                const renderedByColumn =
-                  typeof col.render === 'function' ? col.render(cellValue, row, idx, col) : undefined;
-                const renderedByGlobal =
-                  renderedByColumn == null && typeof renderCell === 'function' ? renderCell(row, col, idx) : undefined;
-
-                cells.push(
-                  <td
-                    key={`${col.key}_${colIdx}`}
-                    className={`beaver-table__td beaver-table__td--${align} ${
-                      fixedColumnCount > 0 && colIdx < fixedColumnCount
-                        ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left' +
-                          (colIdx === fixedColumnCount - 1 ? ' beaver-table__cell--sticky-edge-left' : '')
-                        : fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
-                          ? 'beaver-table__cell--sticky beaver-table__cell--sticky--right' +
-                            (colIdx === columns.length - fixedRightCount
-                              ? ' beaver-table__cell--sticky-edge-right'
-                              : '')
-                          : ''
-                    }`}
+                return (
+                  <th
+                    key={col.key}
                     style={{
+                      width: cw ?? col.width,
                       textAlign: align,
-                      ...(fixedColumnCount > 0 && colIdx < fixedColumnCount
-                        ? { position: 'sticky', left: columnPxOffsets.leftOffsets[colIdx] }
-                        : {}),
-                      ...(fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
-                        ? { position: 'sticky', right: columnPxOffsets.rightOffsets[colIdx] }
-                        : {}),
+                      ...(fixedHeader ? { top: headerOffset } : {}),
+                      ...stickyStyle,
                     }}
-                    {...(colSpan > 1 ? { colSpan } : {})}
-                    {...(rowSpan > 1 ? { rowSpan } : {})}
+                    className={`beaver-table__th beaver-table__th--${align} ${stickyClasses.join(' ')}`}
                   >
-                    {renderedByColumn != null
-                      ? renderedByColumn
-                      : renderedByGlobal != null
-                        ? renderedByGlobal
-                        : cellValue}
-                  </td>
+                    {col.title}
+                  </th>
                 );
-              }
+              })}
+            </tr>
+          </thead>
 
-              return (
-                <tr
-                  key={key}
-                  className={rowClass}
-                  onClick={(e) => {
-                    const target = e.target as HTMLElement;
-                    const skip = !!target.closest(
-                      'input,button,a,textarea,select,.beaver-checkbox,.beaver-checkbox-wrapper,.beaver-checkbox-input'
-                    );
-                    if (skip) return;
-                    if (showCheckbox) toggle(key, !isSelected);
-                  }}
-                >
-                  {cells}
-                </tr>
-              );
-            });
-          })()}
-        </tbody>
-      </table>
+          <tbody>
+            {
+              // 使用占位映射来处理跨行/跨列：当某个单元格被上/左侧的合并覆盖时跳过渲染
+            }
+            {(() => {
+              const occupied: Record<string, boolean> = {};
+              return data.map((row, idx) => {
+                const key = String(row[rowKey] ?? idx);
+                const isSelected = !!selectedMap[key];
+                const rowClass = [
+                  isSelected ? 'beaver-table__row--selected' : '',
+                  showCheckbox ? 'beaver-table__row--clickable' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ');
+
+                const cells: React.ReactNode[] = [];
+
+                // 处理复选框列（固定存在于每一行的首列）
+                if (showCheckbox) {
+                  cells.push(
+                    <td
+                      key={`__select_${key}`}
+                      className={`beaver-table__select-col ${
+                        fixedColumnCount > 0
+                          ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left beaver-table__cell--sticky-edge-left'
+                          : ''
+                      }`}
+                      style={fixedColumnCount > 0 ? { position: 'sticky', left: 0 } : undefined}
+                    >
+                      <span onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={(e) => toggle(key, (e.target as HTMLInputElement).checked)}
+                        />
+                      </span>
+                    </td>
+                  );
+                }
+
+                for (let colIdx = 0; colIdx < columns.length; colIdx++) {
+                  const occKey = `${idx}-${colIdx}`;
+                  if (occupied[occKey]) continue; // 被合并的格子，跳过
+
+                  const col = columns[colIdx];
+                  const align = col.align ?? defaultAlign ?? 'left';
+
+                  // 支持两种方式提供 span：
+                  // 1) 行数据在对应字段处以对象形式提供 { value, colSpan, rowSpan }
+                  // 2) 列定义提供 span 函数 column.span(row, rowIndex, column)
+                  let rawCell = row[col.key];
+                  let cellValue: any = rawCell;
+                  let colSpan = 1;
+                  let rowSpan = 1;
+
+                  if (
+                    rawCell &&
+                    typeof rawCell === 'object' &&
+                    ('colSpan' in rawCell || 'rowSpan' in rawCell || 'value' in rawCell)
+                  ) {
+                    if ('value' in rawCell) cellValue = (rawCell as any).value;
+                    if ('colSpan' in rawCell) colSpan = Math.max(1, Number((rawCell as any).colSpan) || 1);
+                    if ('rowSpan' in rawCell) rowSpan = Math.max(1, Number((rawCell as any).rowSpan) || 1);
+                  }
+
+                  if (typeof col.span === 'function') {
+                    try {
+                      const s = col.span(row, idx, col);
+                      if (s) {
+                        if (s.colSpan != null) colSpan = Math.max(1, Number(s.colSpan) || 1);
+                        if (s.rowSpan != null) rowSpan = Math.max(1, Number(s.rowSpan) || 1);
+                      }
+                    } catch (e) {
+                      // 如果调用自定义 span 出错，不阻塞渲染，保持默认 1
+                      if (process.env.NODE_ENV !== 'production') console.warn('[Table] span function error', e);
+                    }
+                  }
+
+                  // 边界保护：不要跨出列或行范围
+                  colSpan = Math.min(colSpan, columns.length - colIdx);
+                  rowSpan = Math.min(rowSpan, data.length - idx);
+
+                  // 标记被当前合并覆盖的格子（除了锚点自身）
+                  for (let r = idx; r < idx + rowSpan; r++) {
+                    for (let c = colIdx; c < colIdx + colSpan; c++) {
+                      const k = `${r}-${c}`;
+                      if (r === idx && c === colIdx) continue; // 锚点自身由当前渲染
+                      occupied[k] = true;
+                    }
+                  }
+
+                  // 计算渲染内容：优先列 render，其次全局 renderCell，最后回退到 cellValue
+                  const renderedByColumn =
+                    typeof col.render === 'function' ? col.render(cellValue, row, idx, col) : undefined;
+                  const renderedByGlobal =
+                    renderedByColumn == null && typeof renderCell === 'function'
+                      ? renderCell(row, col, idx)
+                      : undefined;
+
+                  cells.push(
+                    <td
+                      key={`${col.key}_${colIdx}`}
+                      className={`beaver-table__td beaver-table__td--${align} ${
+                        fixedColumnCount > 0 && colIdx < fixedColumnCount
+                          ? 'beaver-table__cell--sticky beaver-table__cell--sticky--left' +
+                            (colIdx === fixedColumnCount - 1 ? ' beaver-table__cell--sticky-edge-left' : '')
+                          : fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
+                            ? 'beaver-table__cell--sticky beaver-table__cell--sticky--right' +
+                              (colIdx === columns.length - fixedRightCount
+                                ? ' beaver-table__cell--sticky-edge-right'
+                                : '')
+                            : ''
+                      }`}
+                      style={{
+                        textAlign: align,
+                        ...(fixedColumnCount > 0 && colIdx < fixedColumnCount
+                          ? { position: 'sticky', left: columnPxOffsets.leftOffsets[colIdx] }
+                          : {}),
+                        ...(fixedRightCount > 0 && colIdx >= columns.length - fixedRightCount
+                          ? { position: 'sticky', right: columnPxOffsets.rightOffsets[colIdx] }
+                          : {}),
+                      }}
+                      {...(colSpan > 1 ? { colSpan } : {})}
+                      {...(rowSpan > 1 ? { rowSpan } : {})}
+                    >
+                      {renderedByColumn != null
+                        ? renderedByColumn
+                        : renderedByGlobal != null
+                          ? renderedByGlobal
+                          : cellValue}
+                    </td>
+                  );
+                }
+
+                return (
+                  <tr
+                    key={key}
+                    className={rowClass}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      const skip = !!target.closest(
+                        'input,button,a,textarea,select,.beaver-checkbox,.beaver-checkbox-wrapper,.beaver-checkbox-input'
+                      );
+                      if (skip) return;
+                      if (showCheckbox) toggle(key, !isSelected);
+                    }}
+                  >
+                    {cells}
+                  </tr>
+                );
+              });
+            })()}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
