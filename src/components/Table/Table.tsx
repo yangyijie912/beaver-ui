@@ -80,6 +80,7 @@ const Table: React.FC<Props> = ({
   const [wrapWidth, setWrapWidth] = useState<number | null>(null);
   const [hasLeftShadow, setHasLeftShadow] = useState(false);
   const [hasRightShadow, setHasRightShadow] = useState(false);
+  const [hasColumnEdgeShadow, setHasColumnEdgeShadow] = useState(false);
   const [scrollbarHeight, setScrollbarHeight] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -269,13 +270,17 @@ const Table: React.FC<Props> = ({
         const max = Math.max(0, el.scrollWidth - el.clientWidth);
         setHasLeftShadow(fixedColumnCount > 0 && scrollLeft > 0);
         setHasRightShadow(fixedRightCount > 0 && scrollLeft < max - 1);
+        // 列边缘阴影：只在非固定表头的情况下显示，当有固定列且发生滚动时
+        const hasFixedColumns = fixedColumnCount > 0 || fixedRightCount > 0;
+        const isScrolled = scrollLeft > 0 && scrollLeft < max - 1;
+        setHasColumnEdgeShadow(!fixedHeader && hasFixedColumns && isScrolled);
         const sbh = Math.max(0, el.offsetHeight - el.clientHeight);
         setScrollbarHeight(sbh);
-        // measure header height inside the table
+        // measure header height inside the table - only for fixed header
         try {
           const tbl = el.querySelector('table');
           const thead = tbl ? (tbl.querySelector('thead') as HTMLElement | null) : null;
-          const hh = thead ? thead.offsetHeight : 0;
+          const hh = fixedHeader && thead ? thead.offsetHeight : 0;
           setHeaderHeight(hh);
         } catch (e) {
           setHeaderHeight(0);
@@ -287,11 +292,12 @@ const Table: React.FC<Props> = ({
     const initialMax = Math.max(0, el.scrollWidth - el.clientWidth);
     setHasLeftShadow(false);
     setHasRightShadow(fixedRightCount > 0 && initialMax > 1);
+    setHasColumnEdgeShadow(false);
     setScrollbarHeight(Math.max(0, el.offsetHeight - el.clientHeight));
     try {
       const tbl = el.querySelector('table');
       const thead = tbl ? (tbl.querySelector('thead') as HTMLElement | null) : null;
-      const hh = thead ? thead.offsetHeight : 0;
+      const hh = fixedHeader && thead ? thead.offsetHeight : 0;
       setHeaderHeight(hh);
     } catch (e) {
       setHeaderHeight(0);
@@ -390,13 +396,14 @@ const Table: React.FC<Props> = ({
     <div
       className={`beaver-table__frame ${hasLeftShadow ? 'has-left-shadow' : ''} ${
         hasRightShadow ? 'has-right-shadow' : ''
-      }`}
+      } ${fixedHeader ? 'beaver-table__frame--fixed-header' : ''}`}
       style={
         {
           ['--beaver-table-left-sticky-width' as any]: `${leftStickyWidth}px`,
           ['--beaver-table-right-sticky-width' as any]: `${rightStickyWidth}px`,
           ['--beaver-table-scrollbar-height' as any]: `${scrollbarHeight}px`,
           ['--beaver-table-header-height' as any]: `${headerHeight}px`,
+          ['--beaver-table-scrollable-height' as any]: `calc(100% - ${scrollbarHeight}px)`,
         } as React.CSSProperties
       }
     >
@@ -419,7 +426,7 @@ const Table: React.FC<Props> = ({
         <table
           className={`beaver-table ${fixedHeader ? 'beaver-table--fixed-header' : ''} ${
             border ? 'beaver-table--bordered' : ''
-          }`}
+          } ${hasColumnEdgeShadow ? 'beaver-table--column-edge-shadow' : ''}`}
           style={{ tableLayout: hasAnyWidth ? 'fixed' : 'auto', width: computedColumnWidths.tableWidth }}
         >
           {hasAnyWidth ? (

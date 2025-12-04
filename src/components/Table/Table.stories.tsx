@@ -275,6 +275,26 @@ export const FixedHeader = {
   args: {},
 };
 
+// 固定左侧列示例
+const FixedLeftColumnsTemplate = (args: TableArgs) => (
+  <Table columns={columnsWithPx} data={data} rowKey="id" fixedColumnCount={2} {...args} />
+);
+export const FixedLeftColumns = {
+  name: '左侧固定列',
+  render: FixedLeftColumnsTemplate,
+  args: {},
+};
+
+// 固定右侧列示例
+const FixedRightColumnsTemplate = (args: TableArgs) => (
+  <Table columns={columnsWithPx} data={data} rowKey="id" fixedRightCount={2} {...args} />
+);
+export const FixedRightColumns = {
+  name: '右侧固定列',
+  render: FixedRightColumnsTemplate,
+  args: {},
+};
+
 // 同时固定左右两侧列示例
 const FixedBothSidesTemplate = (args: TableArgs) => (
   <Table
@@ -282,7 +302,7 @@ const FixedBothSidesTemplate = (args: TableArgs) => (
     data={data}
     rowKey="id"
     showCheckbox
-    fixedColumnCount={3}
+    fixedColumnCount={2}
     fixedRightCount={2}
     {...args}
   />
@@ -319,6 +339,56 @@ export const FixedHeaderAndColumns = {
   args: {},
 };
 
+// 同时固定表头与右列
+const FixedHeaderAndRightColumnsTemplate = (args: TableArgs) => {
+  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
+    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+  );
+  return (
+    <Table
+      columns={columnsWithPx}
+      data={many}
+      rowKey="id"
+      showCheckbox
+      fixedHeader
+      fixedRightCount={2}
+      maxHeight={240}
+      {...args}
+    />
+  );
+};
+export const FixedHeaderAndRightColumns = {
+  name: '固定表头 & 右列',
+  render: FixedHeaderAndRightColumnsTemplate,
+  args: {},
+};
+
+// 固定表头与左右列
+const FixedHeaderAndBothSidesTemplate = (args: TableArgs) => {
+  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
+    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+  );
+  return (
+    <Table
+      columns={columnsWithPx}
+      data={many}
+      rowKey="id"
+      showCheckbox
+      fixedHeader
+      fixedColumnCount={2}
+      fixedRightCount={2}
+      maxHeight={240}
+      {...args}
+    />
+  );
+};
+
+export const FixedHeaderAndBothSides = {
+  name: '固定表头 & 左右列',
+  render: FixedHeaderAndBothSidesTemplate,
+  args: {},
+};
+
 const BorderedTemplate = (args: TableArgs) => (
   <div>
     <p>
@@ -329,7 +399,7 @@ const BorderedTemplate = (args: TableArgs) => (
 );
 
 export const Bordered: Story = {
-  name: '带列分隔的 border 示例',
+  name: 'border 属性',
   render: BorderedTemplate,
   args: { border: true, showCheckbox: false },
 };
