@@ -91,7 +91,7 @@ export const NoClosable: Story = {
             </>
           }
         >
-          <p>这个Modal没有关闭按钮，用户必须通过底部按钮来操作。</p>
+          <p>这个Modal没有关闭按钮，必须通过底部按钮来操作。</p>
         </Modal>
       </>
     );
@@ -346,7 +346,7 @@ export const NoFooter: Story = {
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
         <Modal open={open} title="无页脚Modal" onClose={() => setOpen(false)}>
           <p>这是一个没有页脚的Modal。</p>
-          <p>用户可以通过关闭按钮或Escape键来关闭它。</p>
+          <p>必须通过关闭按钮或Escape键来关闭它。</p>
         </Modal>
       </>
     );

@@ -76,42 +76,45 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     const wrapperClass = `beaver-modal-wrapper ${animating ? 'beaver-modal--active' : ''} ${className}`.trim();
     const contentClass = `beaver-modal__content ${contentClassName}`.trim();
 
+    // 遮罩层单独渲染
+    const maskElement = <div className={maskClass} onClick={handleMaskClick} aria-hidden="true" />;
+
+    // Modal 内容（不包括遮罩）
     const modalContent = (
-      <div ref={ref} className="beaver-modal" {...rest}>
-        {/* 遮罩层 */}
-        <div className={maskClass} onClick={handleMaskClick} aria-hidden="true" />
+      <div ref={ref} className={wrapperClass} {...rest}>
+        <div
+          ref={contentRef}
+          className={contentClass}
+          style={{ width: modalWidth }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? 'beaver-modal-title' : undefined}
+        >
+          {/* 标题 */}
+          {(title || closable) && (
+            <ModalHeader
+              title={title}
+              closable={closable}
+              onClose={onClose}
+              id={title ? 'beaver-modal-title' : undefined}
+            />
+          )}
 
-        {/* Modal容器 */}
-        <div className={wrapperClass}>
-          <div
-            ref={contentRef}
-            className={contentClass}
-            style={{ width: modalWidth }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={title ? 'beaver-modal-title' : undefined}
-          >
-            {/* 标题 */}
-            {(title || closable) && (
-              <ModalHeader
-                title={title}
-                closable={closable}
-                onClose={onClose}
-                id={title ? 'beaver-modal-title' : undefined}
-              />
-            )}
+          {/* 内容 */}
+          <div className="beaver-modal__body">{children}</div>
 
-            {/* 内容 */}
-            <div className="beaver-modal__body">{children}</div>
-
-            {/* 页脚 */}
-            {footer && <ModalFooter>{footer}</ModalFooter>}
-          </div>
+          {/* 页脚 */}
+          {footer && <ModalFooter>{footer}</ModalFooter>}
         </div>
       </div>
     );
 
-    return <Portal>{modalContent}</Portal>;
+    return (
+      <>
+        <Portal>{maskElement}</Portal>
+        <Portal>{modalContent}</Portal>
+      </>
+    );
   }
 );
 

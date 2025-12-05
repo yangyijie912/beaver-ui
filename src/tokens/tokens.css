@@ -84,7 +84,7 @@
   --beaver-modal-footer-margin-top: 16px;
   --beaver-modal-overlay-bg: rgba(0, 0, 0, 0.55);
   --beaver-modal-bg: #ffffff;
-  --beaver-modal-z-index: 2000;
+  --beaver-modal-z-index: 9999;
   --beaver-modal-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   --beaver-modal-border: 1px solid #e8e8e8;
   --beaver-modal-title-font-size: 18px;

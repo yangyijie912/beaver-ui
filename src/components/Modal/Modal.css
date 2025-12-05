@@ -1,39 +1,23 @@
-:root {
-  --beaver-modal-width: var(--beaver-modal-width, 520px);
-  --beaver-modal-border-radius: var(--beaver-modal-border-radius, 8px);
-  --beaver-modal-padding: var(--beaver-modal-padding, 24px);
-  --beaver-modal-header-margin-bottom: var(--beaver-modal-header-margin-bottom, 16px);
-  --beaver-modal-footer-margin-top: var(--beaver-modal-footer-margin-top, 16px);
-  --beaver-modal-overlay-bg: var(--beaver-modal-overlay-bg, rgba(0, 0, 0, 0.55));
-  --beaver-modal-bg: var(--beaver-modal-bg, #ffffff);
-  --beaver-modal-z-index: var(--beaver-modal-z-index, 9999);
-  --beaver-modal-box-shadow: var(--beaver-modal-box-shadow, 0 10px 40px rgba(0, 0, 0, 0.15));
-  --beaver-modal-border: var(--beaver-modal-border, 1px solid #e8e8e8);
-  --beaver-modal-title-font-size: var(--beaver-modal-title-font-size, 18px);
-  --beaver-modal-title-font-weight: var(--beaver-modal-title-font-weight, 600);
-  --beaver-modal-title-color: var(--beaver-modal-title-color, #333);
-  --beaver-modal-close-btn-size: var(--beaver-modal-close-btn-size, 24px);
-  --beaver-modal-close-btn-color: var(--beaver-modal-close-btn-color, #666);
-}
+/* Modal 样式 - 使用全局 tokens 变量 */
 
-.beaver-modal {
-  position: fixed;
-  inset: 0;
-  z-index: var(--beaver-modal-z-index);
-  pointer-events: none;
+/* Portal 容器 - 强制覆盖整个视口 */
+.beaver-modal-portal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: var(--beaver-modal-z-index) !important;
+  pointer-events: none !important;
 }
 
 .beaver-modal__mask {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: var(--beaver-modal-overlay-bg);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
-  z-index: calc(var(--beaver-modal-z-index) - 1);
 }
 
 .beaver-modal__mask.beaver-modal--active {
@@ -43,15 +27,11 @@
 
 .beaver-modal-wrapper {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  z-index: var(--beaver-modal-z-index);
 }
 
 .beaver-modal-wrapper.beaver-modal--active {
@@ -147,18 +127,8 @@
   flex-shrink: 0;
 }
 
-/* 无动画变体 */
-.beaver-modal__content {
-  transition: none;
-}
-
-.beaver-modal-wrapper:not(.beaver-modal--active) .beaver-modal__content {
-  display: none;
-}
-
-.beaver-modal-wrapper.beaver-modal--active .beaver-modal__content {
-  display: block;
-}
+/* 显示隐藏通过 opacity 和 transform 控制 */
+/* 已在 .beaver-modal__content 和 .beaver-modal-wrapper.beaver-modal--active .beaver-modal__content 中定义 */
 
 /* 响应式处理 */
 @media (max-width: 768px) {

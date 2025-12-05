@@ -236,32 +236,3 @@ Modal 支持平滑的进入和退出动画：
   内容
 </Modal>
 ```
-
-## 最佳实践
-
-1. **总是提供 `onClose` 回调** - 让用户能够关闭 Modal
-2. **使用有意义的标题** - 帮助用户理解 Modal 的目的
-3. **保持内容简洁** - Modal 应该专注于单一任务
-4. **提供明确的操作** - 使用清晰的按钮标签
-5. **考虑响应式** - Modal 会自动适应小屏幕
-
-## 文件结构
-
-```
-src/components/Modal/
-├── Modal.tsx                 # 主组件
-├── Modal.css                 # 样式
-├── Modal.stories.tsx         # Storybook 演示
-├── types.ts                  # TypeScript 类型
-├── hooks/
-│   └── useModalAnimation.ts  # 动画逻辑 hook
-└── components/
-    ├── ModalHeader.tsx       # 头部子组件
-    └── ModalFooter.tsx       # 页脚子组件
-```
-
-## 更新于
-
-- **vars.ts**: 添加了 Modal 组件相关的 CSS 变量
-- **tokens.css**: 自动生成的 CSS 变量文件
-- **src/index.ts**: 导出 Modal、ModalHeader 和 ModalFooter
