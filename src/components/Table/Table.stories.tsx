@@ -275,26 +275,6 @@ export const FixedHeader = {
   args: {},
 };
 
-// 固定左侧列示例
-const FixedLeftColumnsTemplate = (args: TableArgs) => (
-  <Table columns={columnsWithPx} data={data} rowKey="id" fixedColumnCount={2} {...args} />
-);
-export const FixedLeftColumns = {
-  name: '左侧固定列',
-  render: FixedLeftColumnsTemplate,
-  args: {},
-};
-
-// 固定右侧列示例
-const FixedRightColumnsTemplate = (args: TableArgs) => (
-  <Table columns={columnsWithPx} data={data} rowKey="id" fixedRightCount={2} {...args} />
-);
-export const FixedRightColumns = {
-  name: '右侧固定列',
-  render: FixedRightColumnsTemplate,
-  args: {},
-};
-
 // 同时固定左右两侧列示例
 const FixedBothSidesTemplate = (args: TableArgs) => (
   <Table
@@ -311,55 +291,6 @@ const FixedBothSidesTemplate = (args: TableArgs) => (
 export const FixedBothSides = {
   name: '左右固定列',
   render: FixedBothSidesTemplate,
-  args: {},
-};
-
-// 同时固定表头与左列
-const FixedHeaderAndColumnsTemplate = (args: TableArgs) => {
-  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
-    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
-  );
-  return (
-    <Table
-      columns={columnsWithPx}
-      data={many}
-      rowKey="id"
-      showCheckbox
-      fixedHeader
-      fixedColumnCount={2}
-      maxHeight={240}
-      {...args}
-    />
-  );
-};
-
-export const FixedHeaderAndColumns = {
-  name: '固定表头 & 左列',
-  render: FixedHeaderAndColumnsTemplate,
-  args: {},
-};
-
-// 同时固定表头与右列
-const FixedHeaderAndRightColumnsTemplate = (args: TableArgs) => {
-  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
-    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
-  );
-  return (
-    <Table
-      columns={columnsWithPx}
-      data={many}
-      rowKey="id"
-      showCheckbox
-      fixedHeader
-      fixedRightCount={2}
-      maxHeight={240}
-      {...args}
-    />
-  );
-};
-export const FixedHeaderAndRightColumns = {
-  name: '固定表头 & 右列',
-  render: FixedHeaderAndRightColumnsTemplate,
   args: {},
 };
 
@@ -541,7 +472,7 @@ const VisibleSpanTemplate = (args: TableArgs) => (
 );
 
 export const VisibleSpan = {
-  name: '跨行/跨列 - 可视化示例',
+  name: '跨行/跨列',
   render: VisibleSpanTemplate,
   args: {},
 };
@@ -569,7 +500,7 @@ const ColumnSpanTemplate = (args: TableArgs) => (
 );
 
 export const ColumnSpanAPI = {
-  name: '列级 span 回调 示例',
+  name: '列级 span 回调',
   render: ColumnSpanTemplate,
   args: {},
 };
