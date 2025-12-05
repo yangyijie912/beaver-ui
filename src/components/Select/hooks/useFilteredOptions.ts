@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { SelectOption } from '../Select';
+import type { SelectOption } from '../types';
 
 /**
  * useFilteredOptions

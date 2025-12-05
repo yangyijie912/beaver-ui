@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from './Select';
 import type { Meta, StoryObj, StoryFn } from '@storybook/react';
-import type { SelectOption } from './Select';
+import type { SelectOption } from './types';
 
 const decoratorStyle: React.CSSProperties & Record<string, string> = {
   '--beaver-select-width': '200px',

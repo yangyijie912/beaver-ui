@@ -1,6 +1,6 @@
 import React from 'react';
 import Tags from './Tags';
-import type { SelectOption } from './Select';
+import type { SelectOption } from '../types';
 
 /**
  * SearchInput

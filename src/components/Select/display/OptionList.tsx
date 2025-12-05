@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SelectOption } from './Select';
+import type { SelectOption } from '../types';
 import OptionItem from './OptionItem';
 
 /**

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { SelectOption } from '../Select';
+import type { SelectOption } from '../types';
 import type { SelectOptionWithNew } from './useFilteredOptions';
 
 /**

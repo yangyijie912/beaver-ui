@@ -1,54 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useSelectState from './hooks/useSelectState';
 import useFilteredOptions, { SelectOptionWithNew } from './hooks/useFilteredOptions';
 import useKeyboardNavigation from './hooks/useKeyboardNavigation';
 import useTypeahead from './hooks/useTypeahead';
-import OptionList from './OptionList';
-import SearchInput from './SearchInput';
+import { useSelectUI } from './hooks/useSelectUI';
+import OptionList from './display/OptionList';
+import SearchInput from './display/SearchInput';
+import { SelectTags } from './components/SelectTags';
+import { SelectIcons } from './components/SelectIcons';
+import { renderHighlightedLabel, getWidthStyle, getContainerClassName, getNoDataLabel } from './utils';
+import type { SelectOption, SelectProps } from './types';
 import './Select.css';
-
-export type SelectOption = {
-  label: string;
-  value: string;
-  disabled?: boolean;
-};
-
-export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange' | 'size'> & {
-  /** 下拉选项列表 */
-  options?: SelectOption[];
-  /** 占位符 */
-  placeholder?: string;
-  /** 单选时为 string，复选时为 string[] */
-  value?: string | string[];
-  /** 默认值 */
-  defaultValue?: string | string[];
-  /** 事件回调，参数为选中的值 */
-  onChange?: (value: string | string[]) => void;
-  /** 是否支持多选 */
-  multiple?: boolean;
-  /** 是否在下拉中显示搜索框 */
-  searchable?: boolean;
-  /** 是否允许在没有匹配项时创建自定义输入项（默认 false） */
-  allowCreate?: boolean;
-  /** 定制过滤函数：如果提供，将优先使用 */
-  filterOption?: (input: string, option: SelectOption) => boolean;
-  /** 搜索策略：'label' 只按 label 搜索，'value' 只按 value，'both' 按 label 与 value 搜索但优先 label 匹配 */
-  searchBy?: 'label' | 'value' | 'both';
-  /** 仅在 `multiple` 为 true 时生效：在下拉中隐藏已选项，并在每次多选后关闭下拉。 */
-  filterSelected?: boolean;
-  /** 是否禁用 */
-  disabled?: boolean;
-  /** 是否加载中 */
-  loading?: boolean;
-  /** 自定义箭头/后缀图标（传入 ReactNode） */
-  icon?: React.ReactNode;
-  /** 自定义 loading 图标（传入 ReactNode），优先于默认 spinner */
-  loadingIcon?: React.ReactNode;
-  /** 直接设置组件宽度，支持 number(像素) 或 字符串(如 '50%','200px') */
-  width?: number | string;
-  /** 组件尺寸 */
-  size?: 'small' | 'medium' | 'large';
-};
 
 const Select: React.FC<SelectProps> = ({
   options = [],
@@ -73,23 +35,26 @@ const Select: React.FC<SelectProps> = ({
   filterSelected = false,
   ...rest
 }) => {
-  const [open, setOpen] = useState(false); // 下拉打开状态
-  const [query, setQuery] = useState(''); // 当前输入的查询文本
-  // 受控/非受控值同步逻辑由 hook 统一管理
+  // UI 状态管理（使用 useReducer 统一管理）
+  const { state: uiState, setOpen, setQuery, setHighlighted, setInputFocused } = useSelectUI();
+  const { open, query, highlighted } = uiState;
+
+  // 值状态管理
   const { internalValue, setInternalValue } = useSelectState({
     controlledValue,
     defaultValue,
     multiple,
   });
-  const rootRef = useRef<HTMLDivElement | null>(null); // 组件根节点 ref
-  const listRef = useRef<HTMLUListElement | null>(null); // 下拉列表 ref
-  const searchTimer = useRef<number | null>(null); // 搜索定时器 ref
-  const searchRef = useRef<HTMLInputElement | null>(null); // 搜索框 ref
-  const committedRef = useRef<boolean>(false); // 标记是否已由用户显式选择（用于区分 close/blur 时的自动提交行为）
-  const userTypedRef = useRef<boolean>(false); // 标记用户是否有真实输入行为
-  // 用于 typeahead 的输入缓冲与定时清除
+
+  // Refs
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const listRef = useRef<HTMLUListElement | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const committedRef = useRef<boolean>(false);
+  const userTypedRef = useRef<boolean>(false);
+  const searchTimer = useRef<number | null>(null);
+
   const { handleBackspace, handleChar } = useTypeahead(700, userTypedRef);
-  const [, setInputFocused] = useState(false); // 输入框聚焦状态（只需 setter）
 
   // 点击外部关闭下拉
   useEffect(() => {
@@ -117,24 +82,7 @@ const Select: React.FC<SelectProps> = ({
     internalValue,
   });
 
-  // 高亮渲染 label 中匹配的子串
-  function renderHighlightedLabel(label: string) {
-    const q = query.trim();
-    if (!q) return label;
-    const lower = label.toLowerCase();
-    const idx = lower.indexOf(q.toLowerCase());
-    if (idx === -1) return label;
-    const before = label.slice(0, idx);
-    const match = label.slice(idx, idx + q.length);
-    const after = label.slice(idx + q.length);
-    return (
-      <>
-        {before}
-        <span className="beaver-select__match">{match}</span>
-        {after}
-      </>
-    );
-  }
+  // 未使用的 renderLabel 函数已通过 utils 导入
 
   // 下拉关闭时清空查询并重置高亮
   useEffect(() => {
@@ -185,7 +133,7 @@ const Select: React.FC<SelectProps> = ({
   // 切换下拉打开状态
   function toggleOpen() {
     if (isDisabled) return;
-    setOpen((v) => !v);
+    setOpen(!open);
   }
 
   // 处理选中项
@@ -223,7 +171,7 @@ const Select: React.FC<SelectProps> = ({
   }
 
   // 键盘导航由 hook 处理（高亮项/按键事件）
-  const { highlighted, setHighlighted, onKeyDown } = useKeyboardNavigation({
+  const { onKeyDown } = useKeyboardNavigation({
     displayOptions: displayOptions as (SelectOption | SelectOptionWithNew)[],
     open,
     setOpen,
@@ -357,7 +305,7 @@ const Select: React.FC<SelectProps> = ({
     e.stopPropagation();
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setHighlighted((h) => {
+      setHighlighted((h: number | null) => {
         const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
         const start = h === null ? -1 : h;
         for (let i = start + 1; i < src.length; i++) {
@@ -367,7 +315,7 @@ const Select: React.FC<SelectProps> = ({
       });
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setHighlighted((h) => {
+      setHighlighted((h: number | null) => {
         const src = displayOptions as (SelectOption | SelectOptionWithNew)[];
         const start = h === null ? src.length : h;
         for (let i = start - 1; i >= 0; i--) {
@@ -396,20 +344,12 @@ const Select: React.FC<SelectProps> = ({
 
   return (
     <div
-      className={[
-        'beaver-select-wrapper',
-        `beaver-select--${size}`,
-        isDisabled ? 'beaver-select--disabled' : '',
-        open ? 'beaver-select--open' : '',
-        className || '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
+      className={getContainerClassName(size, isDisabled, open, className)}
       ref={rootRef}
       aria-disabled={isDisabled}
       style={{
         ...(style as React.CSSProperties),
-        ...(width !== undefined ? { width: typeof width === 'number' ? `${width}px` : width } : {}),
+        ...getWidthStyle(width),
       }}
     >
       <div
@@ -447,25 +387,10 @@ const Select: React.FC<SelectProps> = ({
               onClick={(e) => e.stopPropagation()}
             />
           ) : Array.isArray(internalValue) ? (
-            // 关闭态（下拉未打开）时，在多选且无已选项时显示占位符
             selectedValues.length === 0 ? (
               <span className={`beaver-select__value beaver-select__placeholder`}>{placeholder}</span>
             ) : (
-              <div className="beaver-select__tags">
-                {selectedValues.map((v: string) => (
-                  <span className="beaver-select__tag" key={v} onClick={(e) => e.stopPropagation()}>
-                    <span className="beaver-select__tag-label">{options.find((o) => o.value === v)?.label ?? v}</span>
-                    <button
-                      type="button"
-                      aria-label={`remove ${v}`}
-                      className="beaver-select__tag-remove"
-                      onClick={(e) => removeTag(v, e)}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
+              <SelectTags selectedValues={selectedValues} options={options} onRemove={removeTag} />
             )
           ) : (
             <span
@@ -480,37 +405,7 @@ const Select: React.FC<SelectProps> = ({
           )}
         </div>
         {/* 图标区 */}
-        <div className="beaver-select__icons">
-          {loading ? (
-            loadingIcon ? (
-              <span className="beaver-select__loading-icon">{loadingIcon}</span>
-            ) : (
-              <span className="beaver-select__spinner" aria-hidden />
-            )
-          ) : icon ? (
-            <span className="beaver-select__icon">{icon}</span>
-          ) : (
-            <span className="beaver-select__arrow" aria-hidden>
-              <svg
-                className="beaver-select__arrow-svg"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
-              >
-                <path
-                  d="M6 9l6 6 6-6"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          )}
-        </div>
+        <SelectIcons loading={loading} loadingIcon={loadingIcon} icon={icon} />
       </div>
 
       {/* 下拉菜单 */}
@@ -521,14 +416,8 @@ const Select: React.FC<SelectProps> = ({
           internalValue={internalValue}
           onHighlight={(i) => setHighlighted(i)}
           onSelectByValue={(v) => handleSelectByValue(v)}
-          renderHighlightedLabel={renderHighlightedLabel}
-          noDataLabel={
-            options.length === 0
-              ? '暂无数据'
-              : searchable && userTypedRef.current && query.trim()
-                ? '无匹配项'
-                : '暂无数据'
-          }
+          renderHighlightedLabel={(label) => renderHighlightedLabel(label, query)}
+          noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
           listRef={listRef}
         />
       )}
