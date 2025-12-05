@@ -88,8 +88,8 @@ const Select: React.FC<SelectProps> = ({
   const committedRef = useRef<boolean>(false); // 标记是否已由用户显式选择（用于区分 close/blur 时的自动提交行为）
   const userTypedRef = useRef<boolean>(false); // 标记用户是否有真实输入行为
   // 用于 typeahead 的输入缓冲与定时清除
-  const { handleBackspace, handleChar, clear: clearTypeahead } = useTypeahead(700, userTypedRef);
-  const [inputFocused, setInputFocused] = useState(false); // 输入框聚焦状态
+  const { handleBackspace, handleChar } = useTypeahead(700, userTypedRef);
+  const [, setInputFocused] = useState(false); // 输入框聚焦状态（只需 setter）
 
   // 点击外部关闭下拉
   useEffect(() => {
@@ -105,7 +105,7 @@ const Select: React.FC<SelectProps> = ({
   }, [open]);
 
   // 过滤 & 展示逻辑抽离到 hook
-  const { filteredOptions, displayOptions } = useFilteredOptions({
+  const { displayOptions } = useFilteredOptions({
     options,
     query,
     userTyped: userTypedRef.current,

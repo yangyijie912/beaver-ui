@@ -271,7 +271,7 @@ export const CustomWidths = {
 const FixedHeaderTemplate = (args: TableArgs) => {
   // 制造更多行以便出现纵向滚动（确保每条记录有唯一 id）
   const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
-    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+    data.map((d) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
   );
   return <Table columns={columns} data={many} rowKey="id" fixedHeader maxHeight={240} {...args} />;
 };
@@ -304,7 +304,7 @@ export const FixedBothSides = {
 // 固定表头与左右列
 const FixedHeaderAndBothSidesTemplate = (args: TableArgs) => {
   const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
-    data.map((d, i) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+    data.map((d) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
   );
   return (
     <Table
@@ -486,7 +486,7 @@ export const VisibleSpan = {
 
 // 示例：使用 column.span API 动态计算合并（按索引合并示例）
 const columnSpanColumns: Column[] = [
-  { key: 'name', title: '名称', span: (row, rowIndex) => (rowIndex === 0 ? { rowSpan: 2 } : undefined) },
+  { key: 'name', title: '名称', span: (_row, rowIndex) => (rowIndex === 0 ? { rowSpan: 2 } : undefined) },
   { key: 'info', title: '信息' },
   { key: 'extra', title: '额外' },
 ];

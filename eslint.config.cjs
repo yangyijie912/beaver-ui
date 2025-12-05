@@ -17,7 +17,13 @@ module.exports = [
       },
     },
     plugins: { '@typescript-eslint': tsPlugin },
-    rules: {},
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+    },
   },
   {
     files: ['**/*.{ts,tsx}'],
@@ -30,7 +36,13 @@ module.exports = [
       },
     },
     plugins: { '@typescript-eslint': tsPlugin },
-    rules: {},
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+    },
   },
   {
     files: ['**/*.{js,jsx}'],

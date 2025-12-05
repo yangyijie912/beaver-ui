@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Column, ComputedColumnWidthsResult } from '../types';
+import { Column } from '../types';
 import { computeColumnWidths, computeColumnPxOffsets, computeStickyWidths } from '../utils';
 
 /**

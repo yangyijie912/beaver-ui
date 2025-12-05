@@ -88,7 +88,7 @@ const OptionList: React.FC<OptionListProps> = ({
             highlighted={highlighted}
             isSelected={isSelected}
             onMouseEnter={(idx) => onHighlight(idx)}
-            onMouseDown={(e, _value, disabled) => {
+            onMouseDown={(_e, _value, disabled) => {
               if (disabled) return;
               onSelectByValue(opt.value);
             }}

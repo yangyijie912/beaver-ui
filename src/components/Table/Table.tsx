@@ -1,11 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import './Table.css';
-import Empty from './Empty';
-import Checkbox from '../Checkbox/Checkbox';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
-import { Column, Row, Props } from './types';
-import { computeColumnWidths, computeColumnPxOffsets, computeStickyWidths } from './utils';
+import { Props } from './types';
 import { useWrapSize, useScrollState } from './hooks/useTableLayout';
 import useColumnWidths from './hooks/useColumnWidths';
 
@@ -44,7 +41,6 @@ const Table: React.FC<Props> = ({
 
   // 包装器引用和宽度测量（由 hook 管理）
   const { wrapRef, wrapWidth } = useWrapSize();
-  const content = empty ?? <Empty text={emptyText ?? '暂无数据'} />;
 
   // 构建当前所用的 selected map：受控时使用 prop，否则使用内部 state
   // 注意：selectedMap 始终为 { key: true } 的字典形式，便于查找

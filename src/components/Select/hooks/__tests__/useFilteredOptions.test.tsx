@@ -1,5 +1,4 @@
 /// <reference types="vitest" />
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import useFilteredOptions from '../useFilteredOptions';
 

@@ -18,14 +18,14 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       if (typeof ref === 'function') {
         try {
           ref(el);
-        } catch (e) {
+        } catch (_e) {
           // ignore
         }
       } else {
         try {
           // MutableRefObject 已经弃用，当对象 ref 时，使用安全类型转换赋值给转发 ref 的 `current` 属性。
           (ref as unknown as { current: HTMLInputElement | null }).current = el;
-        } catch (e) {
+        } catch (_e) {
           // ignore
         }
       }
@@ -38,7 +38,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
         try {
           if (indeterminate) localRef.current.setAttribute('data-indeterminate', 'true');
           else localRef.current.removeAttribute('data-indeterminate');
-        } catch (e) {
+        } catch (_e) {
           // ignore
         }
       }

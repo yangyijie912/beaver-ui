@@ -84,7 +84,7 @@ export function useScrollState({
           const thead = tbl ? (tbl.querySelector('thead') as HTMLElement | null) : null;
           const hh = fixedHeader && thead ? thead.offsetHeight : 0;
           setHeaderHeight(hh);
-        } catch (e) {
+        } catch (_e) {
           setHeaderHeight(0);
         }
       });
@@ -102,7 +102,7 @@ export function useScrollState({
       const thead = tbl ? (tbl.querySelector('thead') as HTMLElement | null) : null;
       const hh = fixedHeader && thead ? thead.offsetHeight : 0;
       setHeaderHeight(hh);
-    } catch (e) {
+    } catch (_e) {
       setHeaderHeight(0);
     }
 

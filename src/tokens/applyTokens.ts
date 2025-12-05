@@ -10,7 +10,7 @@ function setCssVars(obj: any, prefix = '') {
       const propName = `--${name}`;
       try {
         document.documentElement.style.setProperty(propName, String(val));
-      } catch (e) {
+      } catch (_e) {
         // ignore if document not available (SSR)
       }
     }

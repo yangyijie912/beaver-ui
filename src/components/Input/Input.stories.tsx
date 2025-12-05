@@ -1,4 +1,3 @@
-import React from 'react';
 import Input from './Input';
 import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 

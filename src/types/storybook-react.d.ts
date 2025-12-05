@@ -6,14 +6,14 @@ declare module '@storybook/react' {
 
   export type Args = Record<string, any>;
 
-  export type Meta<T = any> = {
+  export type Meta<_T = any> = {
     title?: string;
     component?: React.ComponentType<any> | string;
     argTypes?: Record<string, any>;
     parameters?: Record<string, any>;
   } & Record<string, any>;
 
-  export type StoryContext<TArgs = Args> = {
+  export type StoryContext<_TArgs = Args> = {
     args: TArgs;
     initialArgs: Partial<TArgs>;
     // 避免 undefined 类型
@@ -22,15 +22,15 @@ declare module '@storybook/react' {
     [key: string]: any;
   };
 
-  export type PlayFunction<TArgs = Args> = (context: StoryContext<TArgs>) => Promise<void> | void;
+  export type PlayFunction<_TArgs = Args> = (context: StoryContext<_TArgs>) => Promise<void> | void;
 
-  export type StoryObj<T = any> = {
+  export type StoryObj<_T = any> = {
     // 使 args 具有宽松的类型，以避免在许多 CSF 用法中严格映射到 `typeof meta`
     args?: Record<string, any>;
     play?: PlayFunction<any>;
   } & Record<string, any>;
 
-  export type StoryFn<T = any> = (args: T) => React.ReactElement | null;
+  export type StoryFn<_T = any> = (args: _T) => React.ReactElement | null;
 
   export { React };
   export default {} as any;

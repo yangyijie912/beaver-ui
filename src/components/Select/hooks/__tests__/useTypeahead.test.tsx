@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
-import React, { useState } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { useState } from 'react';
+import { render, fireEvent } from '@testing-library/react';
 import useTypeahead from '../useTypeahead';
 
 function TestComp({ timeout = 50 }: { timeout?: number }) {

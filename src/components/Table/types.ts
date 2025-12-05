@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 /**
  * 表格列类型定义
@@ -15,7 +15,7 @@ export type Column = {
   title: string;
   width?: string;
   align?: 'left' | 'center' | 'right';
-  render?: (value: any, row: Row, rowIndex: number, column: Column) => React.ReactNode | null | undefined;
+  render?: (value: any, row: Row, rowIndex: number, column: Column) => ReactNode | null | undefined;
   span?: (row: Row, rowIndex: number, column: Column) => { colSpan?: number; rowSpan?: number } | undefined;
 };
 
@@ -43,7 +43,7 @@ export type Props = {
   /** 选中变化回调（受控或非受控时都会触发） */
   onSelectionChange?: (keys: string[]) => void;
   /** 可选的单元格渲染器：如果返回非 null/undefined，则使用其结果作为单元格内容 */
-  renderCell?: (row: Row, column: Column, rowIndex: number) => React.ReactNode | null | undefined;
+  renderCell?: (row: Row, column: Column, rowIndex: number) => ReactNode | null | undefined;
   /**
    * 当混合使用 px 与 百分比/未设置宽度时，是否保证 px 列的最小宽度，且尽量避免滚动（默认 true）。
    * 为 true 时，只有当 px 列总宽超过容器时才触发横向滚动，否则 px 列作为最小宽保留，百分比列保持弹性分配。
@@ -71,9 +71,9 @@ export type Props = {
   /** 是否展示边框线，默认不展示 */
   border?: boolean;
   /** 自定义空状态：优先使用该 prop（ReactNode） */
-  empty?: React.ReactNode;
+  empty?: ReactNode;
   /** 空状态默认文案（当未提供 `empty` 时使用） */
-  emptyText?: React.ReactNode;
+  emptyText?: ReactNode;
 };
 
 /**

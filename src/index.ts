@@ -15,6 +15,6 @@ try {
   // 动态导入，以便bundlers/tree-shakers可以在非浏览器目标中移除
   const applyTokens = require('./tokens/applyTokens').default;
   if (typeof applyTokens === 'function') applyTokens();
-} catch (e) {
+} catch (_e) {
   // 忽略错误（例如，服务器端或没有 DOM 的测试环境）
 }
