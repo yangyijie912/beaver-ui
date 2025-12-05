@@ -93,12 +93,15 @@
   overflow: visible;
   text-overflow: clip;
   width: var(--beaver-table-select-col-width, 40px);
-  padding: 8px 12px;
+  /* 与表体单元格对齐：使用与 tbody td 相同的内边距 */
+  padding: 14px 16px;
   background: var(--beaver-table-fixed-bg, #fff);
 }
 
 .beaver-table thead .beaver-table__select-col {
   background: var(--beaver-table-header-bg, #f8fafc);
+  /* 覆盖选择列在表头的内边距，使其与其他 th 保持一致 */
+  padding: 12px 16px;
 }
 
 .beaver-table tbody tr:hover .beaver-table__select-col {
