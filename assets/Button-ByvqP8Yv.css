@@ -1,1 +1,0 @@
-.beaver-button{background-color:var(--beaver-color-primary);color:var(--beaver-color-on-primary, #fff);border-radius:var(--beaver-radius-md);border:none;cursor:pointer;line-height:1}.beaver-button--ghost{background-color:transparent;color:var(--beaver-color-primary);border:1px solid var(--beaver-color-primary)}.beaver-button--disabled{opacity:.5;cursor:not-allowed}
