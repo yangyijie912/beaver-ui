@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import './Table.base.css';
-import './Table.sticky.css';
-import './Table.bordered.css';
-import TableHeader from './TableHeader';
-import TableBody from './TableBody';
+import './styles/Table.base.css';
+import './styles/Table.sticky.css';
+import './styles/Table.bordered.css';
+import TableHeader from './components/TableHeader';
+import TableBody from './components/TableBody';
 import { Props } from './types';
 import { useWrapSize, useScrollState } from './hooks/useTableLayout';
 import useColumnWidths from './hooks/useColumnWidths';

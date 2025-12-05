@@ -1,5 +1,5 @@
 import React from 'react';
-import './Table.base.css';
+import '../styles/Table.base.css';
 
 type EmptyProps = {
   text?: React.ReactNode;

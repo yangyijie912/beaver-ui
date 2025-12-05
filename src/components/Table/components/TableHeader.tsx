@@ -1,6 +1,6 @@
 import React from 'react';
-import { Column, ComputedColumnWidthsResult } from './types';
-import Checkbox from '../Checkbox/Checkbox';
+import { Column, ComputedColumnWidthsResult } from '../types';
+import Checkbox from '../../Checkbox/Checkbox';
 
 /**
  * TableHeader 负责渲染表头行（<thead>）

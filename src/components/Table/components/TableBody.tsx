@@ -1,7 +1,7 @@
 import React from 'react';
 import Empty from './Empty';
-import Checkbox from '../Checkbox/Checkbox';
-import { Column, Row } from './types';
+import Checkbox from '../../Checkbox/Checkbox';
+import { Column, Row } from '../types';
 
 /**
  * TableBody 负责渲染 <tbody> 区域
