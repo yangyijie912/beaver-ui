@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import './Table.css';
+import './Table.base.css';
+import './Table.sticky.css';
+import './Table.bordered.css';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 import { Props } from './types';
