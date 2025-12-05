@@ -204,6 +204,13 @@ export const Default: Story = {
   args: {},
 };
 
+const EmptyTemplate = (args: TableArgs) => <Table columns={columns} data={[]} rowKey="id" {...args} />;
+export const EmptyState: Story = {
+  name: '暂无数据',
+  render: EmptyTemplate,
+  args: {},
+};
+
 const WithCheckboxesTemplate = (args: TableArgs) => <Table columns={columns} data={data} rowKey="id" {...args} />;
 export const WithCheckboxes: Story = {
   name: '带复选框',

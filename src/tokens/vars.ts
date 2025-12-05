@@ -98,6 +98,10 @@ export const vars = {
       'fixed-bg': '#ffffff', // 表格固定（粘性）列的背景
       'vertical-border-color': '#f0f0f0', // 列间竖向分隔线颜色
       'sticky-border-color': '#f0f0f0', // 粘性列专用的分隔线颜色
+      'empty-icon-color': '#dce0e6', // 空状态图标颜色
+      'empty-height': '200px', // 空状态（暂无数据）占位高度：如果不存在则通过内容自适应
+      'empty-color': '#909399', // 空状态文字颜色
+      'empty-bg': '#ffffff', // 空状态背景色
       // 层级：表头与粘性列的 z-index
       'z-index-header': '3000',
       'z-index-sticky': '1000',

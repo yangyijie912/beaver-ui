@@ -63,6 +63,10 @@
   --beaver-table-fixed-bg: #ffffff;
   --beaver-table-vertical-border-color: #f0f0f0;
   --beaver-table-sticky-border-color: #f0f0f0;
+  --beaver-table-empty-icon-color: #dce0e6;
+  --beaver-table-empty-height: 200px;
+  --beaver-table-empty-color: #909399;
+  --beaver-table-empty-bg: #ffffff;
   --beaver-table-z-index-header: 3000;
   --beaver-table-z-index-sticky: 1000;
 }

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useMemo, useLayoutEffect, useEffect } from 'react';
 import './Table.css';
+import Empty from './Empty';
 import Checkbox from '../Checkbox/Checkbox';
 
 export type Column = {
@@ -58,6 +59,10 @@ type Props = {
   fixedRightCount?: number;
   /** 是否展示边框线，默认不展示 */
   border?: boolean;
+  /** 自定义空状态：优先使用该 prop（ReactNode） */
+  empty?: React.ReactNode;
+  /** 空状态默认文案（当未提供 `empty` 时使用） */
+  emptyText?: React.ReactNode;
 };
 
 const Table: React.FC<Props> = ({
@@ -77,6 +82,8 @@ const Table: React.FC<Props> = ({
   fixedColumnCount = 0,
   fixedRightCount = 0,
   border = false,
+  empty,
+  emptyText,
 }) => {
   const [internalSelected, setInternalSelected] = useState<Record<string, boolean>>({});
   const isControlled = Array.isArray(selectedKeys);
@@ -87,6 +94,7 @@ const Table: React.FC<Props> = ({
   const [hasLeftShadow, setHasLeftShadow] = useState(false);
   const [hasRightShadow, setHasRightShadow] = useState(false);
   const [hasColumnEdgeShadow, setHasColumnEdgeShadow] = useState(false);
+  const content = empty ?? <Empty text={emptyText ?? '暂无数据'} />;
   const [scrollbarHeight, setScrollbarHeight] = useState(0);
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
@@ -566,6 +574,20 @@ const Table: React.FC<Props> = ({
             }
             {(() => {
               const occupied: Record<string, boolean> = {};
+              // 空数据占位：在表体内渲染一行占位单元格，保持表头可见
+              if (!data || data.length === 0) {
+                const colspan = columns.length + (showCheckbox ? 1 : 0);
+                // 优先使用传入的 empty 节点，否则使用 emptyText 或默认文案
+                const content = empty ?? <Empty text={emptyText ?? '暂无数据'} />;
+                return [
+                  <tr key="__empty__" className="beaver-table__empty-row">
+                    <td className="beaver-table__empty-cell" colSpan={colspan}>
+                      {content}
+                    </td>
+                  </tr>,
+                ];
+              }
+
               return data.map((row, idx) => {
                 const key = String(row[rowKey] ?? idx);
                 const isSelected = !!selectedMap[key];
