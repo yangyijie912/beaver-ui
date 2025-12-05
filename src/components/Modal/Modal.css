@@ -1,23 +1,24 @@
 /* Modal 样式 - 使用全局 tokens 变量 */
 
-/* Portal 容器 - 强制覆盖整个视口 */
+/* Portal 容器 */
 .beaver-modal-portal {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: var(--beaver-modal-z-index) !important;
-  pointer-events: none !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--beaver-modal-z-index);
+  pointer-events: none;
 }
 
 .beaver-modal__mask {
-  position: fixed;
+  position: absolute;
   inset: 0;
   background-color: var(--beaver-modal-overlay-bg);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
+  z-index: 0;
 }
 
 .beaver-modal__mask.beaver-modal--active {
@@ -32,6 +33,7 @@
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  z-index: 1;
 }
 
 .beaver-modal-wrapper.beaver-modal--active {

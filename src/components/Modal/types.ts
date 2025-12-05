@@ -37,8 +37,10 @@ export interface ModalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   children?: React.ReactNode;
   /**
    * Modal页脚，可以放置按钮等操作元素
+   * 设为 null 或 false 时不显示页脚
+   * 默认显示带关闭按钮的页脚（仅当 open=true 且 footer 未被明确设置为 false/null 时）
    */
-  footer?: React.ReactNode;
+  footer?: React.ReactNode | null | false;
   /**
    * 自定义className
    */

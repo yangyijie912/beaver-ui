@@ -3,6 +3,7 @@ import { useModalAnimation } from './hooks/useModalAnimation';
 import ModalHeader from './components/ModalHeader';
 import ModalFooter from './components/ModalFooter';
 import Portal from './components/Portal';
+import Button from '../Button/Button';
 import type { ModalProps } from './types';
 import './Modal.css';
 
@@ -36,8 +37,8 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     const contentRef = useRef<HTMLDivElement>(null);
 
     // 处理遮罩点击
-    const handleMaskClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (maskClosable && e.target === e.currentTarget && onClose) {
+    const handleMaskClick = (_e: React.MouseEvent<HTMLDivElement>) => {
+      if (maskClosable && onClose) {
         onClose();
       }
     };
@@ -76,12 +77,12 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     const wrapperClass = `beaver-modal-wrapper ${animating ? 'beaver-modal--active' : ''} ${className}`.trim();
     const contentClass = `beaver-modal__content ${contentClassName}`.trim();
 
-    // 遮罩层单独渲染
-    const maskElement = <div className={maskClass} onClick={handleMaskClick} aria-hidden="true" />;
-
-    // Modal 内容（不包括遮罩）
+    // Modal 内容（包括遮罩）
     const modalContent = (
       <div ref={ref} className={wrapperClass} {...rest}>
+        {/* 遮罩层 */}
+        <div className={maskClass} onClick={handleMaskClick} aria-hidden="true" />
+        {/* 内容容器 */}
         <div
           ref={contentRef}
           className={contentClass}
@@ -104,17 +105,22 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
           <div className="beaver-modal__body">{children}</div>
 
           {/* 页脚 */}
-          {footer && <ModalFooter>{footer}</ModalFooter>}
+          {footer !== null && footer !== false ? (
+            <ModalFooter>
+              {footer ? (
+                footer
+              ) : (
+                <Button variant="primary" onClick={onClose}>
+                  关闭
+                </Button>
+              )}
+            </ModalFooter>
+          ) : null}
         </div>
       </div>
     );
 
-    return (
-      <>
-        <Portal>{maskElement}</Portal>
-        <Portal>{modalContent}</Portal>
-      </>
-    );
+    return <Portal>{modalContent}</Portal>;
   }
 );
 

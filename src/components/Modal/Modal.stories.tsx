@@ -24,19 +24,7 @@ export const Default: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="Modal标题"
-          onClose={() => setOpen(false)}
-          footer={
-            <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={() => setOpen(false)}>确定</Button>
-            </>
-          }
-        >
+        <Modal open={open} title="Modal标题" onClose={() => setOpen(false)}>
           <p>这是一个基础的Modal组件演示。</p>
           <p>点击关闭按钮或遮罩层可以关闭Modal。</p>
         </Modal>
@@ -56,7 +44,7 @@ export const NoTitle: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal open={open} onClose={() => setOpen(false)} closable={true}>
+        <Modal open={open} onClose={() => setOpen(false)}>
           <h3>内容标题</h3>
           <p>这是一个没有顶部标题的Modal组件。</p>
           <p>关闭按钮仍然显示在右上角。</p>
@@ -77,20 +65,7 @@ export const NoClosable: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="确认操作"
-          onClose={() => setOpen(false)}
-          closable={false}
-          footer={
-            <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={() => setOpen(false)}>确定</Button>
-            </>
-          }
-        >
+        <Modal open={open} title="确认操作" onClose={() => setOpen(false)} closable={false}>
           <p>这个Modal没有关闭按钮，必须通过底部按钮来操作。</p>
         </Modal>
       </>
@@ -109,20 +84,7 @@ export const MaskNotClosable: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="重要操作"
-          onClose={() => setOpen(false)}
-          maskClosable={false}
-          footer={
-            <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={() => setOpen(false)}>确定</Button>
-            </>
-          }
-        >
+        <Modal open={open} title="重要操作" onClose={() => setOpen(false)} maskClosable={false}>
           <p>这个Modal无法通过点击遮罩层关闭，用户必须使用关闭按钮或页脚按钮。</p>
         </Modal>
       </>
@@ -141,22 +103,7 @@ export const Small: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="小Modal"
-          size="small"
-          onClose={() => setOpen(false)}
-          footer={
-            <>
-              <Button variant="ghost" size="small" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button size="small" onClick={() => setOpen(false)}>
-                确定
-              </Button>
-            </>
-          }
-        >
+        <Modal open={open} title="小Modal" size="small" onClose={() => setOpen(false)}>
           <p>这是一个小尺寸的Modal，宽度为300px。</p>
         </Modal>
       </>
@@ -175,20 +122,7 @@ export const Medium: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="中等Modal"
-          size="medium"
-          onClose={() => setOpen(false)}
-          footer={
-            <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={() => setOpen(false)}>确定</Button>
-            </>
-          }
-        >
+        <Modal open={open} title="中等Modal" size="medium" onClose={() => setOpen(false)}>
           <p>这是一个中等尺寸的Modal，宽度为520px。</p>
           <p>这是默认尺寸，也是推荐使用的尺寸。</p>
         </Modal>
@@ -208,20 +142,7 @@ export const Large: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="大Modal"
-          size="large"
-          onClose={() => setOpen(false)}
-          footer={
-            <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={() => setOpen(false)}>确定</Button>
-            </>
-          }
-        >
+        <Modal open={open} title="大Modal" size="large" onClose={() => setOpen(false)}>
           <p>这是一个大尺寸的Modal，宽度为800px。</p>
           <p>适合用来展示大量的内容或表单。</p>
         </Modal>
@@ -241,20 +162,7 @@ export const CustomWidth: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="自定义宽度"
-          width="600px"
-          onClose={() => setOpen(false)}
-          footer={
-            <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={() => setOpen(false)}>确定</Button>
-            </>
-          }
-        >
+        <Modal open={open} title="自定义宽度" width="600px" onClose={() => setOpen(false)}>
           <p>这个Modal的宽度被设置为600px。</p>
         </Modal>
       </>
@@ -273,19 +181,7 @@ export const LongContent: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal
-          open={open}
-          title="长内容Modal"
-          onClose={() => setOpen(false)}
-          footer={
-            <>
-              <Button variant="ghost" onClick={() => setOpen(false)}>
-                取消
-              </Button>
-              <Button onClick={() => setOpen(false)}>确定</Button>
-            </>
-          }
-        >
+        <Modal open={open} title="长内容Modal" onClose={() => setOpen(false)}>
           {Array.from({ length: 20 }).map((_, i) => (
             <p key={i}>
               这是第 {i + 1} 段内容。Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
@@ -344,9 +240,30 @@ export const NoFooter: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal open={open} title="无页脚Modal" onClose={() => setOpen(false)}>
+        <Modal open={open} title="无页脚Modal" onClose={() => setOpen(false)} footer={null}>
           <p>这是一个没有页脚的Modal。</p>
           <p>必须通过关闭按钮或Escape键来关闭它。</p>
+        </Modal>
+      </>
+    );
+  },
+};
+
+/**
+ * 默认页脚
+ */
+export const DefaultFooter: Story = {
+  name: '默认页脚',
+  render: () => {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>打开Modal</Button>
+        <Modal open={open} title="默认页脚演示" onClose={() => setOpen(false)}>
+          <p>这是一个带默认页脚的Modal。</p>
+          <p>页脚默认显示一个"关闭"按钮。</p>
+          <p>你可以点击遮罩层、关闭按钮或页脚按钮来关闭Modal。</p>
         </Modal>
       </>
     );
