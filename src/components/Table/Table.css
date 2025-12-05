@@ -422,7 +422,7 @@
 
 .beaver-table thead th:last-child.beaver-table__cell--sticky--right {
   position: relative;
-  z-index: 2000;
+  z-index: var(--beaver-table-z-index-header, 3000);
   /* 使用表头背景色来遮盖缝隙，使线与表头融为一体 */
   box-shadow: -1px 0 0 0 var(--beaver-table-header-bg, #f8fafc);
   background-clip: padding-box;
@@ -430,7 +430,7 @@
 
 .beaver-table tbody td:last-child.beaver-table__cell--sticky--right {
   position: relative;
-  z-index: 2000;
+  z-index: var(--beaver-table-z-index-sticky, 2000);
   /* 使用表体固定背景色来遮盖缝隙，使线与表体融为一体 */
   box-shadow: -1px 0 0 0 var(--beaver-table-fixed-bg, #fff);
   background-clip: padding-box;
