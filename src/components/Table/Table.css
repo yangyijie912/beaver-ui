@@ -117,7 +117,8 @@
   background: var(--beaver-table-header-bg, #f8fafc);
 }
 
-/* 复选框内容居中 */
+/* 复选框内容居中：对选择列中的 span 一律居中（包含粘性与非粘性场景） */
+.beaver-table__select-col span,
 .beaver-table__select-col.beaver-table__cell--sticky span,
 .beaver-table__select-col.beaver-table__cell--sticky--left span {
   display: flex;
@@ -131,6 +132,8 @@
   text-align: center;
 }
 
+.beaver-table__select-col .beaver-checkbox,
+.beaver-table__select-col .beaver-checkbox-wrapper .beaver-checkbox,
 .beaver-table__select-col.beaver-table__cell--sticky .beaver-checkbox,
 .beaver-table__select-col.beaver-table__cell--sticky--left .beaver-checkbox {
   box-sizing: border-box;
@@ -418,7 +421,7 @@
   border-left: none;
 }
 
-/* 以下样式用来解决右侧粘性列1px白色缝隙问题 */
+/* -----------以下样式用来解决右侧粘性列1px白色缝隙问题----------- */
 
 .beaver-table thead th:last-child.beaver-table__cell--sticky--right {
   position: relative;
