@@ -250,20 +250,19 @@ export const NoFooter: Story = {
 };
 
 /**
- * 默认页脚
+ * 无页头
  */
-export const DefaultFooter: Story = {
-  name: '默认页脚',
+export const NoHeader: Story = {
+  name: '无页头',
   render: () => {
     const [open, setOpen] = useState(false);
 
     return (
       <>
         <Button onClick={() => setOpen(true)}>打开Modal</Button>
-        <Modal open={open} title="默认页脚演示" onClose={() => setOpen(false)}>
-          <p>这是一个带默认页脚的Modal。</p>
-          <p>页脚默认显示一个"关闭"按钮。</p>
-          <p>你可以点击遮罩层、关闭按钮或页脚按钮来关闭Modal。</p>
+        <Modal closable={false} open={open} onClose={() => setOpen(false)}>
+          <p>这是一个没有页头的Modal。</p>
+          <p>可以自己写一个页头</p>
         </Modal>
       </>
     );
