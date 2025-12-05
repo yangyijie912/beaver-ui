@@ -5,20 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 const meta: Meta<typeof Table> = {
   title: 'Components/Table',
   component: Table,
-  argTypes: {
-    columns: { table: { disable: true } },
-    data: { table: { disable: true } },
-    rowKey: { table: { disable: true } },
-    renderCell: { table: { disable: true } },
-    onSelectionChange: { table: { disable: true } },
-    selectedKeys: { table: { disable: true } },
-    showCheckbox: { control: 'boolean' },
-    preservePxAsMin: { control: 'boolean' },
-    minColumnPx: { control: 'number' },
-    fixedHeader: { control: 'boolean' },
-    fixedColumnCount: { control: 'number' },
-    fixedRightCount: { control: 'number' },
-  },
+  tags: ['autodocs'],
 };
 
 export default meta;

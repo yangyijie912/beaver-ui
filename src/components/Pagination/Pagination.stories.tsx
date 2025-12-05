@@ -6,6 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 const meta: Meta<typeof Pagination> = {
   title: 'Components/Pagination',
   component: Pagination,
+  tags: ['autodocs'],
   argTypes: {
     align: {
       control: { type: 'radio' },

@@ -4,6 +4,7 @@ import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 const meta: Meta<typeof Input> = {
   title: 'Components/Input',
   component: Input,
+  tags: ['autodocs'],
   // 加一个装饰器设置全局默认宽度为 300px，方便在 Storybook 中预览
   decorators: [
     (Story: StoryFn) => (

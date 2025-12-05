@@ -10,6 +10,7 @@ const decoratorStyle: React.CSSProperties & Record<string, string> = {
 const meta: Meta<typeof Select> = {
   title: 'Components/Select',
   component: Select,
+  tags: ['autodocs'],
   // 加一个装饰器设置全局默认宽度为 200px，方便在 Storybook 中预览
   decorators: [
     (Story: StoryFn) => (
