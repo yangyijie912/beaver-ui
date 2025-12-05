@@ -1,0 +1,69 @@
+import React from 'react';
+
+export type ModalSize = 'small' | 'medium' | 'large';
+
+export interface ModalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+  /**
+   * 控制Modal是否打开
+   */
+  open: boolean;
+  /**
+   * 关闭Modal时的回调
+   */
+  onClose?: () => void;
+  /**
+   * Modal标题
+   */
+  title?: React.ReactNode;
+  /**
+   * Modal的宽度，默认520px
+   */
+  width?: number | string;
+  /**
+   * Modal的大小预设：small(300px) / medium(520px) / large(800px)
+   */
+  size?: ModalSize;
+  /**
+   * 是否显示关闭按钮
+   */
+  closable?: boolean;
+  /**
+   * 点击遮罩是否关闭Modal
+   */
+  maskClosable?: boolean;
+  /**
+   * Modal的内容
+   */
+  children?: React.ReactNode;
+  /**
+   * Modal页脚，可以放置按钮等操作元素
+   */
+  footer?: React.ReactNode;
+  /**
+   * 自定义className
+   */
+  className?: string;
+  /**
+   * 自定义遮罩className
+   */
+  maskClassName?: string;
+  /**
+   * 自定义内容className
+   */
+  contentClassName?: string;
+  /**
+   * 是否禁用动画
+   */
+  animated?: boolean;
+}
+
+export type ModalHandle = {
+  /**
+   * 打开Modal
+   */
+  open: () => void;
+  /**
+   * 关闭Modal
+   */
+  close: () => void;
+};

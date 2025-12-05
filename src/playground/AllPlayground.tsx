@@ -1,19 +1,14 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-
 import Button from '../components/Button/Button';
-import '../components/Button/Button.css';
 import Checkbox from '../components/Checkbox/Checkbox';
-import '../components/Checkbox/Checkbox.css';
 import Input from '../components/Input/Input';
-import '../components/Input/Input.css';
 import Radio from '../components/Radio/Radio';
 import RadioGroup from '../components/Radio/RadioGroup';
-import '../components/Radio/Radio.css';
 import Select from '../components/Select/Select';
-import '../components/Select/Select.css';
+import Switch from '../components/Switch/Switch';
+import Modal from '../components/Modal/Modal';
 import Table, { Column } from '../components/Table/Table';
-import '../components/Table/Table.css';
 import '../tokens/tokens.css';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -30,7 +25,10 @@ function App() {
   const [checked, setChecked] = React.useState(true);
   const [text, setText] = React.useState('Hello');
   const [radioVal, setRadioVal] = React.useState<string | number>('a');
+  const [switchChecked, setSwitchChecked] = React.useState(true);
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalSize, setModalSize] = React.useState<'small' | 'medium' | 'large'>('medium');
 
   const options = [
     { label: 'Apple', value: 'apple' },
@@ -105,6 +103,10 @@ function App() {
         <div style={{ marginTop: 8 }}>当前值: {String(radioVal)}</div>
       </Section>
 
+      <Section title="Switch">
+        <Switch checked={switchChecked} onChange={(c: boolean) => setSwitchChecked(c)} />
+      </Section>
+
       <Section title="Select">
         <div style={{ maxWidth: 360 }}>
           <div style={{ marginBottom: 8 }}>当前值: {selectValue}</div>
@@ -118,16 +120,47 @@ function App() {
         </div>
       </Section>
 
-      <Section title="Table">
-        <Table
-          columns={tableColumns.slice(0, 5)}
-          data={tableData.slice(0, 5)}
-          rowKey="id"
-          showCheckbox
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-        />
-        <div style={{ marginTop: 8 }}>已选择: {selectedKeys.join(', ') || '无'}</div>
+      <Section title="Modal">
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div>
+            <label style={{ marginRight: 8 }}>选择尺寸：</label>
+            <select
+              value={modalSize}
+              onChange={(e) => setModalSize(e.target.value as any)}
+              style={{ padding: '6px 8px', borderRadius: '4px', border: '1px solid #ccc' }}
+            >
+              <option value="small">小 (300px)</option>
+              <option value="medium">中 (520px)</option>
+              <option value="large">大 (800px)</option>
+            </select>
+          </div>
+          <Button onClick={() => setModalOpen(true)}>打开 Modal</Button>
+        </div>
+        <Modal
+          open={modalOpen}
+          size={modalSize}
+          title="这是一个Modal组件"
+          onClose={() => setModalOpen(false)}
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => setModalOpen(false)}>
+                取消
+              </Button>
+              <Button onClick={() => setModalOpen(false)}>确定</Button>
+            </>
+          }
+        >
+          <p>现在你可以看到Modal的完整效果：</p>
+          <ul>
+            <li>黑色半透明遮罩层阻挡背景交互</li>
+            <li>Modal框有清晰的边框和阴影</li>
+            <li>支持点击关闭按钮(X)关闭</li>
+            <li>支持点击遮罩层关闭</li>
+            <li>支持按Escape键关闭</li>
+            <li>可选择不同的尺寸预设</li>
+          </ul>
+          <p>尝试点击遮罩层或按Escape键来关闭Modal。</p>
+        </Modal>
       </Section>
 
       <Section title="Table — 固定表头与左右固定列示例">

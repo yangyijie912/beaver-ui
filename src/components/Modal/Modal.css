@@ -1,0 +1,184 @@
+:root {
+  --beaver-modal-width: var(--beaver-modal-width, 520px);
+  --beaver-modal-border-radius: var(--beaver-modal-border-radius, 8px);
+  --beaver-modal-padding: var(--beaver-modal-padding, 24px);
+  --beaver-modal-header-margin-bottom: var(--beaver-modal-header-margin-bottom, 16px);
+  --beaver-modal-footer-margin-top: var(--beaver-modal-footer-margin-top, 16px);
+  --beaver-modal-overlay-bg: var(--beaver-modal-overlay-bg, rgba(0, 0, 0, 0.55));
+  --beaver-modal-bg: var(--beaver-modal-bg, #ffffff);
+  --beaver-modal-z-index: var(--beaver-modal-z-index, 9999);
+  --beaver-modal-box-shadow: var(--beaver-modal-box-shadow, 0 10px 40px rgba(0, 0, 0, 0.15));
+  --beaver-modal-border: var(--beaver-modal-border, 1px solid #e8e8e8);
+  --beaver-modal-title-font-size: var(--beaver-modal-title-font-size, 18px);
+  --beaver-modal-title-font-weight: var(--beaver-modal-title-font-weight, 600);
+  --beaver-modal-title-color: var(--beaver-modal-title-color, #333);
+  --beaver-modal-close-btn-size: var(--beaver-modal-close-btn-size, 24px);
+  --beaver-modal-close-btn-color: var(--beaver-modal-close-btn-color, #666);
+}
+
+.beaver-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--beaver-modal-z-index);
+  pointer-events: none;
+}
+
+.beaver-modal__mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--beaver-modal-overlay-bg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: calc(var(--beaver-modal-z-index) - 1);
+}
+
+.beaver-modal__mask.beaver-modal--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.beaver-modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: var(--beaver-modal-z-index);
+}
+
+.beaver-modal-wrapper.beaver-modal--active {
+  pointer-events: auto;
+}
+
+.beaver-modal__content {
+  position: relative;
+  background-color: var(--beaver-modal-bg);
+  border-radius: var(--beaver-modal-border-radius);
+  border: var(--beaver-modal-border);
+  box-shadow: var(--beaver-modal-box-shadow);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: auto;
+}
+
+.beaver-modal-wrapper.beaver-modal--active .beaver-modal__content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* 头部样式 */
+.beaver-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--beaver-modal-padding);
+  padding-bottom: var(--beaver-modal-header-margin-bottom);
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.beaver-modal__title {
+  font-size: var(--beaver-modal-title-font-size);
+  font-weight: var(--beaver-modal-title-font-weight);
+  color: var(--beaver-modal-title-color);
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.beaver-modal__close {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--beaver-modal-close-btn-color);
+  width: var(--beaver-modal-close-btn-size);
+  height: var(--beaver-modal-close-btn-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  margin-left: var(--beaver-space-md);
+  font-size: 16px;
+  transition: color 0.2s ease;
+}
+
+.beaver-modal__close:hover {
+  color: #333;
+}
+
+.beaver-modal__close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
+  border-radius: 4px;
+}
+
+/* 内容区域 */
+.beaver-modal__body {
+  padding: var(--beaver-modal-padding);
+  color: var(--beaver-color-text);
+  font-size: var(--beaver-font-size-md);
+  line-height: 1.5;
+}
+
+/* 页脚样式 */
+.beaver-modal__footer {
+  padding: var(--beaver-modal-padding);
+  padding-top: var(--beaver-modal-footer-margin-top);
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--beaver-space-md);
+  flex-shrink: 0;
+}
+
+/* 无动画变体 */
+.beaver-modal__content {
+  transition: none;
+}
+
+.beaver-modal-wrapper:not(.beaver-modal--active) .beaver-modal__content {
+  display: none;
+}
+
+.beaver-modal-wrapper.beaver-modal--active .beaver-modal__content {
+  display: block;
+}
+
+/* 响应式处理 */
+@media (max-width: 768px) {
+  .beaver-modal__content {
+    width: 90vw !important;
+    max-width: 90vw;
+    max-height: 85vh;
+  }
+
+  .beaver-modal__header {
+    padding: var(--beaver-space-lg) var(--beaver-space-md);
+    padding-bottom: var(--beaver-space-md);
+  }
+
+  .beaver-modal__body {
+    padding: var(--beaver-space-lg) var(--beaver-space-md);
+  }
+
+  .beaver-modal__footer {
+    padding: var(--beaver-space-lg) var(--beaver-space-md);
+    padding-top: var(--beaver-space-md);
+  }
+}

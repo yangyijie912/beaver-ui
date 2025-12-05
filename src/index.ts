@@ -7,6 +7,8 @@ export { default as Select } from './components/Select/Select';
 export { default as Switch } from './components/Switch/Switch';
 export { default as Pagination } from './components/Pagination/Pagination';
 export { default as Table } from './components/Table/Table';
+export { default as Modal } from './components/Modal/Modal';
+export { ModalHeader, ModalFooter } from './components/Modal/Modal';
 export * from './tokens';
 
 // 导入生成的 tokens CSS（由 `npm run gen:tokens` 生成为 `src/tokens/tokens.css`）

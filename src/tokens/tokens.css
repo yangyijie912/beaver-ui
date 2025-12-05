@@ -77,4 +77,19 @@
   --beaver-table-header-height: 0px;
   --beaver-table-z-index-header: 3000;
   --beaver-table-z-index-sticky: 1000;
+  --beaver-modal-width: 520px;
+  --beaver-modal-border-radius: 8px;
+  --beaver-modal-padding: 24px;
+  --beaver-modal-header-margin-bottom: 16px;
+  --beaver-modal-footer-margin-top: 16px;
+  --beaver-modal-overlay-bg: rgba(0, 0, 0, 0.55);
+  --beaver-modal-bg: #ffffff;
+  --beaver-modal-z-index: 2000;
+  --beaver-modal-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  --beaver-modal-border: 1px solid #e8e8e8;
+  --beaver-modal-title-font-size: 18px;
+  --beaver-modal-title-font-weight: 600;
+  --beaver-modal-title-color: #333;
+  --beaver-modal-close-btn-size: 24px;
+  --beaver-modal-close-btn-color: #666;
 }

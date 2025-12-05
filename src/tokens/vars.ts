@@ -111,6 +111,23 @@ export const vars = {
       'z-index-header': '3000',
       'z-index-sticky': '1000',
     },
+    modal: {
+      width: '520px', // modal 默认宽度
+      'border-radius': '8px', // modal 圆角
+      padding: '24px', // modal 内边距
+      'header-margin-bottom': '16px', // 头部下边距
+      'footer-margin-top': '16px', // 页脚上边距
+      'overlay-bg': 'rgba(0, 0, 0, 0.55)', // 遮罩背景色（增强了透明度）
+      bg: '#ffffff', // modal 背景色
+      'z-index': '9999', // modal 层级（高于所有其他组件）
+      'box-shadow': '0 10px 40px rgba(0, 0, 0, 0.15)', // modal 阴影
+      border: '1px solid #e8e8e8', // modal 边框
+      'title-font-size': '18px', // 标题字体大小
+      'title-font-weight': '600', // 标题字体粗细
+      'title-color': '#333', // 标题颜色
+      'close-btn-size': '24px', // 关闭按钮大小
+      'close-btn-color': '#666', // 关闭按钮颜色
+    },
   },
 };
 
