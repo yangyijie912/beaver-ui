@@ -9,6 +9,10 @@ export { default as Pagination } from './components/Pagination/Pagination';
 export { default as Table } from './components/Table/Table';
 export * from './tokens';
 
+// 导入生成的 tokens CSS（由 `npm run gen:tokens` 生成为 `src/tokens/tokens.css`）
+// 这样 Vite 在构建时会把 tokens 放到最终的 CSS 中，保证主题变量可用。
+import './tokens/tokens.css';
+
 // 在运行时应用 CSS 变量，以便组件可以使用 `var(--beaver-color-primary)`
 // 在浏览器中安全导入，在 SSR 环境中无操作
 try {
