@@ -358,3 +358,49 @@
 .beaver-table__wrap--bordered .beaver-table thead .beaver-table__cell--sticky-edge-left + th {
   border-left: none;
 }
+
+/* 以下样式用来解决右侧粘性列1px白色缝隙问题 */
+
+.beaver-table thead th:last-child.beaver-table__cell--sticky--right {
+  position: relative;
+  z-index: 2000;
+  /* 使用表头背景色来遮盖缝隙，使线与表头融为一体 */
+  box-shadow: -1px 0 0 0 var(--beaver-table-header-bg, #f8fafc);
+  background-clip: padding-box;
+}
+
+.beaver-table tbody td:last-child.beaver-table__cell--sticky--right {
+  position: relative;
+  z-index: 2000;
+  /* 使用表体固定背景色来遮盖缝隙，使线与表体融为一体 */
+  box-shadow: -1px 0 0 0 var(--beaver-table-fixed-bg, #fff);
+  background-clip: padding-box;
+}
+
+/* hover/selected 状态下让线的颜色跟随背景 */
+.beaver-table tbody tr:hover td:last-child.beaver-table__cell--sticky--right {
+  box-shadow: -1px 0 0 0 var(--beaver-table-hover-bg);
+}
+
+.beaver-table tbody tr.beaver-table__row--selected td:last-child.beaver-table__cell--sticky--right {
+  box-shadow: -1px 0 0 0 var(--beaver-table-selected-bg, #f7fcfe);
+}
+
+.beaver-table tbody td:last-child.beaver-table__cell--sticky--right.box-shadow-wide {
+  box-shadow: -2px 0 0 0 var(--beaver-table-fixed-bg, #fff);
+}
+
+.beaver-table thead th:last-child.beaver-table__cell--sticky--right.box-shadow-wide {
+  box-shadow: -2px 0 0 0 var(--beaver-table-header-bg, #f8fafc);
+}
+
+/* 处理 hover 与 selected 同时发生的情况：优先使用 hover 颜色并隐藏可能的调试 ::before 颜色差
+   说明：当行处于选中并且鼠标悬停时，两个状态会同时匹配，明确指定一个更靠后的选择器
+   可以避免因为 cascade/order 导致显示不一致的竖线 */
+.beaver-table tbody tr.beaver-table__row--selected:hover td:last-child.beaver-table__cell--sticky--right {
+  box-shadow: -1px 0 0 0 var(--beaver-table-hover-bg);
+}
+
+.beaver-table tbody tr.beaver-table__row--selected:hover td:last-child.beaver-table__cell--sticky--right::before {
+  background: var(--beaver-table-hover-bg);
+}
