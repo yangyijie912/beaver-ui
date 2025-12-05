@@ -11,7 +11,7 @@
   top: 0;
   height: var(--beaver-table-scrollable-height, calc(100% - var(--beaver-table-scrollbar-height, 16px)));
   /* 缩窄阴影宽度，减轻视觉占用 */
-  width: 8px;
+  width: var(--beaver-table-shadow-width, 8px);
   pointer-events: none;
   z-index: calc(var(--beaver-table-z-index-header, 3000) - 1);
   will-change: transform, opacity;
@@ -92,7 +92,7 @@
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
-  width: 40px;
+  width: var(--beaver-table-select-col-width, 40px);
   padding: 8px 12px;
   background: var(--beaver-table-fixed-bg, #fff);
 }
@@ -323,7 +323,7 @@
 /* 内层占位 box：设置视觉宽度、无边框并带轻微阴影，居中显示 */
 .beaver-table__empty-box {
   background: var(--beaver-table-empty-bg, #ffffff);
-  border-radius: 8px;
+  border-radius: var(--beaver-radius-lg, 8px);
   padding: 18px 28px;
   display: flex;
   flex-direction: column;

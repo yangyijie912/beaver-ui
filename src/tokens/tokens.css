@@ -67,6 +67,14 @@
   --beaver-table-empty-height: 200px;
   --beaver-table-empty-color: #909399;
   --beaver-table-empty-bg: #ffffff;
+  --beaver-table-empty-box-width: min(360px, 60%);
+  --beaver-table-select-col-width: 40px;
+  --beaver-table-shadow-width: 8px;
+  --beaver-table-scrollbar-height: 16px;
+  --beaver-table-scrollbar-width: 0px;
+  --beaver-table-left-sticky-width: 0px;
+  --beaver-table-right-sticky-width: 0px;
+  --beaver-table-header-height: 0px;
   --beaver-table-z-index-header: 3000;
   --beaver-table-z-index-sticky: 1000;
 }
