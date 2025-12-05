@@ -62,6 +62,70 @@ const TableBody: React.FC<Props> = ({
     );
   }
 
+  // 全局 rowspan 追踪：记录每一列被哪些行的 rowspan 覆盖
+  const rowSpanTracking: Array<{ startRow: number; endRow: number; startCol: number; endCol: number }> = [];
+
+  // 第一遍：计算所有行的 rowspan 影响
+  for (let idx = 0; idx < data.length; idx++) {
+    const row = data[idx];
+    for (let colIdx = 0; colIdx < columns.length; colIdx++) {
+      const col = columns[colIdx];
+      let rawCell = row[col.key];
+      let rowSpan = 1;
+
+      if (
+        rawCell &&
+        typeof rawCell === 'object' &&
+        ('colSpan' in rawCell || 'rowSpan' in rawCell || 'value' in rawCell)
+      ) {
+        if ('rowSpan' in rawCell) rowSpan = Math.max(1, Number((rawCell as any).rowSpan) || 1);
+      }
+
+      if (typeof col.span === 'function') {
+        try {
+          const s = col.span(row, idx, col);
+          if (s && s.rowSpan != null) {
+            rowSpan = Math.max(1, Number(s.rowSpan) || 1);
+          }
+        } catch (_e) {
+          // ignore
+        }
+      }
+
+      if (rowSpan > 1) {
+        let colSpan = 1;
+        if (
+          rawCell &&
+          typeof rawCell === 'object' &&
+          ('colSpan' in rawCell || 'rowSpan' in rawCell || 'value' in rawCell)
+        ) {
+          if ('colSpan' in rawCell) colSpan = Math.max(1, Number((rawCell as any).colSpan) || 1);
+        }
+
+        if (typeof col.span === 'function') {
+          try {
+            const s = col.span(row, idx, col);
+            if (s && s.colSpan != null) {
+              colSpan = Math.max(1, Number(s.colSpan) || 1);
+            }
+          } catch (_e) {
+            // ignore
+          }
+        }
+
+        colSpan = Math.min(colSpan, columns.length - colIdx);
+        rowSpan = Math.min(rowSpan, data.length - idx);
+
+        rowSpanTracking.push({
+          startRow: idx,
+          endRow: idx + rowSpan - 1,
+          startCol: colIdx,
+          endCol: colIdx + colSpan - 1,
+        });
+      }
+    }
+  }
+
   return (
     <tbody>
       {data.map((row: Row, idx: number) => {
@@ -95,6 +159,15 @@ const TableBody: React.FC<Props> = ({
         }
 
         const occupied: Record<string, boolean> = {};
+
+        // 检查当前行是否被前面行的 rowspan 覆盖
+        for (const span of rowSpanTracking) {
+          if (span.startRow < idx && idx <= span.endRow) {
+            for (let c = span.startCol; c <= span.endCol; c++) {
+              occupied[`${idx}-${c}`] = true;
+            }
+          }
+        }
 
         for (let colIdx = 0; colIdx < columns.length; colIdx++) {
           const occKey = `${idx}-${colIdx}`;
