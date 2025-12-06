@@ -6,6 +6,7 @@
   --beaver-select-radius: var(--beaver-radius-lg);
   --beaver-select-focus: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
   --beaver-select-arrow: var(--beaver-select-border);
+  --beaver-select-box-shadow: 0 8px 24px rgba(20, 30, 50, 0.12);
   /* 图标的动画、大小和对齐 */
   --beaver-select-icon-size: var(--beaver-select-icon-size, 18px);
   --beaver-select-arrow-size: var(--beaver-select-arrow-size, 14px);
@@ -25,8 +26,8 @@
   width: 100%;
   box-sizing: border-box;
   text-align: left;
-  padding: 10px 20px 10px var(--beaver-space-md);
-  font-size: var(--beaver-font-size-md);
+  padding: 10px 20px 10px var(--beaver-space-md, 12px);
+  font-size: var(--beaver-font-size-md, 14px);
   border-radius: var(--beaver-select-radius);
   border: 1px solid var(--beaver-select-border);
   --beaver-select-focus: 0 0 0 var(--beaver-focus-ring) rgba(33, 150, 243, 0.12);
@@ -42,14 +43,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: var(--beaver-space-sm);
-  padding: var(--beaver-space-xs) var(--beaver-space-sm);
+  margin-right: var(--beaver-space-sm, 8px);
+  padding: var(--beaver-space-xxs, 4px) var(--beaver-space-sm, 8px);
   flex: 0 0 auto;
 }
 
 .beaver-select__control .beaver-select__tags {
   display: flex;
-  gap: var(--beaver-space-sm);
+  gap: var(--beaver-space-sm, 8px);
   align-items: center;
   flex-wrap: wrap;
 }
@@ -57,12 +58,12 @@
 .beaver-select__control .beaver-select__tag {
   background: rgba(0, 0, 0, 0.06);
   color: var(--beaver-select-text);
-  padding: var(--beaver-space-xs) var(--beaver-space-sm);
+  padding: var(--beaver-space-xxs, 4px) var(--beaver-space-sm, 8px);
   border-radius: 999px;
   font-size: 12px;
   display: inline-flex;
   align-items: center;
-  gap: var(--beaver-space-sm);
+  gap: var(--beaver-space-sm, 8px);
 }
 
 .beaver-select__tag-remove {
@@ -72,7 +73,7 @@
   border: none;
   background: transparent;
   color: inherit;
-  padding: var(--beaver-space-xs) var(--beaver-space-xs);
+  padding: var(--beaver-space-xxs, 4px) var(--beaver-space-xxs, 4px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -125,7 +126,7 @@
 }
 
 .beaver-select__arrow {
-  margin-left: var(--beaver-space-sm);
+  margin-left: var(--beaver-space-sm, 8px);
   color: var(--beaver-select-arrow);
   display: inline-flex;
   align-items: center;
@@ -173,15 +174,15 @@
   left: 0;
   right: auto;
   width: 100%;
-  margin-top: var(--beaver-space-sm);
+  margin-top: var(--beaver-space-sm, 8px);
   background: var(--beaver-select-bg);
   border-radius: var(--beaver-radius-lg);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: var(--beaver-shadows-lg);
+  box-shadow: var(--beaver-select-box-shadow, 0 8px 24px rgba(20, 30, 50, 0.12));
   z-index: 60;
-  max-height: var(--beaver-select-max-height);
+  max-height: var(--beaver-select-max-height, 260px);
   overflow: auto;
-  padding: var(--beaver-space-xs2) var(--beaver-space-xs);
+  padding: var(--beaver-space-xs, 6px) var(--beaver-space-xxs, 4px);
   box-sizing: border-box;
 }
 
@@ -201,8 +202,8 @@
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: var(--beaver-space-sm);
-  padding-left: var(--beaver-space-sm);
+  gap: var(--beaver-space-sm, 8px);
+  padding-left: var(--beaver-space-sm, 8px);
   flex-shrink: 0;
 }
 
@@ -225,14 +226,14 @@
 
 .beaver-select__option {
   list-style: none;
-  padding: var(--beaver-space-xs3) var(--beaver-space-sm2);
-  border-radius: var(--beaver-radius-md);
+  padding: var(--beaver-space-sm2, 10px) var(--beaver-space-md2, 14px);
+  border-radius: var(--beaver-radius-md, 6px);
   cursor: pointer;
   color: var(--beaver-select-text);
-  font-size: var(--beaver-font-size-md);
+  font-size: var(--beaver-font-size-md, 14px);
 }
 .beaver-select__option + .beaver-select__option {
-  margin-top: var(--beaver-space-xs);
+  margin-top: var(--beaver-space-xxs, 4px);
 }
 
 .beaver-select__option--highlighted {
@@ -266,12 +267,13 @@
 
 /* 大小控制 */
 .beaver-select--small .beaver-select__control {
-  padding: var(--beaver-space-xs2) var(--beaver-space-lg) var(--beaver-space-xs2) var(--beaver-space-xs3);
+  padding: var(--beaver-space-xs, 6px) var(--beaver-space-lg, 16px) var(--beaver-space-xs, 6px)
+    var(--beaver-space-sm2, 10px);
   font-size: 12px;
-  border-radius: var(--beaver-radius-md);
+  border-radius: var(--beaver-radius-md, 6px);
 }
 .beaver-select--large .beaver-select__control {
-  padding: var(--beaver-space-md) 24px var(--beaver-space-md) var(--beaver-space-sm2);
+  padding: var(--beaver-space-md, 12px) 24px var(--beaver-space-md, 12px) var(--beaver-space-md2, 14px);
   font-size: 16px;
   border-radius: var(--beaver-radius-xl);
 }

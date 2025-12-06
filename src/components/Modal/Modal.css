@@ -95,7 +95,7 @@
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
-  margin-left: var(--beaver-space-md);
+  margin-left: var(--beaver-space-md, 12px);
   font-size: 16px;
   transition: color 0.2s ease;
 }
@@ -125,7 +125,7 @@
   border-top: 1px solid #f0f0f0;
   display: flex;
   justify-content: flex-end;
-  gap: var(--beaver-space-md);
+  gap: var(--beaver-space-md, 12px);
   flex-shrink: 0;
 }
 
@@ -141,16 +141,16 @@
   }
 
   .beaver-modal__header {
-    padding: var(--beaver-space-lg) var(--beaver-space-md);
-    padding-bottom: var(--beaver-space-md);
+    padding: var(--beaver-space-lg, 16px) var(--beaver-space-md, 12px);
+    padding-bottom: var(--beaver-space-md, 12px);
   }
 
   .beaver-modal__body {
-    padding: var(--beaver-space-lg) var(--beaver-space-md);
+    padding: var(--beaver-space-lg, 16px) var(--beaver-space-md, 12px);
   }
 
   .beaver-modal__footer {
-    padding: var(--beaver-space-lg) var(--beaver-space-md);
-    padding-top: var(--beaver-space-md);
+    padding: var(--beaver-space-lg, 16px) var(--beaver-space-md, 12px);
+    padding-top: var(--beaver-space-md, 12px);
   }
 }

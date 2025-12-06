@@ -1,7 +1,7 @@
 .beaver-input {
   box-sizing: border-box;
   width: 100%;
-  padding: var(--beaver-space-sm) var(--beaver-space-md);
+  padding: var(--beaver-space-sm, 8px) var(--beaver-space-md, 12px);
   border: 1px solid var(--beaver-color-border);
   border-radius: var(--beaver-radius-md);
   color: var(--beaver-color-text);
@@ -41,7 +41,7 @@
 /* Textarea specific tweaks */
 .beaver-input--textarea {
   min-height: var(--beaver-input-min-height, 88px);
-  padding: var(--beaver-space-xs3) var(--beaver-space-md);
+  padding: var(--beaver-space-sm2, 10px) var(--beaver-space-md, 12px);
   resize: vertical;
   font-family: inherit;
 }

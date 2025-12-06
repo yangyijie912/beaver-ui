@@ -13,8 +13,8 @@
   transition:
     opacity 160ms ease,
     transform 160ms ease;
-  z-index: var(--beaver-components-tooltip-z-index, 4000);
-  max-width: var(--beaver-components-tooltip-max-width, 280px);
+  z-index: var(--beaver-tooltip-z-index, 4000);
+  max-width: var(--beaver-tooltip-max-width, 280px);
 }
 
 .beaver-tooltip__content[data-state='visible'] {
@@ -24,12 +24,12 @@
 }
 
 .beaver-tooltip__inner {
-  background: var(--beaver-components-tooltip-bg, rgba(0, 0, 0, 0.85));
-  color: var(--beaver-components-tooltip-color, #fff);
-  padding: var(--beaver-components-tooltip-padding, 6px 10px);
-  border-radius: var(--beaver-components-tooltip-border-radius, 4px);
-  font-size: var(--beaver-components-tooltip-font-size, 12px);
-  box-shadow: var(--beaver-components-tooltip-box-shadow, 0 6px 18px rgba(20, 30, 50, 0.2));
+  background: var(--beaver-tooltip-bg, rgba(0, 0, 0, 0.85));
+  color: var(--beaver-tooltip-color, #fff);
+  padding: var(--beaver-tooltip-padding, 6px 10px);
+  border-radius: var(--beaver-tooltip-border-radius, 4px);
+  font-size: var(--beaver-tooltip-font-size, 12px);
+  box-shadow: var(--beaver-tooltip-box-shadow, 0 6px 18px rgba(20, 30, 50, 0.2));
   text-align: center;
   line-height: 1;
   pointer-events: auto;
@@ -39,7 +39,7 @@
 .beaver-tooltip__arrow {
   width: 8px;
   height: 8px;
-  background: var(--beaver-components-tooltip-bg, rgba(0, 0, 0, 0.85));
+  background: var(--beaver-tooltip-bg, rgba(0, 0, 0, 0.85));
   position: absolute;
   transform: rotate(45deg);
 }

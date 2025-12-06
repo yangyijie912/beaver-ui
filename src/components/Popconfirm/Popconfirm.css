@@ -113,7 +113,7 @@
   color: var(--beaver-popconfirm-description-color);
   margin: 0;
   /* 使用专用的间距 token，避免将 padding shorthand 用作 margin 值导致兼容问题 */
-  margin-bottom: var(--beaver-popconfirm-gap);
+  margin-bottom: var(--beaver-popconfirm-gap, 8px);
   word-break: break-word;
   line-height: 1.5;
 }
@@ -121,22 +121,22 @@
 /* 当没有描述文本时，标题的下边距 */
 .beaver-popconfirm__title:last-child {
   /* 当没有描述文本时，使用统一的 gap 值作为下边距 */
-  margin-bottom: var(--beaver-popconfirm-gap);
+  margin-bottom: var(--beaver-popconfirm-gap, 8px);
 }
 
 /* Popconfirm 操作按钮区域 */
 .beaver-popconfirm__actions {
   display: flex;
-  gap: var(--beaver-popconfirm-button-gap);
+  gap: var(--beaver-popconfirm-button-gap, 8px);
   justify-content: flex-end;
 }
 
 /* 确认和取消按钮 */
 .beaver-popconfirm__ok,
 .beaver-popconfirm__cancel {
-  font-size: var(--beaver-font-size-sm);
-  padding: var(--beaver-space-xs2) var(--beaver-space-md);
-  border-radius: var(--beaver-radius-md);
+  font-size: var(--beaver-font-size-sm, 12px);
+  padding: var(--beaver-space-xs, 6px) var(--beaver-space-md, 12px);
+  border-radius: var(--beaver-radius-md, 6px);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;

@@ -23,13 +23,14 @@ export const vars = {
     xl: '10px',
   },
   space: {
-    xs: '4px',
-    xs2: '6px',
-    xs3: '10px',
+    xxs: '4px',
+    xs: '6px',
     sm: '8px',
-    sm2: '14px',
+    sm2: '10px',
     md: '12px',
+    md2: '14px',
     lg: '16px',
+    lg2: '18px',
     xl: '20px',
   },
   font: {
@@ -39,15 +40,16 @@ export const vars = {
       lg: '16px',
     },
   },
-  shadows: {
-    sm: '0 1px 2px rgba(0, 0, 0, 0.2)',
-    lg: '0 8px 24px rgba(20, 30, 50, 0.12)',
-  },
   focus: {
     ring: '4px',
   },
   // 全局宽度/尺寸：尽量仅保留跨组件共享的值。组件专属尺寸将放到 `components.<name>` 下。
   components: {
+    button: {
+      border: '#bdbdbd', // 按钮边框色
+      'disabled-border': '#e0e0e0', // 按钮禁用态边框色
+      'disabled-bg': '#f5f5f5', // 按钮禁用态背景色
+    },
     select: {
       'icon-size': '18px', // 下拉箭头图标尺寸
       'arrow-size': '14px', // 下拉箭头尺寸
