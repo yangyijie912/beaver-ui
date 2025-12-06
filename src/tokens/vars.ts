@@ -47,8 +47,8 @@ export const vars = {
   components: {
     button: {
       border: '#bdbdbd', // 按钮边框色
-      'disabled-border': '#e0e0e0', // 按钮禁用态边框色
-      'disabled-bg': '#f5f5f5', // 按钮禁用态背景色
+      'disabled-border': '#e0e0e0', // 按钮禁用态边框色，部分场景和beaver-color-disabled区分
+      'disabled-bg': '#f5f5f5', // 按钮禁用态背景色，部分场景和beaver-color-disabled区分
     },
     select: {
       'icon-size': '18px', // 下拉箭头图标尺寸

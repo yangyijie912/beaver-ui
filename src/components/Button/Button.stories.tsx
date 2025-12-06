@@ -19,24 +19,42 @@ export const Default: Story = {
 
 /**
  * * 按钮的变体
+ * - 粉色背景用于突出幽灵按钮
  */
 export const Variants: Story = {
-  name: '变体演示',
+  name: '变体',
   render: (args: ButtonArgs) => (
-    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-      <Button variant="primary" {...args}>
-        Primary
-      </Button>
-      <Button variant="ghost" {...args}>
-        Ghost
-      </Button>
-      <Button variant="link" {...args}>
-        Link
-      </Button>
-    </div>
+    <>
+      <p>不同背景色下的按钮展示</p>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', width: 400, height: 100 }}>
+        <Button variant="primary" {...args}>
+          Primary
+        </Button>
+        <Button variant="ghost" {...args}>
+          Ghost
+        </Button>
+        <Button variant="link" {...args}>
+          Link
+        </Button>
+      </div>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', width: 400, height: 100, background: 'pink' }}>
+        <Button variant="primary" {...args}>
+          Primary
+        </Button>
+        <Button variant="ghost" {...args}>
+          Ghost
+        </Button>
+        <Button variant="link" {...args}>
+          Link
+        </Button>
+      </div>
+    </>
   ),
 };
 
+/**
+ * 提供了默认的颜色选项：primary、danger
+ */
 export const Danger: Story = {
   name: '颜色：危险色',
   args: { children: 'Danger', variant: 'primary', color: 'danger' },

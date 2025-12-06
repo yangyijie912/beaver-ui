@@ -14,8 +14,8 @@
 .beaver-button--default {
   background-color: var(--beaver-color-bg, #fff);
   /* 优先使用 --beaver-button-color（由组件在有效 color 时设置），否则回退到常规文本/边框色 */
-  color: var(--beaver-button-color, var(--beaver-color-text, #111827));
-  border: 1px solid var(--beaver-button-border, #bdbdbd);
+  color: var(--beaver-button-color, var(--beaver-color-text, #333));
+  border: 1px solid var(--beaver-button-color, var(--beaver-button-border, #bdbdbd));
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
 }
 
