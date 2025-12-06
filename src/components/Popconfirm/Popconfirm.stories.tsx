@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React, { useState } from 'react';
 import Popconfirm from './Popconfirm';
+import Button from '../Button/Button';
 
 const meta: Meta<typeof Popconfirm> = {
   title: 'Components/Popconfirm',
@@ -22,7 +23,7 @@ export const Basic: Story = {
   name: '基础用法',
   render: () => (
     <Popconfirm title="确定删除此项目吗？" okText="删除" cancelText="取消">
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>删除</button>
+      <Button color="danger">删除</Button>
     </Popconfirm>
   ),
 };
@@ -34,7 +35,7 @@ export const WithDescription: Story = {
   name: '带描述文本',
   render: () => (
     <Popconfirm title="确定删除此项目吗？" description="此操作无法撤销，请谨慎操作" okText="确定删除" cancelText="取消">
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>删除</button>
+      <Button color="danger">删除</Button>
     </Popconfirm>
   ),
 };
@@ -47,7 +48,7 @@ export const PlacementTop: Story = {
   render: () => (
     <div style={{ paddingTop: '100px' }}>
       <Popconfirm title="确定要执行此操作吗？" placement="top">
-        <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+        <Button>操作</Button>
       </Popconfirm>
     </div>
   ),
@@ -61,7 +62,7 @@ export const PlacementBottom: Story = {
   render: () => (
     <div style={{ paddingBottom: '100px' }}>
       <Popconfirm title="确定要执行此操作吗？" placement="bottom">
-        <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+        <Button>操作</Button>
       </Popconfirm>
     </div>
   ),
@@ -75,7 +76,7 @@ export const PlacementLeft: Story = {
   render: () => (
     <div style={{ paddingLeft: '200px', paddingTop: '50px' }}>
       <Popconfirm title="确定要执行此操作吗？" placement="left">
-        <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+        <Button>操作</Button>
       </Popconfirm>
     </div>
   ),
@@ -89,7 +90,7 @@ export const PlacementRight: Story = {
   render: () => (
     <div style={{ paddingRight: '200px', paddingTop: '50px' }}>
       <Popconfirm title="确定要执行此操作吗？" placement="right">
-        <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+        <Button>操作</Button>
       </Popconfirm>
     </div>
   ),
@@ -102,7 +103,7 @@ export const WithMask: Story = {
   name: '显示遮罩',
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" description="点击遮罩可关闭" showMask={true}>
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+      <Button>操作</Button>
     </Popconfirm>
   ),
 };
@@ -114,7 +115,7 @@ export const WithoutArrow: Story = {
   name: '禁用箭头',
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" showArrow={false}>
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+      <Button>操作</Button>
     </Popconfirm>
   ),
 };
@@ -126,7 +127,7 @@ export const OkDisabled: Story = {
   name: '禁用确认按钮',
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" description="确认按钮已禁用" okDisabled={true}>
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+      <Button>操作</Button>
     </Popconfirm>
   ),
 };
@@ -138,7 +139,7 @@ export const OkLoading: Story = {
   name: '加载状态',
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" okLoading={true}>
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>删除</button>
+      <Button color="danger">删除</Button>
     </Popconfirm>
   ),
 };
@@ -167,7 +168,7 @@ export const AsyncConfirm: Story = {
         onConfirm={handleConfirm}
         onCancel={() => console.log('已取消')}
       >
-        <button style={{ padding: '8px 16px', cursor: 'pointer' }}>删除</button>
+        <Button color="danger">删除</Button>
       </Popconfirm>
     );
   },
@@ -183,9 +184,9 @@ export const Controlled: Story = {
 
     return (
       <div>
-        <button onClick={() => setOpen(true)} style={{ padding: '8px 16px', cursor: 'pointer', marginBottom: '20px' }}>
+        <Button onClick={() => setOpen(true)} style={{ marginBottom: '20px' }}>
           点击打开 Popconfirm
-        </button>
+        </Button>
 
         <Popconfirm
           open={open}
@@ -196,7 +197,7 @@ export const Controlled: Story = {
             alert('已确认！');
           }}
         >
-          <button style={{ padding: '8px 16px', cursor: 'pointer' }}>隐藏按钮</button>
+          <Button>隐藏按钮</Button>
         </Popconfirm>
       </div>
     );
@@ -210,7 +211,7 @@ export const MinimalStyle: Story = {
   name: '最小化样式',
   render: () => (
     <Popconfirm title="确定吗？" showArrow={false} okText="是" cancelText="否">
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>操作</button>
+      <Button>操作</Button>
     </Popconfirm>
   ),
 };
@@ -222,7 +223,7 @@ export const CustomButtonText: Story = {
   name: '自定义按钮文本',
   render: () => (
     <Popconfirm title="请确认您的操作" okText="立即执行" cancelText="我再想想">
-      <button style={{ padding: '8px 16px', cursor: 'pointer' }}>执行操作</button>
+      <Button>执行操作</Button>
     </Popconfirm>
   ),
 };
@@ -272,19 +273,9 @@ export const DeleteOperation: Story = {
                 placement="left"
                 onConfirm={() => handleDelete(item.id)}
               >
-                <button
-                  style={{
-                    padding: '4px 12px',
-                    backgroundColor: '#e44444',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                  }}
-                >
+                <Button color="danger" size="small">
                   删除
-                </button>
+                </Button>
               </Popconfirm>
             </li>
           ))}
