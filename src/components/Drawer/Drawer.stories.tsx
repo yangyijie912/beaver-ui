@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Drawer from './Drawer';
 import Button from '../Button/Button';
+import Input from '../Input/Input';
 import type { Meta, StoryObj } from '@storybook/react';
 
 const meta: Meta<typeof Drawer> = {
@@ -172,8 +173,8 @@ export const WithFooter: Story = {
           }
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <input type="text" placeholder="姓名" />
-            <input type="email" placeholder="邮箱" />
+            <Input placeholder="姓名" />
+            <Input placeholder="邮箱" />
           </div>
         </Drawer>
       </>

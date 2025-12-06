@@ -50,6 +50,7 @@
 `Table` - 表格  
 `Modal` - 模态框  
 `Tooltip` - 文字提示组件  
-`Popconfirm` - 弹出式确认框
+`Popconfirm` - 弹出式确认框  
+`Drawer` - 抽屉组件
 
 正在更新中......
