@@ -73,8 +73,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       ...(buttonColorVar ? ({ ['--beaver-button-color']: buttonColorVar } as React.CSSProperties) : {}),
     };
 
+    const buttonType = (restProps as any).type || 'button';
+
     return (
-      <button ref={ref} className={classList.join(' ')} disabled={disabled} style={finalStyle} {...(restProps as any)}>
+      <button
+        ref={ref}
+        type={buttonType}
+        className={classList.join(' ')}
+        disabled={disabled}
+        style={finalStyle}
+        {...(restProps as any)}
+      >
         {children}
       </button>
     );

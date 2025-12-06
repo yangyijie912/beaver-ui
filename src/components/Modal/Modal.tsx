@@ -36,12 +36,11 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       className = '',
       maskClassName = '',
       contentClassName = '',
-      animated = true,
       ...rest
     },
     ref
   ) => {
-    const { mounted, animating } = useModalAnimation(open, { animated });
+    const { mounted, animating } = useModalAnimation(open);
     const contentRef = useRef<HTMLDivElement>(null);
 
     // 处理遮罩点击

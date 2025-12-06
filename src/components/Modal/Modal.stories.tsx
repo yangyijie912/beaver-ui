@@ -397,3 +397,30 @@ export const OnOkAsync: Story = {
     );
   },
 };
+
+/**
+ * 可以自行覆盖CSS来改写动画效果
+ */
+export const AnimationSlow: Story = {
+  name: '动画示例',
+  render: () => {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <style>{`
+          .beaver-modal__mask { transition: opacity 1s ease !important; }
+          .beaver-modal__content { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1) !important; }
+        `}</style>
+
+        <Button variant="primary" onClick={() => setOpen(true)}>
+          打开（慢动作）
+        </Button>
+
+        <Modal open={open} title="慢动作动画" onClose={() => setOpen(false)}>
+          <p>此故事将动画时长延长为 1s，便于观察遮罩的淡入与内容的 scale/opacity 变化。</p>
+        </Modal>
+      </>
+    );
+  },
+};

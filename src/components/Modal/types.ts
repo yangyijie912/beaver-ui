@@ -34,7 +34,7 @@ export interface ModalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   /** 自定义内容className */
   contentClassName?: string;
   /** 是否禁用动画 */
-  animated?: boolean;
+  /** `animated` prop 已移除：组件默认启用动画。如需修改动画，请覆盖 CSS 类。 */
 }
 
 export type ModalHandle = {

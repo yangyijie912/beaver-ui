@@ -53,7 +53,10 @@ export const useModalAnimation = (open: boolean, options: UseModalAnimationOptio
     mounted,
     /**
      * 是否应用动画类
+     *
+     * 注意：当 `animated` 被设置为 `false` 时，仍然需要将 `animating` 返回为 `true`，
+     * 以便立即应用“active”类让 Modal 可见（但不会有过渡）。
      */
-    animating: animated && animating,
+    animating: animated ? animating : true,
   };
 };
