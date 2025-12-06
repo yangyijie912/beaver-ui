@@ -13,12 +13,27 @@ type Story = StoryObj<typeof Button>;
 
 export const Primary: Story = {
   name: '主按钮',
-  args: { children: 'Primary', variant: 'primary' },
+  args: { children: 'Primary', variant: 'primary', color: 'primary' },
 };
 
 export const Ghost: Story = {
   name: '幽灵',
-  args: { children: 'Ghost', variant: 'ghost' },
+  args: { children: 'Ghost', variant: 'ghost', color: 'primary' },
+};
+
+export const Danger: Story = {
+  name: '危险',
+  args: { children: 'Danger', variant: 'primary', color: 'danger' },
+};
+
+export const Link: Story = {
+  name: '链接样式',
+  args: { children: 'Link', variant: 'link', color: 'primary' },
+};
+
+export const LinkDanger: Story = {
+  name: '链接样式-危险',
+  args: { children: 'Link Danger', variant: 'link', color: 'danger' },
 };
 
 export const Disabled: Story = {

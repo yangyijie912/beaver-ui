@@ -8,7 +8,9 @@ const sizes: Record<string, React.CSSProperties> = {
 };
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'ghost';
+  variant?: 'primary' | 'ghost' | 'link';
+  /** 颜色：'primary' | 'danger' 或任意 CSS 颜色字符串（如 'red' / '#333'） */
+  color?: 'primary' | 'danger' | string;
   size?: 'small' | 'medium' | 'large';
   children?: React.ReactNode;
 };
@@ -16,20 +18,58 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 /**
  * Button 组件
  * - 使用场景：触发用户操作或事件
- * - 支持样式变体（主要、幽灵）
+ * - 支持样式变体（主要、幽灵、链接）
  * - 支持不同尺寸（小、中、大）
+ * - 支持颜色变体（主色、危险色）
  * - 支持禁用状态
  * - 支持自定义内容（文本、图标等）
  */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, className, variant = 'primary', size = 'medium', disabled, ...props }, ref) => {
+  ({ children, className, variant = 'primary', color = 'primary', size = 'medium', disabled, ...props }, ref) => {
     const classList = ['beaver-button'];
-    if (variant === 'ghost') classList.push('beaver-button--ghost');
+    classList.push(`beaver-button--${variant}`);
+
+    // 如果 color 是已知的设计token名称之一，则保留颜色类以保持兼容性。
+    const isTokenColor = color === 'primary' || color === 'danger';
+    if (isTokenColor) classList.push(`beaver-button--color-${color}`);
+
     if (disabled) classList.push('beaver-button--disabled');
     if (className) classList.push(className);
 
+    // 合并样式：尺寸样式 -> 传入的 props.style -> 用于任意颜色的自定义 CSS 变量
+    const { style: incomingStyle, ...restProps } = props as any;
+
+    // 判断 color 字符串是否为有效的 CSS 颜色值，否则回退到 primary 颜色
+    const isValidCssColor = (val: string) => {
+      if (!val) return false;
+      try {
+        if (typeof document !== 'undefined') {
+          const s = document.createElement('span').style;
+          s.color = val;
+          return s.color !== '';
+        }
+      } catch (_e) {
+        // 在非 DOM 环境中回退到下面的正则表达式检查
+      }
+      // 常见颜色格式的基本正则表达式回退（十六进制、rgb/rgba、hsl/hsla）
+      return /^(#(?:[0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})\b|rgba?\(|hsla?\()/i.test(val);
+    };
+
+    let buttonColorVar: string | undefined;
+    if (isTokenColor) {
+      buttonColorVar = color === 'danger' ? 'var(--beaver-color-error)' : 'var(--beaver-color-primary)';
+    } else if (typeof color === 'string') {
+      buttonColorVar = isValidCssColor(color) ? color : 'var(--beaver-color-primary)';
+    }
+
+    const finalStyle: React.CSSProperties = {
+      ...sizes[size],
+      ...(incomingStyle || {}),
+      ...(buttonColorVar ? ({ ['--beaver-button-color']: buttonColorVar } as React.CSSProperties) : {}),
+    };
+
     return (
-      <button ref={ref} className={classList.join(' ')} disabled={disabled} style={sizes[size]} {...props}>
+      <button ref={ref} className={classList.join(' ')} disabled={disabled} style={finalStyle} {...(restProps as any)}>
         {children}
       </button>
     );

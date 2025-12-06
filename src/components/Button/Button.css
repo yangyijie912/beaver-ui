@@ -1,16 +1,35 @@
 .beaver-button {
-  background-color: var(--beaver-color-primary);
-  color: var(--beaver-color-on-primary, #fff);
   border-radius: var(--beaver-radius-md);
   border: none;
   cursor: pointer;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--beaver-color-text);
 }
 
+/* Primary variant (background filled) - supports custom color via --beaver-button-color */
+.beaver-button--primary {
+  background-color: var(--beaver-button-color, var(--beaver-color-primary));
+  color: var(--beaver-button-text-color, var(--beaver-color-on-primary, #fff));
+  border: none;
+}
+
+/* Ghost variant (outlined) - supports custom color via --beaver-button-color */
 .beaver-button--ghost {
   background-color: transparent;
-  color: var(--beaver-color-primary);
-  border: 1px solid var(--beaver-color-primary);
+  color: var(--beaver-button-color, var(--beaver-color-primary));
+  border: 1px solid var(--beaver-button-color, var(--beaver-color-primary));
+}
+
+/* Link variant (text only) - supports custom color via --beaver-button-color */
+.beaver-button--link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--beaver-button-color, var(--beaver-color-primary));
 }
 
 .beaver-button--disabled {
