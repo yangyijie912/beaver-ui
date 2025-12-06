@@ -8,7 +8,7 @@ const sizes: Record<string, React.CSSProperties> = {
 };
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'ghost' | 'link';
+  variant?: 'default' | 'primary' | 'ghost' | 'link';
   /** 颜色：'primary' | 'danger' 或任意 CSS 颜色字符串（如 'red' / '#333'） */
   color?: 'primary' | 'danger' | string;
   size?: 'small' | 'medium' | 'large';
@@ -25,7 +25,7 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
  * - 支持自定义内容（文本、图标等）
  */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, className, variant = 'primary', color = 'primary', size = 'medium', disabled, ...props }, ref) => {
+  ({ children, className, variant = 'default', color = undefined, size = 'medium', disabled, ...props }, ref) => {
     const classList = ['beaver-button'];
     classList.push(`beaver-button--${variant}`);
 
@@ -59,7 +59,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (isTokenColor) {
       buttonColorVar = color === 'danger' ? 'var(--beaver-color-error)' : 'var(--beaver-color-primary)';
     } else if (typeof color === 'string') {
-      buttonColorVar = isValidCssColor(color) ? color : 'var(--beaver-color-primary)';
+      // 只有在 color 是有效 CSS 颜色字符串时才应用；否则不设置自定义变量，保持组件默认样式
+      if (isValidCssColor(color)) {
+        buttonColorVar = color;
+      } else {
+        buttonColorVar = undefined;
+      }
     }
 
     const finalStyle: React.CSSProperties = {

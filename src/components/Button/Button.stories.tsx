@@ -11,6 +11,11 @@ export default meta;
 
 type Story = StoryObj<typeof Button>;
 
+export const Default: Story = {
+  name: '默认按钮',
+  args: { children: 'Default' },
+};
+
 export const Primary: Story = {
   name: '主按钮',
   args: { children: 'Primary', variant: 'primary', color: 'primary' },
