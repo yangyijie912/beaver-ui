@@ -1,0 +1,417 @@
+/**
+ * Drawer 组件样式
+ * 使用全局 tokens 变量管理样式
+ * 支持四个方向（left、right、top、bottom）的抽屉展示
+ */
+
+/* ===== Portal 容器 ===== */
+/**
+ * Portal容器样式
+ * - 固定定位覆盖整个视口
+ * - z-index设置为Drawer层级
+ * - pointer-events: none 保证遮罩层可以接收点击事件
+ */
+.beaver-drawer-portal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--beaver-drawer-z-index);
+  pointer-events: none;
+}
+
+/* ===== 遮罩层样式 ===== */
+/**
+ * 遮罩层
+ * - 覆盖整个viewport
+ * - 初始状态为透明
+ * - 激活时显示半透明黑色背景
+ * - 平滑过渡效果
+ */
+.beaver-drawer__mask {
+  position: absolute;
+  inset: 0;
+  background-color: var(--beaver-drawer-overlay-bg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/**
+ * 激活状态下的遮罩
+ * - 显示遮罩并启用点击交互
+ */
+.beaver-drawer__mask.beaver-drawer--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== 包装容器样式 ===== */
+/**
+ * Drawer包装容器
+ * - 固定定位，覆盖整个viewport
+ * - flex布局用于内容对齐
+ * - 初始状态pointer-events: none，激活时启用
+ */
+.beaver-drawer-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/**
+ * 激活状态下的包装容器
+ * - 启用点击交互
+ */
+.beaver-drawer-wrapper.beaver-drawer--active {
+  pointer-events: auto;
+}
+
+/* ===== 方向相关样式 ===== */
+/**
+ * 右侧抽屉（默认）
+ * - 内容从右侧滑出
+ * - align-items: stretch 使内容充满整个高度
+ */
+.beaver-drawer-wrapper.beaver-drawer--right {
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+/**
+ * 左侧抽屉
+ * - 内容从左侧滑出
+ */
+.beaver-drawer-wrapper.beaver-drawer--left {
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+/**
+ * 顶部抽屉
+ * - 内容从顶部滑出
+ */
+.beaver-drawer-wrapper.beaver-drawer--top {
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/**
+ * 底部抽屉
+ * - 内容从底部滑出
+ */
+.beaver-drawer-wrapper.beaver-drawer--bottom {
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* ===== 内容容器样式 ===== */
+/**
+ * Drawer内容容器
+ * - 背景色和边框样式
+ * - 阴影效果增强深度感
+ * - 初始状态：缩小和透明（根据方向不同）
+ * - 激活后：恢复正常大小和不透明
+ * - 可滚动内容
+ */
+.beaver-drawer__content {
+  position: relative;
+  background-color: var(--beaver-drawer-bg);
+  border-radius: var(--beaver-drawer-border-radius);
+  box-shadow: var(--beaver-drawer-box-shadow);
+  overflow-y: auto;
+  overflow-x: hidden;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/**
+ * 右侧抽屉的内容样式
+ * - 完整占满高度
+ * - 初始状态从右侧滑入（translateX向右）
+ * - 真实的拉抽屉效果
+ * - 首次挂载时不使用过渡，防止闪现
+ */
+.beaver-drawer--right .beaver-drawer__content {
+  height: 100%;
+  transform: translateX(100%);
+  opacity: 0;
+  transition: none;
+}
+
+/**
+ * 左侧抽屉的内容样式
+ * - 完整占满高度
+ * - 初始状态从左侧滑入（translateX向左）
+ * - 首次挂载时不使用过渡
+ */
+.beaver-drawer--left .beaver-drawer__content {
+  height: 100%;
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: none;
+}
+
+/**
+ * 顶部抽屉的内容样式
+ * - 完整占满宽度
+ * - 初始状态从顶部滑入（translateY向上）
+ * - 首次挂载时不使用过渡
+ */
+.beaver-drawer--top .beaver-drawer__content {
+  width: 100%;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: none;
+}
+
+/**
+ * 底部抽屉的内容样式
+ * - 完整占满宽度
+ * - 初始状态从底部滑入（translateY向下）
+ * - 首次挂载时不使用过渡
+ */
+.beaver-drawer--bottom .beaver-drawer__content {
+  width: 100%;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: none;
+}
+
+/**
+ * 激活状态下内容的动画
+ * - 恢复位置和不透明度
+ * - 平滑的拉抽屉效果
+ * - 打开时使用配置的过渡时间
+ */
+.beaver-drawer-wrapper.beaver-drawer--active .beaver-drawer__content {
+  transform: translateX(0) translateY(0);
+  opacity: 1;
+  transition: all var(--beaver-drawer-animation-duration-open) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/**
+ * 关闭状态下内容的动画
+ * - 回到初始位置
+ * - 快速收起效果
+ */
+.beaver-drawer-wrapper:not(.beaver-drawer--active) .beaver-drawer__content {
+  transition: all var(--beaver-drawer-animation-duration-close) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ===== 头部样式 ===== */
+/**
+ * Drawer头部容器
+ * - flexbox布局实现标题和关闭按钮的对齐
+ * - 下边框分隔内容
+ * - 内边距来自tokens
+ */
+.beaver-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--beaver-drawer-padding);
+  padding-bottom: var(--beaver-drawer-header-margin-bottom);
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+  gap: var(--beaver-space-md);
+}
+
+/**
+ * Drawer标题样式
+ * - 使用tokens中的title配置
+ * - 默认字体大小、粗细和颜色
+ * - flex: 1确保标题占据可用空间
+ */
+.beaver-drawer__title {
+  font-size: var(--beaver-drawer-title-font-size);
+  font-weight: var(--beaver-drawer-title-font-weight);
+  color: var(--beaver-drawer-title-color);
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+/**
+ * 关闭按钮样式
+ * - 固定大小
+ * - 使用SVG图标（1em相对单位便于缩放）
+ * - hover效果通过opacity
+ * - border-radius使其圆形
+ * - cursor: pointer表示可点击
+ */
+.beaver-drawer__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--beaver-drawer-close-btn-size);
+  height: var(--beaver-drawer-close-btn-size);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--beaver-drawer-close-btn-color);
+  font-size: 16px;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+/**
+ * 关闭按钮hover效果
+ * - 背景色变化
+ * - 增强交互反馈
+ */
+.beaver-drawer__close:hover {
+  background-color: #f5f5f5;
+  border-color: #e0e0e0;
+}
+
+/**
+ * 关闭按钮focus效果
+ * - 聚焦时的可访问性提示
+ * - 外围阴影表示焦点
+ */
+.beaver-drawer__close:focus-visible {
+  outline: 2px solid var(--beaver-color-primary);
+  outline-offset: 2px;
+}
+
+/**
+ * 关闭按钮SVG图标样式
+ * - 继承文字颜色
+ * - 宽高为1em（相对于font-size）
+ */
+.beaver-drawer__close svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+
+/* ===== 主体内容样式 ===== */
+/**
+ * Drawer主体内容区域
+ * - flex: 1使其占据所有可用空间
+ * - overflow-y: auto支持内部滚动
+ * - 内边距来自tokens
+ */
+.beaver-drawer__body {
+  flex: 1;
+  padding: var(--beaver-drawer-padding);
+  overflow-y: auto;
+  word-break: break-word;
+}
+
+/**
+ * 主体内容的最后一个元素
+ * - 移除底部margin避免过多间距
+ */
+.beaver-drawer__body > :last-child {
+  margin-bottom: 0;
+}
+
+/* ===== 页脚样式 ===== */
+/**
+ * Drawer页脚容器
+ * - flexbox布局
+ * - 当有内容时显示上边框分隔操作区
+ * - 内边距和间距来自tokens
+ * - 自动换行以支持多个按钮
+ * - 当为空时完全隐藏（不占空间、无边框）
+ */
+.beaver-drawer__footer {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--beaver-space-md);
+  padding: var(--beaver-drawer-padding);
+  padding-top: var(--beaver-drawer-footer-margin-top);
+  border-top: 1px solid #f0f0f0;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/**
+ * 当页脚有内容时才显示
+ */
+.beaver-drawer__footer:not(:empty) {
+  display: flex;
+}
+
+/* ===== 响应式样式 ===== */
+/**
+ * 移动设备适配
+ * - 小屏幕上，Drawer占据更多空间
+ * - 避免内容过窄或过高
+ */
+@media (max-width: 640px) {
+  /**
+   * 水平方向的抽屉在小屏幕上调整
+   * - 左/右方向的抽屉宽度调整为80%
+   */
+  .beaver-drawer--left .beaver-drawer__content,
+  .beaver-drawer--right .beaver-drawer__content {
+    width: 80vw;
+    max-width: 85%;
+  }
+
+  /**
+   * 竖直方向的抽屉在小屏幕上调整
+   * - 上/下方向的抽屉高度调整为60%
+   */
+  .beaver-drawer--top .beaver-drawer__content,
+  .beaver-drawer--bottom .beaver-drawer__content {
+    height: 60vh;
+    max-height: 80%;
+  }
+
+  /**
+   * 小屏幕上的头部和页脚内边距调整
+   */
+  .beaver-drawer__header,
+  .beaver-drawer__body,
+  .beaver-drawer__footer {
+    padding-left: var(--beaver-space-lg);
+    padding-right: var(--beaver-space-lg);
+  }
+}
+
+/* ===== 禁用滚动条样式 ===== */
+/**
+ * 自定义滚动条外观（webkit浏览器）
+ * - 滚动条宽度设置为8px
+ * - 轨道背景透明
+ * - 滑块背景浅灰色
+ */
+.beaver-drawer__body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.beaver-drawer__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.beaver-drawer__body::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+.beaver-drawer__body::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+/* ===== 无遮罩模式 ===== */
+/**
+ * 当mask=false时的样式
+ * - 遮罩不显示
+ * 注：实际隐藏由JavaScript控制
+ */
+.beaver-drawer-wrapper.beaver-drawer--no-mask .beaver-drawer__mask {
+  display: none;
+}

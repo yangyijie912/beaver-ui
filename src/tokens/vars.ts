@@ -156,6 +156,24 @@ export const vars = {
       'description-color': '#666', // popconfirm 描述文字颜色
       'button-gap': '8px', // popconfirm 按钮间距
     },
+    drawer: {
+      width: '360px', // 抽屉默认宽度
+      'border-radius': '4px', // 抽屉圆角
+      padding: '24px', // 抽屉内边距
+      'header-margin-bottom': '16px', // 头部下边距
+      'footer-margin-top': '16px', // 页脚上边距
+      'overlay-bg': 'rgba(0, 0, 0, 0.45)', // 遮罩背景色
+      bg: '#ffffff', // 抽屉背景色
+      'z-index': '9998', // 抽屉层级（低于 modal）
+      'box-shadow': '0 8px 32px rgba(0, 0, 0, 0.12)', // 抽屉阴影
+      'title-font-size': '16px', // 标题字体大小
+      'title-font-weight': '600', // 标题字体粗细
+      'title-color': '#333', // 标题颜色
+      'close-btn-size': '20px', // 关闭按钮大小
+      'close-btn-color': '#666', // 关闭按钮颜色
+      'animation-duration-open': '0.35s', // 打开动画时长
+      'animation-duration-close': '0.25s', // 关闭动画时长
+    },
   },
 };
 

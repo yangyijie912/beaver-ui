@@ -8,6 +8,7 @@ import RadioGroup from '../components/Radio/RadioGroup';
 import Select from '../components/Select/Select';
 import Switch from '../components/Switch/Switch';
 import Modal from '../components/Modal/Modal';
+import Drawer from '../components/Drawer/Drawer';
 import Table, { Column } from '../components/Table/Table';
 import Tooltip from '../components/Tooltip/Tooltip';
 import '../tokens/tokens.css';
@@ -30,6 +31,8 @@ function App() {
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
   const [modalOpen, setModalOpen] = React.useState(false);
   const [modalSize, setModalSize] = React.useState<'small' | 'medium' | 'large'>('medium');
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerPlacement, setDrawerPlacement] = React.useState<'left' | 'right' | 'top' | 'bottom'>('right');
 
   const options = [
     { label: 'Apple', value: 'apple' },
@@ -174,6 +177,55 @@ function App() {
           </ul>
           <p>尝试点击遮罩层或按Escape键来关闭Modal。</p>
         </Modal>
+      </Section>
+
+      <Section title="Drawer">
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div>
+            <label style={{ marginRight: 8 }}>选择方向：</label>
+            <select
+              value={drawerPlacement}
+              onChange={(e) => setDrawerPlacement(e.target.value as any)}
+              style={{ padding: '6px 8px', borderRadius: '4px', border: '1px solid #ccc' }}
+            >
+              <option value="left">左侧</option>
+              <option value="right">右侧</option>
+              <option value="top">顶部</option>
+              <option value="bottom">底部</option>
+            </select>
+          </div>
+          <Button variant="primary" onClick={() => setDrawerOpen(true)}>
+            打开 Drawer
+          </Button>
+        </div>
+        <Drawer
+          open={drawerOpen}
+          placement={drawerPlacement}
+          title="Drawer 演示"
+          onClose={() => setDrawerOpen(false)}
+          footer={
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', width: '100%' }}>
+              <Button variant="ghost" onClick={() => setDrawerOpen(false)}>
+                取消
+              </Button>
+              <Button variant="primary" onClick={() => setDrawerOpen(false)}>
+                确定
+              </Button>
+            </div>
+          }
+        >
+          <p>这是一个Drawer组件演示：</p>
+          <ul>
+            <li>支持从四个方向弹出（左、右、上、下）</li>
+            <li>半透明遮罩层阻挡背景交互</li>
+            <li>平滑的滑入/滑出动画</li>
+            <li>支持点击关闭按钮(X)关闭</li>
+            <li>支持点击遮罩层关闭</li>
+            <li>支持按Escape键关闭</li>
+            <li>内容超过高度自动显示滚动条</li>
+          </ul>
+          <p>选择不同的方向试试看吧！</p>
+        </Drawer>
       </Section>
 
       <Section title="Table — 固定表头与左右固定列示例">

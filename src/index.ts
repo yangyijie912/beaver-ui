@@ -9,6 +9,8 @@ export { default as Pagination } from './components/Pagination/Pagination';
 export { default as Table } from './components/Table/Table';
 export { default as Modal } from './components/Modal/Modal';
 export { ModalHeader, ModalFooter } from './components/Modal/Modal';
+export { default as Drawer } from './components/Drawer/Drawer';
+export { DrawerHeader, DrawerFooter } from './components/Drawer/Drawer';
 export { default as Tooltip } from './components/Tooltip/Tooltip';
 export { default as Popconfirm } from './components/Popconfirm/Popconfirm';
 export * from './tokens';
