@@ -296,11 +296,11 @@ export const NoHeader: Story = {
 };
 
 /**
- * 使用 onOk（不自动关闭）
+ * 使用 onOk
  * 说明：当只传入 `onOk` 且不在 `onOk` 中调用 `onClose` 时，Modal 不会自动关闭。
  */
 export const OnOkDefault: Story = {
-  name: '使用 onOk',
+  name: '确认按钮的回调',
   render: () => {
     const [open, setOpen] = useState(false);
     const [count, setCount] = useState(0);
@@ -354,44 +354,13 @@ export const Interactive: Story = {
               <Button variant="ghost" onClick={() => setOpen(false)} disabled={loading}>
                 取消
               </Button>
-              <Button variant="primary" onClick={handleConfirm} disabled={loading}>
+              <Button variant="primary" onClick={handleConfirm} loading={loading}>
                 {loading ? '处理中...' : '确定删除'}
               </Button>
             </>
           }
         >
           <p>确定要删除这项内容吗？此操作无法撤销。</p>
-        </Modal>
-      </>
-    );
-  },
-};
-
-/**
- * 异步 onOk 示例
- * 说明：onOk 内执行异步操作（比如请求），完成后手动调用 onClose 关闭 Modal。
- */
-export const OnOkAsync: Story = {
-  name: 'onOk 异步操作',
-  render: () => {
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-
-    const handleOk = async () => {
-      setLoading(true);
-      await new Promise((r) => setTimeout(r, 1500));
-      setLoading(false);
-      setOpen(false);
-    };
-
-    return (
-      <>
-        <Button variant="primary" onClick={() => setOpen(true)}>
-          打开Modal
-        </Button>
-        <Modal open={open} title="异步确认" onClose={() => setOpen(false)} onOk={handleOk}>
-          <p>演示在 `onOk` 中执行异步逻辑（如提交表单），完成后调用 `onClose` 关闭。</p>
-          {loading && <p>处理中…</p>}
         </Modal>
       </>
     );
@@ -414,11 +383,11 @@ export const AnimationSlow: Story = {
         `}</style>
 
         <Button variant="primary" onClick={() => setOpen(true)}>
-          打开（慢动作）
+          打开
         </Button>
 
         <Modal open={open} title="慢动作动画" onClose={() => setOpen(false)}>
-          <p>此故事将动画时长延长为 1s，便于观察遮罩的淡入与内容的 scale/opacity 变化。</p>
+          <p>关闭弹框，可以看到动画时长延长为 1s，便于观察遮罩的动画变化。</p>
         </Modal>
       </>
     );
