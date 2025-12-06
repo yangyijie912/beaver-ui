@@ -11,6 +11,7 @@ import Modal from '../components/Modal/Modal';
 import Drawer from '../components/Drawer/Drawer';
 import Table, { Column } from '../components/Table/Table';
 import Tooltip from '../components/Tooltip/Tooltip';
+import Popconfirm from '../components/Popconfirm/Popconfirm';
 import '../tokens/tokens.css';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -68,13 +69,11 @@ function App() {
 
       <Section title="Button">
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <Button variant="primary" onClick={() => alert('Primary clicked')}>
-            Primary
-          </Button>
+          <Button onClick={() => alert('Default clicked')}>Default</Button>
           <Button variant="ghost" onClick={() => alert('Ghost clicked')}>
             Ghost
           </Button>
-          <Button variant="primary" size="small">
+          <Button variant="primary" color="danger" size="small">
             Small
           </Button>
           <Button variant="primary" size="large">
@@ -82,6 +81,9 @@ function App() {
           </Button>
           <Button variant="primary" disabled>
             Disabled
+          </Button>
+          <Button variant="primary" loading>
+            loading
           </Button>
         </div>
       </Section>
@@ -120,7 +122,7 @@ function App() {
       </Section>
 
       <Section title="Select">
-        <div style={{ maxWidth: 360 }}>
+        <div>
           <div style={{ marginBottom: 8 }}>当前值: {selectValue}</div>
           <Select
             options={options}
@@ -136,15 +138,25 @@ function App() {
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
           <div>
             <label style={{ marginRight: 8 }}>选择尺寸：</label>
-            <select
+            <Select
+              options={[
+                {
+                  label: '小 (300px)',
+                  value: 'small',
+                },
+                {
+                  label: '中 (520px)',
+                  value: 'medium',
+                },
+                {
+                  label: '大 (800px)',
+                  value: 'large',
+                },
+              ]}
               value={modalSize}
-              onChange={(e) => setModalSize(e.target.value as any)}
-              style={{ padding: '6px 8px', borderRadius: '4px', border: '1px solid #ccc' }}
-            >
-              <option value="small">小 (300px)</option>
-              <option value="medium">中 (520px)</option>
-              <option value="large">大 (800px)</option>
-            </select>
+              onChange={(e) => setModalSize(e as string as 'small' | 'medium' | 'large')}
+              placeholder="请选择"
+            />
           </div>
           <Button variant="primary" onClick={() => setModalOpen(true)}>
             打开 Modal
@@ -183,16 +195,29 @@ function App() {
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
           <div>
             <label style={{ marginRight: 8 }}>选择方向：</label>
-            <select
+            <Select
+              options={[
+                {
+                  label: '左侧',
+                  value: 'left',
+                },
+                {
+                  label: '右侧',
+                  value: 'right',
+                },
+                {
+                  label: '顶部',
+                  value: 'top',
+                },
+                {
+                  label: '底部',
+                  value: 'bottom',
+                },
+              ]}
               value={drawerPlacement}
-              onChange={(e) => setDrawerPlacement(e.target.value as any)}
-              style={{ padding: '6px 8px', borderRadius: '4px', border: '1px solid #ccc' }}
-            >
-              <option value="left">左侧</option>
-              <option value="right">右侧</option>
-              <option value="top">顶部</option>
-              <option value="bottom">底部</option>
-            </select>
+              onChange={(e) => setDrawerPlacement(e as any)}
+              placeholder="请选择"
+            />
           </div>
           <Button variant="primary" onClick={() => setDrawerOpen(true)}>
             打开 Drawer
@@ -262,6 +287,15 @@ function App() {
               <Button variant="primary">Right</Button>
             </Tooltip>
           </div>
+        </div>
+      </Section>
+
+      {/* Popconfirm演示 */}
+      <Section title="Popconfirm">
+        <div>
+          <Popconfirm title="确定要删除吗？" placement="top">
+            <Button color="danger">删除</Button>
+          </Popconfirm>
         </div>
       </Section>
     </div>

@@ -47,6 +47,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const isTokenColor = color === 'primary' || color === 'danger';
     if (isTokenColor) classList.push(`beaver-button--color-${color}`);
 
+    // 当处于 loading 或 显式 disabled 时，视为不可交互（由 `disabled` 属性控制交互）
+    const isDisabled = Boolean(disabled || loading);
+    // 仅在显式传入 `disabled` 时应用禁用样式类；loading 保持变体/颜色不变，仅添加 loading 专属样式
     if (disabled) classList.push('beaver-button--disabled');
     if (loading) classList.push('beaver-button--loading');
     if (className) classList.push(className);
@@ -89,8 +92,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const buttonType = (restProps as any).type || 'button';
-
-    const isDisabled = Boolean(disabled || loading);
 
     return (
       <button

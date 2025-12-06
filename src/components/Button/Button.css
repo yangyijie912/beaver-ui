@@ -43,23 +43,23 @@
 }
 
 /* hover 样式*/
-.beaver-button--default:not(.beaver-button--disabled):hover {
+.beaver-button--default:not(.beaver-button--disabled):not(.beaver-button--loading):hover {
   /* Hover 时若有自定义颜色会沿用该颜色；否则回退到主题主色 */
   border-color: var(--beaver-button-color, var(--beaver-color-primary, #0eaae0));
   color: var(--beaver-button-color, var(--beaver-color-primary, #0eaae0));
   box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
 }
 
-.beaver-button--primary:not(.beaver-button--disabled):hover {
+.beaver-button--primary:not(.beaver-button--disabled):not(.beaver-button--loading):hover {
   filter: brightness(0.96);
   box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
 }
 
-.beaver-button--ghost:not(.beaver-button--disabled):hover {
+.beaver-button--ghost:not(.beaver-button--disabled):not(.beaver-button--loading):hover {
   border-color: color-mix(in srgb, var(--beaver-button-color, var(--beaver-color-primary)) 80%, black 20%);
 }
 
-.beaver-button--link:not(.beaver-button--disabled):hover {
+.beaver-button--link:not(.beaver-button--disabled):not(.beaver-button--loading):hover {
   text-decoration: underline;
   color: var(--beaver-button-color, var(--beaver-color-primary));
 }
