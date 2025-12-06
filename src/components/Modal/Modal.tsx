@@ -25,6 +25,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     {
       open = false,
       onClose,
+      onOk,
       title,
       width,
       size = 'medium',
@@ -121,7 +122,16 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
                   <Button color="primary" onClick={onClose}>
                     关闭
                   </Button>
-                  <Button variant="primary" onClick={onClose}>
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      if (onOk) {
+                        onOk();
+                      } else if (onClose) {
+                        onClose();
+                      }
+                    }}
+                  >
                     确定
                   </Button>
                 </>

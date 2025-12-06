@@ -296,6 +296,34 @@ export const NoHeader: Story = {
 };
 
 /**
+ * 使用 onOk（不自动关闭）
+ * 说明：当只传入 `onOk` 且不在 `onOk` 中调用 `onClose` 时，Modal 不会自动关闭。
+ */
+export const OnOkDefault: Story = {
+  name: '使用 onOk',
+  render: () => {
+    const [open, setOpen] = useState(false);
+    const [count, setCount] = useState(0);
+
+    const handleOk = () => {
+      setCount((c) => c + 1);
+    };
+
+    return (
+      <>
+        <Button variant="primary" onClick={() => setOpen(true)}>
+          打开Modal
+        </Button>
+        <Modal open={open} title="onOk 示例" onClose={() => setOpen(false)} onOk={handleOk}>
+          <p>点击确认按钮会触发 `onOk`，但不会自动关闭 Modal。</p>
+          <p>点击次数：{count}</p>
+        </Modal>
+      </>
+    );
+  },
+};
+
+/**
  * 交互示例
  */
 export const Interactive: Story = {
@@ -333,6 +361,37 @@ export const Interactive: Story = {
           }
         >
           <p>确定要删除这项内容吗？此操作无法撤销。</p>
+        </Modal>
+      </>
+    );
+  },
+};
+
+/**
+ * 异步 onOk 示例
+ * 说明：onOk 内执行异步操作（比如请求），完成后手动调用 onClose 关闭 Modal。
+ */
+export const OnOkAsync: Story = {
+  name: 'onOk 异步操作',
+  render: () => {
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const handleOk = async () => {
+      setLoading(true);
+      await new Promise((r) => setTimeout(r, 1500));
+      setLoading(false);
+      setOpen(false);
+    };
+
+    return (
+      <>
+        <Button variant="primary" onClick={() => setOpen(true)}>
+          打开Modal
+        </Button>
+        <Modal open={open} title="异步确认" onClose={() => setOpen(false)} onOk={handleOk}>
+          <p>演示在 `onOk` 中执行异步逻辑（如提交表单），完成后调用 `onClose` 关闭。</p>
+          {loading && <p>处理中…</p>}
         </Modal>
       </>
     );
