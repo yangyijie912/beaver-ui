@@ -40,13 +40,15 @@
 
 **当前实现的组件有：**
 
-Button  
-Checkbox  
-Input  
-Radio  
-Select  
-Switch  
-Pagination  
-Table
+`Button`  
+`Checkbox`  
+`Input`  
+`Radio`  
+`Select`  
+`Switch`  
+`Pagination`  
+`Table`  
+`Modal`  
+`Tooltip`
 
 正在更新中......

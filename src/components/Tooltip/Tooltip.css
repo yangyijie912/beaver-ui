@@ -1,0 +1,71 @@
+.beaver-tooltip {
+  display: inline-block;
+}
+
+/* 使用 fixed 定位（通过 JS 计算 left/top 并写入 style），以便在 portal 模式下不被父容器裁切 */
+.beaver-tooltip__content {
+  position: fixed;
+  white-space: normal;
+  display: inline-block;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+  z-index: var(--beaver-components-tooltip-z-index, 4000);
+  max-width: var(--beaver-components-tooltip-max-width, 280px);
+}
+
+.beaver-tooltip__content[data-state='visible'] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.beaver-tooltip__inner {
+  background: var(--beaver-components-tooltip-bg, rgba(0, 0, 0, 0.85));
+  color: var(--beaver-components-tooltip-color, #fff);
+  padding: var(--beaver-components-tooltip-padding, 6px 10px);
+  border-radius: var(--beaver-components-tooltip-border-radius, 4px);
+  font-size: var(--beaver-components-tooltip-font-size, 12px);
+  box-shadow: var(--beaver-components-tooltip-box-shadow, 0 6px 18px rgba(20, 30, 50, 0.2));
+  text-align: center;
+  line-height: 1;
+  pointer-events: auto;
+}
+
+/* 箭头：相对于 tooltip content 定位 */
+.beaver-tooltip__arrow {
+  width: 8px;
+  height: 8px;
+  background: var(--beaver-components-tooltip-bg, rgba(0, 0, 0, 0.85));
+  position: absolute;
+  transform: rotate(45deg);
+}
+
+/* 根据 placement 放置箭头 */
+.beaver-tooltip__content[data-placement='top'] .beaver-tooltip__arrow {
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  bottom: -4px;
+}
+.beaver-tooltip__content[data-placement='bottom'] .beaver-tooltip__arrow {
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  top: -4px;
+}
+.beaver-tooltip__content[data-placement='left'] .beaver-tooltip__arrow {
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+.beaver-tooltip__content[data-placement='right'] .beaver-tooltip__arrow {
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.beaver-tooltip__trigger {
+  display: inline-flex;
+}

@@ -92,4 +92,13 @@
   --beaver-modal-title-color: #333;
   --beaver-modal-close-btn-size: 24px;
   --beaver-modal-close-btn-color: #666;
+  --beaver-tooltip-bg: rgba(0, 0, 0, 0.85);
+  --beaver-tooltip-color: #ffffff;
+  --beaver-tooltip-padding: 6px 10px;
+  --beaver-tooltip-font-size: 12px;
+  --beaver-tooltip-border-radius: 4px;
+  --beaver-tooltip-gap: 8px;
+  --beaver-tooltip-z-index: 4000;
+  --beaver-tooltip-box-shadow: 0 6px 18px rgba(20,30,50,0.2);
+  --beaver-tooltip-max-width: 280px;
 }

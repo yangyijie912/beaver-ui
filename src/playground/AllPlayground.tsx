@@ -9,6 +9,7 @@ import Select from '../components/Select/Select';
 import Switch from '../components/Switch/Switch';
 import Modal from '../components/Modal/Modal';
 import Table, { Column } from '../components/Table/Table';
+import Tooltip from '../components/Tooltip/Tooltip';
 import '../tokens/tokens.css';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -179,6 +180,24 @@ function App() {
             fixedRightCount={1} // 固定最后一列
           />
           <div style={{ marginTop: 8 }}>已选择: {selectedKeys.join(', ') || '无'}</div>
+        </div>
+      </Section>
+
+      <Section title="Tooltip">
+        <div>
+          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+            <Tooltip content="这是左侧提示" placement="left">
+              <Button>Left</Button>
+            </Tooltip>
+
+            <Tooltip content="这是中间提示" placement="top">
+              <Button>Center</Button>
+            </Tooltip>
+
+            <Tooltip content="这是右侧提示" placement="right">
+              <Button>Right</Button>
+            </Tooltip>
+          </div>
         </div>
       </Section>
     </div>

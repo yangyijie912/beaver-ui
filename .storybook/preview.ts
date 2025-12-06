@@ -18,7 +18,7 @@ const preview: Preview = {
         // 未列出的项会在这些项之后按字母顺序显示。
         order: [
           'Components',
-          ['Button', 'Checkbox', 'Radio', 'Switch', 'Input', 'Select', 'Pagination', 'Table', 'Modal'],
+          ['Button', 'Checkbox', 'Radio', 'Switch', 'Input', 'Select', 'Pagination', 'Table', 'Modal', 'Tooltip'],
         ],
       },
     },

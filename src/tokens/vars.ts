@@ -128,6 +128,17 @@ export const vars = {
       'close-btn-size': '24px', // 关闭按钮大小
       'close-btn-color': '#666', // 关闭按钮颜色
     },
+    tooltip: {
+      bg: 'rgba(0, 0, 0, 0.85)', // tooltip 背景色
+      color: '#ffffff', // tooltip 文字颜色
+      padding: '6px 10px', // tooltip 内边距
+      'font-size': '12px', // tooltip 字体大小
+      'border-radius': '4px', // tooltip 圆角
+      gap: '8px', // tooltip 箭头与触发元素的间距
+      'z-index': '4000', // tooltip 层级
+      'box-shadow': '0 6px 18px rgba(20,30,50,0.2)', // tooltip 阴影
+      'max-width': '280px', // 最大宽度
+    },
   },
 };
 
