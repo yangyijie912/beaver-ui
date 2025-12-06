@@ -10,6 +10,7 @@ export { default as Table } from './components/Table/Table';
 export { default as Modal } from './components/Modal/Modal';
 export { ModalHeader, ModalFooter } from './components/Modal/Modal';
 export { default as Tooltip } from './components/Tooltip/Tooltip';
+export { default as Popconfirm } from './components/Popconfirm/Popconfirm';
 export * from './tokens';
 
 // 导入生成的 tokens CSS（由 `npm run gen:tokens` 生成为 `src/tokens/tokens.css`）

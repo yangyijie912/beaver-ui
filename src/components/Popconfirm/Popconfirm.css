@@ -1,0 +1,223 @@
+/**
+ * Popconfirm 组件样式
+ * 使用全局 tokens 变量进行样式定义
+ */
+
+/* Popconfirm 容器 - 使用 Portal 渲染到 DOM */
+.beaver-popconfirm-portal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--beaver-popconfirm-z-index);
+  pointer-events: none;
+}
+
+/* 遮罩 - 当 showMask 为 true 时显示 */
+.beaver-popconfirm__mask {
+  position: fixed;
+  inset: 0;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.beaver-popconfirm__mask.beaver-popconfirm--show-mask {
+  background-color: rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+
+/* Popconfirm 内容包装器 - 相对于视口定位 */
+.beaver-popconfirm-wrapper {
+  position: fixed;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* Popconfirm 内容区域 */
+.beaver-popconfirm__content {
+  position: relative;
+  background-color: var(--beaver-popconfirm-bg);
+  border: 1px solid var(--beaver-popconfirm-border-color);
+  border-radius: var(--beaver-popconfirm-border-radius);
+  box-shadow: var(--beaver-popconfirm-box-shadow);
+  padding: var(--beaver-popconfirm-padding);
+  animation: popconfirmFadeIn 0.3s ease-out;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+/* Popconfirm 箭头指示器 */
+.beaver-popconfirm__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  pointer-events: none;
+}
+
+/* 顶部箭头 */
+.beaver-popconfirm-wrapper.beaver-popconfirm--top .beaver-popconfirm__arrow {
+  bottom: -8px;
+  left: calc(50% + var(--arrow-offset));
+  transform: translateX(-50%);
+  border-width: 8px 8px 0 8px;
+  border-color: var(--beaver-popconfirm-bg) transparent transparent transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+/* 底部箭头 */
+.beaver-popconfirm-wrapper.beaver-popconfirm--bottom .beaver-popconfirm__arrow {
+  top: -8px;
+  left: calc(50% + var(--arrow-offset));
+  transform: translateX(-50%);
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent var(--beaver-popconfirm-bg) transparent;
+  filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.08));
+}
+
+/* 左侧箭头 */
+.beaver-popconfirm-wrapper.beaver-popconfirm--left .beaver-popconfirm__arrow {
+  right: -8px;
+  top: calc(50% + var(--arrow-offset));
+  transform: translateY(-50%);
+  border-width: 8px 0 8px 8px;
+  border-color: transparent transparent transparent var(--beaver-popconfirm-bg);
+  filter: drop-shadow(2px 0 4px rgba(0, 0, 0, 0.08));
+}
+
+/* 右侧箭头 */
+.beaver-popconfirm-wrapper.beaver-popconfirm--right .beaver-popconfirm__arrow {
+  left: -8px;
+  top: calc(50% + var(--arrow-offset));
+  transform: translateY(-50%);
+  border-width: 8px 8px 8px 0;
+  border-color: transparent var(--beaver-popconfirm-bg) transparent transparent;
+  filter: drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.08));
+}
+
+/* Popconfirm 标题 */
+.beaver-popconfirm__title {
+  font-size: var(--beaver-popconfirm-title-font-size);
+  font-weight: var(--beaver-popconfirm-title-font-weight);
+  color: var(--beaver-popconfirm-title-color);
+  margin: 0;
+  margin-bottom: 4px;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Popconfirm 描述文本 */
+.beaver-popconfirm__description {
+  font-size: var(--beaver-popconfirm-description-font-size);
+  color: var(--beaver-popconfirm-description-color);
+  margin: 0;
+  margin-bottom: var(--beaver-popconfirm-padding);
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* 当没有描述文本时，标题的下边距 */
+.beaver-popconfirm__title:last-child {
+  margin-bottom: var(--beaver-popconfirm-padding);
+}
+
+/* Popconfirm 操作按钮区域 */
+.beaver-popconfirm__actions {
+  display: flex;
+  gap: var(--beaver-popconfirm-button-gap);
+  justify-content: flex-end;
+}
+
+/* 确认和取消按钮 */
+.beaver-popconfirm__ok,
+.beaver-popconfirm__cancel {
+  font-size: var(--beaver-font-size-sm);
+  padding: var(--beaver-space-xs2) var(--beaver-space-md);
+  border-radius: var(--beaver-radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* 确认按钮 - primary 变体 */
+.beaver-popconfirm__ok {
+  background-color: var(--beaver-color-primary);
+  color: var(--beaver-color-on-primary);
+}
+
+.beaver-popconfirm__ok:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.beaver-popconfirm__ok:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+.beaver-popconfirm__ok:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.beaver-popconfirm__ok.beaver-popconfirm--ok-loading {
+  position: relative;
+  color: transparent;
+}
+
+.beaver-popconfirm__ok.beaver-popconfirm--ok-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border: 2px solid transparent;
+  border-top-color: var(--beaver-color-on-primary);
+  border-right-color: var(--beaver-color-on-primary);
+  border-radius: 50%;
+  animation: popconfirmSpinner 0.6s linear infinite;
+}
+
+/* 取消按钮 - ghost 变体 */
+.beaver-popconfirm__cancel {
+  background-color: #f5f5f5;
+  color: var(--beaver-color-text);
+  border: 1px solid #d9d9d9;
+}
+
+.beaver-popconfirm__cancel:hover:not(:disabled) {
+  background-color: #eeeeee;
+  border-color: #b3b3b3;
+}
+
+.beaver-popconfirm__cancel:active:not(:disabled) {
+  background-color: #e6e6e6;
+  border-color: #8c8c8c;
+}
+
+.beaver-popconfirm__cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 加载旋转动画 */
+@keyframes popconfirmSpinner {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Popconfirm 淡入动画 */
+@keyframes popconfirmFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -139,6 +139,21 @@ export const vars = {
       'box-shadow': '0 6px 18px rgba(20,30,50,0.2)', // tooltip 阴影
       'max-width': '280px', // 最大宽度
     },
+    popconfirm: {
+      bg: '#ffffff', // popconfirm 背景色
+      'border-color': '#e8e8e8', // popconfirm 边框颜色
+      'border-radius': '6px', // popconfirm 圆角
+      'box-shadow': '0 6px 18px rgba(20, 30, 50, 0.2)', // popconfirm 阴影
+      padding: '12px 16px', // popconfirm 内边距
+      gap: '8px', // popconfirm 箭头与触发元素的间距
+      'z-index': '4001', // popconfirm 层级（高于 tooltip）
+      'title-font-size': '14px', // popconfirm 标题字体大小
+      'title-font-weight': '500', // popconfirm 标题字体粗细
+      'title-color': '#333', // popconfirm 标题颜色
+      'description-font-size': '12px', // popconfirm 描述文字字体大小
+      'description-color': '#666', // popconfirm 描述文字颜色
+      'button-gap': '8px', // popconfirm 按钮间距
+    },
   },
 };
 

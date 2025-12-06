@@ -101,4 +101,17 @@
   --beaver-tooltip-z-index: 4000;
   --beaver-tooltip-box-shadow: 0 6px 18px rgba(20,30,50,0.2);
   --beaver-tooltip-max-width: 280px;
+  --beaver-popconfirm-bg: #ffffff;
+  --beaver-popconfirm-border-color: #e8e8e8;
+  --beaver-popconfirm-border-radius: 6px;
+  --beaver-popconfirm-box-shadow: 0 6px 18px rgba(20, 30, 50, 0.2);
+  --beaver-popconfirm-padding: 12px 16px;
+  --beaver-popconfirm-gap: 8px;
+  --beaver-popconfirm-z-index: 4001;
+  --beaver-popconfirm-title-font-size: 14px;
+  --beaver-popconfirm-title-font-weight: 500;
+  --beaver-popconfirm-title-color: #333;
+  --beaver-popconfirm-description-font-size: 12px;
+  --beaver-popconfirm-description-color: #666;
+  --beaver-popconfirm-button-gap: 8px;
 }

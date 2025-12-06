@@ -40,15 +40,16 @@
 
 **当前实现的组件有：**
 
-`Button`  
-`Checkbox`  
-`Input`  
-`Radio`  
-`Select`  
-`Switch`  
-`Pagination`  
-`Table`  
-`Modal`  
-`Tooltip`
+`Button` - 按钮  
+`Checkbox` - 复选框  
+`Input` - 输入框  
+`Radio` - 单选框  
+`Select` - 下拉选择框  
+`Switch` - 开关  
+`Pagination` - 分页  
+`Table` - 表格  
+`Modal` - 模态框  
+`Tooltip` - 文字提示组件  
+`Popconfirm` - 弹出式确认框
 
 正在更新中......
