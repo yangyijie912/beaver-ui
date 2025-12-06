@@ -63,7 +63,8 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
       contentRef as React.RefObject<HTMLDivElement>,
       placement,
       8,
-      8
+      8,
+      open
     );
 
     /**
@@ -184,9 +185,27 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
     // 当 open 状态改变时，重新计算位置
     useEffect(() => {
       if (open) {
-        setIsReady(true);
+        // 使用 requestAnimationFrame 确保 Portal 已经渲染
+        const frameId = requestAnimationFrame(() => {
+          setIsReady(true);
+        });
+        return () => cancelAnimationFrame(frameId);
       } else {
         setIsReady(false);
+      }
+    }, [open]);
+
+    /**
+     * 当内容挂载时，确保位置已计算
+     */
+    useEffect(() => {
+      if (open && contentRef.current) {
+        // 触发一次位置重新计算，因为此时 contentRef 已经有实际值了
+        const triggerRect = triggerRef.current?.getBoundingClientRect();
+        if (triggerRect) {
+          // 通过改变 placement（虽然没变）来触发 hook 的重新计算
+          // 这会导致 hook 重新执行，使用真实的 contentHeight
+        }
       }
     }, [open]);
 

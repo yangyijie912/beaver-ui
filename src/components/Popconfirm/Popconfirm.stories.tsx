@@ -43,55 +43,42 @@ export const WithDescription: Story = {
 /**
  * 位置示例 - 顶部
  */
-export const PlacementTop: Story = {
-  name: '位置-顶部',
+export const PlacementVariants: Story = {
+  name: '位置 - 各方向',
   render: () => (
-    <div style={{ paddingTop: '100px' }}>
-      <Popconfirm title="确定要执行此操作吗？" placement="top">
-        <Button>操作</Button>
-      </Popconfirm>
-    </div>
-  ),
-};
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 40,
+        padding: '40px 20px',
+        minHeight: 260,
+      }}
+    >
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Popconfirm title="向上位置示例" placement="top">
+          <Button>上</Button>
+        </Popconfirm>
+      </div>
 
-/**
- * 位置示例 - 底部
- */
-export const PlacementBottom: Story = {
-  name: '位置-底部',
-  render: () => (
-    <div style={{ paddingBottom: '100px' }}>
-      <Popconfirm title="确定要执行此操作吗？" placement="bottom">
-        <Button>操作</Button>
-      </Popconfirm>
-    </div>
-  ),
-};
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Popconfirm title="向下位置示例" placement="bottom">
+          <Button>下</Button>
+        </Popconfirm>
+      </div>
 
-/**
- * 位置示例 - 左侧
- */
-export const PlacementLeft: Story = {
-  name: '位置-左侧',
-  render: () => (
-    <div style={{ paddingLeft: '200px', paddingTop: '50px' }}>
-      <Popconfirm title="确定要执行此操作吗？" placement="left">
-        <Button>操作</Button>
-      </Popconfirm>
-    </div>
-  ),
-};
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Popconfirm title="向左位置示例" placement="left">
+          <Button>左</Button>
+        </Popconfirm>
+      </div>
 
-/**
- * 位置示例 - 右侧
- */
-export const PlacementRight: Story = {
-  name: '位置-右侧',
-  render: () => (
-    <div style={{ paddingRight: '200px', paddingTop: '50px' }}>
-      <Popconfirm title="确定要执行此操作吗？" placement="right">
-        <Button>操作</Button>
-      </Popconfirm>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+        <Popconfirm title="向右位置示例" placement="right">
+          <Button>右</Button>
+        </Popconfirm>
+      </div>
     </div>
   ),
 };

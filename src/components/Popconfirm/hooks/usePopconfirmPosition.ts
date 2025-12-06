@@ -18,7 +18,8 @@ export const usePopconfirmPosition = (
   contentRef: React.RefObject<HTMLDivElement>,
   placement: string = 'top',
   gap: number = 8,
-  arrowSize: number = 8
+  _arrowSize: number = 8,
+  _open: boolean = true
 ): PositionResult => {
   const [position, setPosition] = useState<PositionResult>({ top: 0, left: 0, arrowOffset: 0 });
 
@@ -28,7 +29,11 @@ export const usePopconfirmPosition = (
     }
 
     const calculatePosition = () => {
-      const triggerRect = triggerRef.current!.getBoundingClientRect();
+      if (!triggerRef.current) {
+        return;
+      }
+
+      const triggerRect = triggerRef.current.getBoundingClientRect();
 
       // 如果内容还未挂载，使用默认尺寸进行初步计算
       const contentWidth = contentRef.current?.offsetWidth || 250;
@@ -78,10 +83,6 @@ export const usePopconfirmPosition = (
         adjustedTop = viewportHeight - contentHeight - 8;
       }
 
-      // 计算滚动偏移
-      const scrollX = window.scrollX || document.documentElement.scrollLeft;
-      const scrollY = window.scrollY || document.documentElement.scrollTop;
-
       // 计算箭头偏移 - 对于上下方向，计算水平偏移；对于左右方向，计算垂直偏移
       let arrowOffset = 0;
       const triggerCenterX = triggerRect.left + triggerWidth / 2;
@@ -102,8 +103,8 @@ export const usePopconfirmPosition = (
       }
 
       setPosition({
-        top: adjustedTop + scrollY,
-        left: adjustedLeft + scrollX,
+        top: adjustedTop,
+        left: adjustedLeft,
         arrowOffset,
       });
     };
@@ -111,7 +112,19 @@ export const usePopconfirmPosition = (
     // 立即计算一次
     calculatePosition();
 
-    // 监听窗口调整大小事件
+    // 使用 ResizeObserver 监听内容大小变化
+    let resizeObserver: ResizeObserver | null = null;
+    if (contentRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        calculatePosition();
+      });
+      resizeObserver.observe(contentRef.current);
+    }
+
+    // 延迟后再计算一次，确保内容已经渲染
+    const timeoutId = setTimeout(calculatePosition, 0);
+
+    // 监听窗口调整大小和滚动事件
     const resizeListener = calculatePosition;
     const scrollListener = calculatePosition;
 
@@ -119,10 +132,12 @@ export const usePopconfirmPosition = (
     window.addEventListener('scroll', scrollListener);
 
     return () => {
+      clearTimeout(timeoutId);
       window.removeEventListener('resize', resizeListener);
       window.removeEventListener('scroll', scrollListener);
+      resizeObserver?.disconnect();
     };
-  }, [triggerRef, contentRef, placement, gap, arrowSize]);
+  }, [triggerRef, contentRef, placement, gap, _open]);
 
   return position;
 };
