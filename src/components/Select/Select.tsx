@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import useSelectState from './hooks/useSelectState';
 import useFilteredOptions, { SelectOptionWithNew } from './hooks/useFilteredOptions';
 import useKeyboardNavigation from './hooks/useKeyboardNavigation';
@@ -63,6 +64,29 @@ const Select: React.FC<SelectProps> = ({
 
   const { handleBackspace, handleChar } = useTypeahead(700, userTypedRef);
 
+  // 下拉菜单宽度（与触发器保持一致）
+  const [menuWidth, setMenuWidth] = useState<number | null>(null);
+
+  // 菜单宽度在打开前测量（避免打开时内容撑开触发器）
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    if (open && menuWidth !== null && width === undefined) {
+      el.style.setProperty('width', `${menuWidth}px`);
+      el.style.setProperty('box-sizing', 'border-box');
+    }
+    if (!open && width === undefined) {
+      el.style.removeProperty('width');
+      el.style.removeProperty('box-sizing');
+    }
+    return () => {
+      if (width === undefined) {
+        el.style.removeProperty('width');
+        el.style.removeProperty('box-sizing');
+      }
+    };
+  }, [open, menuWidth, width]);
+
   // 点击外部关闭下拉
   useEffect(() => {
     function onDoc(e: MouseEvent) {
@@ -74,6 +98,18 @@ const Select: React.FC<SelectProps> = ({
     return () => {
       document.removeEventListener('mousedown', onDoc);
     };
+  }, [open]);
+
+  // 当下拉打开时，在窗口 resize 时更新 menuWidth（初始值由 toggleOpen 在打开前设置）
+  useEffect(() => {
+    if (!open) return;
+    function onResize() {
+      const el = rootRef.current;
+      if (!el) return;
+      setMenuWidth(el.getBoundingClientRect().width);
+    }
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, [open]);
 
   // 过滤 & 展示逻辑抽离到 hook
@@ -140,7 +176,25 @@ const Select: React.FC<SelectProps> = ({
   // 切换下拉打开状态
   function toggleOpen() {
     if (isDisabled) return;
-    setOpen(!open);
+    // 如果要打开，先测量当前触发器宽度（在未被 open 内容影响时测量），再打开
+    if (!open) {
+      const el = rootRef.current;
+      if (el) {
+        const beforeW = el.getBoundingClientRect().width;
+        setMenuWidth(beforeW);
+      }
+      setOpen(true);
+      // measure shortly after open to detect if something expands the trigger
+      setTimeout(() => {
+        const el2 = rootRef.current;
+        if (el2) {
+          // touchpoint for future diagnostics (no-op in production)
+          void el2.getBoundingClientRect().width;
+        }
+      }, 0);
+    } else {
+      setOpen(false);
+    }
   }
 
   // 处理选中项
@@ -416,18 +470,42 @@ const Select: React.FC<SelectProps> = ({
       </div>
 
       {/* 下拉菜单 */}
-      {open && (
-        <OptionList
-          menuOptions={menuOptions}
-          highlighted={highlighted}
-          internalValue={internalValue}
-          onHighlight={(i) => setHighlighted(i)}
-          onSelectByValue={(v) => handleSelectByValue(v)}
-          renderHighlightedLabel={(label) => renderHighlightedLabel(label, query)}
-          noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
-          listRef={listRef}
-        />
-      )}
+      {open &&
+        (() => {
+          const el = rootRef.current;
+          let menuStyle: React.CSSProperties | undefined = undefined;
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            const left = rect.left + window.scrollX;
+            const top = rect.bottom + window.scrollY;
+            const vwRemaining = Math.max(window.innerWidth - rect.left - 16, 0);
+            menuStyle = {
+              position: 'absolute',
+              left: `${left}px`,
+              top: `${top}px`,
+              // override stylesheet's `width: 100%` by setting inline width to `auto`
+              width: 'auto',
+              minWidth: menuWidth ? `${menuWidth}px` : undefined,
+              maxWidth: `${vwRemaining}px`,
+              boxSizing: 'border-box',
+              zIndex: 9999,
+            };
+          }
+          return createPortal(
+            <OptionList
+              menuOptions={menuOptions}
+              highlighted={highlighted}
+              internalValue={internalValue}
+              onHighlight={(i) => setHighlighted(i)}
+              onSelectByValue={(v) => handleSelectByValue(v)}
+              renderHighlightedLabel={(label) => renderHighlightedLabel(label, query)}
+              noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
+              listRef={listRef}
+              menuStyle={menuStyle}
+            />,
+            document.body
+          );
+        })()}
 
       {/* 隐藏的原生 select，用于保持表单兼容性 */}
       {multiple === true ? (

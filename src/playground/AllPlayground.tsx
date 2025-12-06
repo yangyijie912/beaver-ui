@@ -24,7 +24,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function App() {
-  const [selectValue, setSelectValue] = React.useState('banana');
+  const [selectValue, setSelectValue] = React.useState('');
   const [checked, setChecked] = React.useState(true);
   const [text, setText] = React.useState('Hello');
   const [radioVal, setRadioVal] = React.useState<string | number>('a');

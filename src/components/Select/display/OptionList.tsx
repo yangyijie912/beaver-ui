@@ -26,6 +26,10 @@ export type OptionListProps = {
    * 可选的 ul ref，供父组件（Select）聚焦或滚动使用
    */
   listRef?: React.Ref<HTMLUListElement>;
+  /**
+   * 可选的样式，用于父组件传入动态宽度（例如与触发器宽度保持一致）
+   */
+  menuStyle?: React.CSSProperties;
 };
 
 const OptionList: React.FC<OptionListProps> = ({
@@ -37,11 +41,13 @@ const OptionList: React.FC<OptionListProps> = ({
   renderHighlightedLabel,
   noDataLabel,
   listRef,
+  menuStyle,
 }) => {
   return (
     <ul
       role="listbox"
       className="beaver-select__menu"
+      style={menuStyle}
       ref={listRef}
       tabIndex={-1}
       aria-activedescendant={highlighted !== null ? `beaver-select-opt-${highlighted}` : undefined}
