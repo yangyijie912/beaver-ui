@@ -15,15 +15,8 @@
   background-color: var(--beaver-color-surface, #fff);
   /* 优先使用 --beaver-button-color（由组件在有效 color 时设置），否则回退到常规文本/边框色 */
   color: var(--beaver-button-color, var(--beaver-color-text, #111827));
-  border: 1px solid var(--beaver-button-color, var(--beaver-border-color, #e6e6e6));
+  border: 1px solid var(--beaver-color-border, #bdbdbd);
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
-}
-
-.beaver-button--default:hover {
-  /* Hover 时若有自定义颜色会沿用该颜色；否则回退到主题主色 */
-  border-color: var(--beaver-button-color, var(--beaver-color-primary, #0eaae0));
-  color: var(--beaver-button-color, var(--beaver-color-primary, #0eaae0));
-  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
 }
 
 /* 变体：支持通过 --beaver-button-color 自定义颜色  */
@@ -46,6 +39,28 @@
   background: transparent;
   border: none;
   padding: 0;
+  color: var(--beaver-button-color, var(--beaver-color-primary));
+}
+
+/* hover 样式*/
+.beaver-button--default:not(.beaver-button--disabled):hover {
+  /* Hover 时若有自定义颜色会沿用该颜色；否则回退到主题主色 */
+  border-color: var(--beaver-button-color, var(--beaver-color-primary, #0eaae0));
+  color: var(--beaver-button-color, var(--beaver-color-primary, #0eaae0));
+  box-shadow: 0 2px 6px rgba(16, 24, 40, 0.06);
+}
+
+.beaver-button--primary:not(.beaver-button--disabled):hover {
+  filter: brightness(0.96);
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.08);
+}
+
+.beaver-button--ghost:not(.beaver-button--disabled):hover {
+  border-color: color-mix(in srgb, var(--beaver-button-color, var(--beaver-color-primary)) 80%, black 20%);
+}
+
+.beaver-button--link:not(.beaver-button--disabled):hover {
+  text-decoration: underline;
   color: var(--beaver-button-color, var(--beaver-color-primary));
 }
 
