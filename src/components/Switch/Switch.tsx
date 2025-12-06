@@ -28,9 +28,12 @@ export interface SwitchProps {
 }
 
 /**
- * Switch 组件（支持受控与非受控两种用法）
- * - 受控模式：传入 `checked`，组件不维护自己的状态，完全由外部控制；
- * - 非受控模式：不传 `checked`，通过 `defaultChecked` 初始化内部状态并在内部维护。
+ * Switch 组件
+ * - 使用场景：在两种状态之间切换（如开/关、启用/禁用）
+ * - 支持自定义尺寸（小/中/大）
+ * - 支持禁用和加载状态
+ * - 支持受控和非受控模式
+ * - 支持在开关上显示自定义标签
  */
 const Switch = forwardRef<HTMLButtonElement, SwitchProps>((props, ref) => {
   const {

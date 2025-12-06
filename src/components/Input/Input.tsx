@@ -11,6 +11,14 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   width?: number | string;
 };
 
+/**
+ * Input 组件
+ * - 使用场景：接收用户的文本输入
+ * - 支持多行文本输入（textarea）
+ * - 支持输入校验状态（错误、成功）
+ * - 支持禁用状态
+ * - 支持自定义宽度
+ */
 const Input = React.forwardRef<HTMLElement, InputProps>(
   ({ className, validation = 'none', textarea, rows = 3, resize = 'none', disabled, width, ...props }, ref) => {
     const classList = ['beaver-input'];

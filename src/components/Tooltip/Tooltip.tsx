@@ -16,13 +16,12 @@ export interface TooltipProps {
 }
 
 /**
- * Tooltip 组件（改进版）
- *
- * - 使用 JS 事件（mouseenter/focus）控制可见性，并用 `createPortal` 将提示渲染到 `document.body`，
- *   避免在 Storybook 或其他有 overflow:hidden 的容器中被裁切。
- * - 简单实现四个方向定位（top/bottom/left/right），通过读取触发元素的 bounding rect
- *   计算固定定位（position: fixed）的坐标；这可作为轻量替代 Popper/Floating
- * - 有详细中文注释，便于后续扩展（如添加 offset、delay、自动翻转）
+ * Tooltip 组件
+ * - 使用场景：为元素提供简洁的文字提示信息
+ * - 支持多种位置（上/下/左/右）
+ * - 支持 React 节点内容
+ * - 支持 portal 渲染，避免裁切问题
+ * - 支持内容为空时不显示 Tooltip
  */
 const Tooltip: React.FC<TooltipProps> = ({ content, placement = 'top', children, portal = true }) => {
   const id = useId();

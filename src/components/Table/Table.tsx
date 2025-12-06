@@ -8,16 +8,19 @@ import { Props } from './types';
 import { useWrapSize, useScrollState } from './hooks/useTableLayout';
 import useColumnWidths from './hooks/useColumnWidths';
 
-/**
- * Table 组件（主入口）
- *
- * - 通过使用自定义 hooks 与子组件来减小文件体积：`useColumnWidths` / `useTableLayout` / `TableHeader` / `TableBody`
- * - 保持外部 API 不变（因此在文件顶部 re-export types）
- * - 处理受控/非受控选择、粘性列、固定表头、合并单元格等交互逻辑
- */
 // 兼容旧的导入方式：`import Table, { Column } from './Table'`
 export type { Column, Row } from './types';
 
+/**
+ * Table 组件
+ *
+ * - 使用场景：展示和操作结构化数据的表格
+ * - 支持可选的多选框列，便于选择多行数据
+ * - 支持受控和非受控的行选择状态管理
+ * - 支持固定表头和固定列，提升大数据量表格的可用性
+ * - 支持自定义单元格渲染，满足复杂展示需求
+ * - 支持边框样式和空状态展示
+ */
 const Table: React.FC<Props> = ({
   columns,
   data,

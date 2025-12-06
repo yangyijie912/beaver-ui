@@ -13,6 +13,14 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: React.ReactNode;
 };
 
+/**
+ * Button 组件
+ * - 使用场景：触发用户操作或事件
+ * - 支持样式变体（主要、幽灵）
+ * - 支持不同尺寸（小、中、大）
+ * - 支持禁用状态
+ * - 支持自定义内容（文本、图标等）
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ children, className, variant = 'primary', size = 'medium', disabled, ...props }, ref) => {
     const classList = ['beaver-button'];
