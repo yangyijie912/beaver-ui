@@ -12,6 +12,8 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** 颜色：'primary' | 'danger' 或任意 CSS 颜色字符串（如 'red' / '#333'） */
   color?: 'primary' | 'danger' | string;
   size?: 'small' | 'medium' | 'large';
+  /** 加载状态，会显示 spinner 且自动禁用按钮 */
+  loading?: boolean;
   children?: React.ReactNode;
 };
 
@@ -21,11 +23,23 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
  * - 支持样式变体（主要、幽灵、链接）
  * - 支持不同尺寸（小、中、大）
  * - 支持颜色变体（主色、危险色）
- * - 支持禁用状态
+ * - 支持禁用状态和加载状态
  * - 支持自定义内容（文本、图标等）
  */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, className, variant = 'default', color = undefined, size = 'medium', disabled, ...props }, ref) => {
+  (
+    {
+      children,
+      className,
+      variant = 'default',
+      color = undefined,
+      size = 'medium',
+      disabled,
+      loading = false,
+      ...props
+    },
+    ref
+  ) => {
     const classList = ['beaver-button'];
     classList.push(`beaver-button--${variant}`);
 
@@ -34,6 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (isTokenColor) classList.push(`beaver-button--color-${color}`);
 
     if (disabled) classList.push('beaver-button--disabled');
+    if (loading) classList.push('beaver-button--loading');
     if (className) classList.push(className);
 
     // 合并样式：尺寸样式 -> 传入的 props.style -> 用于任意颜色的自定义 CSS 变量
@@ -75,15 +90,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const buttonType = (restProps as any).type || 'button';
 
+    const isDisabled = Boolean(disabled || loading);
+
     return (
       <button
         ref={ref}
         type={buttonType}
         className={classList.join(' ')}
-        disabled={disabled}
+        disabled={isDisabled}
+        aria-busy={loading}
         style={finalStyle}
         {...(restProps as any)}
       >
+        {loading && <span className="beaver-button__spinner" aria-hidden="true" />}
         {children}
       </button>
     );

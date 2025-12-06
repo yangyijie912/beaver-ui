@@ -86,3 +86,34 @@
   color: var(--beaver-color-disabled, #bdbdbd);
   border-color: var(--beaver-button-disabled-border, #bdbdbd);
 }
+
+/* Loading 状态 */
+.beaver-button--loading {
+  pointer-events: none;
+  /* 保持变体/颜色不变，仅降低视觉不透明度以表明正在加载 */
+  opacity: 0.85;
+  /* 禁用交互手势：不可点击、不可选中、禁用触摸手势 */
+  user-select: none;
+  touch-action: none;
+  /* 当加载时显示等待光标以提示正在进行的操作 */
+  cursor: progress;
+}
+
+.beaver-button__spinner {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  box-sizing: border-box;
+  animation: beaver-button-spin 0.8s linear infinite;
+}
+
+@keyframes beaver-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

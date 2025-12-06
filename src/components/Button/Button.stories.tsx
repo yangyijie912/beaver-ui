@@ -96,3 +96,8 @@ export const Disabled: Story = {
   name: '禁用',
   args: { children: 'Disabled', disabled: true },
 };
+
+export const Loading: Story = {
+  name: '加载中',
+  args: { children: 'Loading', loading: true, variant: 'primary' },
+};
