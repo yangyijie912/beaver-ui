@@ -112,14 +112,16 @@
   font-size: var(--beaver-popconfirm-description-font-size);
   color: var(--beaver-popconfirm-description-color);
   margin: 0;
-  margin-bottom: var(--beaver-popconfirm-padding);
+  /* 使用专用的间距 token，避免将 padding shorthand 用作 margin 值导致兼容问题 */
+  margin-bottom: var(--beaver-popconfirm-gap);
   word-break: break-word;
   line-height: 1.5;
 }
 
 /* 当没有描述文本时，标题的下边距 */
 .beaver-popconfirm__title:last-child {
-  margin-bottom: var(--beaver-popconfirm-padding);
+  /* 当没有描述文本时，使用统一的 gap 值作为下边距 */
+  margin-bottom: var(--beaver-popconfirm-gap);
 }
 
 /* Popconfirm 操作按钮区域 */

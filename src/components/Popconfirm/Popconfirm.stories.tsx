@@ -17,12 +17,11 @@ type Story = StoryObj<typeof meta>;
 
 /**
  * 基础演示 - 最简单的用法
- * 显示标题和确认/取消按钮
  */
 export const Basic: Story = {
   name: '基础用法',
   render: () => (
-    <Popconfirm title="确定删除此项目吗？" okText="删除" cancelText="取消">
+    <Popconfirm title="确定删除此项目吗？">
       <Button color="danger">删除</Button>
     </Popconfirm>
   ),
@@ -41,10 +40,22 @@ export const WithDescription: Story = {
 };
 
 /**
- * 位置示例 - 顶部
+ * 自定义按钮文本 - 显示不同的按钮标签
+ */
+export const CustomButtonText: Story = {
+  name: '自定义按钮文本',
+  render: () => (
+    <Popconfirm title="请确认您的操作" okText="立即执行" cancelText="我再想想">
+      <Button>执行操作</Button>
+    </Popconfirm>
+  ),
+};
+
+/**
+ * 位置
  */
 export const PlacementVariants: Story = {
-  name: '位置 - 各方向',
+  name: '位置',
   render: () => (
     <div
       style={{
@@ -90,18 +101,6 @@ export const WithMask: Story = {
   name: '显示遮罩',
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" description="点击遮罩可关闭" showMask={true}>
-      <Button>操作</Button>
-    </Popconfirm>
-  ),
-};
-
-/**
- * 禁用箭头 - showArrow 为 false
- */
-export const WithoutArrow: Story = {
-  name: '禁用箭头',
-  render: () => (
-    <Popconfirm title="确定要执行此操作吗？" showArrow={false}>
       <Button>操作</Button>
     </Popconfirm>
   ),
@@ -171,7 +170,7 @@ export const Controlled: Story = {
 
     return (
       <div>
-        <Button onClick={() => setOpen(true)} style={{ marginBottom: '20px' }}>
+        <Button onClick={() => setOpen(true)} style={{ marginRight: '20px' }}>
           点击打开 Popconfirm
         </Button>
 
@@ -184,7 +183,7 @@ export const Controlled: Story = {
             alert('已确认！');
           }}
         >
-          <Button>隐藏按钮</Button>
+          <Button>按钮</Button>
         </Popconfirm>
       </div>
     );
@@ -192,35 +191,11 @@ export const Controlled: Story = {
 };
 
 /**
- * 最小化样式 - 只显示标题和按钮，无箭头
- */
-export const MinimalStyle: Story = {
-  name: '最小化样式',
-  render: () => (
-    <Popconfirm title="确定吗？" showArrow={false} okText="是" cancelText="否">
-      <Button>操作</Button>
-    </Popconfirm>
-  ),
-};
-
-/**
- * 自定义按钮文本 - 显示不同的按钮标签
- */
-export const CustomButtonText: Story = {
-  name: '自定义按钮文本',
-  render: () => (
-    <Popconfirm title="请确认您的操作" okText="立即执行" cancelText="我再想想">
-      <Button>执行操作</Button>
-    </Popconfirm>
-  ),
-};
-
-/**
  * 删除操作演示 - 列表项删除
  * 模拟删除列表中的一项
  */
 export const DeleteOperation: Story = {
-  name: '删除操作',
+  name: '交互演示',
   render: () => {
     const [items, setItems] = useState([
       { id: 1, text: '学习 React' },
@@ -249,6 +224,7 @@ export const DeleteOperation: Story = {
                 backgroundColor: '#f5f5f5',
                 borderRadius: '4px',
                 border: '1px solid #ddd',
+                fontSize: '14px',
               }}
             >
               <span>{item.text}</span>
@@ -257,10 +233,10 @@ export const DeleteOperation: Story = {
                 description={`将删除: "${item.text}"`}
                 okText="删除"
                 cancelText="保留"
-                placement="left"
+                placement="right"
                 onConfirm={() => handleDelete(item.id)}
               >
-                <Button color="danger" size="small">
+                <Button color="danger" size="small" style={{ marginLeft: 20 }}>
                   删除
                 </Button>
               </Popconfirm>

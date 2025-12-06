@@ -63,7 +63,4 @@ export interface PopconfirmProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
   /**  是否显示加载状态（确认按钮会显示加载中），默认为 false */
   okLoading?: boolean;
-
-  /**  箭头是否显示，默认为 true */
-  showArrow?: boolean;
 }

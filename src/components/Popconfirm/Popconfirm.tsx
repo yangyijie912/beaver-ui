@@ -36,7 +36,6 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
       maskClassName = '',
       okDisabled = false,
       okLoading = false,
-      showArrow = true,
       className = '',
       ...rest
     },
@@ -262,7 +261,7 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
                 }
               >
                 {/* 箭头指示器 */}
-                {showArrow && <div className="beaver-popconfirm__arrow" />}
+                <div className="beaver-popconfirm__arrow" />
 
                 {/* 标题 */}
                 <div className="beaver-popconfirm__title">{title}</div>
