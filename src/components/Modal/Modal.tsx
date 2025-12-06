@@ -117,9 +117,14 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
               {footer ? (
                 footer
               ) : (
-                <Button variant="primary" onClick={onClose}>
-                  关闭
-                </Button>
+                <>
+                  <Button color="primary" onClick={onClose}>
+                    关闭
+                  </Button>
+                  <Button variant="primary" onClick={onClose}>
+                    确定
+                  </Button>
+                </>
               )}
             </ModalFooter>
           ) : null}

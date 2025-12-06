@@ -17,7 +17,7 @@ export const Top: Story = {
   render: () => (
     <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
       <Tooltip content="这是一个提示（上方）">
-        <Button>Hover me</Button>
+        <Button variant="primary">Hover me</Button>
       </Tooltip>
     </div>
   ),
@@ -29,13 +29,13 @@ export const DifferentPlacements: Story = {
     <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
       <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
         <Tooltip content="左侧提示" placement="left">
-          <Button>Left</Button>
+          <Button variant="primary">Left</Button>
         </Tooltip>
         <Tooltip content="下方提示" placement="bottom">
-          <Button>Center</Button>
+          <Button variant="primary">Center</Button>
         </Tooltip>
         <Tooltip content="右侧提示" placement="right">
-          <Button>Right</Button>
+          <Button variant="primary">Right</Button>
         </Tooltip>
       </div>
     </div>
@@ -55,7 +55,7 @@ export const WithReactNode: Story = {
         }
         placement="right"
       >
-        <Button>Hover me</Button>
+        <Button variant="primary">Hover me</Button>
       </Tooltip>
     </div>
   ),
@@ -82,7 +82,7 @@ export const PortalComparison: Story = {
           <div style={{ textAlign: 'center' }}>
             <div style={{ marginBottom: 8 }}>Portal（默认）</div>
             <Tooltip content="这是 portal=true（会渲染到 body，不继承局部变量，且不会被裁切）" placement="top">
-              <Button>Portal</Button>
+              <Button variant="primary">Portal</Button>
             </Tooltip>
           </div>
 
@@ -93,7 +93,7 @@ export const PortalComparison: Story = {
               placement="top"
               portal={false}
             >
-              <Button>In-Place</Button>
+              <Button variant="primary">In-Place</Button>
             </Tooltip>
           </div>
         </div>
@@ -109,7 +109,7 @@ export const Disabled: Story = {
       <p>当content为null/undefined/空字符串时，Tooltip 不显示。</p>
       <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
         <Tooltip content="" placement="top">
-          <Button>Hover me</Button>
+          <Button variant="primary">Hover me</Button>
         </Tooltip>
       </div>
     </>

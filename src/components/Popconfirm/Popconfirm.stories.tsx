@@ -46,7 +46,7 @@ export const CustomButtonText: Story = {
   name: '自定义按钮文本',
   render: () => (
     <Popconfirm title="请确认您的操作" okText="立即执行" cancelText="我再想想">
-      <Button>执行操作</Button>
+      <Button variant="primary">执行操作</Button>
     </Popconfirm>
   ),
 };
@@ -69,25 +69,25 @@ export const PlacementVariants: Story = {
     >
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
         <Popconfirm title="向上位置示例" placement="top">
-          <Button>上</Button>
+          <Button variant="primary">上</Button>
         </Popconfirm>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
         <Popconfirm title="向下位置示例" placement="bottom">
-          <Button>下</Button>
+          <Button variant="primary">下</Button>
         </Popconfirm>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
         <Popconfirm title="向左位置示例" placement="left">
-          <Button>左</Button>
+          <Button variant="primary">左</Button>
         </Popconfirm>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
         <Popconfirm title="向右位置示例" placement="right">
-          <Button>右</Button>
+          <Button variant="primary">右</Button>
         </Popconfirm>
       </div>
     </div>
@@ -101,7 +101,7 @@ export const WithMask: Story = {
   name: '显示遮罩',
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" description="点击遮罩可关闭" showMask={true}>
-      <Button>操作</Button>
+      <Button variant="primary">操作</Button>
     </Popconfirm>
   ),
 };
@@ -113,7 +113,7 @@ export const OkDisabled: Story = {
   name: '禁用确认按钮',
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" description="确认按钮已禁用" okDisabled={true}>
-      <Button>操作</Button>
+      <Button variant="primary">操作</Button>
     </Popconfirm>
   ),
 };
@@ -170,7 +170,7 @@ export const Controlled: Story = {
 
     return (
       <div>
-        <Button onClick={() => setOpen(true)} style={{ marginRight: '20px' }}>
+        <Button variant="primary" onClick={() => setOpen(true)} style={{ marginRight: '20px' }}>
           点击打开 Popconfirm
         </Button>
 
@@ -183,7 +183,7 @@ export const Controlled: Story = {
             alert('已确认！');
           }}
         >
-          <Button>按钮</Button>
+          <Button variant="primary">按钮</Button>
         </Popconfirm>
       </div>
     );

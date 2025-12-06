@@ -65,13 +65,21 @@ function App() {
 
       <Section title="Button">
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <Button onClick={() => alert('Primary clicked')}>Primary</Button>
+          <Button variant="primary" onClick={() => alert('Primary clicked')}>
+            Primary
+          </Button>
           <Button variant="ghost" onClick={() => alert('Ghost clicked')}>
             Ghost
           </Button>
-          <Button size="small">Small</Button>
-          <Button size="large">Large</Button>
-          <Button disabled>Disabled</Button>
+          <Button variant="primary" size="small">
+            Small
+          </Button>
+          <Button variant="primary" size="large">
+            Large
+          </Button>
+          <Button variant="primary" disabled>
+            Disabled
+          </Button>
         </div>
       </Section>
 
@@ -135,7 +143,9 @@ function App() {
               <option value="large">大 (800px)</option>
             </select>
           </div>
-          <Button onClick={() => setModalOpen(true)}>打开 Modal</Button>
+          <Button variant="primary" onClick={() => setModalOpen(true)}>
+            打开 Modal
+          </Button>
         </div>
         <Modal
           open={modalOpen}
@@ -147,7 +157,9 @@ function App() {
               <Button variant="ghost" onClick={() => setModalOpen(false)}>
                 取消
               </Button>
-              <Button onClick={() => setModalOpen(false)}>确定</Button>
+              <Button variant="primary" onClick={() => setModalOpen(false)}>
+                确定
+              </Button>
             </>
           }
         >
@@ -187,15 +199,15 @@ function App() {
         <div>
           <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
             <Tooltip content="这是左侧提示" placement="left">
-              <Button>Left</Button>
+              <Button variant="primary">Left</Button>
             </Tooltip>
 
             <Tooltip content="这是中间提示" placement="top">
-              <Button>Center</Button>
+              <Button variant="primary">Center</Button>
             </Tooltip>
 
             <Tooltip content="这是右侧提示" placement="right">
-              <Button>Right</Button>
+              <Button variant="primary">Right</Button>
             </Tooltip>
           </div>
         </div>
