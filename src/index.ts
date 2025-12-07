@@ -4,6 +4,7 @@ export { default as RadioGroup } from './components/Radio/RadioGroup';
 export { default as Checkbox } from './components/Checkbox/Checkbox';
 export { default as Input } from './components/Input/Input';
 export { default as Select } from './components/Select/Select';
+export { default as DatePicker } from './components/DatePicker/DatePicker';
 export { default as Switch } from './components/Switch/Switch';
 export { default as Pagination } from './components/Pagination/Pagination';
 export { default as Table } from './components/Table/Table';

@@ -35,7 +35,7 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "dependencies": {
+  "peerDependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -54,19 +54,21 @@
     "@typescript-eslint/parser": "^8.48.0",
     "@vitest/browser-playwright": "4.0.14",
     "@vitest/coverage-v8": "4.0.14",
+    "autoprefixer": "^10.4.22",
+    "cssnano": "^7.1.2",
     "eslint": "^9.39.1",
     "eslint-plugin-storybook": "10.0.8",
     "husky": "^9.1.7",
     "jsdom": "^27.2.0",
     "lint-staged": "^16.2.7",
     "playwright": "^1.57.0",
+    "postcss": "^8.5.6",
     "prettier": "^3.6.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "storybook": "10.0.8",
     "ts-node": "^10.9.1",
     "tsup": "^8.5.1",
-    "autoprefixer": "^10.4.22",
-    "cssnano": "^7.1.2",
-    "postcss": "^8.5.6",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.14"

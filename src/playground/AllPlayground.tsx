@@ -6,6 +6,7 @@ import Input from '../components/Input/Input';
 import Radio from '../components/Radio/Radio';
 import RadioGroup from '../components/Radio/RadioGroup';
 import Select from '../components/Select/Select';
+import DatePicker from '../components/DatePicker/DatePicker';
 import Switch from '../components/Switch/Switch';
 import Modal from '../components/Modal/Modal';
 import Drawer from '../components/Drawer/Drawer';
@@ -34,6 +35,8 @@ function App() {
   const [modalSize, setModalSize] = React.useState<'small' | 'medium' | 'large'>('medium');
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [drawerPlacement, setDrawerPlacement] = React.useState<'left' | 'right' | 'top' | 'bottom'>('right');
+  const [dateValue, setDateValue] = React.useState<Date | null>(null);
+  const [dateRangeValue, setDateRangeValue] = React.useState<{ startDate: Date; endDate: Date } | null>(null);
 
   const options = [
     { label: 'Apple', value: 'apple' },
@@ -131,6 +134,44 @@ function App() {
             placeholder="请选择"
             searchable
           />
+        </div>
+      </Section>
+
+      <Section title="DatePicker">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div>
+            <h4>单选日期</h4>
+            <div style={{ marginBottom: 8 }}>
+              当前值: {dateValue ? dateValue.toLocaleDateString('zh-CN') : '未选择'}
+            </div>
+            <DatePicker value={dateValue} onChange={setDateValue} placeholder="请选择日期" allowClear />
+          </div>
+          <div>
+            <h4>日期范围选择</h4>
+            <div style={{ marginBottom: 8 }}>
+              当前值:{' '}
+              {dateRangeValue
+                ? `${dateRangeValue.startDate.toLocaleDateString('zh-CN')} ~ ${dateRangeValue.endDate.toLocaleDateString('zh-CN')}`
+                : '未选择'}
+            </div>
+            <DatePicker
+              picker="daterange"
+              valueRange={dateRangeValue}
+              onRangeChange={setDateRangeValue}
+              placeholder="请选择日期范围"
+              allowClear
+            />
+          </div>
+          <div>
+            <h4>禁用周末</h4>
+            <DatePicker
+              placeholder="禁用周末"
+              disabledDate={(date) => {
+                const day = date.getDay();
+                return day === 0 || day === 6;
+              }}
+            />
+          </div>
         </div>
       </Section>
 

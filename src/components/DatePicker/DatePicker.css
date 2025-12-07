@@ -1,0 +1,281 @@
+/**
+ * DatePicker 组件样式
+ * 使用 CSS 变量（已在 vars.ts 中定义）来实现主题定制
+ */
+
+.beaver-datepicker-wrapper {
+  display: inline-block;
+  width: var(--beaver-datepicker-input-width);
+  font-size: var(--beaver-datepicker-input-font-size);
+  position: relative;
+}
+
+/* 输入框样式 */
+.beaver-datepicker-input {
+  width: 100%;
+  height: var(--beaver-datepicker-input-height);
+  padding: var(--beaver-datepicker-input-padding);
+  font-size: var(--beaver-datepicker-input-font-size);
+  border: 1px solid var(--beaver-datepicker-input-border-color);
+  border-radius: var(--beaver-datepicker-input-border-radius);
+  background-color: var(--beaver-datepicker-input-bg);
+  color: var(--beaver-color-text);
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.beaver-datepicker-input:hover:not(:disabled) {
+  border-color: var(--beaver-datepicker-input-border-focus-color);
+}
+
+.beaver-datepicker-input:focus {
+  border-color: var(--beaver-datepicker-input-border-focus-color);
+  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(14, 170, 224, 0.2);
+}
+
+.beaver-datepicker-input:disabled {
+  background-color: var(--beaver-datepicker-input-disabled-bg);
+  color: var(--beaver-datepicker-input-disabled-color);
+  cursor: not-allowed;
+}
+
+.beaver-datepicker-input::placeholder {
+  color: var(--beaver-color-disabled);
+}
+
+/* 输入框容器（包含清除按钮） */
+.beaver-datepicker-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--beaver-datepicker-gap);
+}
+
+/* 清除按钮 */
+.beaver-datepicker-clear-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--beaver-color-disabled);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.beaver-datepicker-clear-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--beaver-color-text);
+}
+
+/* 日期选择器面板 */
+.beaver-datepicker-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: var(--beaver-datepicker-picker-z-index);
+  background-color: var(--beaver-datepicker-picker-bg);
+  border: 1px solid var(--beaver-datepicker-picker-border-color);
+  border-radius: var(--beaver-datepicker-picker-border-radius);
+  box-shadow: var(--beaver-datepicker-picker-box-shadow);
+  padding: var(--beaver-datepicker-picker-padding);
+  margin-top: var(--beaver-datepicker-gap);
+  animation: beaver-datepicker-slide-down 0.2s ease-out;
+}
+
+@keyframes beaver-datepicker-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 头部样式 */
+.beaver-datepicker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--beaver-datepicker-header-height);
+  background-color: var(--beaver-datepicker-header-bg);
+  padding: 0 var(--beaver-datepicker-gap);
+  margin-bottom: var(--beaver-datepicker-gap);
+  border-radius: var(--beaver-datepicker-picker-border-radius);
+  font-weight: var(--beaver-datepicker-header-font-weight);
+  color: var(--beaver-datepicker-header-color);
+}
+
+.beaver-datepicker-header-content {
+  display: flex;
+  gap: 8px;
+  font-size: var(--beaver-datepicker-header-font-size);
+  font-weight: var(--beaver-datepicker-header-font-weight);
+  color: var(--beaver-datepicker-header-color);
+}
+
+.beaver-datepicker-header-year,
+.beaver-datepicker-header-month {
+  white-space: nowrap;
+}
+
+/* 导航按钮 */
+.beaver-datepicker-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--beaver-datepicker-nav-btn-size);
+  height: var(--beaver-datepicker-nav-btn-size);
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--beaver-datepicker-nav-btn-color);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.beaver-datepicker-nav-btn:hover {
+  background-color: var(--beaver-datepicker-nav-btn-hover-bg);
+  color: var(--beaver-color-text);
+}
+
+/* 星期行 */
+.beaver-datepicker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: var(--beaver-datepicker-gap);
+}
+
+.beaver-datepicker-weekday {
+  height: var(--beaver-datepicker-weekday-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--beaver-datepicker-weekday-color);
+  font-size: var(--beaver-datepicker-weekday-font-size);
+  font-weight: 500;
+}
+
+/* 日期行 */
+.beaver-datepicker-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+/* 日期单元格 */
+.beaver-datepicker-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--beaver-datepicker-date-cell-size);
+  height: var(--beaver-datepicker-date-cell-size);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: var(--beaver-datepicker-date-cell-font-size);
+  color: var(--beaver-datepicker-date-cell-color);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.beaver-datepicker-cell:hover:not(.beaver-datepicker-disabled):not(.beaver-datepicker-other-month) {
+  background-color: var(--beaver-datepicker-date-cell-hover-bg);
+}
+
+/* 选中日期 */
+.beaver-datepicker-cell.beaver-datepicker-selected {
+  background-color: var(--beaver-datepicker-date-cell-selected-bg);
+  color: var(--beaver-datepicker-date-cell-selected-color);
+  font-weight: 600;
+}
+
+.beaver-datepicker-cell.beaver-datepicker-selected:hover {
+  background-color: var(--beaver-datepicker-date-cell-selected-bg);
+}
+
+/* 范围选择中的日期 */
+.beaver-datepicker-cell.beaver-datepicker-in-range {
+  background-color: var(--beaver-datepicker-range-cell-bg);
+  color: var(--beaver-datepicker-date-cell-color);
+  border-radius: 0;
+}
+
+.beaver-datepicker-cell.beaver-datepicker-in-range:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.beaver-datepicker-cell.beaver-datepicker-in-range:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+/* 范围的边界日期 - 同时拥有 in-range 和 range-edge 时，range-edge 样式优先 */
+.beaver-datepicker-cell.beaver-datepicker-in-range.beaver-datepicker-range-edge,
+.beaver-datepicker-cell.beaver-datepicker-range-edge {
+  background-color: var(--beaver-datepicker-date-cell-selected-bg);
+  color: var(--beaver-datepicker-date-cell-selected-color);
+  font-weight: 600;
+  border-radius: 4px !important;
+}
+
+/* 临时范围（鼠标悬停时） */
+.beaver-datepicker-cell.beaver-datepicker-temp-range {
+  background-color: rgba(14, 170, 224, 0.1);
+}
+
+/* 禁用日期 */
+.beaver-datepicker-cell.beaver-datepicker-disabled {
+  color: var(--beaver-datepicker-date-cell-disabled-color);
+  background-color: var(--beaver-datepicker-date-cell-disabled-bg);
+  cursor: not-allowed;
+}
+
+/* 其他月份的日期 */
+.beaver-datepicker-cell.beaver-datepicker-other-month {
+  color: var(--beaver-color-disabled);
+  cursor: default;
+}
+
+.beaver-datepicker-cell.beaver-datepicker-other-month:hover {
+  background-color: transparent;
+}
+
+/* 空日期单元格 */
+.beaver-datepicker-cell.beaver-datepicker-cell-empty {
+  cursor: default;
+}
+
+/* 日期选择器组件 */
+.beaver-datepicker-calendar {
+  width: 100%;
+}
+
+/* 不同尺寸的输入框 */
+.beaver-datepicker-wrapper.beaver-datepicker-small .beaver-datepicker-input {
+  height: 28px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.beaver-datepicker-wrapper.beaver-datepicker-large .beaver-datepicker-input {
+  height: 40px;
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
+/* 全宽模式 */
+.beaver-datepicker-wrapper.beaver-datepicker-fullwidth {
+  width: 100%;
+}

@@ -175,6 +175,52 @@ export const vars = {
       'animation-duration-open': '0.35s', // 打开动画时长
       'animation-duration-close': '0.25s', // 关闭动画时长
     },
+    datepicker: {
+      'input-width': '200px', // 日期输入框宽度
+      'input-height': '32px', // 日期输入框高度
+      'input-padding': '6px 12px', // 日期输入框内边距
+      'input-font-size': '14px', // 日期输入框字体大小
+      'input-border-radius': '6px', // 日期输入框圆角
+      'input-border-color': '#aaa', // 日期输入框边框颜色
+      'input-border-focus-color': '#0eaae0', // 日期输入框焦点边框颜色
+      'input-bg': '#ffffff', // 日期输入框背景色
+      'input-disabled-bg': '#f5f5f5', // 日期输入框禁用态背景色
+      'input-disabled-color': '#999', // 日期输入框禁用态文字颜色
+      'picker-bg': '#ffffff', // 日期选择器面板背景色
+      'picker-border-color': '#e8e8e8', // 日期选择器面板边框颜色
+      'picker-border-radius': '6px', // 日期选择器面板圆角
+      'picker-box-shadow': '0 6px 18px rgba(20, 30, 50, 0.2)', // 日期选择器面板阴影
+      'picker-padding': '12px', // 日期选择器面板内边距
+      'picker-z-index': '5001', // 日期选择器面板层级
+      'header-height': '40px', // 日期选择器头部高度
+      'header-bg': '#f8fafc', // 日期选择器头部背景色
+      'header-color': '#333', // 日期选择器头部文字颜色
+      'header-font-size': '14px', // 日期选择器头部字体大小
+      'header-font-weight': '600', // 日期选择器头部字体粗细
+      'nav-btn-size': '24px', // 日期选择器上下月份按钮尺寸
+      'nav-btn-color': '#666', // 日期选择器上下月份按钮颜色
+      'nav-btn-hover-bg': '#f0f0f0', // 日期选择器上下月份按钮hover背景色
+      'weekday-height': '32px', // 星期行高度
+      'weekday-color': '#666', // 星期文字颜色
+      'weekday-font-size': '12px', // 星期字体大小
+      'date-cell-size': '32px', // 日期单元格尺寸
+      'date-cell-font-size': '14px', // 日期单元格字体大小
+      'date-cell-color': '#333', // 日期单元格文字颜色
+      'date-cell-hover-bg': '#ecf4fe', // 日期单元格hover背景色
+      'date-cell-selected-bg': '#0eaae0', // 日期单元格选中背景色
+      'date-cell-selected-color': '#ffffff', // 日期单元格选中文字颜色
+      'date-cell-disabled-color': '#999', // 日期单元格禁用文字颜色
+      'date-cell-disabled-bg': '#f5f5f5', // 日期单元格禁用背景色
+      'date-cell-today-border-color': '#0eaae0', // 日期单元格当日边框颜色
+      'range-cell-bg': '#e6f4ff', // 范围选择日期单元格背景色
+      'time-input-height': '28px', // 时间输入框高度
+      'time-input-font-size': '12px', // 时间输入框字体大小
+      'time-separator-color': '#999', // 时间选择器中的分隔符颜色
+      'footer-height': '40px', // 日期选择器页脚高度
+      'footer-bg': '#f8fafc', // 日期选择器页脚背景色
+      'footer-padding': '0 12px', // 日期选择器页脚内边距
+      gap: '8px', // 日期选择器内部间距
+    },
   },
 };
 
