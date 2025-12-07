@@ -5,6 +5,12 @@ const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,
   tags: ['autodocs'],
+  argTypes: {
+    color: {
+      control: 'text',
+      description: "按钮颜色，支持 'primary'、'danger' 或任意 CSS 颜色值",
+    },
+  },
 };
 
 export default meta;
