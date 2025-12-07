@@ -55,21 +55,6 @@ export const vars = {
       'max-height': '260px', // 下拉列表最大高度
       'z-index': '5000', // 下拉菜单层级，默认 5000，可被覆盖
     },
-    switch: {
-      'thumb-offset': '2px', // switch 拇指偏移量
-      'thumb-size-sm': '14px', // switch 拇指尺寸
-      'thumb-size-md': '22px',
-      'thumb-size-lg': '30px',
-      'track-min-width-sm': '36px', // switch 背景轨道最小宽度
-      'track-min-width-md': '48px',
-      'track-min-width-lg': '60px',
-      'track-height-sm': '18px', // switch 背景轨道高度
-      'track-height-md': '28px',
-      'track-height-lg': '32px',
-      'thumb-gap-sm': '1px', // thumb 与 track 边缘的间隙
-      'thumb-gap-md': '2px',
-      'thumb-gap-lg': '3px',
-    },
     pagination: {
       'item-size': '32px', // 页码尺寸
       gap: '8px', // 页码间距

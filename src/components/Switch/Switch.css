@@ -1,134 +1,253 @@
-/*
-  Switch 组件样式（中文注释）
-  说明：
-  - 使用 CSS 变量来控制颜色、尺寸、间距与过渡，便于主题化与定制。
-  - 轨道（track）采用内联 flex 布局以便标签参与布局并使轨道宽度可随标签自适应。
-  - 拇指（thumb）使用绝对定位并通过 left 属性在 checked/unchecked 之间移动。
-*/
-
 :root {
-  /* 轨道默认背景色（未选中） */
-  --switch-track-bg: var(--beaver-color-border, #dcdcdc);
-  /* 轨道选中时的背景色（选中状态） */
-  --switch-track-checked-bg: var(--beaver-color-primary, #1e88e5);
-  /* 拇指相对于轨道的偏移值（左侧） */
-  --switch-thumb-offset: var(--beaver-switch-thumb-offset, 2px);
-  /* 各尺寸对应的拇指直径（从全局 token 回退到原始值） */
-  --switch-thumb-size-sm: var(--beaver-switch-thumb-size-sm, 14px);
-  --switch-thumb-size-md: var(--beaver-switch-thumb-size-md, 22px);
-  --switch-thumb-size-lg: var(--beaver-switch-thumb-size-lg, 30px);
-  /* 默认拇指大小（中号） */
-  --switch-thumb-size: var(--switch-thumb-size-md);
-  /* 标签颜色：选中/未选中 */
-  --switch-label-on-color: #ffffff;
-  --switch-label-off-color: #ffffff;
-  /* 默认标签颜色（当既不是 on 也不是 off 时的颜色） */
-  --switch-label-color: rgba(0, 0, 0, 0.6);
-  /* spinner 颜色参考（若使用） */
-  --switch-spinner-border: rgba(0, 0, 0, 0.12);
-  --switch-spinner-top: rgba(0, 0, 0, 0.36);
-  /* 默认过渡时长 */
-  --switch-transition: 0.18s;
+  /* ===== 尺寸定义：Small / Medium / Large ===== */
+
+  /* Small 尺寸：紧凑型 */
+  --beaver-switch-track-height-small: 18px;
+  --beaver-switch-track-min-width-small: 28px;
+  --beaver-switch-thumb-size-small: 14px;
+  --beaver-switch-thumb-gap-small: 1px;
+
+  /* Medium 尺寸：标准型（默认） */
+  --beaver-switch-track-height-medium: 24px;
+  --beaver-switch-track-min-width-medium: 44px;
+  --beaver-switch-thumb-size-medium: 22px;
+  --beaver-switch-thumb-gap-medium: 1px;
+
+  /* Large 尺寸：宽松型 */
+  --beaver-switch-track-height-large: 30px;
+  --beaver-switch-track-min-width-large: 52px;
+  --beaver-switch-thumb-size-large: 26px;
+  --beaver-switch-thumb-gap-large: 1px;
+
+  /* 默认尺寸（为了方便计算，使用 medium 作为基准） */
+  --beaver-switch-track-height: var(--beaver-switch-track-height-medium);
+  --beaver-switch-track-min-width: var(--beaver-switch-track-min-width-medium);
+  --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-medium);
+  --beaver-switch-thumb-gap: var(--beaver-switch-thumb-gap-medium);
+
+  /* ===== 颜色定义：轨道背景 ===== */
+
+  /* 未选中时的轨道背景色：浅灰色 */
+  --beaver-switch-track-bg: #dcdcdc;
+  /* 选中时的轨道背景色：使用原色 */
+  --beaver-switch-track-checked-bg: var(--beaver-color-primary, #0eaae0);
+  /* 禁用时的轨道背景色：更浅的灰色 */
+  --beaver-switch-track-disabled-bg: #f0f0f0;
+
+  /* ===== 颜色定义：拇指和标签 ===== */
+
+  /* 拇指颜色（始终为白色以确保对比） */
+  --beaver-switch-thumb-bg: #ffffff;
+  /* 拇指阴影 */
+  --beaver-switch-thumb-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* 选中状态下的标签颜色（on 标签） */
+  --beaver-switch-label-on-color: #ffffff;
+  /* 未选中状态下的标签颜色（off 标签） */
+  --beaver-switch-label-off-color: #ffffff;
+  /* 默认状态下的标签颜色（当既不是 on 也不是 off 时） */
+  --beaver-switch-label-color: rgba(0, 0, 0, 0.6);
+  /* 禁用时的标签颜色 */
+  --beaver-switch-label-disabled-color: rgba(0, 0, 0, 0.35);
+
+  /* ===== 间距定义 ===== */
+
+  /* Switch 按钮与其他元素的间距 */
+  --beaver-switch-gap: var(--beaver-space-sm, 8px);
+  /* 标签内部左右间距 */
+  --beaver-switch-label-padding: var(--beaver-space-xs, 6px);
+
+  /* ===== 动画配置 ===== */
+
+  /* 所有过渡的时间 */
+  --beaver-switch-transition-duration: 0.18s;
+  /* 过渡的缓动函数 */
+  --beaver-switch-transition-timing: ease;
+
+  /* ===== 圆角配置 ===== */
+
+  /* 轨道的圆角：999px 使其完全圆形 */
+  --beaver-switch-track-border-radius: 999px;
+  /* 拇指的圆角：50% 使其完全圆形 */
+  --beaver-switch-thumb-border-radius: 50%;
+
+  /* ===== Z-index 配置 ===== */
+
+  /* 拇指的层级 */
+  --beaver-switch-thumb-z-index: 1;
+  /* 标签的层级（需要显示在拇指上） */
+  --beaver-switch-label-z-index: 2;
+
+  /* ===== 加载状态配置 ===== */
+
+  /* Spinner 尺寸 */
+  --beaver-switch-spinner-size: 60%;
+
+  /* Spinner 边框宽度 */
+  --beaver-switch-spinner-border-width: 2px;
+
+  /* Spinner 边框颜色 */
+  --beaver-switch-spinner-border-color: rgba(0, 0, 0, 0.12);
+
+  /* Spinner 顶部颜色（旋转的部分） */
+  --beaver-switch-spinner-top-color: rgba(0, 0, 0, 0.36);
+
+  /* Spinner 动画时长 */
+  --beaver-switch-spinner-duration: 0.6s;
 }
 
-/* 最外层按钮基准样式 */
+/* ===== Switch 主容器 ===== */
+/* 最外层按钮基准样式：使用 inline-flex 使其与其他元素在行内对齐 */
 .beaver-switch {
   display: inline-flex;
   align-items: center;
-  gap: var(--beaver-space-sm); /* 按钮文字或外部元素间距（如果存在） */
+  gap: var(--beaver-switch-gap);
   background: transparent;
   border: none;
   padding: 0;
   cursor: pointer;
+  transition: opacity var(--beaver-switch-transition-duration) var(--beaver-switch-transition-timing);
 }
 
-/* 禁用样式（视觉上变灰并禁止交互） */
+/* ===== 禁用状态 ===== */
+/* 禁用时的 Switch：变灰并禁止交互 */
 .beaver-switch[disabled],
 .beaver-switch--disabled {
   cursor: not-allowed;
   opacity: 0.6;
+  pointer-events: none;
 }
 
-/*
-  轨道（track）样式：
-  - 使用 inline-flex 使标签参与布局，轨道宽度可随标签内容变化；
-  - 通过 padding 为拇指留出空间，避免拇指遮挡标签（使用 --switch-thumb-size 计算）。
+/* ===== 加载状态 ===== */
+/* 加载状态时保持正常外观（不变灰），但禁止交互 */
+.beaver-switch--loading {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ===== 轨道（Track）样式 ===== */
+/* 轨道是 Switch 的背景轨道，包含可移动的拇指和可选的标签
+   - 使用 width: auto 让轨道宽度根据内容自适应
+   - min-width 保证没有标签时的最小尺寸
+   - box-sizing: border-box 使 padding 包含在 min-width 内，不增加额外宽度
+   - padding 两侧预留拇指空间
 */
 .beaver-switch__track {
-  width: auto; /* 根据标签自适应宽度 */
-  min-width: var(--beaver-switch-track-min-width-md, 48px); /* 最小宽度，保证没有标签时也有基本尺寸 */
-  height: var(--beaver-switch-track-height-md, 28px);
-  background: var(--switch-track-bg);
-  border-radius: 999px; /* 圆角轨道 */
-  position: relative; /* 使拇指的绝对定位相对于轨道 */
-  transition: background var(--switch-transition) ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center; /* 激活标签居中显示 */
-  /* 为拇指预留空间：半个拇指宽 + 小间隙 */
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-md, 2px));
-  box-sizing: border-box; /* 包括 padding 在 min-width 内 */
-}
-
-/* 尺寸变体：分别覆盖 min-width、height 与拇指尺寸变量 */
-.beaver-switch--sm .beaver-switch__track,
-.beaver-switch--small .beaver-switch__track {
-  min-width: var(--beaver-switch-track-min-width-sm, 36px);
-  height: var(--beaver-switch-track-height-sm, 18px);
-  --switch-thumb-size: var(--switch-thumb-size-sm);
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-sm, 1px));
-}
-
-.beaver-switch--md .beaver-switch__track {
-  min-width: var(--beaver-switch-track-min-width-md, 48px);
-  height: var(--beaver-switch-track-height-md, 28px);
-  --switch-thumb-size: var(--switch-thumb-size-md);
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-md, 2px));
-}
-
-.beaver-switch--lg .beaver-switch__track,
-.beaver-switch--large .beaver-switch__track {
-  min-width: var(--beaver-switch-track-min-width-lg, 60px);
-  height: var(--beaver-switch-track-height-lg, 32px);
-  --switch-thumb-size: var(--switch-thumb-size-lg);
-  padding: 0 calc(var(--switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap-lg, 3px));
-}
-
-/* 选中状态改变轨道背景色 */
-.beaver-switch--checked .beaver-switch__track {
-  background: var(--switch-track-checked-bg);
-}
-
-/* 拇指（thumb）样式：
-   - 绝对定位在轨道内；
-   - 通过 left 属性移动到左侧（未选中）或右侧（选中）；
-   - 使用 transform 使其垂直居中。
-*/
-.beaver-switch__thumb {
-  position: absolute;
-  left: var(--switch-thumb-offset);
-  top: 50%;
-  transform: translateY(-50%);
-  width: var(--switch-thumb-size);
-  height: var(--switch-thumb-size);
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  transition:
-    left var(--switch-transition) ease,
-    transform var(--switch-transition) ease;
+  width: auto;
+  min-width: var(--beaver-switch-track-min-width);
+  height: var(--beaver-switch-track-height);
+  background: var(--beaver-switch-track-bg);
+  border-radius: var(--beaver-switch-track-border-radius);
+  position: relative;
+  transition: background var(--beaver-switch-transition-duration) var(--beaver-switch-transition-timing);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 1; /* 保证拇指在标签下方或按需遮盖 */
+  box-sizing: border-box;
+  /* 为拇指预留空间：两侧都预留，但被 box-sizing: border-box 包含在 min-width 内 */
+  padding: 0 calc(var(--beaver-switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap));
 }
 
-/* 选中时把拇指移动到轨道右侧（计算：轨道 100% 减去拇指宽度与偏移） */
+/* ===== 轨道尺寸变体 ===== */
+/* Small 尺寸 */
+.beaver-switch--sm .beaver-switch__track,
+.beaver-switch--small .beaver-switch__track {
+  min-width: var(--beaver-switch-track-min-width-small);
+  height: var(--beaver-switch-track-height-small);
+  --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-small);
+  --beaver-switch-thumb-gap: var(--beaver-switch-thumb-gap-small);
+  padding: 0 calc(var(--beaver-switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap));
+}
+
+/* Medium 尺寸（默认） */
+.beaver-switch--md .beaver-switch__track {
+  min-width: var(--beaver-switch-track-min-width-medium);
+  height: var(--beaver-switch-track-height-medium);
+  --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-medium);
+  --beaver-switch-thumb-gap: var(--beaver-switch-thumb-gap-medium);
+  padding: 0 calc(var(--beaver-switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap));
+}
+
+/* Large 尺寸 */
+.beaver-switch--lg .beaver-switch__track,
+.beaver-switch--large .beaver-switch__track {
+  min-width: var(--beaver-switch-track-min-width-large);
+  height: var(--beaver-switch-track-height-large);
+  --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-large);
+  --beaver-switch-thumb-gap: var(--beaver-switch-thumb-gap-large);
+  padding: 0 calc(var(--beaver-switch-thumb-size) * 0.5 + var(--beaver-switch-thumb-gap));
+}
+
+/* ===== 轨道状态变化 ===== */
+/* 选中状态：改变轨道背景色为原色 */
+.beaver-switch--checked .beaver-switch__track {
+  background: var(--beaver-switch-track-checked-bg);
+}
+
+/* 禁用状态：改变轨道背景色为禁用色 */
+.beaver-switch[disabled] .beaver-switch__track,
+.beaver-switch--disabled .beaver-switch__track {
+  background: var(--beaver-switch-track-disabled-bg);
+}
+
+/* ===== 拇指（Thumb）样式 ===== */
+/* 拇指是 Switch 内可移动的圆形元素
+   - 绝对定位在轨道内
+   - 通过 left 属性在未选中（左侧）和选中（右侧）之间移动
+   - 使用 transform 使其垂直居中
+   - 白色背景以确保在彩色轨道上的可见性
+*/
+.beaver-switch__thumb {
+  position: absolute;
+  left: var(--beaver-switch-thumb-gap);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--beaver-switch-thumb-size);
+  height: var(--beaver-switch-thumb-size);
+  background: var(--beaver-switch-thumb-bg);
+  border-radius: var(--beaver-switch-thumb-border-radius);
+  box-shadow: var(--beaver-switch-thumb-shadow);
+  transition:
+    left var(--beaver-switch-transition-duration) var(--beaver-switch-transition-timing),
+    transform var(--beaver-switch-transition-duration) var(--beaver-switch-transition-timing);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--beaver-switch-thumb-z-index);
+  flex-shrink: 0;
+}
+
+/* ===== 拇指选中状态 ===== */
+/* 选中时把拇指移动到轨道右侧（计算：轨道 100% 减去拇指宽度与间隙） */
 .beaver-switch--checked .beaver-switch__thumb {
-  left: calc(100% - var(--switch-thumb-size) - var(--switch-thumb-offset));
+  left: calc(100% - var(--beaver-switch-thumb-size) - var(--beaver-switch-thumb-gap));
 }
 
-/* 图标（SVG）在标签内的基础样式 */
+/* ===== 标签基础样式 ===== */
+/* 标签（label）用于在 Switch 内显示文字或图标，表示选中/未选中状态
+   - 使用相对定位参与布局
+   - 指定 z-index 以保证标签显示在拇指之上
+   - 使用 flex: 0 0 auto 让标签保持其固有宽度，不拉伸
+   - pointer-events: none 避免标签捕获事件
+*/
+.beaver-switch__label {
+  position: relative;
+  font-size: var(--beaver-font-size-sm, 12px);
+  line-height: 1;
+  pointer-events: none;
+  transition:
+    opacity var(--beaver-switch-transition-duration) var(--beaver-switch-transition-timing),
+    color var(--beaver-switch-transition-duration) var(--beaver-switch-transition-timing);
+  color: var(--beaver-switch-label-color);
+  white-space: nowrap;
+  margin: 0;
+  text-align: center;
+  z-index: var(--beaver-switch-label-z-index);
+  flex: 0 0 auto;
+  padding: 0 var(--beaver-switch-label-padding);
+  min-width: 0;
+}
+
+/* ===== SVG 图标在标签内的样式 ===== */
 .beaver-switch__label svg {
   display: inline-block;
   width: 1em;
@@ -137,73 +256,72 @@
   fill: currentColor;
 }
 
-/* 当选中时，on 标签可见并使用 on 颜色 */
+/* ===== 标签的选中/未选中状态 ===== */
+/* 当选中时，显示 on 标签，隐藏 off 标签 */
 .beaver-switch--checked .beaver-switch__label--on {
+  display: inline-block;
   opacity: 1;
-  color: var(--switch-label-on-color);
+  color: var(--beaver-switch-label-on-color);
+  margin-right: calc(var(--beaver-switch-thumb-size) * 0.5 + 2px);
 }
 
-/* 选中时隐藏 off 标签以节省布局空间 */
 .beaver-switch--checked .beaver-switch__label--off {
+  display: none;
   opacity: 0;
 }
 
-/* 未选中时显示 off 标签 */
-.beaver-switch:not(.beaver-switch--checked) .beaver-switch__label--off {
-  opacity: 1;
-  color: var(--switch-label-off-color);
-}
-
-/* 禁用时标签颜色变灰 */
-.beaver-switch--disabled .beaver-switch__label,
-.beaver-switch[disabled] .beaver-switch__label {
-  color: rgba(0, 0, 0, 0.35);
-}
-
-/* 标签基础样式：
-   - 使用相对定位参与布局；
-   - 指定 z-index 以保证 label 显示在拇指之上；
-   - 使用 flex 属性让标签保持其固有宽度，不拉伸。
-*/
-.beaver-switch__label {
-  position: relative;
-  font-size: var(--beaver-font-size-sm);
-  line-height: 1;
-  pointer-events: none; /* 标签不可交互，避免捕获事件 */
-  transition:
-    opacity 0.12s ease,
-    color 0.12s ease;
-  color: var(--switch-label-color);
-  white-space: nowrap;
-  margin: 0;
-  text-align: center;
-  z-index: 2; /* 确保标签位于拇指之上 */
-  flex: 0 0 auto; /* 不缩放，保持固有宽度 */
-  padding: 0 var(--beaver-space-xs); /* 标签内部左右间距 */
-  min-width: 0;
-}
-
-/*
-  为避免无效标签占据布局空间：
-  - 使用 display:none 隐藏非活动标签，从而使轨道宽度随活动标签变化；
-*/
-.beaver-switch--checked .beaver-switch__label--off,
-.beaver-switch:not(.beaver-switch--checked) .beaver-switch__label--on {
-  display: none;
-}
-
-/* 显示当前活动的标签 */
-.beaver-switch--checked .beaver-switch__label--on,
+/* 当未选中时，显示 off 标签，隐藏 on 标签 */
 .beaver-switch:not(.beaver-switch--checked) .beaver-switch__label--off {
   display: inline-block;
   opacity: 1;
+  color: var(--beaver-switch-label-off-color);
+  margin-left: calc(var(--beaver-switch-thumb-size) * 0.5 + 2px);
 }
 
-/* 确保活动标签与拇指之间有间距，避免重叠 */
-.beaver-switch--checked .beaver-switch__label--on {
-  margin-right: calc(var(--switch-thumb-size) * 0.5 + 2px);
+.beaver-switch:not(.beaver-switch--checked) .beaver-switch__label--on {
+  display: none;
+  opacity: 0;
 }
 
-.beaver-switch:not(.beaver-switch--checked) .beaver-switch__label--off {
-  margin-left: calc(var(--switch-thumb-size) * 0.5 + 2px);
+/* ===== 禁用状态下的标签 ===== */
+.beaver-switch--disabled .beaver-switch__label,
+.beaver-switch[disabled] .beaver-switch__label {
+  color: var(--beaver-switch-label-disabled-color);
+}
+
+/* ===== Spinner（加载状态）===== */
+/* Spinner 容器：在拇指内显示旋转动画 */
+.beaver-switch__spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--beaver-switch-spinner-size);
+  height: var(--beaver-switch-spinner-size);
+  position: relative;
+}
+
+/* Spinner 圆圈：使用 border 绘制旋转的加载动画 */
+.beaver-switch__spinner::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: var(--beaver-switch-spinner-border-width) solid var(--beaver-switch-spinner-border-color);
+  border-top-color: var(--beaver-switch-spinner-top-color);
+  animation: beaver-switch-spinner-spin var(--beaver-switch-spinner-duration) linear infinite;
+  pointer-events: none;
+}
+
+/* ===== 加载状态 ===== */
+/* 加载时，拇指不再显示默认内容，只显示 spinner */
+.beaver-switch--loading .beaver-switch__thumb {
+  opacity: 0.8;
+}
+
+/* Spinner 旋转动画 */
+@keyframes beaver-switch-spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

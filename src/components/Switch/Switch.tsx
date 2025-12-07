@@ -87,7 +87,8 @@ const Switch = forwardRef<HTMLButtonElement, SwitchProps>((props, ref) => {
     .join(' ');
 
   // 返回可访问性的按钮结构：使用 role="switch" 与 aria-checked 标注当前状态
-  // - aria-disabled 与 disabled 保证屏幕阅读器与键盘行为一致
+  // - 只在真正禁用（disabled=true）时设置原生 disabled 属性
+  // - 加载状态通过 aria-disabled 和 CSS 类来控制交互和样式，避免浏览器默认禁用样式
   // - 轨道内部包含：打开标签、拇指（可能含 spinner）、关闭标签（根据状态条件渲染）
   return (
     <button
@@ -95,7 +96,7 @@ const Switch = forwardRef<HTMLButtonElement, SwitchProps>((props, ref) => {
       role="switch"
       aria-checked={mergedChecked}
       aria-disabled={disabled || loading}
-      disabled={disabled || loading}
+      disabled={disabled}
       className={classes}
       onClick={handleToggle}
       ref={ref}
