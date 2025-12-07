@@ -179,7 +179,7 @@
   border-radius: var(--beaver-radius-lg);
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: var(--beaver-select-box-shadow, 0 8px 24px rgba(20, 30, 50, 0.12));
-  z-index: 60;
+  z-index: var(--beaver-select-z-index, 5000);
   max-height: var(--beaver-select-max-height, 260px);
   overflow: auto;
   padding: var(--beaver-space-xs, 6px) var(--beaver-space-xxs, 4px);

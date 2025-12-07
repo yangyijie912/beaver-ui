@@ -483,12 +483,12 @@ const Select: React.FC<SelectProps> = ({
               position: 'absolute',
               left: `${left}px`,
               top: `${top}px`,
-              // override stylesheet's `width: 100%` by setting inline width to `auto`
+              // 通过将内联宽度设置为 `auto` 来覆盖样式表的 `width: 100%`
               width: 'auto',
               minWidth: menuWidth ? `${menuWidth}px` : undefined,
               maxWidth: `${vwRemaining}px`,
               boxSizing: 'border-box',
-              zIndex: 9999,
+              zIndex: 'var(--beaver-select-z-index, 5000)',
             };
           }
           return createPortal(

@@ -58,6 +58,7 @@ export const vars = {
       'spinner-border-width': '2px', // 加载中 spinner 边框宽度
       'arrow-container-size': '20px', // 下拉箭头容器尺寸
       'max-height': '260px', // 下拉列表最大高度
+      'z-index': '5000', // 下拉菜单层级，默认 5000，可被覆盖
     },
     checkbox: {
       width: '16px',
