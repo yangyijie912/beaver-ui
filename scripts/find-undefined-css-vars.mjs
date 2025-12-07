@@ -5,10 +5,10 @@
  *   扫描指定目录（或整个仓库）下的所有 CSS/HTML/JS/TS 文件，
  *   查找使用了 var(--xxx) 但未定义 --xxx 的 CSS 变量。
  *  用法：
- *   node scripts/find-undefined-css-vars.js            # 扫描整个仓库
- *   node scripts/find-undefined-css-vars.js <path>...  # 只扫描指定的文件或目录
+ *   node scripts/find-undefined-css-vars.mjs            # 扫描整个仓库
+ *   node scripts/find-undefined-css-vars.mjs <path>...  # 只扫描指定的文件或目录
  *  示例：
- *   node scripts/find-undefined-css-vars.js src/components/Input/Input.css
+ *   node scripts/find-undefined-css-vars.mjs src/components/Input/Input.css
  */
 const fs = require('fs');
 const path = require('path');
@@ -78,10 +78,10 @@ function extract(file) {
 
 function printUsageAndExit() {
   console.log('\n用法：');
-  console.log('  node scripts/find-undefined-css-vars.js            # 扫描整个仓库');
-  console.log('  node scripts/find-undefined-css-vars.js <path>...  # 只扫描指定的文件或目录');
+  console.log('  node scripts/find-undefined-css-vars.mjs            # 扫描整个仓库');
+  console.log('  node scripts/find-undefined-css-vars.mjs <path>...  # 只扫描指定的文件或目录');
   console.log('示例：');
-  console.log('  node scripts/find-undefined-css-vars.js src/components/Input/Input.css');
+  console.log('  node scripts/find-undefined-css-vars.mjs src/components/Input/Input.css');
   process.exit(0);
 }
 
