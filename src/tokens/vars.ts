@@ -55,9 +55,6 @@ export const vars = {
       'max-height': '260px', // 下拉列表最大高度
       'z-index': '5000', // 下拉菜单层级，默认 5000，可被覆盖
     },
-    radio: {
-      width: '16px',
-    },
     switch: {
       'thumb-offset': '2px', // switch 拇指偏移量
       'thumb-size-sm': '14px', // switch 拇指尺寸

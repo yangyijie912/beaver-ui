@@ -1,22 +1,54 @@
 :root {
-  --radio-size: var(--beaver-radio-width, 16px);
-  --radio-border: var(--beaver-color-border);
-  --radio-checked-bg: var(--beaver-color-primary);
-  --radio-dot-color: #fff;
-  --radio-gap: var(--beaver-space-sm);
-  --radio-focus-outline: rgb(var(--beaver-color-primary-rgb) / 0.6);
-  --radio-focus-color: rgb(var(--beaver-color-primary-rgb) / 0.8);
-  --radio-label-color: var(--beaver-color-text);
-  --radio-label-disabled: var(--beaver-color-disabled);
+  /* ===== 尺寸定义 ===== */
+  --beaver-radio-size: 16px;
+
+  /* ===== 颜色定义：基础状态 ===== */
+
+  --beaver-radio-border-color: var(--beaver-color-border, #aaa); /* 边框颜色：默认未选中状态 */
+  --beaver-radio-checked-bg: var(--beaver-color-primary, #0eaae0); /* 背景颜色：选中状态 */
+  --beaver-radio-dot-color: #ffffff; /* 中心圆点颜色（仅在选中时显示）：白色以确保在彩色背景上的可见性 */
+  --beaver-radio-text-color: var(--beaver-color-text, #333); /* 文字颜色：用于标签文本 */
+  --beaver-radio-disabled-bg: #f3f4f6; /* 禁用时的背景色：浅灰色，使其看起来不可交互 */
+  --beaver-radio-disabled-border: #e5e7eb; /* 禁用时的边框色：与背景接近但略深 */
+  --beaver-radio-disabled-text: var(--beaver-color-disabled, #9ca3af); /* 禁用时的文字色：降低对比度 */
+
+  /* ===== 颜色定义：交互状态 ===== */
+
+  /* Hover 和 Focus 时的边框色：使用原色的聚焦色 */
+  --beaver-radio-border-color-hover: rgb(var(--beaver-color-primary-rgb, 14 170 224) / 0.8);
+  /* Focus 时的外环颜色：使用原色的半透明效果 */
+  --beaver-radio-focus-ring-color: rgb(var(--beaver-color-primary-rgb, 14 170 224) / 0.2);
+
+  /* ===== 间距定义 ===== */
+
+  --beaver-radio-gap: var(--beaver-space-sm, 8px); /* Radio 与标签文本之间的间距 */
+  --beaver-radio-item-gap: var(--beaver-space-md, 12px); /* Radio 项之间的水平间距（在 Group 内横向排列时） */
+  --beaver-radio-focus-ring-width: 4px; /* Focus ring 的宽度：聚焦时的外环大小 */
+
+  /* ===== 圆点配置 ===== */
+
+  --beaver-radio-dot-scale: 0.5; /* 中心圆点占 Radio 的比例 */
+
+  /* ===== 动画配置 ===== */
+
+  --beaver-radio-transition-duration: 120ms; /* 所有过渡的时间 */
+  --beaver-radio-transition-timing: ease; /* 过渡的缓动函数 */
+
+  /* ===== 圆角配置 ===== */
+
+  --beaver-radio-border-radius: 999px; /* Radio 的边框半径：999px 使其完全圆形 */
 }
 
-/* 隐藏原生 input，但保持可聚焦 */
+/* ===== 隐藏原生输入框 ===== */
+/* 隐藏原生输入框但保持其可聚焦；使用相邻的 span（.beaver-radio）作为视觉元素
+   通过 opacity: 0 而不是 display: none 来保持其在文档流中的尺寸，以支持键盘交互
+*/
 .beaver-radio-input {
   position: absolute;
   top: 0;
   left: 0;
-  width: var(--radio-size);
-  height: var(--radio-size);
+  width: var(--beaver-radio-size);
+  height: var(--beaver-radio-size);
   margin: 0;
   padding: 0;
   opacity: 0;
@@ -24,124 +56,152 @@
   z-index: 2;
 }
 
+/* ===== 自定义 Radio 外观 ===== */
 .beaver-radio {
+  /* 基础布局 */
   box-sizing: border-box;
-  width: var(--radio-size);
-  height: var(--radio-size);
-  border: 1px solid var(--radio-border);
-  border-radius: 999px;
   display: inline-block;
-  vertical-align: middle;
-  background: #fff;
-  cursor: pointer;
+  width: var(--beaver-radio-size);
+  height: var(--beaver-radio-size);
   position: relative;
   z-index: 1;
+
+  /* 视觉样式：边框和背景 */
+  border: 1px solid var(--beaver-radio-border-color);
+  border-radius: var(--beaver-radio-border-radius);
+  background: #fff;
+
+  /* 交互反馈 */
+  cursor: pointer;
+  vertical-align: middle;
+  transition:
+    border-color var(--beaver-radio-transition-duration) var(--beaver-radio-transition-timing),
+    background-color var(--beaver-radio-transition-duration) var(--beaver-radio-transition-timing),
+    box-shadow var(--beaver-radio-transition-duration) var(--beaver-radio-transition-timing);
 }
 
-/* 焦点可见样式 */
+/* ===== Focus 状态（键盘导航和手动聚焦）===== */
 .beaver-radio-input:focus-visible + .beaver-radio {
-  box-shadow: 0 0 0 var(--beaver-focus-ring) var(--radio-focus-outline);
-  border-color: var(--radio-focus-color);
+  /* 添加外环阴影表示获得焦点 */
+  box-shadow: 0 0 0 var(--beaver-radio-focus-ring-width) var(--beaver-radio-focus-ring-color);
+  border-color: var(--beaver-radio-border-color-hover);
 }
 
-/* hover */
+/* ===== Hover 状态 ===== */
+/* 未禁用时的 Hover 效果：边框颜色加深，提供视觉反馈 */
 .beaver-radio-input:not(:disabled):hover + .beaver-radio,
 .beaver-radio:not(:disabled):hover {
-  border-color: var(--radio-focus-color);
+  border-color: var(--beaver-radio-border-color-hover);
 }
 
-/* 选中时在中间显示一个点 */
+/* ===== 中心圆点（选中时显示）===== */
+/* 使用 ::after 伪元素绘制中心圆点 */
 .beaver-radio::after {
   content: '';
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  width: calc(var(--radio-size) * 0.5);
-  height: calc(var(--radio-size) * 0.5);
-  border-radius: 999px;
-  background: var(--radio-dot-color);
-  transition:
-    transform 120ms ease,
-    opacity 120ms ease,
-    background 120ms ease;
+  width: calc(var(--beaver-radio-size) * var(--beaver-radio-dot-scale));
+  height: calc(var(--beaver-radio-size) * var(--beaver-radio-dot-scale));
+  background: var(--beaver-radio-dot-color);
+  border-radius: var(--beaver-radio-border-radius);
+
+  /* 默认隐藏，选中时显示 */
   opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  transition:
+    transform var(--beaver-radio-transition-duration) var(--beaver-radio-transition-timing),
+    opacity var(--beaver-radio-transition-duration) var(--beaver-radio-transition-timing),
+    background-color var(--beaver-radio-transition-duration) var(--beaver-radio-transition-timing);
   pointer-events: none;
 }
 
+/* ===== 选中状态 ===== */
 .beaver-radio-input:checked + .beaver-radio {
-  background: var(--radio-checked-bg);
-  border-color: var(--radio-checked-bg);
+  /* 变更背景色和边框色为原色 */
+  background: var(--beaver-radio-checked-bg);
+  border-color: var(--beaver-radio-checked-bg);
 }
 
+/* 选中时显示中心圆点 */
 .beaver-radio-input:checked + .beaver-radio::after {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
 
-label .beaver-radio + span {
+/* ===== 标签文本样式 ===== */
+/* Radio 后紧跟的文本 span */
+label .beaver-radio + span,
+.beaver-radio-wrapper .beaver-radio + span {
   line-height: 1;
   vertical-align: middle;
-  color: var(--radio-label-color);
+  color: var(--beaver-radio-text-color);
 }
 
+/* ===== 禁用状态 ===== */
+/* 禁用时的 Radio 外观：灰色背景和边框，不可交互 */
 .beaver-radio-input:disabled + .beaver-radio,
 .beaver-radio:disabled,
 .beaver-radio-wrapper--disabled .beaver-radio,
 .beaver-radio--disabled {
-  background: #f3f4f6;
-  border-color: #e5e7eb;
+  background: var(--beaver-radio-disabled-bg);
+  border-color: var(--beaver-radio-disabled-border);
   cursor: not-allowed;
-  opacity: 0.9;
   pointer-events: none;
+  opacity: 0.9;
 }
 
+/* 禁用时的标签文本：变灰并不可交互 */
 label input[disabled] + .beaver-radio + span,
 .beaver-radio-wrapper input[disabled] + .beaver-radio + span,
 .beaver-radio-wrapper--disabled .beaver-radio + span {
-  color: var(--radio-label-disabled);
+  color: var(--beaver-radio-disabled-text);
   cursor: not-allowed;
 }
 
+/* ===== Wrapper 容器样式 ===== */
+/* Radio 与标签的整体容器：使用 inline-flex 保持在行内，垂直居中对齐 */
 .beaver-radio-wrapper {
   display: inline-flex;
   align-items: center;
-  gap: var(--radio-gap);
+  gap: var(--beaver-radio-gap);
   position: relative;
-}
-
-/* 给每个 radio wrapper 添加右侧间距，便于多个单选项之间留空隙 */
-.beaver-radio-wrapper {
-  margin-right: var(--beaver-space-md);
+  /* 在独立使用时（非 Group 内），右侧添加间距 */
+  margin-right: var(--beaver-radio-item-gap);
 }
 
 .beaver-radio-wrapper:last-child {
   margin-right: 0;
 }
 
-/* Radio group container: 默认水平布局 */
+/* ===== RadioGroup 容器样式 ===== */
+/* Radio group container: 默认水平布局，多个 radio 项横向排列 */
 .beaver-radio-group {
   display: flex;
   align-items: center;
 }
 
+/* ===== RadioGroup 垂直排列变体 ===== */
 /* 垂直排列时：让子项纵向堆叠并使用垂直间距 */
 .beaver-radio-group--vertical {
   flex-direction: column;
   align-items: flex-start;
 }
 
-/* 当在 group 内时，重写单个 wrapper 的水平外边距，并在垂直模式下使用底部间距 */
+/* ===== Group 内 Wrapper 间距 ===== */
+/* 当在 group 内时，wrapper 的间距由 group 统一管理 */
 .beaver-radio-group > .beaver-radio-wrapper {
-  margin-right: var(--beaver-space-md);
+  margin-right: var(--beaver-radio-item-gap);
 }
 
 .beaver-radio-group > .beaver-radio-wrapper:last-child {
   margin-right: 0;
 }
 
+/* 垂直模式下使用底部间距而不是右侧间距 */
 .beaver-radio-group--vertical > .beaver-radio-wrapper {
-  margin-bottom: var(--beaver-space-md);
+  margin-right: 0;
+  margin-bottom: var(--beaver-radio-item-gap);
 }
 
 .beaver-radio-group--vertical > .beaver-radio-wrapper:last-child {
