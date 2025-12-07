@@ -10,8 +10,11 @@
  *  示例：
  *   node scripts/find-undefined-css-vars.mjs src/components/Input/Input.css
  */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ROOT = path.resolve(__dirname, '..');
 const IGNORE_DIRS = ['node_modules', '.git', 'dist', 'build'];
