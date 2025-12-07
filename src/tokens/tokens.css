@@ -167,13 +167,4 @@
   --beaver-datepicker-footer-bg: #f8fafc;
   --beaver-datepicker-footer-padding: 0 12px;
   --beaver-datepicker-gap: 8px;
-  --beaver-input-bg: #ffffff;
-  --beaver-input-disabled-bg: #f9fafb;
-  --beaver-input-line-height: 1.2;
-  --beaver-input-wrapper-padding-sm: 0 8px;
-  --beaver-input-wrapper-padding-md: 0 12px;
-  --beaver-input-wrapper-padding-lg: 0 16px;
-  --beaver-input-affix-margin: var(--beaver-space-xs, 4px);
-  --beaver-input-affix-color: var(--beaver-color-disabled);
-  --beaver-input-textarea-min-height: 88px;
 }

@@ -1,13 +1,54 @@
+:root {
+  /* 字体 / 大小 */
+  --beaver-input-font-size-sm: var(--beaver-font-size-sm, 14px);
+  --beaver-input-font-size-md: var(--beaver-font-size-md, 16px);
+  --beaver-input-font-size-lg: var(--beaver-font-size-lg, 18px);
+  --beaver-input-line-height: 1.2;
+
+  /* 颜色（优先引用全局 token，提供回退值） */
+  --beaver-input-color-text: var(--beaver-color-text, #333);
+  --beaver-input-bg: var(--beaver-color-surface, #ffffff);
+  --beaver-input-disabled-bg: var(--beaver-input-disabled-bg, #f9fafb);
+  --beaver-input-affix-color: var(--beaver-color-disabled, #9ca3af);
+  --beaver-input-affix-margin: var(--beaver-input-space-xs);
+  --beaver-input-color-border: var(--beaver-color-border, #aaa);
+  --beaver-input-color-primary: var(--beaver-color-primary, #2563eb);
+  --beaver-input-color-primary-rgb: var(--beaver-color-primary-rgb, 37, 99, 235);
+  --beaver-input-color-error: var(--beaver-color-error, #e44444);
+  --beaver-input-color-success: var(--beaver-color-success, #10b987);
+  --beaver-input-color-disabled: var(--beaver-color-disabled, #9ca3af);
+
+  /* 边框 / 圆角 / focus */
+  --beaver-input-border: 1px solid var(--beaver-input-color-border);
+  --beaver-input-border-radius: var(--beaver-radius-md, 6px);
+  --beaver-input-focus-ring: var(--beaver-focus-ring, 3px);
+
+  /* spacing */
+  --beaver-input-space-xs: var(--beaver-space-xs, 4px);
+  --beaver-input-space-sm: var(--beaver-space-sm, 8px);
+  --beaver-input-space-md: var(--beaver-space-md, 12px);
+  --beaver-input-space-lg: var(--beaver-space-lg, 16px);
+  --beaver-input-space-sm2: var(--beaver-space-sm2, 10px);
+
+  /* wrapper 内边距（组合形式，保持与现有语义一致） */
+  --beaver-input-wrapper-padding-sm: 0 var(--beaver-input-space-sm);
+  --beaver-input-wrapper-padding-md: 0 var(--beaver-input-space-md);
+  --beaver-input-wrapper-padding-lg: 0 var(--beaver-input-space-lg);
+
+  /* 文本域 */
+  --beaver-input-textarea-min-height: 88px;
+}
+
+/*  */
 .beaver-input {
   box-sizing: border-box;
   width: 100%;
-  padding: var(--beaver-space-sm, 8px) var(--beaver-space-md, 12px);
-  border: 1px solid var(--beaver-color-border);
-  border-radius: var(--beaver-radius-md);
-  color: var(--beaver-color-text);
-  background: var(--beaver-input-bg, #ffffff);
-  font-size: var(--beaver-font-size-md);
-  line-height: var(--beaver-input-line-height, 1.2);
+  border: var(--beaver-input-border);
+  border-radius: var(--beaver-input-border-radius);
+  color: var(--beaver-input-color-text);
+  background: var(--beaver-input-bg);
+  font-size: var(--beaver-input-font-size-md);
+  line-height: var(--beaver-input-line-height);
   outline: none;
   transition:
     box-shadow 120ms ease,
@@ -16,42 +57,42 @@
 
 .beaver-input:focus,
 .beaver-input:focus-visible {
-  border-color: var(--beaver-color-primary);
-  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
+  border-color: var(--beaver-input-color-primary);
+  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(var(--beaver-input-color-primary-rgb), 0.12);
 }
 
 .beaver-input--error {
-  border-color: var(--beaver-color-error);
-  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(228, 68, 68, 0.08);
+  border-color: var(--beaver-input-color-error);
+  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(228, 68, 68, 0.08);
 }
 
 .beaver-input--success {
-  border-color: var(--beaver-color-success);
-  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(16, 185, 135, 0.08);
+  border-color: var(--beaver-input-color-success);
+  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(16, 185, 135, 0.08);
 }
 
 .beaver-input--disabled,
 .beaver-input[disabled],
 .beaver-input:disabled {
-  background: var(--beaver-input-disabled-bg, #f9fafb);
-  color: var(--beaver-color-disabled);
+  background: var(--beaver-input-disabled-bg);
+  color: var(--beaver-input-color-disabled);
   cursor: not-allowed;
 }
 
 /* Size */
 .beaver-input--small {
-  padding: var(--beaver-space-xs, 4px) var(--beaver-space-sm, 8px);
-  font-size: var(--beaver-font-size-sm);
+  padding: var(--beaver-input-space-xs) var(--beaver-input-space-sm);
+  font-size: var(--beaver-input-font-size-sm);
 }
 
 .beaver-input--medium {
-  padding: var(--beaver-space-sm, 8px) var(--beaver-space-md, 12px);
-  font-size: var(--beaver-font-size-md);
+  padding: var(--beaver-input-space-sm) var(--beaver-input-space-md);
+  font-size: var(--beaver-input-font-size-md);
 }
 
 .beaver-input--large {
-  padding: var(--beaver-space-md, 12px) var(--beaver-space-lg, 16px);
-  font-size: var(--beaver-font-size-lg);
+  padding: var(--beaver-input-space-md) var(--beaver-input-space-lg);
+  font-size: var(--beaver-input-font-size-lg);
 }
 
 /* 输入框包装器（用于前缀/后缀） */
@@ -59,9 +100,9 @@
   display: inline-flex;
   align-items: center;
   width: 100%;
-  border: 1px solid var(--beaver-color-border);
-  border-radius: var(--beaver-radius-md);
-  background: var(--beaver-input-bg, #ffffff);
+  border: var(--beaver-input-border);
+  border-radius: var(--beaver-input-border-radius);
+  background: var(--beaver-input-bg);
   transition:
     box-shadow 120ms ease,
     border-color 120ms ease;
@@ -69,38 +110,64 @@
 }
 
 .beaver-input-wrapper:focus-within {
-  border-color: var(--beaver-color-primary);
-  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
+  border-color: var(--beaver-input-color-primary);
+  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(var(--beaver-input-color-primary-rgb), 0.12);
 }
 
 /* wrapper 的 Size  */
 .beaver-input-wrapper--small {
-  padding: var(--beaver-input-wrapper-padding-sm, 0 var(--beaver-space-sm, 8px));
+  padding: var(--beaver-input-wrapper-padding-sm, 0 var(--beaver-input-space-sm));
 }
 
 .beaver-input-wrapper--medium {
-  padding: var(--beaver-input-wrapper-padding-md, 0 var(--beaver-space-md, 12px));
+  padding: var(--beaver-input-wrapper-padding-md, 0 var(--beaver-input-space-md));
 }
 
 .beaver-input-wrapper--large {
-  padding: var(--beaver-input-wrapper-padding-lg, 0 var(--beaver-space-lg, 16px));
+  padding: var(--beaver-input-wrapper-padding-lg, 0 var(--beaver-input-space-lg));
+}
+
+/* 让前缀/后缀与输入文字使用一致的字体大小与行高，保证垂直居中 */
+.beaver-input-wrapper {
+  /* 默认使用中等字号，通过 size modifier 覆盖 */
+  font-size: var(--beaver-input-font-size-md);
+  line-height: 1;
+}
+
+.beaver-input-wrapper--small {
+  font-size: var(--beaver-input-font-size-sm);
+}
+
+.beaver-input-wrapper--medium {
+  font-size: var(--beaver-input-font-size-md);
+}
+
+.beaver-input-wrapper--large {
+  font-size: var(--beaver-input-font-size-lg);
 }
 
 /* 前缀样式 */
 .beaver-input-prefix {
   display: flex;
   align-items: center;
-  margin-right: var(--beaver-input-affix-margin, var(--beaver-space-xs, 4px));
-  color: var(--beaver-input-affix-color, var(--beaver-color-disabled));
+  margin-right: var(--beaver-input-affix-margin);
+  color: var(--beaver-input-affix-color);
   white-space: nowrap;
+}
+
+/* 确保前后缀继承 wrapper 的字体与行高，以便与输入文本对齐 */
+.beaver-input-prefix,
+.beaver-input-suffix {
+  font-size: inherit;
+  line-height: inherit;
 }
 
 /* 后缀样式 */
 .beaver-input-suffix {
   display: flex;
   align-items: center;
-  margin-left: var(--beaver-input-affix-margin, var(--beaver-space-xs, 4px));
-  color: var(--beaver-input-affix-color, var(--beaver-color-disabled));
+  margin-left: var(--beaver-input-affix-margin);
+  color: var(--beaver-input-affix-color);
   white-space: nowrap;
 }
 
@@ -116,12 +183,12 @@
   margin: 0;
   font-size: 14px;
   line-height: 1;
-  color: var(--beaver-input-affix-color, var(--beaver-color-disabled));
+  color: var(--beaver-input-affix-color);
   cursor: pointer;
 }
 
 .beaver-input-clear:hover {
-  color: var(--beaver-color-text);
+  color: var(--beaver-input-color-text);
   background: rgba(0, 0, 0, 0.04);
   border-radius: 4px;
 }
@@ -130,7 +197,7 @@
 .beaver-input-wrapper .beaver-input {
   flex: 1;
   border: none;
-  padding: var(--beaver-space-sm, 8px) 0;
+  padding: var(--beaver-input-space-sm) 0;
   background: transparent;
 }
 
@@ -141,36 +208,36 @@
 }
 
 .beaver-input-wrapper .beaver-input--small {
-  padding: var(--beaver-space-xs, 4px) 0;
-  font-size: var(--beaver-font-size-sm);
+  padding: var(--beaver-input-space-xs) 0;
+  font-size: var(--beaver-input-font-size-sm);
 }
 
 .beaver-input-wrapper .beaver-input--medium {
-  padding: var(--beaver-space-sm, 8px) 0;
-  font-size: var(--beaver-font-size-md);
+  padding: var(--beaver-input-space-sm) 0;
+  font-size: var(--beaver-input-font-size-md);
 }
 
 .beaver-input-wrapper .beaver-input--large {
-  padding: var(--beaver-space-md, 12px) 0;
-  font-size: var(--beaver-font-size-lg);
+  padding: var(--beaver-input-space-md) 0;
+  font-size: var(--beaver-input-font-size-lg);
 }
 
 /* 禁用状态 */
 .beaver-input-wrapper:has(.beaver-input:disabled) {
-  background: var(--beaver-input-disabled-bg, #f9fafb);
-  border-color: var(--beaver-color-border);
+  background: var(--beaver-input-disabled-bg);
+  border-color: var(--beaver-input-color-border);
 }
 
 .beaver-input-wrapper:has(.beaver-input:disabled) .beaver-input-prefix,
 .beaver-input-wrapper:has(.beaver-input:disabled) .beaver-input-suffix {
-  color: var(--beaver-color-disabled);
+  color: var(--beaver-input-color-disabled);
   cursor: not-allowed;
 }
 
 /* 文本区域特定调整 */
 .beaver-input--textarea {
-  min-height: var(--beaver-input-textarea-min-height, 88px);
-  padding: var(--beaver-space-sm2, 10px) var(--beaver-space-md, 12px);
+  min-height: var(--beaver-input-textarea-min-height);
+  padding: var(--beaver-input-space-sm2) var(--beaver-input-space-md);
   resize: vertical;
   font-family: inherit;
 }
