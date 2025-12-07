@@ -19,6 +19,8 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
   suffixClassName?: string;
   /** 输入框大小 */
   size?: 'small' | 'medium' | 'large';
+  /** 如果需要设置原生 input 的 `size` 属性（可见字符数），使用 `htmlSize`。*/
+  htmlSize?: number;
 };
 
 /**
@@ -46,6 +48,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
       prefixClassName,
       suffixClassName,
       size = 'medium',
+      htmlSize,
       ...props
     },
     ref
@@ -95,6 +98,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
             className={classList.join(' ')}
             aria-invalid={validation === 'error'}
             disabled={disabled}
+            size={htmlSize}
             style={mergedStyle}
             {...(restInput as React.InputHTMLAttributes<HTMLInputElement>)}
           />
@@ -109,6 +113,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
         className={classList.join(' ')}
         aria-invalid={validation === 'error'}
         disabled={disabled}
+        size={htmlSize}
         style={mergedStyle}
         {...(restInput as React.InputHTMLAttributes<HTMLInputElement>)}
       />
