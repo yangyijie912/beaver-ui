@@ -1,7 +1,7 @@
 /**
  * UI 设计系统的基础变量
  * 这些变量会被注入为 CSS 变量，供组件使用，也可以直接在 JS/TS 中引用
- * 更新完这些变量后，运行 `npm run gen:tokens` 来生成对应的 CSS 变量文件
+ * 更新完这些变量后，运行 `pnpm gen:tokens` 来生成对应的 CSS 变量文件
  */
 export const vars = {
   color: {
