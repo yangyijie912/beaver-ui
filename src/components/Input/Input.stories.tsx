@@ -1,3 +1,4 @@
+import React from 'react';
 import Input from './Input';
 import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 
@@ -39,7 +40,65 @@ export const Error: Story = {
   args: { placeholder: 'Error', validation: 'error' },
 };
 
+export const Success: Story = {
+  name: '成功',
+  args: { placeholder: 'Success', validation: 'success', defaultValue: 'Valid input' },
+};
+
 export const Textarea: Story = {
   name: '多行',
   args: { textarea: true, placeholder: 'Type here...' },
+};
+
+export const Sizes: Story = {
+  name: '尺寸',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <Input size="small" placeholder="Small" />
+      <Input size="medium" placeholder="Medium" />
+      <Input size="large" placeholder="Large" />
+    </div>
+  ),
+};
+
+export const WithSuffix: Story = {
+  name: '带后置内容',
+  args: {
+    placeholder: '输入日期',
+    suffix: '📅',
+    defaultValue: '2024-01-15',
+  },
+};
+
+export const WithPrefix: Story = {
+  name: '带前置内容',
+  args: {
+    placeholder: '输入价格',
+    prefix: '¥',
+  },
+};
+
+export const WithPrefixAndSuffix: Story = {
+  name: '前置和后置内容',
+  args: {
+    placeholder: '输入URL',
+    prefix: '🔗',
+    suffix: '✕',
+  },
+};
+
+export const WithClearButton: Story = {
+  name: '可清除输入框',
+  render: () => {
+    const [value, setValue] = React.useState('hello');
+    return (
+      <Input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        suffix={value ? '✕' : null}
+        suffixClassName="clear-btn-style"
+        placeholder="输入文本"
+      />
+    );
+  },
 };

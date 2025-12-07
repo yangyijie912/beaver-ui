@@ -10,6 +10,7 @@
  */
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import Input from '../Input/Input';
 import { useDatePickerState, useDatePickerUI } from './hooks/useDatePickerState';
 import CalendarPanel from './components/CalendarPanel';
 import Header from './components/Header';
@@ -315,36 +316,51 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       <>
         {/* 输入框包装容器 */}
         <div ref={wrapperRef} className={wrapperClassName} style={wrapperStyle}>
-          {/* 输入框 */}
-          <div className="beaver-datepicker-input-wrapper">
-            <input
-              ref={inputRef || ref}
-              type="text"
-              className="beaver-datepicker-input"
-              placeholder={placeholder}
-              value={inputValue}
-              onChange={handleInputChange}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              onKeyDown={handleKeyDown}
-              disabled={disabled}
-              readOnly={readOnly}
-              {...rest}
-            />
-
-            {/* 清除按钮 */}
-            {allowClear && inputValue && !disabled && (
-              <button
-                className="beaver-datepicker-clear-btn"
-                onClick={handleClear}
-                title="清除"
-                type="button"
-                aria-label="清除日期"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+          {/* 使用 Input 组件替代原生 input */}
+          <Input
+            ref={inputRef || ref}
+            type="text"
+            placeholder={placeholder}
+            value={inputValue}
+            onChange={handleInputChange}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            onKeyDown={handleKeyDown}
+            disabled={disabled}
+            readOnly={readOnly}
+            size={size}
+            autoComplete="off"
+            suffix={
+              allowClear && inputValue && !disabled ? (
+                <button
+                  className="beaver-datepicker-clear-btn"
+                  onClick={handleClear}
+                  title="清除"
+                  type="button"
+                  aria-label="清除日期"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '20px',
+                    height: '20px',
+                    padding: 0,
+                    margin: 0,
+                    border: 'none',
+                    background: 'transparent',
+                    color: 'var(--beaver-color-disabled)',
+                    cursor: 'pointer',
+                    borderRadius: '50%',
+                    fontSize: '14px',
+                  }}
+                >
+                  ✕
+                </button>
+              ) : null
+            }
+            suffixClassName="beaver-datepicker-suffix"
+            {...rest}
+          />
 
           {/* 日期选择面板 */}
           {isOpen && (

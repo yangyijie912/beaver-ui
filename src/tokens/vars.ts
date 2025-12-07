@@ -176,16 +176,6 @@ export const vars = {
       'animation-duration-close': '0.25s', // 关闭动画时长
     },
     datepicker: {
-      'input-width': '200px', // 日期输入框宽度
-      'input-height': '32px', // 日期输入框高度
-      'input-padding': '6px 12px', // 日期输入框内边距
-      'input-font-size': '14px', // 日期输入框字体大小
-      'input-border-radius': '6px', // 日期输入框圆角
-      'input-border-color': '#aaa', // 日期输入框边框颜色
-      'input-border-focus-color': '#0eaae0', // 日期输入框焦点边框颜色
-      'input-bg': '#ffffff', // 日期输入框背景色
-      'input-disabled-bg': '#f5f5f5', // 日期输入框禁用态背景色
-      'input-disabled-color': '#999', // 日期输入框禁用态文字颜色
       'picker-bg': '#ffffff', // 日期选择器面板背景色
       'picker-border-color': '#e8e8e8', // 日期选择器面板边框颜色
       'picker-border-radius': '6px', // 日期选择器面板圆角
@@ -220,6 +210,21 @@ export const vars = {
       'footer-bg': '#f8fafc', // 日期选择器页脚背景色
       'footer-padding': '0 12px', // 日期选择器页脚内边距
       gap: '8px', // 日期选择器内部间距
+    },
+    input: {
+      // 基础样式
+      bg: '#ffffff', // input 背景色
+      'disabled-bg': '#f9fafb', // input 禁用态背景色
+      'line-height': '1.2', // input 行高
+      // Wrapper 容器
+      'wrapper-padding-sm': '0 8px', // small 尺寸 wrapper padding
+      'wrapper-padding-md': '0 12px', // medium 尺寸 wrapper padding
+      'wrapper-padding-lg': '0 16px', // large 尺寸 wrapper padding
+      // Prefix/Suffix 样式
+      'affix-margin': 'var(--beaver-space-xs, 4px)', // prefix/suffix 外边距
+      'affix-color': 'var(--beaver-color-disabled)', // prefix/suffix 文字颜色
+      // Textarea
+      'textarea-min-height': '88px', // textarea 最小高度
     },
   },
 };
