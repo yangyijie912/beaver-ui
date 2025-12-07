@@ -28,7 +28,7 @@ export const WithLabel: Story = {
 };
 
 export const Indeterminate: Story = {
-  name: '不确定态',
+  name: '中间态',
   args: { indeterminate: true },
 };
 

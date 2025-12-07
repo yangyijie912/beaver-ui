@@ -87,10 +87,10 @@
 .beaver-table__select-col.beaver-table__cell--sticky .beaver-checkbox,
 .beaver-table__select-col.beaver-table__cell--sticky--left .beaver-checkbox {
   box-sizing: border-box;
-  width: var(--checkbox-size, 16px);
-  height: var(--checkbox-size, 16px);
-  min-width: var(--checkbox-size, 16px);
-  min-height: var(--checkbox-size, 16px);
+  width: var(--beaver-checkbox-size, 16px);
+  height: var(--beaver-checkbox-size, 16px);
+  min-width: var(--beaver-checkbox-size, 16px);
+  min-height: var(--beaver-checkbox-size, 16px);
   border-radius: var(--beaver-radius-sm);
   position: relative;
   z-index: 2;
