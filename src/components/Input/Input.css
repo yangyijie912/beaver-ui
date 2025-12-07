@@ -1,177 +1,224 @@
 :root {
-  /* 字体 / 大小 */
-  --beaver-input-font-size-sm: var(--beaver-font-size-sm, 14px);
-  --beaver-input-font-size-md: var(--beaver-font-size-md, 16px);
-  --beaver-input-font-size-lg: var(--beaver-font-size-lg, 18px);
-  --beaver-input-line-height: 1.2;
+  /* ===== 尺寸定义：直观的 Small / Medium / Large ===== */
 
-  /* 颜色（优先引用全局 token，提供回退值） */
-  --beaver-input-color-text: var(--beaver-color-text, #333);
-  --beaver-input-bg: var(--beaver-color-surface, #ffffff);
-  --beaver-input-disabled-bg: var(--beaver-input-disabled-bg, #f9fafb);
+  /* Small 尺寸：紧凑型，用于表单列表等空间受限的场景 */
+  --beaver-input-padding-small: 2px 8px;
+  --beaver-input-height-small: 28px;
+  --beaver-input-font-size-small: var(--beaver-font-size-sm, 14px);
+
+  /* Medium 尺寸：标准型，最常用的尺寸 */
+  --beaver-input-padding-medium: 4px 10px;
+  --beaver-input-height-medium: 36px;
+  --beaver-input-font-size-medium: var(--beaver-font-size-md, 16px);
+
+  /* Large 尺寸：宽松型，用于突出的输入框或移动端 */
+  --beaver-input-padding-large: 6px 12px;
+  --beaver-input-height-large: 44px;
+  --beaver-input-font-size-large: var(--beaver-font-size-lg, 18px);
+
+  /* ===== 颜色定义：状态色 ===== */
+
+  /* 文字颜色 */
+  --beaver-input-text-color: var(--beaver-color-text, #333);
+  --beaver-input-text-color-disabled: var(--beaver-color-disabled, #9ca3af);
+
+  /* 背景颜色 */
+  --beaver-input-bg-color: #fff;
+  --beaver-input-bg-color-disabled: #f9fafb;
+
+  /* 前后缀颜色 */
   --beaver-input-affix-color: var(--beaver-color-disabled, #9ca3af);
-  --beaver-input-affix-margin: var(--beaver-input-space-xs);
-  --beaver-input-color-border: var(--beaver-color-border, #aaa);
-  --beaver-input-color-primary: var(--beaver-color-primary, #2563eb);
-  --beaver-input-color-primary-rgb: var(--beaver-color-primary-rgb, 37, 99, 235);
-  --beaver-input-color-error: var(--beaver-color-error, #e44444);
-  --beaver-input-color-success: var(--beaver-color-success, #10b987);
-  --beaver-input-color-disabled: var(--beaver-color-disabled, #9ca3af);
 
-  /* 边框 / 圆角 / focus */
-  --beaver-input-border: 1px solid var(--beaver-input-color-border);
-  --beaver-input-border-radius: var(--beaver-radius-md, 6px);
-  --beaver-input-focus-ring: var(--beaver-focus-ring, 3px);
+  /* 边框颜色：四种状态 */
+  --beaver-input-border-color: var(--beaver-color-border, #aaa);
+  --beaver-input-border-color-focus: var(--beaver-color-primary, #2563eb);
+  --beaver-input-border-color-error: var(--beaver-color-error, #e44444);
+  --beaver-input-border-color-success: var(--beaver-color-success, #10b987);
 
-  /* spacing */
-  --beaver-input-space-xs: var(--beaver-space-xs, 4px);
-  --beaver-input-space-sm: var(--beaver-space-sm, 8px);
-  --beaver-input-space-md: var(--beaver-space-md, 12px);
-  --beaver-input-space-lg: var(--beaver-space-lg, 16px);
-  --beaver-input-space-sm2: var(--beaver-space-sm2, 10px);
+  /* Hover 颜色（比聚焦更淡） */
+  --beaver-input-border-color-hover: rgba(37, 99, 235, 0.6);
+  --beaver-input-border-color-hover-error: rgba(228, 68, 68, 0.6);
+  --beaver-input-border-color-hover-success: rgba(16, 185, 135, 0.6);
 
-  /* wrapper 内边距（组合形式，保持与现有语义一致） */
-  --beaver-input-wrapper-padding-sm: 0 var(--beaver-input-space-sm);
-  --beaver-input-wrapper-padding-md: 0 var(--beaver-input-space-md);
-  --beaver-input-wrapper-padding-lg: 0 var(--beaver-input-space-lg);
+  /* ===== 间距：前后缀相关 ===== */
 
-  /* 文本域 */
+  /* 前后缀与输入框的距离 */
+  --beaver-input-affix-gap: 4px;
+
+  /* ===== 文本域特定 ===== */
+
+  /* 文本域的最小高度和内边距 */
   --beaver-input-textarea-min-height: 88px;
+  --beaver-input-textarea-padding: 10px 12px;
+
+  /* ===== 动画和过渡 ===== */
+  /* 改这些可以调整交互反馈的速度 */
+
+  --beaver-input-transition-duration: 120ms;
+  --beaver-input-transition-timing: ease;
 }
 
-/*  */
+/* ===== 基础样式 ===== */
 .beaver-input {
   box-sizing: border-box;
   width: 100%;
-  border: var(--beaver-input-border);
-  border-radius: var(--beaver-input-border-radius);
-  color: var(--beaver-input-color-text);
-  background: var(--beaver-input-bg);
-  font-size: var(--beaver-input-font-size-md);
-  line-height: var(--beaver-input-line-height);
+  border: 1px solid var(--beaver-input-border-color);
+  border-radius: 6px;
+  color: var(--beaver-input-text-color);
+  background: var(--beaver-input-bg-color);
+  font-size: var(--beaver-input-font-size-medium);
+  line-height: 1.2;
   outline: none;
   transition:
-    box-shadow 120ms ease,
-    border-color 120ms ease;
+    box-shadow var(--beaver-input-transition-duration) var(--beaver-input-transition-timing),
+    border-color var(--beaver-input-transition-duration) var(--beaver-input-transition-timing);
 }
 
-.beaver-input:focus,
-.beaver-input:focus-visible {
-  border-color: var(--beaver-input-color-primary);
-  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(var(--beaver-input-color-primary-rgb), 0.12);
-}
-
+/* ===== 错误状态 ===== */
 .beaver-input--error {
-  border-color: var(--beaver-input-color-error);
-  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(228, 68, 68, 0.08);
+  border-color: var(--beaver-input-border-color-error);
 }
 
+/* ===== 成功状态 ===== */
 .beaver-input--success {
-  border-color: var(--beaver-input-color-success);
-  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(16, 185, 135, 0.08);
+  border-color: var(--beaver-input-border-color-success);
 }
 
+/* ===== 禁用状态 ===== */
 .beaver-input--disabled,
 .beaver-input[disabled],
 .beaver-input:disabled {
-  background: var(--beaver-input-disabled-bg);
-  color: var(--beaver-input-color-disabled);
+  background: var(--beaver-input-bg-color-disabled);
+  color: var(--beaver-input-text-color-disabled);
   cursor: not-allowed;
 }
 
-/* Size */
+/* ===== 尺寸变化 ===== */
 .beaver-input--small {
-  padding: var(--beaver-input-space-xs) var(--beaver-input-space-sm);
-  font-size: var(--beaver-input-font-size-sm);
+  padding: var(--beaver-input-padding-small);
+  font-size: var(--beaver-input-font-size-small);
+  height: var(--beaver-input-height-small);
 }
 
 .beaver-input--medium {
-  padding: var(--beaver-input-space-sm) var(--beaver-input-space-md);
-  font-size: var(--beaver-input-font-size-md);
+  padding: var(--beaver-input-padding-medium);
+  font-size: var(--beaver-input-font-size-medium);
+  height: var(--beaver-input-height-medium);
 }
 
 .beaver-input--large {
-  padding: var(--beaver-input-space-md) var(--beaver-input-space-lg);
-  font-size: var(--beaver-input-font-size-lg);
+  padding: var(--beaver-input-padding-large);
+  font-size: var(--beaver-input-font-size-large);
+  height: var(--beaver-input-height-large);
 }
 
-/* 输入框包装器（用于前缀/后缀） */
+/* ===== Wrapper 模式（有前后缀） ===== */
+/* Wrapper 容器：组合 input、prefix、suffix 为一个整体 */
 .beaver-input-wrapper {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
+  gap: var(--beaver-input-affix-gap);
   width: 100%;
-  border: var(--beaver-input-border);
-  border-radius: var(--beaver-input-border-radius);
-  background: var(--beaver-input-bg);
+  border: 1px solid var(--beaver-input-border-color);
+  border-radius: 6px;
+  background: var(--beaver-input-bg-color);
   transition:
-    box-shadow 120ms ease,
-    border-color 120ms ease;
+    box-shadow var(--beaver-input-transition-duration) var(--beaver-input-transition-timing),
+    border-color var(--beaver-input-transition-duration) var(--beaver-input-transition-timing);
   box-sizing: border-box;
-}
-
-.beaver-input-wrapper:focus-within {
-  border-color: var(--beaver-input-color-primary);
-  box-shadow: 0 0 0 var(--beaver-input-focus-ring) rgba(var(--beaver-input-color-primary-rgb), 0.12);
-}
-
-/* wrapper 的 Size  */
-.beaver-input-wrapper--small {
-  padding: var(--beaver-input-wrapper-padding-sm, 0 var(--beaver-input-space-sm));
-}
-
-.beaver-input-wrapper--medium {
-  padding: var(--beaver-input-wrapper-padding-md, 0 var(--beaver-input-space-md));
-}
-
-.beaver-input-wrapper--large {
-  padding: var(--beaver-input-wrapper-padding-lg, 0 var(--beaver-input-space-lg));
-}
-
-/* 让前缀/后缀与输入文字使用一致的字体大小与行高，保证垂直居中 */
-.beaver-input-wrapper {
-  /* 默认使用中等字号，通过 size modifier 覆盖 */
-  font-size: var(--beaver-input-font-size-md);
+  font-size: var(--beaver-input-font-size-medium);
   line-height: 1;
 }
 
+/* ===== Wrapper 尺寸变化 ===== */
+/* 根据不同尺寸调整 wrapper 的内边距、字体大小和高度 */
 .beaver-input-wrapper--small {
-  font-size: var(--beaver-input-font-size-sm);
+  padding: var(--beaver-input-padding-small);
+  font-size: var(--beaver-input-font-size-small);
+  height: var(--beaver-input-height-small);
 }
 
 .beaver-input-wrapper--medium {
-  font-size: var(--beaver-input-font-size-md);
+  padding: var(--beaver-input-padding-medium);
+  font-size: var(--beaver-input-font-size-medium);
+  height: var(--beaver-input-height-medium);
 }
 
 .beaver-input-wrapper--large {
-  font-size: var(--beaver-input-font-size-lg);
+  padding: var(--beaver-input-padding-large);
+  font-size: var(--beaver-input-font-size-large);
+  height: var(--beaver-input-height-large);
 }
 
-/* 前缀样式 */
+/* ===== Wrapper 内的 Input ===== */
+/* 在 wrapper 内的 input 移除所有 padding 和边框，让 wrapper 完全控制外观 */
+.beaver-input-wrapper .beaver-input {
+  flex: 1;
+  border: none;
+  padding: 0;
+  background: transparent;
+  font-size: inherit;
+  line-height: 1;
+  height: 100%;
+}
+
+/* Wrapper 内的 input 聚焦时不需要自己的 box-shadow */
+.beaver-input-wrapper .beaver-input:focus,
+.beaver-input-wrapper .beaver-input:focus-visible {
+  box-shadow: none;
+  border: none;
+}
+
+/* ===== 前缀样式 ===== */
+/* 前缀容器：用于放置图标或标签，位于输入框左侧 */
 .beaver-input-prefix {
   display: flex;
-  align-items: center;
-  margin-right: var(--beaver-input-affix-margin);
+  align-items: baseline;
+  justify-content: center;
   color: var(--beaver-input-affix-color);
   white-space: nowrap;
-}
-
-/* 确保前后缀继承 wrapper 的字体与行高，以便与输入文本对齐 */
-.beaver-input-prefix,
-.beaver-input-suffix {
+  flex-shrink: 0;
   font-size: inherit;
-  line-height: inherit;
+  line-height: 1;
 }
 
-/* 后缀样式 */
+/* ===== 后缀样式 ===== */
+/* 后缀容器：用于放置图标或清除按钮，位于输入框右侧 */
 .beaver-input-suffix {
   display: flex;
-  align-items: center;
-  margin-left: var(--beaver-input-affix-margin);
+  align-items: baseline;
+  justify-content: center;
   color: var(--beaver-input-affix-color);
   white-space: nowrap;
+  flex-shrink: 0;
+  font-size: inherit;
+  line-height: 1;
 }
 
-/* 清除按钮样式 */
+/* ===== Wrapper 错误状态 ===== */
+.beaver-input-wrapper:has(.beaver-input--error) {
+  border-color: var(--beaver-input-border-color-error);
+}
+
+/* ===== Wrapper 成功状态 ===== */
+.beaver-input-wrapper:has(.beaver-input--success) {
+  border-color: var(--beaver-input-border-color-success);
+}
+
+/* ===== Wrapper 禁用状态 ===== */
+.beaver-input-wrapper:has(.beaver-input:disabled) {
+  background: var(--beaver-input-bg-color-disabled);
+  border-color: var(--beaver-input-border-color);
+}
+
+/* 禁用状态下的前后缀颜色 */
+.beaver-input-wrapper:has(.beaver-input:disabled) .beaver-input-prefix,
+.beaver-input-wrapper:has(.beaver-input:disabled) .beaver-input-suffix {
+  color: var(--beaver-input-text-color-disabled);
+  cursor: not-allowed;
+}
+
+/* ===== 清除按钮样式 ===== */
 .beaver-input-clear {
   display: inline-flex;
   align-items: center;
@@ -187,57 +234,64 @@
   cursor: pointer;
 }
 
+/* 清除按钮 hover 状态 */
 .beaver-input-clear:hover {
-  color: var(--beaver-input-color-text);
+  color: var(--beaver-input-text-color);
   background: rgba(0, 0, 0, 0.04);
   border-radius: 4px;
 }
 
-/* 输入框在 wrapper 内不应有自己的边框 */
-.beaver-input-wrapper .beaver-input {
-  flex: 1;
-  border: none;
-  padding: var(--beaver-input-space-sm) 0;
-  background: transparent;
-}
-
-.beaver-input-wrapper .beaver-input:focus,
-.beaver-input-wrapper .beaver-input:focus-visible {
-  box-shadow: none;
-  border: none;
-}
-
-.beaver-input-wrapper .beaver-input--small {
-  padding: var(--beaver-input-space-xs) 0;
-  font-size: var(--beaver-input-font-size-sm);
-}
-
-.beaver-input-wrapper .beaver-input--medium {
-  padding: var(--beaver-input-space-sm) 0;
-  font-size: var(--beaver-input-font-size-md);
-}
-
-.beaver-input-wrapper .beaver-input--large {
-  padding: var(--beaver-input-space-md) 0;
-  font-size: var(--beaver-input-font-size-lg);
-}
-
-/* 禁用状态 */
-.beaver-input-wrapper:has(.beaver-input:disabled) {
-  background: var(--beaver-input-disabled-bg);
-  border-color: var(--beaver-input-color-border);
-}
-
-.beaver-input-wrapper:has(.beaver-input:disabled) .beaver-input-prefix,
-.beaver-input-wrapper:has(.beaver-input:disabled) .beaver-input-suffix {
-  color: var(--beaver-input-color-disabled);
-  cursor: not-allowed;
-}
-
-/* 文本区域特定调整 */
+/* ===== 文本域特定样式 ===== */
+/* Textarea 需要特殊处理：允许调整大小、最小高度等 */
 .beaver-input--textarea {
   min-height: var(--beaver-input-textarea-min-height);
-  padding: var(--beaver-input-space-sm2) var(--beaver-input-space-md);
+  padding: var(--beaver-input-textarea-padding);
   resize: vertical;
   font-family: inherit;
+  height: auto;
+}
+
+/* ===== Hover状态：颜色变淡，区分聚焦 =====  */
+
+/* 默认状态 */
+.beaver-input:not(:disabled):not(.beaver-input--disabled):hover,
+.beaver-input-wrapper:has(.beaver-input:not(:disabled):not(.beaver-input--disabled):hover) {
+  border-color: var(--beaver-input-border-color-hover);
+}
+/* 错误状态：Hover时颜色变淡 */
+.beaver-input--error:not(:disabled):not(.beaver-input--disabled):hover,
+.beaver-input-wrapper:has(.beaver-input--error:not(:disabled):not(.beaver-input--disabled):hover) {
+  border-color: var(--beaver-input-border-color-hover-error);
+}
+/* 成功状态：Hover时颜色变淡 */
+.beaver-input--success:not(:disabled):not(.beaver-input--disabled):hover,
+.beaver-input-wrapper:has(.beaver-input--success:not(:disabled):not(.beaver-input--disabled):hover) {
+  border-color: var(--beaver-input-border-color-hover-success);
+}
+
+/*  ===== 聚焦状态：放在hover之后，覆盖hover =====  */
+
+/* 默认状态 */
+.beaver-input:focus,
+.beaver-input:focus-visible,
+.beaver-input-wrapper:has(.beaver-input:focus),
+.beaver-input-wrapper:has(.beaver-input:focus-visible) {
+  border-color: var(--beaver-input-border-color-focus);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+}
+/* 错误状态：聚焦时保持红色 */
+.beaver-input--error:focus,
+.beaver-input--error:focus-visible,
+.beaver-input-wrapper:has(.beaver-input--error:focus),
+.beaver-input-wrapper:has(.beaver-input--error:focus-visible) {
+  border-color: var(--beaver-input-border-color-error);
+  box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.2);
+}
+/* 成功状态：聚焦时保持绿色 */
+.beaver-input--success:focus,
+.beaver-input--success:focus-visible,
+.beaver-input-wrapper:has(.beaver-input--success:focus),
+.beaver-input-wrapper:has(.beaver-input--success:focus-visible) {
+  border-color: var(--beaver-input-border-color-success);
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.2);
 }

@@ -105,13 +105,14 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
     }
 
     // 非 textarea 的 input
-    const { style, ...restInput } = props as React.InputHTMLAttributes<HTMLInputElement>;
+    const { style, allowClear, onClear, ...restInput } = props as React.InputHTMLAttributes<HTMLInputElement> & {
+      allowClear?: boolean;
+      onClear?: () => void;
+    };
     const mergedStyle: React.CSSProperties = {
       ...(style as React.CSSProperties),
       ...(width !== undefined ? { width: typeof width === 'number' ? `${width}px` : width } : {}),
     };
-
-    const { allowClear, onClear } = props as any;
 
     const handleClear = (e: React.MouseEvent) => {
       e.preventDefault();
