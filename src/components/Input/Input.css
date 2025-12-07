@@ -104,6 +104,28 @@
   white-space: nowrap;
 }
 
+/* 清除按钮样式 */
+.beaver-input-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 4px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--beaver-input-affix-color, var(--beaver-color-disabled));
+  cursor: pointer;
+}
+
+.beaver-input-clear:hover {
+  color: var(--beaver-color-text);
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+}
+
 /* 输入框在 wrapper 内不应有自己的边框 */
 .beaver-input-wrapper .beaver-input {
   flex: 1;

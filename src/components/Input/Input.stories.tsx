@@ -83,7 +83,7 @@ export const WithPrefixAndSuffix: Story = {
   args: {
     placeholder: '输入URL',
     prefix: '🔗',
-    suffix: '✕',
+    suffix: '.com',
   },
 };
 
@@ -92,13 +92,7 @@ export const WithClearButton: Story = {
   render: () => {
     const [value, setValue] = React.useState('hello');
     return (
-      <Input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        suffix={value ? '✕' : null}
-        suffixClassName="clear-btn-style"
-        placeholder="输入文本"
-      />
+      <Input value={value} onChange={(e) => setValue((e as any).target.value)} allowClear placeholder="输入文本" />
     );
   },
 };
