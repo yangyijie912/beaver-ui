@@ -44,15 +44,6 @@ export const vars = {
   },
   // 全局宽度/尺寸：尽量仅保留跨组件共享的值。组件专属尺寸将放到 `components.<name>` 下。
   components: {
-    select: {
-      'icon-size': '18px', // 下拉箭头图标尺寸
-      'arrow-size': '14px', // 下拉箭头尺寸
-      'spinner-size': '18px', // 加载中 spinner 尺寸
-      'spinner-border-width': '2px', // 加载中 spinner 边框宽度
-      'arrow-container-size': '20px', // 下拉箭头容器尺寸
-      'max-height': '260px', // 下拉列表最大高度
-      'z-index': '5000', // 下拉菜单层级，默认 5000，可被覆盖
-    },
     pagination: {
       'item-size': '32px', // 页码尺寸
       gap: '8px', // 页码间距

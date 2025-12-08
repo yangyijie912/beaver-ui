@@ -1,24 +1,53 @@
 :root {
+  /* ==== 尺寸 ==== */
+  /* 默认 */
+  --beaver-select-height: 32px; /* 默认控件最小高度（保留原始视觉高度） */
+  --beaver-select-padding: 4px 12px; /* 默认控件内边距 */
+  --beaver-select-font-size: var(--beaver-font-size-md, 14px); /* 默认字体大小 */
+  /* small */
+  --beaver-select-height-small: 24px;
+  --beaver-select-padding-small: 0 6px;
+  --beaver-select-font-size-small: var(--beaver-font-size-sm, 12px);
+  /* large */
+  --beaver-select-height-large: 40px;
+  --beaver-select-padding-large: 4px 12px;
+  --beaver-select-font-size-large: var(--beaver-font-size-lg, 16px);
+
+  /* 可选宽度（默认不强制宽度；若需默认宽度，可在外部覆盖此变量） */
+  --beaver-select-width: unset;
+
+  /* ==== 颜色与外观 ==== */
   --beaver-select-bg: var(--beaver-color-bg, #ffffff);
-  --beaver-select-text: var(--beaver-color-text, #111);
+  --beaver-select-text: var(--beaver-color-text, #111111);
   --beaver-select-border: var(--beaver-color-border, #dcdcdc);
-  --beaver-select-hover: var(--beaver-color-primary);
-  --beaver-select-radius: var(--beaver-radius-lg);
-  --beaver-select-focus: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
-  --beaver-select-arrow: var(--beaver-select-border);
+  --beaver-select-hover: var(--beaver-color-primary, #0b66d1);
+  --beaver-select-arrow: var(--beaver-select-border, #dcdcdc); /* 箭头 / 边框颜色 */
+
+  /* ==== 圆角、焦点等 ==== */
+  --beaver-select-radius: var(--beaver-radius-lg, 8px);
+  /* focus 的 box-shadow 值 */
+  --beaver-select-focus: 0 0 0 var(--beaver-focus-ring, 3px) rgba(var(--beaver-color-primary-rgb, 11, 102, 209), 0.12);
+
+  /* 下拉菜单阴影与 z-index */
   --beaver-select-box-shadow: 0 8px 24px rgba(20, 30, 50, 0.12);
-  /* 图标的动画、大小和对齐 */
-  --beaver-select-icon-size: var(--beaver-select-icon-size, 18px);
-  --beaver-select-arrow-size: var(--beaver-select-arrow-size, 14px);
-  --beaver-select-spinner-size: var(--beaver-select-spinner-size, 18px);
-  --beaver-select-spinner-border-width: var(--beaver-select-spinner-border-width, 2px);
-  /* no default width; when wanting a default, set `--beaver-select-width` externally or pass `width` prop */
+  --beaver-select-z-index: 5000;
+
+  /* 图标、箭头、spinner 尺寸 */
+  --beaver-select-icon-size: 18px;
+  --beaver-select-arrow-size: 14px;
+  --beaver-select-spinner-size: 18px;
+  --beaver-select-spinner-border-width: 2px;
+
+  /* 箭头容器尺寸，保证箭头区域对齐 */
+  --beaver-select-arrow-container-size: 20px;
+
+  /* 下拉菜单相关 */
+  --beaver-select-max-height: 260px;
 }
 
 .beaver-select-wrapper {
   position: relative;
   display: inline-block;
-  /* width only applied when --beaver-select-width is set externally or via inline style */
   width: var(--beaver-select-width);
 }
 
@@ -26,15 +55,29 @@
   width: 100%;
   box-sizing: border-box;
   text-align: left;
-  padding: 10px 20px 10px var(--beaver-space-md, 12px);
-  font-size: var(--beaver-font-size-md, 14px);
+  min-height: var(--beaver-select-height);
+  padding: var(--beaver-select-padding);
+  font-size: var(--beaver-select-font-size);
   border-radius: var(--beaver-select-radius);
   border: 1px solid var(--beaver-select-border);
-  --beaver-select-focus: 0 0 0 var(--beaver-focus-ring) rgba(33, 150, 243, 0.12);
   color: var(--beaver-select-text);
   display: flex;
   align-items: center;
   cursor: pointer;
+}
+
+/* 不同尺寸 */
+.beaver-select--small .beaver-select__control {
+  min-height: var(--beaver-select-height-small);
+  padding: var(--beaver-select-padding-small);
+  font-size: var(--beaver-select-font-size-small);
+  border-radius: var(--beaver-radius-md, 6px);
+}
+.beaver-select--large .beaver-select__control {
+  min-height: var(--beaver-select-height-large);
+  padding: var(--beaver-select-padding-large);
+  font-size: var(--beaver-select-font-size-large);
+  border-radius: var(--beaver-radius-xl);
 }
 
 /* 子元素平铺选择器，避免嵌套语法 */
@@ -48,6 +91,7 @@
   flex: 0 0 auto;
 }
 
+/* 多选的标签容器 */
 .beaver-select__control .beaver-select__tags {
   display: flex;
   gap: var(--beaver-space-sm, 8px);
@@ -58,7 +102,7 @@
 .beaver-select__control .beaver-select__tag {
   background: rgba(0, 0, 0, 0.06);
   color: var(--beaver-select-text);
-  padding: var(--beaver-space-xxs, 4px) var(--beaver-space-sm, 8px);
+  padding: 0 8px;
   border-radius: 999px;
   font-size: 12px;
   display: inline-flex;
@@ -67,7 +111,6 @@
 }
 
 .beaver-select__tag-remove {
-  /* reset default button appearance to avoid browser UA border/background */
   appearance: none;
   -webkit-appearance: none;
   border: none;
@@ -96,6 +139,7 @@
   pointer-events: none;
 }
 
+/* 展示区域 */
 .beaver-select__display {
   flex: 1 1 auto;
   max-width: 100%;
@@ -112,14 +156,24 @@
 }
 
 .beaver-select__value {
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--beaver-select-text);
 }
+/* 行高和高度一致保持垂直居中 */
 .beaver-select__value {
-  flex: 1 1 auto;
-  min-width: 0;
+  line-height: var(--beaver-select-height);
+}
+.beaver-select--small .beaver-select__value {
+  line-height: var(--beaver-select-height-small);
+}
+.beaver-select--large .beaver-select__value {
+  line-height: var(--beaver-select-height-large);
 }
 .beaver-select__placeholder {
   color: #9aa3ad;
@@ -192,10 +246,25 @@
   border: none;
   outline: none;
   background: transparent;
-  font-size: var(--beaver-font-size-md);
+  font-size: var(--beaver-select-font-size);
   color: var(--beaver-select-text);
   padding: 0;
   cursor: text;
+}
+
+/* 强制输入不占满容器（覆盖可能存在的 height:100% 规则）
+   - 使用较高优先级的选择器来覆盖全局或其它组件样式，而不使用 !important。
+*/
+.beaver-select__control .beaver-select__input {
+  height: auto;
+  max-height: none;
+}
+
+.beaver-select--small .beaver-select__control .beaver-select__input {
+  line-height: var(--beaver-select-height-small);
+}
+.beaver-select--large .beaver-select__control .beaver-select__input {
+  line-height: var(--beaver-select-height-large);
 }
 
 .beaver-select__icons {
@@ -263,17 +332,4 @@
   cursor: default;
   background: transparent;
   pointer-events: none;
-}
-
-/* 大小控制 */
-.beaver-select--small .beaver-select__control {
-  padding: var(--beaver-space-xs, 6px) var(--beaver-space-lg, 16px) var(--beaver-space-xs, 6px)
-    var(--beaver-space-sm2, 10px);
-  font-size: 12px;
-  border-radius: var(--beaver-radius-md, 6px);
-}
-.beaver-select--large .beaver-select__control {
-  padding: var(--beaver-space-md, 12px) 24px var(--beaver-space-md, 12px) var(--beaver-space-md2, 14px);
-  font-size: 16px;
-  border-radius: var(--beaver-radius-xl);
 }

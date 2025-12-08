@@ -64,20 +64,18 @@ export const WithDisabledOption: Story = {
   },
 };
 
-export const Small: Story = {
-  name: '小',
-  args: {
-    options: sampleOptions,
-    size: 'small',
-  },
-};
-
-export const Large: Story = {
-  name: '大',
-  args: {
-    options: sampleOptions,
-    size: 'large',
-  },
+/**
+ * 不同尺寸的 Select 组件展示
+ */
+export const differentSizes: Story = {
+  name: '不同尺寸',
+  render: () => (
+    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+      <Select options={sampleOptions} size="small" placeholder="小尺寸" />
+      <Select options={sampleOptions} size="medium" placeholder="中尺寸（默认）" />
+      <Select options={sampleOptions} size="large" placeholder="大尺寸" />
+    </div>
+  ),
 };
 
 export const Loading: Story = {
