@@ -35,6 +35,7 @@ const sampleOptions: SelectOption[] = [
   { label: 'Cantaloupe', value: 'cantaloupe' },
   { label: 'Date', value: 'date' },
   { label: 'Fig', value: 'fig' },
+  { label: 'EEE', value: 'eee' },
 ];
 
 export const Default: Story = {
@@ -71,9 +72,9 @@ export const differentSizes: Story = {
   name: '不同尺寸',
   render: () => (
     <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-      <Select options={sampleOptions} size="small" placeholder="小尺寸" />
-      <Select options={sampleOptions} size="medium" placeholder="中尺寸（默认）" />
-      <Select options={sampleOptions} size="large" placeholder="大尺寸" />
+      <Select options={sampleOptions} size="small" placeholder="EEE" />
+      <Select options={sampleOptions} size="medium" placeholder="EEE" />
+      <Select options={sampleOptions} size="large" placeholder="EEE" />
     </div>
   ),
 };

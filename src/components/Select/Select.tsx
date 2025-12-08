@@ -423,7 +423,7 @@ const Select: React.FC<SelectProps> = ({
         tabIndex={isDisabled ? -1 : 0}
         {...(rest as any)}
       >
-        {/* 展示区 */}
+        {/* 展示区 - 内容包装（处理 padding 和对齐） */}
         <div className="beaver-select__display">
           {searchable && open ? (
             <SearchInput
