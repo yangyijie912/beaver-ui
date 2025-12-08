@@ -79,16 +79,6 @@
   border-radius: var(--beaver-radius-xl);
 }
 
-/* 子元素平铺选择器，避免嵌套语法 */
-.beaver-select__control .beaver-select__opt-prefix {
-  width: var(--beaver-select-icon-size);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: var(--beaver-space-sm, 8px);
-  flex: 0 0 auto;
-}
-
 /* 多选的标签容器 */
 .beaver-select__display .beaver-select__tags {
   display: flex;
@@ -343,6 +333,10 @@
   cursor: pointer;
   color: var(--beaver-select-text);
   font-size: var(--beaver-font-size-md, 14px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--beaver-space-sm, 8px);
 }
 .beaver-select__option + .beaver-select__option {
   margin-top: var(--beaver-space-xxs, 4px);
@@ -368,6 +362,28 @@
 }
 .beaver-select__create-label {
   color: #64748b;
+}
+
+.beaver-select__opt-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.beaver-select__opt-checkmark {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.beaver-select__opt-checkmark svg {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 .beaver-select__no-data {

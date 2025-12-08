@@ -71,7 +71,6 @@ const OptionItem: React.FC<OptionItemProps> = ({
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      <span className="beaver-select__opt-prefix">{isSelected ? '✔' : ''}</span>
       <span className="beaver-select__opt-label">
         {isNew ? (
           <span className="beaver-select__create-label">{`使用 "${option.label}"`}</span>
@@ -79,6 +78,22 @@ const OptionItem: React.FC<OptionItemProps> = ({
           renderHighlightedLabel(option.label)
         )}
       </span>
+      {isSelected && (
+        <span className="beaver-select__opt-checkmark" aria-hidden>
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
+      )}
     </li>
   );
 };
