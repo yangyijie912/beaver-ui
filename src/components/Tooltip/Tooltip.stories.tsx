@@ -75,7 +75,7 @@ export const PortalComparison: Story = {
           alignItems: 'center',
           justifyContent: 'center',
           // 在容器上设置局部变量，portal=false 的 tooltip 可以继承到这个变量
-          ['--beaver-components-tooltip-bg' as any]: 'orange',
+          ['--beaver-tooltip-bg' as any]: 'orange',
         }}
       >
         <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>

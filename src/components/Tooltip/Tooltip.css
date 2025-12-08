@@ -1,3 +1,48 @@
+:root {
+  /* ===== 内容区域 ===== */
+  /* 最大宽度：限制 tooltip 的宽度，超过后会换行 */
+  --beaver-tooltip-max-width: 280px;
+
+  /* ===== 背景和颜色 ===== */
+  /* 背景色：深色半透明，用于突出展示 */
+  --beaver-tooltip-bg: rgba(0, 0, 0, 0.85);
+
+  /* 文字颜色：高对比度白色，确保可读性 */
+  --beaver-tooltip-color: #fff;
+
+  /* ===== 间距 ===== */
+  /* 内边距：竖向 6px，横向 10px，提供舒适的内容间隙 */
+  --beaver-tooltip-padding: 6px 10px;
+
+  /* 箭头尺寸：8x8 的正方形旋转后形成三角形 */
+  --beaver-tooltip-arrow-size: 8px;
+
+  /* 箭头偏移距离：箭头与内容框的距离 */
+  --beaver-tooltip-arrow-offset: 4px;
+
+  /* ===== 样式 ===== */
+  /* 字体大小：较小的辅助信息文字 */
+  --beaver-tooltip-font-size: 12px;
+
+  /* 圆角半径：温和的 4px 圆角 */
+  --beaver-tooltip-border-radius: 4px;
+
+  /* ===== 动画 ===== */
+  /* 过渡时长：显示/隐藏、transform 的动画时长 */
+  --beaver-tooltip-transition-duration: 160ms;
+
+  /* 过渡时机函数：平滑的缓动效果 */
+  --beaver-tooltip-transition-timing: ease;
+
+  /* ===== 阴影 ===== */
+  /* 阴影：增加浮升效果，提高视觉层次 */
+  --beaver-tooltip-box-shadow: 0 6px 18px rgba(20, 30, 50, 0.2);
+
+  /* ===== 层级 ===== */
+  /* z-index：确保 tooltip 显示在其他元素之上 */
+  --beaver-tooltip-z-index: 4000;
+}
+
 .beaver-tooltip {
   display: inline-block;
 }
@@ -11,10 +56,10 @@
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 160ms ease,
-    transform 160ms ease;
-  z-index: var(--beaver-tooltip-z-index, 4000);
-  max-width: var(--beaver-tooltip-max-width, 280px);
+    opacity var(--beaver-tooltip-transition-duration) var(--beaver-tooltip-transition-timing),
+    transform var(--beaver-tooltip-transition-duration) var(--beaver-tooltip-transition-timing);
+  z-index: var(--beaver-tooltip-z-index);
+  max-width: var(--beaver-tooltip-max-width);
 }
 
 .beaver-tooltip__content[data-state='visible'] {
@@ -24,12 +69,12 @@
 }
 
 .beaver-tooltip__inner {
-  background: var(--beaver-tooltip-bg, rgba(0, 0, 0, 0.85));
-  color: var(--beaver-tooltip-color, #fff);
-  padding: var(--beaver-tooltip-padding, 6px 10px);
-  border-radius: var(--beaver-tooltip-border-radius, 4px);
-  font-size: var(--beaver-tooltip-font-size, 12px);
-  box-shadow: var(--beaver-tooltip-box-shadow, 0 6px 18px rgba(20, 30, 50, 0.2));
+  background: var(--beaver-tooltip-bg);
+  color: var(--beaver-tooltip-color);
+  padding: var(--beaver-tooltip-padding);
+  border-radius: var(--beaver-tooltip-border-radius);
+  font-size: var(--beaver-tooltip-font-size);
+  box-shadow: var(--beaver-tooltip-box-shadow);
   text-align: center;
   line-height: 1;
   pointer-events: auto;
@@ -37,9 +82,9 @@
 
 /* 箭头：相对于 tooltip content 定位 */
 .beaver-tooltip__arrow {
-  width: 8px;
-  height: 8px;
-  background: var(--beaver-tooltip-bg, rgba(0, 0, 0, 0.85));
+  width: var(--beaver-tooltip-arrow-size);
+  height: var(--beaver-tooltip-arrow-size);
+  background: var(--beaver-tooltip-bg);
   position: absolute;
   transform: rotate(45deg);
 }
@@ -48,20 +93,23 @@
 .beaver-tooltip__content[data-placement='top'] .beaver-tooltip__arrow {
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  bottom: -4px;
+  bottom: calc(var(--beaver-tooltip-arrow-offset) * -1);
 }
+
 .beaver-tooltip__content[data-placement='bottom'] .beaver-tooltip__arrow {
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  top: -4px;
+  top: calc(var(--beaver-tooltip-arrow-offset) * -1);
 }
+
 .beaver-tooltip__content[data-placement='left'] .beaver-tooltip__arrow {
-  right: -4px;
+  right: calc(var(--beaver-tooltip-arrow-offset) * -1);
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
 }
+
 .beaver-tooltip__content[data-placement='right'] .beaver-tooltip__arrow {
-  left: -4px;
+  left: calc(var(--beaver-tooltip-arrow-offset) * -1);
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
 }
