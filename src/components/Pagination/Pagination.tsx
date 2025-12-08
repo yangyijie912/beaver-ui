@@ -242,6 +242,8 @@ const Pagination: React.FC<PaginationProps> = ({
               disabled={disabled}
               size="small"
               width={width?.sizeChanger ?? 84}
+              className="beaver-select--pagination"
+              menuClassName="beaver-select__menu--pagination"
               aria-label="page-size"
             />
           </div>

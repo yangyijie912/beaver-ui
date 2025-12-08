@@ -26,18 +26,14 @@ export const Default: Story = {
   },
 };
 
-export const WithSizeChanger: Story = {
-  name: '带尺寸切换',
+/**
+ * 展示页数选择器和快速跳转功能
+ */
+export const WithSizeChangerAndQuickJumper: Story = {
+  name: '带页数选择和快速跳转',
   args: {
     total: 123,
     showSizeChanger: true,
-  },
-};
-
-export const WithQuickJumper: Story = {
-  name: '带跳转',
-  args: {
-    total: 78,
     showQuickJumper: true,
   },
 };

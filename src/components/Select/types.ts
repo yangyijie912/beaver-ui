@@ -39,4 +39,11 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   width?: number | string;
   /** 组件尺寸 */
   size?: 'small' | 'medium' | 'large';
+  /** 外层容器 className（可用于自定义触发器样式） */
+  className?: string;
+  /**
+   * 下拉菜单的额外 className（菜单通过 portal 渲染到 body，
+   * 可用于在父组件上下文中添加特定样式，比如在分页中使用紧凑样式）
+   */
+  menuClassName?: string;
 };

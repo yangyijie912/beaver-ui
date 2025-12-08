@@ -280,6 +280,34 @@
   display: inline-block;
 }
 
+/* ---- 分页选择器的Select样式 ---- */
+
+/* 在分页组件内的选择器（如每页数量选择），让其与页码项等高并垂直居中 */
+.beaver-pagination .beaver-select__control,
+.beaver-pagination__sizes .beaver-select__control {
+  height: var(--beaver-pagination-item-height);
+  min-height: var(--beaver-pagination-item-height);
+}
+
+/* 分页专用的下拉菜单样式（通过 menuClassName 显式传入） */
+.beaver-select__menu.beaver-select__menu--pagination {
+  padding: 2px;
+}
+
+.beaver-select__menu.beaver-select__menu--pagination .beaver-select__option,
+.beaver-select__menu.beaver-select__menu--pagination .beaver-select__option--selected {
+  font-size: 12px;
+  padding: 6px 10px;
+}
+
+/* 文字水平居中 */
+.beaver-select--pagination .beaver-select__value {
+  justify-content: center;
+  text-align: center;
+}
+
+/* ---- 快速跳转样式 ---- */
+
 /* 快速跳转容器 */
 .beaver-pagination__jumper {
   display: flex;

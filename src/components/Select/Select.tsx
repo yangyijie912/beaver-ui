@@ -36,6 +36,7 @@ const Select: React.FC<SelectProps> = ({
   loadingIcon,
   className,
   size = 'medium',
+  menuClassName,
   name,
   width,
   style,
@@ -503,6 +504,7 @@ const Select: React.FC<SelectProps> = ({
               noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
               listRef={listRef}
               menuStyle={menuStyle}
+              menuClassName={menuClassName}
             />,
             document.body
           );

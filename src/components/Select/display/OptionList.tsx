@@ -30,6 +30,10 @@ export type OptionListProps = {
    * 可选的样式，用于父组件传入动态宽度（例如与触发器宽度保持一致）
    */
   menuStyle?: React.CSSProperties;
+  /**
+   * 可选的额外 className，供父组件（Select）标记菜单上下文（例如 size）
+   */
+  menuClassName?: string;
 };
 
 const OptionList: React.FC<OptionListProps> = ({
@@ -42,11 +46,12 @@ const OptionList: React.FC<OptionListProps> = ({
   noDataLabel,
   listRef,
   menuStyle,
+  menuClassName,
 }) => {
   return (
     <ul
       role="listbox"
-      className="beaver-select__menu"
+      className={`beaver-select__menu ${menuClassName ?? ''}`}
       style={menuStyle}
       ref={listRef}
       tabIndex={-1}
