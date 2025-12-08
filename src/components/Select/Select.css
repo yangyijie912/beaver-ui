@@ -43,6 +43,8 @@
 
   /* 下拉菜单相关 */
   --beaver-select-max-height: 260px;
+  /* 多选 tag 的最大宽度（可被外部覆盖） */
+  --beaver-select-tag-max-width: 160px;
 }
 
 .beaver-select-wrapper {
@@ -131,6 +133,38 @@
   border-radius: 4px;
 }
 
+/* 防止 tag 内长文本撑开容器，添加缩略处理 */
+.beaver-select__tags {
+  /* 确保 flex 项目可以收缩并不会溢出父容器 */
+  min-width: 0;
+}
+
+.beaver-select__tag {
+  /* 允许在父容器内按需伸缩，默认不强制最大宽度（在容器足够宽时不截断） */
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+
+.beaver-select__tag-label {
+  display: inline-block;
+  /* 当 tag 可用空间受限时使用省略号；在宽容器下会显示完整文本 */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 给展示区域右侧留出图标/箭头的空间，避免最后一个 tag 紧贴控件右侧 */
+.beaver-select__display {
+  padding-right: calc(var(--beaver-select-arrow-container-size) + var(--beaver-space-sm, 8px) + 8px);
+}
+
+/* 确保展示区域本身在 flex 布局里可以收缩，从而让内部的 .beaver-select__value 正常截断 */
+.beaver-select__display {
+  min-width: 0;
+}
+
 .beaver-select--disabled .beaver-select__control {
   opacity: 0.6;
   cursor: not-allowed;
@@ -183,7 +217,6 @@
 }
 
 .beaver-select__arrow {
-  margin-left: var(--beaver-space-sm, 8px);
   color: var(--beaver-select-arrow);
   display: inline-flex;
   align-items: center;
@@ -287,7 +320,6 @@
   display: flex;
   align-items: center;
   gap: var(--beaver-space-sm, 8px);
-  padding-left: var(--beaver-space-sm, 8px);
   flex-shrink: 0;
 }
 

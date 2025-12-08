@@ -79,6 +79,68 @@ export const differentSizes: Story = {
   ),
 };
 
+/**
+ * 长文本选项：不设置宽度时的展示效果
+ */
+export const LongTextOptionsNoWidth: Story = {
+  name: '长文本选项（无宽度）',
+  args: {
+    options: [
+      {
+        label: '这是一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的选项',
+        value: 'long1',
+      },
+      {
+        label: '另一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的选项',
+        value: 'long2',
+      },
+    ],
+    placeholder: '请选择请选择请选择请选择请选择请选择请选择请选择',
+    width: 'auto',
+  },
+};
+
+/**
+ * 长文本选项展示
+ */
+export const LongTextOptions: Story = {
+  name: '长文本选项',
+  args: {
+    options: [
+      {
+        label: '这是一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的选项',
+        value: 'long1',
+      },
+      {
+        label: '另一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的选项',
+        value: 'long2',
+      },
+    ],
+    placeholder: '请选择请选择请选择请选择请选择请选择请选择请选择',
+  },
+};
+
+/**
+ * 长文本选项展示（多选）
+ */
+export const LongTextOptionsMultiple: Story = {
+  name: '长文本选项（多选）',
+  args: {
+    options: [
+      {
+        label: '这是一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的选项',
+        value: 'long1',
+      },
+      {
+        label: '另一个非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常非常长的选项',
+        value: 'long2',
+      },
+    ],
+    placeholder: '请选择请选择请选择请选择请选择请选择请选择请选择',
+    multiple: true,
+  },
+};
+
 export const Loading: Story = {
   name: '加载中',
   args: {

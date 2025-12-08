@@ -479,13 +479,14 @@ const Select: React.FC<SelectProps> = ({
             const left = rect.left + window.scrollX;
             const top = rect.bottom + window.scrollY;
             const vwRemaining = Math.max(window.innerWidth - rect.left - 16, 0);
+            // 将菜单宽度固定为触发器宽度（或视窗剩余宽度的最小值），避免长内容撑开
+            const desiredWidth = menuWidth ? Math.min(menuWidth, vwRemaining) : undefined;
             menuStyle = {
               position: 'absolute',
               left: `${left}px`,
               top: `${top}px`,
-              // 通过将内联宽度设置为 `auto` 来覆盖样式表的 `width: 100%`
-              width: 'auto',
-              minWidth: menuWidth ? `${menuWidth}px` : undefined,
+              width: desiredWidth ? `${desiredWidth}px` : 'auto',
+              minWidth: menuWidth && desiredWidth === undefined ? `${menuWidth}px` : undefined,
               maxWidth: `${vwRemaining}px`,
               boxSizing: 'border-box',
               zIndex: 'var(--beaver-select-z-index, 5000)',
