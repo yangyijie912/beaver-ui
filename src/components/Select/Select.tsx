@@ -88,6 +88,48 @@ const Select: React.FC<SelectProps> = ({
     };
   }, [open, menuWidth, width]);
 
+  // 使用 ResizeObserver 监听容器尺寸变化，实时更新菜单宽度
+  useEffect(() => {
+    if (!open || width !== undefined) return;
+    const el = rootRef.current;
+    if (!el) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      const newWidth = el.getBoundingClientRect().width;
+      setMenuWidth(newWidth);
+    });
+
+    resizeObserver.observe(el);
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [open, width]);
+
+  // 强制重新计算菜单位置（当容器内容变化时）
+  const [, setForceUpdate] = useState(0);
+  useEffect(() => {
+    if (!open) return;
+    const el = rootRef.current;
+    if (!el) return;
+
+    // 监听容器内所有可能导致布局变化的事件
+    const handleMutation = () => {
+      setForceUpdate((prev) => prev + 1);
+    };
+
+    const mutationObserver = new MutationObserver(handleMutation);
+    mutationObserver.observe(el, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
+    });
+
+    return () => {
+      mutationObserver.disconnect();
+    };
+  }, [open]);
+
   // 点击外部关闭下拉
   useEffect(() => {
     function onDoc(e: MouseEvent) {
@@ -512,13 +554,20 @@ const Select: React.FC<SelectProps> = ({
 
       {/* 隐藏的原生 select，用于保持表单兼容性 */}
       {multiple === true ? (
-        <select name={name} multiple style={{ display: 'none' }} aria-hidden>
+        <select
+          name={name}
+          multiple
+          value={Array.isArray(internalValue) ? internalValue : []}
+          onChange={(e) => {
+            const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+            if (controlledValue === undefined) setInternalValue(selected);
+            onChange?.(selected);
+          }}
+          style={{ display: 'none' }}
+          aria-hidden
+        >
           {options.map((o) => (
-            <option
-              key={o.value}
-              value={o.value}
-              selected={Array.isArray(internalValue) ? internalValue.includes(o.value) : false}
-            >
+            <option key={o.value} value={o.value}>
               {o.label}
             </option>
           ))}
