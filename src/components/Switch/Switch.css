@@ -6,19 +6,16 @@
   --beaver-switch-thumb-size: 18px; /* 拇指直径 */
   --beaver-switch-half-circle: 5px; /* 预留的轨道半圆宽度（即文字和开关边缘的距离） */
   --beaver-switch-min-content-width: 25px; /* 最小内容宽度 */
-  --beaver-switch-font-size: 12px; /* 字体大小 */
   /* small */
   --beaver-switch-height-small: 18px;
   --beaver-switch-thumb-size-small: 14px;
   --beaver-switch-half-circle-small: 3px;
   --beaver-switch-min-content-width-small: 20px;
-  --beaver-switch-font-size-small: 10px;
   /* large */
   --beaver-switch-height-large: 26px;
   --beaver-switch-thumb-size-large: 22px;
   --beaver-switch-half-circle-large: 7px;
   --beaver-switch-min-content-width-large: 30px;
-  --beaver-switch-font-size-large: 14px;
 
   /* ==== 颜色 === */
   --beaver-switch-primary-bg: var(--beaver-color-primary, #0eaae0); /* 选中状态背景色 */
@@ -38,7 +35,6 @@
   --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-small);
   --beaver-switch-half-circle: var(--beaver-switch-half-circle-small);
   --beaver-switch-min-content-width: var(--beaver-switch-min-content-width-small);
-  --beaver-switch-font-size: var(--beaver-switch-font-size-small);
 }
 
 /* Large 尺寸 */
@@ -47,7 +43,6 @@
   --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-large);
   --beaver-switch-half-circle: var(--beaver-switch-half-circle-large);
   --beaver-switch-min-content-width: var(--beaver-switch-min-content-width-large);
-  --beaver-switch-font-size: var(--beaver-switch-font-size-large);
 }
 
 .beaver-switch {

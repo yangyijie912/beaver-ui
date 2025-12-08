@@ -30,7 +30,6 @@ export const vars = {
     md: '12px',
     md2: '14px',
     lg: '16px',
-    lg2: '18px',
     xl: '20px',
   },
   font: {
@@ -48,7 +47,6 @@ export const vars = {
     select: {
       'icon-size': '18px', // 下拉箭头图标尺寸
       'arrow-size': '14px', // 下拉箭头尺寸
-      'arrow-offset': '0px', // 下拉箭头偏移
       'spinner-size': '18px', // 加载中 spinner 尺寸
       'spinner-border-width': '2px', // 加载中 spinner 边框宽度
       'arrow-container-size': '20px', // 下拉箭头容器尺寸
@@ -89,7 +87,6 @@ export const vars = {
       'z-index-sticky': '1000',
     },
     modal: {
-      width: '520px', // modal 默认宽度
       'border-radius': '8px', // modal 圆角
       padding: '24px', // modal 内边距
       'header-margin-bottom': '16px', // 头部下边距
@@ -111,7 +108,6 @@ export const vars = {
       padding: '6px 10px', // tooltip 内边距
       'font-size': '12px', // tooltip 字体大小
       'border-radius': '4px', // tooltip 圆角
-      gap: '8px', // tooltip 箭头与触发元素的间距
       'z-index': '4000', // tooltip 层级
       'box-shadow': '0 6px 18px rgba(20,30,50,0.2)', // tooltip 阴影
       'max-width': '280px', // 最大宽度
@@ -132,7 +128,6 @@ export const vars = {
       'button-gap': '8px', // popconfirm 按钮间距
     },
     drawer: {
-      width: '360px', // 抽屉默认宽度
       'border-radius': '4px', // 抽屉圆角
       padding: '24px', // 抽屉内边距
       'header-margin-bottom': '16px', // 头部下边距
@@ -175,14 +170,7 @@ export const vars = {
       'date-cell-selected-color': '#ffffff', // 日期单元格选中文字颜色
       'date-cell-disabled-color': '#999', // 日期单元格禁用文字颜色
       'date-cell-disabled-bg': '#f5f5f5', // 日期单元格禁用背景色
-      'date-cell-today-border-color': '#0eaae0', // 日期单元格当日边框颜色
       'range-cell-bg': '#e6f4ff', // 范围选择日期单元格背景色
-      'time-input-height': '28px', // 时间输入框高度
-      'time-input-font-size': '12px', // 时间输入框字体大小
-      'time-separator-color': '#999', // 时间选择器中的分隔符颜色
-      'footer-height': '40px', // 日期选择器页脚高度
-      'footer-bg': '#f8fafc', // 日期选择器页脚背景色
-      'footer-padding': '0 12px', // 日期选择器页脚内边距
       gap: '8px', // 日期选择器内部间距
     },
   },

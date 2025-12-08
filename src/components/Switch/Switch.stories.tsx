@@ -38,11 +38,18 @@ export const Loading: Story = {
 export const Sizes: Story = {
   name: '尺寸',
   render: () => (
-    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-      <Switch size="sm" defaultChecked />
-      <Switch size="md" defaultChecked />
-      <Switch size="lg" defaultChecked />
-    </div>
+    <>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 16 }}>
+        <Switch size="sm" defaultChecked />
+        <Switch size="md" defaultChecked />
+        <Switch size="lg" defaultChecked />
+      </div>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <Switch size="sm" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
+        <Switch size="md" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
+        <Switch size="lg" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
+      </div>
+    </>
   ),
 };
 

@@ -5,7 +5,6 @@
   /* ===== 颜色定义：基础状态 ===== */
   --beaver-checkbox-border-color: var(--beaver-color-border, #aaa); /* 边框颜色：默认未选中状态 */
   --beaver-checkbox-checked-bg: var(--beaver-color-primary, #0eaae0); /* 背景颜色：选中和中间态共用 */
-  --beaver-checkbox-mark-color: #ffffff; /* 勾选标记颜色（SVG笔画颜色）：为了保证可见性，统一使用白色 */
   --beaver-checkbox-text-color: var(--beaver-color-text, #333); /* 文字颜色：用于标签文本 */
   --beaver-checkbox-disabled-bg: #f3f4f6; /* 禁用时的背景色：浅灰色，使其看起来不可交互 */
   --beaver-checkbox-disabled-border: #e5e7eb; /* 禁用时的边框色：与背景接近但略深 */
