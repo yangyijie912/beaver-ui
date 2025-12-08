@@ -62,7 +62,7 @@ export const WithEnglish: Story = {
     showSizeChanger: true,
     locale: en,
     width: {
-      sizeChanger: 94,
+      sizeChanger: 102,
     },
   },
 };
