@@ -1,14 +1,142 @@
+:root {
+  /* ===== 尺寸定义：分页组件的基础尺寸 ===== */
+
+  /* 页码项和控制按钮的尺寸，同时定义：宽度、高度、圆角
+   * 改这个值可以同时调整页码和按钮的大小 */
+  --beaver-pagination-item-size: 32px;
+  --beaver-pagination-item-height: var(--beaver-pagination-item-size);
+  --beaver-pagination-item-width: var(--beaver-pagination-item-size);
+  /* 页码项的圆角，使用全局半径规范 */
+  --beaver-pagination-item-radius: var(--beaver-radius-md, 6px);
+  /* 页码项之间的间距 */
+  --beaver-pagination-item-gap: 8px;
+  /* 控制按钮（上一页/下一页）的尺寸，与页码项保持一致 */
+  --beaver-pagination-control-size: var(--beaver-pagination-item-size);
+  --beaver-pagination-control-height: var(--beaver-pagination-control-size);
+  --beaver-pagination-control-width: var(--beaver-pagination-control-size);
+  /* 控制按钮的圆角 */
+  --beaver-pagination-control-radius: var(--beaver-radius-md, 6px);
+  /* 控制按钮之间的间距 */
+  --beaver-pagination-control-gap: 8px;
+  /* 组件内的主要间距：控制块之间的距离 */
+  --beaver-pagination-gap: 12px;
+
+  /* ===== 字体和文本 ===== */
+
+  /* 页码项的字体大小 */
+  --beaver-pagination-font-size: var(--beaver-font-size-md, 14px);
+
+  /* ===== 颜色定义：文本、背景、边框 ===== */
+
+  /* 默认文本颜色，使用全局文本色 */
+  --beaver-pagination-text-color: var(--beaver-color-text, #333);
+  /* 页码项的默认背景色 */
+  --beaver-pagination-item-bg: var(--beaver-color-bg, #fff);
+  /* 页码项的默认边框色 */
+  --beaver-pagination-item-border-color: var(--beaver-color-border, #d1d5db);
+  /* 页码项 Hover 时的背景色（使用主色的轻微背景） */
+  --beaver-pagination-item-bg-hover: rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.06);
+  /* 页码项 Hover 时的文本色（使用主色） */
+  --beaver-pagination-item-text-hover: var(--beaver-color-primary, #0eaae0);
+  /* 页码项 Hover 时的边框色（使用主色） */
+  --beaver-pagination-item-border-hover: var(--beaver-color-primary, #0eaae0);
+  /* 活跃（选中）页码的背景色，使用主色 */
+  --beaver-pagination-item-bg-active: var(--beaver-color-primary, #0eaae0);
+  /* 活跃页码的文本色，使用主色对比色 */
+  --beaver-pagination-item-text-active: var(--beaver-color-on-primary, #fff);
+  /* 活跃页码的边框色（透明，因为用背景色代替） */
+  --beaver-pagination-item-border-active: transparent;
+  /* 活跃页码的阴影 */
+  --beaver-pagination-item-shadow-active: 0 2px 8px rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
+  /* 活跃页码 Hover 时的阴影（更深） */
+  --beaver-pagination-item-shadow-active-hover: 0 6px 18px rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.18);
+  /* 焦点环的颜色 */
+  --beaver-pagination-focus-shadow: 0 0 0 var(--beaver-focus-ring, 4px)
+    rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
+  /* 控制按钮的背景色 */
+  --beaver-pagination-control-bg: var(--beaver-color-bg, #fff);
+  /* 控制按钮的文本和边框色 */
+  --beaver-pagination-control-text-color: var(--beaver-color-text, #333);
+  --beaver-pagination-control-border-color: var(--beaver-color-border, #d1d5db);
+  /* 省略号的颜色（禁用/淡化） */
+  --beaver-pagination-dots-color: var(--beaver-color-disabled, #9ca3af);
+
+  /* ===== 间距和内边距 ===== */
+
+  /* 省略号的左右间距 */
+  --beaver-pagination-dots-padding: 0 6px;
+  /* 列表项的外部间距（相邻项之间） */
+  --beaver-pagination-list-margin: 0 6px;
+
+  /* Extra 区域（大小选择器和快速跳转）与列表的间距 */
+  --beaver-pagination-extras-margin: 0 0 0 12px;
+  --beaver-pagination-extras-gap: 10px;
+
+  /* ===== 输入框和选择器相关 ===== */
+
+  /* 页码输入框的宽度 */
+  --beaver-pagination-input-width: 48px;
+  /* 页码输入框的高度 */
+  --beaver-pagination-input-height: var(--beaver-pagination-item-size);
+  /* 页码输入框的内边距 */
+  --beaver-pagination-input-padding: 0 10px;
+  /* 页码输入框的圆角 */
+  --beaver-pagination-input-radius: var(--beaver-radius-sm, 4px);
+  /* 页码输入框的边框色 */
+  --beaver-pagination-input-border-color: var(--beaver-color-border, #d1d5db);
+  /* 页码输入框的背景色 */
+  --beaver-pagination-input-bg: var(--beaver-color-bg, #fff);
+  /* 页码输入框的文本色 */
+  --beaver-pagination-input-text-color: var(--beaver-color-text, #333);
+  /* 快速跳转标签和输入框的间距 */
+  --beaver-pagination-jumper-gap: 8px;
+  /* 快速跳转标签的字体大小 */
+  --beaver-pagination-jumper-label-size: 12px;
+  /* 快速跳转标签的间距 */
+  --beaver-pagination-jumper-label-gap: 6px;
+  /* 选择器宽度 */
+  --beaver-pagination-select-width: 84px;
+
+  /* ===== 禁用状态 ===== */
+
+  /* 禁用时的整体透明度 */
+  --beaver-pagination-disabled-opacity: 0.7;
+  /* 禁用时的项元素的透明度 */
+  --beaver-pagination-item-disabled-opacity: 0.6;
+  /* 禁用状态下活跃项的背景色（回退值） */
+  --beaver-pagination-item-bg-disabled-active: #f3f4f6;
+  /* 禁用状态下活跃项的文本色（回退值） */
+  --beaver-pagination-item-text-disabled-active: var(--beaver-color-text, #333);
+  /* 禁用状态下活跃项的边框色（回退值） */
+  --beaver-pagination-item-border-disabled-active: var(--beaver-color-border, #d1d5db);
+
+  /* ===== 过渡动画 ===== */
+
+  /* 背景和文本色的过渡时间 */
+  --beaver-pagination-transition-color-duration: 160ms;
+  /* 背景和文本色的过渡时间函数 */
+  --beaver-pagination-transition-color-timing: ease;
+  /* 阴影的过渡时间 */
+  --beaver-pagination-transition-shadow-duration: 140ms;
+  /* 阴影的过渡时间函数 */
+  --beaver-pagination-transition-shadow-timing: ease;
+  /* 变换（位移）的过渡时间 */
+  --beaver-pagination-transition-transform-duration: 120ms;
+  /* 变换的过渡时间函数 */
+  --beaver-pagination-transition-transform-timing: ease;
+}
+
 .beaver-pagination {
   display: flex;
   align-items: center;
-  gap: var(--beaver-pagination-gap, 12px);
-  font-size: var(--beaver-pagination-font-size, 14px);
-  color: var(--beaver-color-text, #333);
+  gap: var(--beaver-pagination-gap);
+  font-size: var(--beaver-pagination-font-size);
+  color: var(--beaver-pagination-text-color);
   justify-content: flex-start;
   flex-wrap: nowrap;
 }
 
-/* 对齐变体 */
+/* 对齐变体：通过 justify-content 控制分页组件的水平对齐 */
 .beaver-pagination--align-left {
   justify-content: flex-start;
 }
@@ -19,58 +147,65 @@
   justify-content: flex-end;
 }
 
+/* 控制按钮组（上一页/下一页）容器 */
 .beaver-pagination__controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--beaver-pagination-control-gap);
 }
 
+/* 控制按钮样式（上一页/下一页按钮） */
 .beaver-pagination__control {
-  width: var(--beaver-pagination-control-size, 36px);
-  height: var(--beaver-pagination-control-size, 36px);
-  border: 1px solid var(--beaver-pagination-border, var(--beaver-color-border, #d1d5db));
-  color: var(--beaver-color-text, #333);
-  background: var(--beaver-color-bg, #fff);
+  width: var(--beaver-pagination-control-width);
+  height: var(--beaver-pagination-control-height);
+  border: 1px solid var(--beaver-pagination-control-border-color);
+  color: var(--beaver-pagination-control-text-color);
+  background: var(--beaver-pagination-control-bg);
   box-sizing: border-box;
-  border-radius: var(--beaver-radius-md, 6px);
+  border-radius: var(--beaver-pagination-control-radius);
   padding: 0;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition:
-    background 150ms ease,
-    transform 120ms ease,
-    box-shadow 140ms ease;
+    background var(--beaver-pagination-transition-color-duration) var(--beaver-pagination-transition-color-timing),
+    transform var(--beaver-pagination-transition-transform-duration)
+      var(--beaver-pagination-transition-transform-timing),
+    box-shadow var(--beaver-pagination-transition-shadow-duration) var(--beaver-pagination-transition-shadow-timing);
 }
 
+/* 非禁用状态下的 Hover 效果 */
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__control:hover:not(:disabled) {
-  background: rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.06);
+  background: var(--beaver-pagination-item-bg-hover);
 }
 
+/* 禁用按钮的样式 */
 .beaver-pagination__control:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
 
+/* 页码列表容器 */
 .beaver-pagination__list {
   display: flex;
   list-style: none;
   padding: 0;
-  margin: 0 6px;
-  gap: 8px;
+  margin: var(--beaver-pagination-list-margin);
+  gap: var(--beaver-pagination-item-gap);
   align-items: center;
   flex-wrap: nowrap;
 }
 
+/* 页码项的基础样式 */
 .beaver-pagination__item {
-  width: var(--beaver-pagination-item-size, 36px);
-  height: var(--beaver-pagination-item-size, 36px);
-  border: 1px solid var(--beaver-pagination-border, var(--beaver-color-border, #d1d5db));
-  color: var(--beaver-color-text, #333);
-  background: var(--beaver-color-bg, #fff);
-  border-radius: calc(var(--beaver-radius-md, 6px));
+  width: var(--beaver-pagination-item-width);
+  height: var(--beaver-pagination-item-height);
+  border: 1px solid var(--beaver-pagination-item-border-color);
+  color: var(--beaver-pagination-text-color);
+  background: var(--beaver-pagination-item-bg);
+  border-radius: var(--beaver-pagination-item-radius);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -78,67 +213,76 @@
   padding: 0;
   box-sizing: border-box;
   transition:
-    background 160ms ease,
-    color 160ms ease,
-    box-shadow 160ms ease,
-    transform 120ms ease;
+    background var(--beaver-pagination-transition-color-duration) var(--beaver-pagination-transition-color-timing),
+    color var(--beaver-pagination-transition-color-duration) var(--beaver-pagination-transition-color-timing),
+    box-shadow var(--beaver-pagination-transition-shadow-duration) var(--beaver-pagination-transition-shadow-timing),
+    transform var(--beaver-pagination-transition-transform-duration)
+      var(--beaver-pagination-transition-transform-timing);
 }
 
+/* 非禁用状态下的 Hover 效果 */
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item:hover {
-  background: var(--beaver-color-bg, #fff);
-  color: var(--beaver-color-primary, #0eaae0);
-  border-color: var(--beaver-color-primary, #0eaae0);
+  background: var(--beaver-pagination-item-bg-hover);
+  color: var(--beaver-pagination-item-text-hover);
+  border-color: var(--beaver-pagination-item-border-hover);
   transform: translateY(-1px);
 }
 
+/* 焦点环效果 */
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item:focus-visible,
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__control:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 var(--beaver-focus-ring, 4px) rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
+  box-shadow: var(--beaver-pagination-focus-shadow);
 }
 
+/* 活跃（选中）页码的样式 */
 .beaver-pagination__item--active {
-  background: var(--beaver-color-primary, #0eaae0);
-  color: var(--beaver-color-on-primary, #fff);
-  border-color: transparent;
-  box-shadow: 0 2px 8px rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
+  background: var(--beaver-pagination-item-bg-active);
+  color: var(--beaver-pagination-item-text-active);
+  border-color: var(--beaver-pagination-item-border-active);
+  box-shadow: var(--beaver-pagination-item-shadow-active);
 }
 
+/* 非禁用状态下的活跃项 Hover 效果 */
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item--active:hover {
-  background: var(--beaver-color-primary, #0eaae0);
-  color: var(--beaver-color-on-primary, #fff);
+  background: var(--beaver-pagination-item-bg-active);
+  color: var(--beaver-pagination-item-text-active);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.18);
+  box-shadow: var(--beaver-pagination-item-shadow-active-hover);
 }
 
+/* 活跃项的焦点环效果 */
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__item--active:focus-visible {
   outline: none;
-  color: var(--beaver-color-on-primary, #fff);
+  color: var(--beaver-pagination-item-text-active);
   box-shadow:
     0 0 0 calc(var(--beaver-focus-ring, 4px)) rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.16),
     0 6px 18px rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.12);
 }
 
+/* 省略号（...）的样式 */
 .beaver-pagination__dots {
-  padding: 0 6px;
-  color: var(--beaver-color-disabled, #9ca3af);
+  padding: var(--beaver-pagination-dots-padding);
+  color: var(--beaver-pagination-dots-color);
 }
 
+/* Extra 区域（包含大小选择器和快速跳转） */
 .beaver-pagination__extras {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-left: 12px;
+  gap: var(--beaver-pagination-extras-gap);
+  margin-left: var(--beaver-pagination-extras-margin);
 }
 
+/* 大小选择器容器 */
 .beaver-pagination__sizes {
   position: relative;
   display: inline-block;
 }
 
-/* Select相关样式 */
+/* Select 选择器的集成样式 */
 .beaver-pagination__sizes .beaver-select-wrapper {
-  --beaver-select-width: var(--beaver-pagination-select-width, 84px);
+  --beaver-select-width: var(--beaver-pagination-select-width);
   width: var(--beaver-select-width);
   min-width: var(--beaver-select-width);
 }
@@ -146,19 +290,20 @@
 .beaver-pagination__sizes .beaver-select-wrapper {
   vertical-align: middle;
 }
+
 .beaver-pagination__sizes .beaver-select__control {
-  height: var(--beaver-pagination-control-size, 36px);
+  height: var(--beaver-pagination-control-height);
   box-sizing: border-box;
   padding: 0 12px;
-  border: 1px solid var(--beaver-pagination-border, var(--beaver-color-border, #d1d5db));
+  border: 1px solid var(--beaver-pagination-control-border-color);
   display: inline-flex;
   align-items: center;
   font-size: 13px;
 }
+
 .beaver-pagination__sizes .beaver-select__icons {
   padding-left: 0;
 }
-
 .beaver-pagination__sizes .beaver-select__menu {
   min-width: var(--beaver-select-width);
   width: 100%;
@@ -180,8 +325,7 @@
 
 .beaver-pagination__sizes .beaver-select--small .beaver-select__control {
   padding: 0 8px;
-  height: var(--beaver-pagination-control-size, 36px);
-  border: 1px solid var(--beaver-pagination-border, var(--beaver-color-border, #d1d5db));
+  border: 1px solid var(--beaver-pagination-control-border-color);
 }
 
 .beaver-pagination__sizes .beaver-select__option--selected {
@@ -191,25 +335,7 @@
   padding-left: 8px;
 }
 
-.beaver-pagination__sizes .beaver-select__opt-prefix {
-  display: none;
-}
-
-.beaver-pagination__sizes .beaver-select__control {
-  padding: 0 8px;
-  height: var(--beaver-pagination-control-size, 36px);
-}
-
-.beaver-pagination__sizes .beaver-select__arrow {
-  margin-left: 6px;
-  width: 16px;
-  height: 16px;
-}
-.beaver-pagination__sizes .beaver-select__arrow svg.beaver-select__arrow-svg {
-  width: 12px;
-  height: 12px;
-}
-
+/* Select 中的前缀图标样式 */
 .beaver-pagination__sizes .beaver-select__control .beaver-select__opt-prefix,
 .beaver-pagination__sizes .beaver-select__option .beaver-select__opt-prefix {
   width: 18px;
@@ -217,55 +343,63 @@
   margin-right: 6px;
 }
 
+.beaver-pagination__sizes .beaver-select__arrow {
+  margin-left: 6px;
+  width: 16px;
+  height: 16px;
+}
+
+.beaver-pagination__sizes .beaver-select__arrow svg.beaver-select__arrow-svg {
+  width: 12px;
+  height: 12px;
+}
+
 .beaver-pagination__sizes .beaver-select__icons {
   padding-left: 0;
 }
 
-.beaver-pagination__sizes .beaver-select__option {
-  padding: 4px 8px;
-  min-height: 28px;
-}
-
-.beaver-pagination__sizes .beaver-select__option--selected {
-  padding-left: 8px;
-}
-
+/* 快速跳转容器 */
 .beaver-pagination__jumper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--beaver-pagination-jumper-gap);
 }
 
+/* 快速跳转标签 */
 .beaver-pagination__jumper label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--beaver-color-text, #333);
+  gap: var(--beaver-pagination-jumper-label-gap);
+  font-size: var(--beaver-pagination-jumper-label-size);
+  color: var(--beaver-pagination-text-color);
 }
 
+/* 快速跳转输入框 */
 .beaver-pagination__jump-input {
-  width: var(--beaver-pagination-input-width, 64px);
-  height: var(--beaver-pagination-control-size, 36px);
-  padding: 0 10px;
-  border-radius: calc(var(--beaver-radius-sm, 4px));
-  border: 1px solid var(--beaver-pagination-border, var(--beaver-color-border, #d1d5db));
+  width: var(--beaver-pagination-input-width);
+  height: var(--beaver-pagination-input-height);
+  padding: var(--beaver-pagination-input-padding);
+  border-radius: var(--beaver-pagination-input-radius);
+  border: 1px solid var(--beaver-pagination-input-border-color);
   text-align: center;
-  background: var(--beaver-color-bg, #fff);
+  background: var(--beaver-pagination-input-bg);
   box-sizing: border-box;
-  color: var(--beaver-color-text, #333);
+  color: var(--beaver-pagination-input-text-color);
 }
 
+/* 非禁用状态下输入框的 Hover 效果 */
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__jump-input:hover {
   border-color: var(--beaver-color-primary, #0eaae0);
 }
 
+/* 输入框的焦点状态 */
 .beaver-pagination:not(.beaver-pagination--disabled) .beaver-pagination__jump-input:focus {
   outline: none;
   border-color: var(--beaver-color-primary, #0eaae0);
-  box-shadow: 0 0 0 var(--beaver-focus-ring, 4px) rgba(var(--beaver-color-primary-rgb, 14 170 224), 0.14);
+  box-shadow: var(--beaver-pagination-focus-shadow);
 }
 
+/* 移动端响应式设计 */
 @media (max-width: 480px) {
   .beaver-pagination {
     gap: 8px;
@@ -278,24 +412,25 @@
   }
 }
 
-/* disabled相关样式 */
+/* 禁用状态样式 */
 .beaver-pagination--disabled {
-  opacity: 0.7;
+  opacity: var(--beaver-pagination-disabled-opacity);
 }
 
+/* 禁用状态下的各项元素不可交互 */
 .beaver-pagination--disabled .beaver-pagination__control,
 .beaver-pagination--disabled .beaver-pagination__item,
 .beaver-pagination--disabled .beaver-pagination__jump-input,
 .beaver-pagination--disabled .beaver-select__control {
   pointer-events: none;
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: var(--beaver-pagination-item-disabled-opacity);
 }
 
+/* 禁用状态下活跃项的样式（淡化） */
 .beaver-pagination--disabled .beaver-pagination__item--active {
-  /* Make active state visually muted when disabled */
-  background: var(--beaver-pagination-disabled-active-bg, #f3f4f6);
-  color: var(--beaver-color-text, #333);
-  border-color: var(--beaver-pagination-border, var(--beaver-color-border, #d1d5db));
+  background: var(--beaver-pagination-item-bg-disabled-active);
+  color: var(--beaver-pagination-item-text-disabled-active);
+  border-color: var(--beaver-pagination-item-border-disabled-active);
   box-shadow: none;
 }

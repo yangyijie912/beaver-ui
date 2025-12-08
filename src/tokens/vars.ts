@@ -44,14 +44,6 @@ export const vars = {
   },
   // 全局宽度/尺寸：尽量仅保留跨组件共享的值。组件专属尺寸将放到 `components.<name>` 下。
   components: {
-    pagination: {
-      'item-size': '32px', // 页码尺寸
-      gap: '8px', // 页码间距
-      'control-size': '32px', // 上一页/下一页按钮尺寸
-      'font-size': '14px', // 页码字体大小
-      'input-width': '48px', // 页码输入框宽度
-      border: '#d1d5db', // 分页专属边框色（优先于全局 border）
-    },
     table: {
       'header-bg': '#f8fafc', // 表头背景
       'header-color': '#6e6f6f', // 表头文字颜色
