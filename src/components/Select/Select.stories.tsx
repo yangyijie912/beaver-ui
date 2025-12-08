@@ -254,7 +254,6 @@ export const CustomLoadingAndOffset: Story = {
 
     const styleVar: React.CSSProperties & Record<string, string> = {
       width: '320px',
-      '--beaver-select-arrow-offset': '1px',
     };
 
     return (

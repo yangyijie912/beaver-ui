@@ -43,8 +43,6 @@
 
   /* 下拉菜单相关 */
   --beaver-select-max-height: 260px;
-  /* 多选 tag 的最大宽度（可被外部覆盖） */
-  --beaver-select-tag-max-width: 160px;
 }
 
 .beaver-select-wrapper {

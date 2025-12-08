@@ -81,6 +81,14 @@ function extract(file) {
     defs.add(m[1]);
   }
 
+  // 识别在 JS/TS/JSX/TSX 的对象字面量中直接设置的 CSS 变量
+  // 比如：{ ['--arrow-offset']: `${offset}px`, ... } 或 { '--my-var': 'value' }
+  // 包括 TypeScript 类型断言的情况：['--var-name' as any]: value
+  const objectPropRegex = /\[\s*['"`](--[a-zA-Z0-9_-]+)['"`](?:\s+as\s+\w+)?\s*\]|['"`](--[a-zA-Z0-9_-]+)['"` ]\s*:/g;
+  while ((m = objectPropRegex.exec(text))) {
+    defs.add(m[1] || m[2]);
+  }
+
   // 识别在 JS/TS/JSX/TSX 中通过 getPropertyValue(...) 读取 CSS 变量的用法
   // 例如：getComputedStyle(el).getPropertyValue('--beaver-switch-min-content-width')
   const getPropRegex = /getPropertyValue\(\s*['"`](--[a-zA-Z0-9_-]+)['"`]\s*\)/g;
@@ -121,18 +129,23 @@ function main() {
   if (argv.includes('-h') || argv.includes('--help')) return printUsageAndExit();
 
   const targets = argv.length ? argv : [ROOT];
+  const tokensPath = path.resolve(ROOT, 'src', 'tokens', 'tokens.css');
 
   console.log('开始扫描...');
   let files = argv.length ? collectFilesFromTargets(argv) : walk(ROOT);
 
-  // 始终尝试包含全局 tokens 文件，避免单文件扫描时把全局变量误报为未定义
-  const tokensPath = path.resolve(ROOT, 'src', 'tokens', 'tokens.css');
-  try {
-    if (fs.existsSync(tokensPath) && !files.includes(tokensPath)) {
-      files.push(tokensPath);
-    }
-  } catch (e) {
-    // ignore
+  // 判断是否扫描的是单个文件
+  const isSingleFileScan =
+    argv.length === 1 &&
+    fs.existsSync(path.resolve(ROOT, argv[0])) &&
+    fs.statSync(path.resolve(ROOT, argv[0])).isFile();
+
+  // 始终包含全局 tokens 文件，确保全局变量定义被正确识别
+  const normalizedTokensPath = path.normalize(tokensPath);
+  const normalizedFiles = new Set(files.map((f) => path.normalize(path.resolve(f))));
+
+  if (fs.existsSync(tokensPath) && !normalizedFiles.has(normalizedTokensPath)) {
+    files.push(tokensPath);
   }
 
   const allDefs = new Set();
@@ -211,9 +224,9 @@ function main() {
       if (unusedInFile.length) unusedByFile[path.relative(ROOT, file)] = unusedInFile.sort();
     }
 
-    // 特别输出 tokens 文件中的未使用变量（如果存在）
+    // 在单文件扫描时，不输出 tokens.css 的未使用变量
     const tokensRel = path.relative(ROOT, tokensPath);
-    if (fs.existsSync(tokensPath) && unusedByFile[tokensRel]) {
+    if (!isSingleFileScan && fs.existsSync(tokensPath) && unusedByFile[tokensRel]) {
       console.log(tokensRel);
       for (const v of unusedByFile[tokensRel]) console.log(`  ${v}`);
     }
