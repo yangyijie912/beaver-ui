@@ -64,6 +64,7 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  line-height: 1.5;
 }
 
 /* 不同尺寸 */
@@ -145,6 +146,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--beaver-space-sm, 8px);
+  line-height: 1.5;
 }
 
 .beaver-select--small .beaver-select__display {
@@ -172,10 +174,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--beaver-select-text);
+  line-height: 1.5;
 }
 
 .beaver-select__placeholder {
   color: #9aa3ad;
+  line-height: 1.5;
 }
 
 .beaver-select__arrow {
