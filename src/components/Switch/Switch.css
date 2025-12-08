@@ -85,7 +85,7 @@
 .beaver-switch-thumb {
   position: absolute;
   top: calc((var(--beaver-switch-height) - var(--beaver-switch-thumb-size)) / 2);
-  left: 2px;
+  left: var(--beaver-switch-thumb-margin);
   width: var(--beaver-switch-thumb-size);
   height: var(--beaver-switch-thumb-size);
   background-color: var(--beaver-switch-thumb-bg);
@@ -122,7 +122,7 @@
 .beaver-switch-text {
   position: absolute;
   top: 50%;
-  left: calc(var(--beaver-switch-thumb-size) + 4px);
+  left: calc(var(--beaver-switch-thumb-size) + (var(--beaver-switch-thumb-margin) * 2));
   transform: translateY(-50%);
   font-size: 12px;
   line-height: 1;
@@ -139,11 +139,11 @@
 }
 
 .beaver-switch-checked .beaver-switch-thumb {
-  left: calc(var(--switch-actual-content-width, var(--beaver-switch-half-circle)) - 2px);
+  left: calc(var(--switch-actual-content-width, var(--beaver-switch-half-circle)) - var(--beaver-switch-thumb-margin));
 }
 
 .beaver-switch-checked .beaver-switch-text {
-  left: calc(var(--beaver-switch-half-circle) + 4px);
+  left: calc(var(--beaver-switch-half-circle) + (var(--beaver-switch-thumb-margin) * 2));
 }
 
 @keyframes beaver-switch-spin {
