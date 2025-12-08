@@ -153,12 +153,7 @@
   white-space: nowrap;
 }
 
-/* 给展示区域右侧留出图标/箭头的空间，避免最后一个 tag 紧贴控件右侧 */
-.beaver-select__display {
-  padding-right: calc(var(--beaver-select-arrow-container-size) + var(--beaver-space-sm, 8px) + 8px);
-}
-
-/* 确保展示区域本身在 flex 布局里可以收缩，从而让内部的 .beaver-select__value 正常截断 */
+/* 给展示区域设置合理的内容宽度，避免撑开 */
 .beaver-select__display {
   min-width: 0;
 }
@@ -172,7 +167,8 @@
 
 /* 展示区域 - padding 在这里，不影响 control 高度 */
 .beaver-select__display {
-  flex: 1 1 100%;
+  flex: 1 1 auto;
+  min-width: 0;
   padding: var(--beaver-select-padding);
   display: flex;
   flex-wrap: wrap;
@@ -319,6 +315,8 @@
   align-items: center;
   gap: var(--beaver-space-sm, 8px);
   flex-shrink: 0;
+  margin-left: auto;
+  padding-right: 8px;
 }
 
 /* 让自定义图标的动画、大小和对齐与默认的保持一致 */
