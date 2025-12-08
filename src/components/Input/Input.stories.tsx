@@ -20,6 +20,9 @@ export default meta;
 
 type Story = StoryObj<typeof Input>;
 
+/**
+ * 基本使用，可以通过`width`直接控制输入框宽度
+ */
 export const Default: Story = {
   name: '默认',
   args: { placeholder: 'Type here' },
@@ -35,21 +38,39 @@ export const Disabled: Story = {
   args: { placeholder: 'Disabled', disabled: true },
 };
 
-export const Error: Story = {
-  name: '错误',
-  args: { placeholder: 'Error', validation: 'error' },
+export const ValidationStates: Story = {
+  name: '校验状态（错误 / 成功 / 警告）',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div>
+        <div style={{ fontSize: 12, color: '#666', margin: '0 0 6px 0' }}>错误</div>
+        <Input placeholder="Error" validation="error" />
+      </div>
+      <div>
+        <div style={{ fontSize: 12, color: '#666', margin: '0 0 6px 0' }}>成功</div>
+        <Input placeholder="Success" validation="success" defaultValue="Valid input" />
+      </div>
+      <div>
+        <div style={{ fontSize: 12, color: '#666', margin: '0 0 6px 0' }}>警告</div>
+        <Input placeholder="Warning" validation="warning" />
+      </div>
+    </div>
+  ),
 };
 
-export const Success: Story = {
-  name: '成功',
-  args: { placeholder: 'Success', validation: 'success', defaultValue: 'Valid input' },
-};
-
+/**
+ * 可以通过更改rows属性来调整文本域的高度，默认是3行
+ */
 export const Textarea: Story = {
-  name: '多行',
-  args: { textarea: true, placeholder: 'Type here...' },
+  name: '文本域',
+  args: { textarea: true, rows: 4, placeholder: 'Type here...' },
 };
 
+/**
+ * 不同尺寸的输入框展示。
+ * - small、medium、large 三种尺寸
+ * - 如果需要设置原生 input 的 `size` 属性（可见字符数），使用 `htmlSize`。
+ */
 export const Sizes: Story = {
   name: '尺寸',
   render: () => (
@@ -95,93 +116,6 @@ export const WithClearButton: Story = {
       <Input value={value} onChange={(e) => setValue((e as any).target.value)} allowClear placeholder="输入文本" />
     );
   },
-};
-
-/* ===== 前后缀对齐检查 ===== */
-/* 检查前后缀与输入框的对齐情况 */
-
-export const SizesWithPrefixAndSuffix: Story = {
-  name: '前后缀 - 尺寸对比',
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Small 尺寸</h3>
-        <Input size="small" placeholder="输入用户名" prefix="👤" suffix="✓" defaultValue="example" />
-      </div>
-      <div>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Medium 尺寸</h3>
-        <Input size="medium" placeholder="输入邮箱" prefix="📧" suffix="@example.com" defaultValue="user" />
-      </div>
-      <div>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Large 尺寸</h3>
-        <Input size="large" placeholder="输入电话号码" prefix="📱" suffix="+86" defaultValue="138-xxxx-xxxx" />
-      </div>
-    </div>
-  ),
-};
-
-export const SizesWithClearButton: Story = {
-  name: '清除按钮 - 尺寸对比',
-  render: () => {
-    const [smallValue, setSmallValue] = React.useState('small');
-    const [mediumValue, setMediumValue] = React.useState('medium');
-    const [largeValue, setLargeValue] = React.useState('large');
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div>
-          <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Small 清除按钮</h3>
-          <Input
-            size="small"
-            value={smallValue}
-            onChange={(e) => setSmallValue((e as any).target.value)}
-            allowClear
-            placeholder="输入内容"
-          />
-        </div>
-        <div>
-          <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Medium 清除按钮</h3>
-          <Input
-            size="medium"
-            value={mediumValue}
-            onChange={(e) => setMediumValue((e as any).target.value)}
-            allowClear
-            placeholder="输入内容"
-          />
-        </div>
-        <div>
-          <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Large 清除按钮</h3>
-          <Input
-            size="large"
-            value={largeValue}
-            onChange={(e) => setLargeValue((e as any).target.value)}
-            allowClear
-            placeholder="输入内容"
-          />
-        </div>
-      </div>
-    );
-  },
-};
-
-export const SizesWithPrefixAndError: Story = {
-  name: '前缀 + 错误状态',
-  render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      <div>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Small</h3>
-        <Input size="small" validation="error" placeholder="输入金额" prefix="¥" />
-      </div>
-      <div>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Medium</h3>
-        <Input size="medium" validation="error" placeholder="输入金额" prefix="¥" />
-      </div>
-      <div>
-        <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Large</h3>
-        <Input size="large" validation="error" placeholder="输入金额" prefix="¥" />
-      </div>
-    </div>
-  ),
 };
 
 export const SizesWithSuffixAndSuccess: Story = {

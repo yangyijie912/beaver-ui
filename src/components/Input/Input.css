@@ -34,11 +34,14 @@
   --beaver-input-border-color-focus: var(--beaver-color-primary, #2563eb);
   --beaver-input-border-color-error: var(--beaver-color-error, #e44444);
   --beaver-input-border-color-success: var(--beaver-color-success, #10b987);
+  /* 警告色（用于 warning 状态） */
+  --beaver-input-border-color-warning: var(--beaver-color-warning, #f59e0b);
 
   /* Hover 颜色（比聚焦更淡） */
   --beaver-input-border-color-hover: rgba(37, 99, 235, 0.6);
   --beaver-input-border-color-hover-error: rgba(228, 68, 68, 0.6);
   --beaver-input-border-color-hover-success: rgba(16, 185, 135, 0.6);
+  --beaver-input-border-color-hover-warning: rgba(245, 158, 11, 0.6);
 
   /* ===== 间距：前后缀相关 ===== */
 
@@ -82,6 +85,11 @@
 /* ===== 成功状态 ===== */
 .beaver-input--success {
   border-color: var(--beaver-input-border-color-success);
+}
+
+/* ===== 警告状态 ===== */
+.beaver-input--warning {
+  border-color: var(--beaver-input-border-color-warning);
 }
 
 /* ===== 禁用状态 ===== */
@@ -205,6 +213,11 @@
   border-color: var(--beaver-input-border-color-success);
 }
 
+/* ===== Wrapper 警告状态 ===== */
+.beaver-input-wrapper:has(.beaver-input--warning) {
+  border-color: var(--beaver-input-border-color-warning);
+}
+
 /* ===== Wrapper 禁用状态 ===== */
 .beaver-input-wrapper:has(.beaver-input:disabled) {
   background: var(--beaver-input-bg-color-disabled);
@@ -269,6 +282,12 @@
   border-color: var(--beaver-input-border-color-hover-success);
 }
 
+/* 警告状态：Hover时颜色变淡 */
+.beaver-input--warning:not(:disabled):not(.beaver-input--disabled):hover,
+.beaver-input-wrapper:has(.beaver-input--warning:not(:disabled):not(.beaver-input--disabled):hover) {
+  border-color: var(--beaver-input-border-color-hover-warning);
+}
+
 /*  ===== 聚焦状态：放在hover之后，覆盖hover =====  */
 
 /* 默认状态 */
@@ -294,4 +313,13 @@
 .beaver-input-wrapper:has(.beaver-input--success:focus-visible) {
   border-color: var(--beaver-input-border-color-success);
   box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.2);
+}
+
+/* 警告状态：聚焦时保持警告色 */
+.beaver-input--warning:focus,
+.beaver-input--warning:focus-visible,
+.beaver-input-wrapper:has(.beaver-input--warning:focus),
+.beaver-input-wrapper:has(.beaver-input--warning:focus-visible) {
+  border-color: var(--beaver-input-border-color-warning);
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2);
 }

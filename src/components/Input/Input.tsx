@@ -2,8 +2,11 @@ import React from 'react';
 import './Input.css';
 
 export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
-  validation?: 'error' | 'success' | 'none';
+  /** 输入校验状态 */
+  validation?: 'error' | 'success' | 'warning' | 'none';
+  /** 是否为多行文本域 */
   textarea?: boolean;
+  /** 多行文本域时的行数，默认3行 */
   rows?: number;
   /** textarea 的 CSS resize，例如 'none' | 'both' | 'horizontal' | 'vertical' */
   resize?: React.CSSProperties['resize'];
@@ -77,8 +80,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
       }
     };
     const classList = ['beaver-input'];
-    if (validation === 'error') classList.push('beaver-input--error');
-    if (validation === 'success') classList.push('beaver-input--success');
+    if (validation && validation !== 'none') classList.push(`beaver-input--${validation}`);
     if (textarea) classList.push('beaver-input--textarea');
     if (disabled) classList.push('beaver-input--disabled');
     if (size) classList.push(`beaver-input--${size}`);
