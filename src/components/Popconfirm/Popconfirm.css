@@ -1,6 +1,111 @@
+:root {
+  /* ===== 内容区域布局 ===== */
+  /* 最小/最大宽度：限制内容区的宽度，防止过宽或过窄 */
+  --beaver-popconfirm-content-min-width: 200px;
+  --beaver-popconfirm-content-max-width: 300px;
+
+  /* 内边距：控制内容与边框的距离 */
+  --beaver-popconfirm-padding: 12px 16px;
+
+  /* ===== 边框和圆角 ===== */
+  /* 圆角大小：影响整体视觉圆润度 */
+  --beaver-popconfirm-border-radius: 6px;
+
+  /* ===== 颜色定义 ===== */
+  /* 背景颜色 */
+  --beaver-popconfirm-bg: #ffffff;
+
+  /* 边框颜色 */
+  --beaver-popconfirm-border-color: #e8e8e8;
+
+  /* 标题颜色：通常比描述文字更深 */
+  --beaver-popconfirm-title-color: #333333;
+
+  /* 描述文字颜色：比标题更淡 */
+  --beaver-popconfirm-description-color: #666666;
+
+  /* ===== 阴影定义 ===== */
+  /* 箭头投影：为箭头添加轻微阴影，增加深度感 */
+  --beaver-popconfirm-arrow-shadow-color: rgba(0, 0, 0, 0.08);
+  --beaver-popconfirm-arrow-shadow-vertical: 0 2px 4px;
+  --beaver-popconfirm-arrow-shadow-horizontal: 2px 0 4px;
+
+  /* 内容区投影：为整个内容盒子添加阴影 */
+  --beaver-popconfirm-box-shadow: 0 6px 18px rgba(20, 30, 50, 0.2);
+
+  /* ===== 箭头相关 ===== */
+  /* 箭头大小：通过这个值控制箭头三角形的尺寸 */
+  --beaver-popconfirm-arrow-size: 8px;
+
+  /* ===== 文本样式 ===== */
+  /* 标题字体大小和粗细 */
+  --beaver-popconfirm-title-font-size: 14px;
+  --beaver-popconfirm-title-font-weight: 500;
+  --beaver-popconfirm-title-line-height: 1.5;
+
+  /* 标题下边距：标题与描述文本的间距 */
+  --beaver-popconfirm-title-margin-bottom: 4px;
+
+  /* 描述文字字体大小 */
+  --beaver-popconfirm-description-font-size: 12px;
+  --beaver-popconfirm-description-line-height: 1.5;
+
+  /* 描述文字下边距：描述与按钮区的间距 */
+  --beaver-popconfirm-description-margin-bottom: 8px;
+
+  /* ===== 按钮相关 ===== */
+  /* 按钮间距 */
+  --beaver-popconfirm-button-gap: 8px;
+
+  /* 按钮尺寸：高度由 padding 和 font-size 共同决定 */
+  --beaver-popconfirm-button-padding: 6px 12px;
+  --beaver-popconfirm-button-font-size: 12px;
+  --beaver-popconfirm-button-border-radius: 6px;
+
+  /* 确认按钮颜色 */
+  --beaver-popconfirm-button-ok-bg: var(--beaver-color-primary, #0eaae0);
+  --beaver-popconfirm-button-ok-color: var(--beaver-color-on-primary, #ffffff);
+  --beaver-popconfirm-button-ok-hover-opacity: 0.9;
+  --beaver-popconfirm-button-ok-active-opacity: 0.85;
+  --beaver-popconfirm-button-ok-disabled-opacity: 0.6;
+
+  /* 取消按钮颜色：灰色系，次要操作 */
+  --beaver-popconfirm-button-cancel-bg: #f5f5f5;
+  --beaver-popconfirm-button-cancel-color: var(--beaver-color-text, #333333);
+  --beaver-popconfirm-button-cancel-border-color: #d9d9d9;
+  --beaver-popconfirm-button-cancel-hover-bg: #eeeeee;
+  --beaver-popconfirm-button-cancel-hover-border-color: #b3b3b3;
+  --beaver-popconfirm-button-cancel-active-bg: #e6e6e6;
+  --beaver-popconfirm-button-cancel-active-border-color: #8c8c8c;
+  --beaver-popconfirm-button-cancel-disabled-opacity: 0.6;
+
+  /* ===== 加载态相关 ===== */
+  /* 加载旋转圆的尺寸：越大显示越清晰 */
+  --beaver-popconfirm-loader-size: 12px;
+  --beaver-popconfirm-loader-border-width: 2px;
+  --beaver-popconfirm-loader-duration: 0.6s;
+
+  /* 加载旋转圆颜色：与按钮文字颜色保持一致 */
+  --beaver-popconfirm-loader-color: var(--beaver-color-on-primary, #ffffff);
+
+  /* ===== 动画相关 ===== */
+  /* 淡入动画时长 */
+  --beaver-popconfirm-fade-in-duration: 0.3s;
+
+  /* 淡入动画起始缩放比例 */
+  --beaver-popconfirm-fade-in-scale: 0.95;
+
+  /* 内容区遮罩不透明度 */
+  --beaver-popconfirm-mask-bg: rgba(0, 0, 0, 0.45);
+
+  /* ===== 层级管理 ===== */
+  /* popconfirm 的 z-index：保证显示在其他浮层之上 */
+  --beaver-popconfirm-z-index: 4001;
+}
+
 /**
  * Popconfirm 组件样式
- * 使用全局 tokens 变量进行样式定义
+ * 使用 CSS 变量进行定义，便于主题定制和样式维护
  */
 
 /* Popconfirm 容器 - 使用 Portal 渲染到 DOM */
@@ -23,7 +128,7 @@
 }
 
 .beaver-popconfirm__mask.beaver-popconfirm--show-mask {
-  background-color: rgba(0, 0, 0, 0.45);
+  background-color: var(--beaver-popconfirm-mask-bg);
   pointer-events: auto;
 }
 
@@ -42,9 +147,9 @@
   border-radius: var(--beaver-popconfirm-border-radius);
   box-shadow: var(--beaver-popconfirm-box-shadow);
   padding: var(--beaver-popconfirm-padding);
-  animation: popconfirmFadeIn 0.3s ease-out;
-  min-width: 200px;
-  max-width: 300px;
+  animation: popconfirmFadeIn var(--beaver-popconfirm-fade-in-duration) ease-out;
+  min-width: var(--beaver-popconfirm-content-min-width);
+  max-width: var(--beaver-popconfirm-content-max-width);
 }
 
 /* Popconfirm 箭头指示器 */
@@ -58,42 +163,50 @@
 
 /* 顶部箭头 */
 .beaver-popconfirm-wrapper.beaver-popconfirm--top .beaver-popconfirm__arrow {
-  bottom: -8px;
-  left: calc(50% + var(--arrow-offset));
+  bottom: calc(-1 * var(--beaver-popconfirm-arrow-size));
+  left: calc(50% + var(--arrow-offset, 0));
   transform: translateX(-50%);
-  border-width: 8px 8px 0 8px;
+  border-width: var(--beaver-popconfirm-arrow-size) var(--beaver-popconfirm-arrow-size) 0
+    var(--beaver-popconfirm-arrow-size);
   border-color: var(--beaver-popconfirm-bg) transparent transparent transparent;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(var(--beaver-popconfirm-arrow-shadow-vertical) var(--beaver-popconfirm-arrow-shadow-color));
 }
 
 /* 底部箭头 */
 .beaver-popconfirm-wrapper.beaver-popconfirm--bottom .beaver-popconfirm__arrow {
-  top: -8px;
-  left: calc(50% + var(--arrow-offset));
+  top: calc(-1 * var(--beaver-popconfirm-arrow-size));
+  left: calc(50% + var(--arrow-offset, 0));
   transform: translateX(-50%);
-  border-width: 0 8px 8px 8px;
+  border-width: 0 var(--beaver-popconfirm-arrow-size) var(--beaver-popconfirm-arrow-size)
+    var(--beaver-popconfirm-arrow-size);
   border-color: transparent transparent var(--beaver-popconfirm-bg) transparent;
-  filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(
+    0 calc(-1 * var(--beaver-popconfirm-arrow-shadow-vertical, 2px)) 4px var(--beaver-popconfirm-arrow-shadow-color)
+  );
 }
 
 /* 左侧箭头 */
 .beaver-popconfirm-wrapper.beaver-popconfirm--left .beaver-popconfirm__arrow {
-  right: -8px;
-  top: calc(50% + var(--arrow-offset));
+  right: calc(-1 * var(--beaver-popconfirm-arrow-size));
+  top: calc(50% + var(--arrow-offset, 0));
   transform: translateY(-50%);
-  border-width: 8px 0 8px 8px;
+  border-width: var(--beaver-popconfirm-arrow-size) 0 var(--beaver-popconfirm-arrow-size)
+    var(--beaver-popconfirm-arrow-size);
   border-color: transparent transparent transparent var(--beaver-popconfirm-bg);
-  filter: drop-shadow(2px 0 4px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(var(--beaver-popconfirm-arrow-shadow-horizontal) var(--beaver-popconfirm-arrow-shadow-color));
 }
 
 /* 右侧箭头 */
 .beaver-popconfirm-wrapper.beaver-popconfirm--right .beaver-popconfirm__arrow {
-  left: -8px;
-  top: calc(50% + var(--arrow-offset));
+  left: calc(-1 * var(--beaver-popconfirm-arrow-size));
+  top: calc(50% + var(--arrow-offset, 0));
   transform: translateY(-50%);
-  border-width: 8px 8px 8px 0;
+  border-width: var(--beaver-popconfirm-arrow-size) var(--beaver-popconfirm-arrow-size)
+    var(--beaver-popconfirm-arrow-size) 0;
   border-color: transparent var(--beaver-popconfirm-bg) transparent transparent;
-  filter: drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.08));
+  filter: drop-shadow(
+    calc(-1 * var(--beaver-popconfirm-arrow-shadow-horizontal, 2px)) 0 4px var(--beaver-popconfirm-arrow-shadow-color)
+  );
 }
 
 /* Popconfirm 标题 */
@@ -101,42 +214,40 @@
   font-size: var(--beaver-popconfirm-title-font-size);
   font-weight: var(--beaver-popconfirm-title-font-weight);
   color: var(--beaver-popconfirm-title-color);
+  line-height: var(--beaver-popconfirm-title-line-height);
   margin: 0;
-  margin-bottom: 4px;
+  margin-bottom: var(--beaver-popconfirm-title-margin-bottom);
   word-break: break-word;
-  line-height: 1.5;
 }
 
 /* Popconfirm 描述文本 */
 .beaver-popconfirm__description {
   font-size: var(--beaver-popconfirm-description-font-size);
   color: var(--beaver-popconfirm-description-color);
+  line-height: var(--beaver-popconfirm-description-line-height);
   margin: 0;
-  /* 使用专用的间距 token，避免将 padding shorthand 用作 margin 值导致兼容问题 */
-  margin-bottom: var(--beaver-popconfirm-gap, 8px);
+  margin-bottom: var(--beaver-popconfirm-description-margin-bottom);
   word-break: break-word;
-  line-height: 1.5;
 }
 
-/* 当没有描述文本时，标题的下边距 */
+/* 当没有描述文本时，标题的下边距调整为与描述相同 */
 .beaver-popconfirm__title:last-child {
-  /* 当没有描述文本时，使用统一的 gap 值作为下边距 */
-  margin-bottom: var(--beaver-popconfirm-gap, 8px);
+  margin-bottom: var(--beaver-popconfirm-description-margin-bottom);
 }
 
 /* Popconfirm 操作按钮区域 */
 .beaver-popconfirm__actions {
   display: flex;
-  gap: var(--beaver-popconfirm-button-gap, 8px);
+  gap: var(--beaver-popconfirm-button-gap);
   justify-content: flex-end;
 }
 
-/* 确认和取消按钮 */
+/* 确认和取消按钮基础样式 */
 .beaver-popconfirm__ok,
 .beaver-popconfirm__cancel {
-  font-size: var(--beaver-font-size-sm, 12px);
-  padding: var(--beaver-space-xs, 6px) var(--beaver-space-md, 12px);
-  border-radius: var(--beaver-radius-md, 6px);
+  font-size: var(--beaver-popconfirm-button-font-size);
+  padding: var(--beaver-popconfirm-button-padding);
+  border-radius: var(--beaver-popconfirm-button-border-radius);
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -146,23 +257,24 @@
 
 /* 确认按钮 - primary 变体 */
 .beaver-popconfirm__ok {
-  background-color: var(--beaver-color-primary);
-  color: var(--beaver-color-on-primary);
+  background-color: var(--beaver-popconfirm-button-ok-bg);
+  color: var(--beaver-popconfirm-button-ok-color);
 }
 
 .beaver-popconfirm__ok:hover:not(:disabled) {
-  opacity: 0.9;
+  opacity: var(--beaver-popconfirm-button-ok-hover-opacity);
 }
 
 .beaver-popconfirm__ok:active:not(:disabled) {
-  opacity: 0.85;
+  opacity: var(--beaver-popconfirm-button-ok-active-opacity);
 }
 
 .beaver-popconfirm__ok:disabled {
-  opacity: 0.6;
+  opacity: var(--beaver-popconfirm-button-ok-disabled-opacity);
   cursor: not-allowed;
 }
 
+/* 确认按钮的加载态 */
 .beaver-popconfirm__ok.beaver-popconfirm--ok-loading {
   position: relative;
   color: transparent;
@@ -174,36 +286,38 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 12px;
-  height: 12px;
-  border: 2px solid transparent;
-  border-top-color: var(--beaver-color-on-primary);
-  border-right-color: var(--beaver-color-on-primary);
+  width: var(--beaver-popconfirm-loader-size);
+  height: var(--beaver-popconfirm-loader-size);
+  border: var(--beaver-popconfirm-loader-border-width) solid transparent;
+  border-top-color: var(--beaver-popconfirm-loader-color);
+  border-right-color: var(--beaver-popconfirm-loader-color);
   border-radius: 50%;
-  animation: popconfirmSpinner 0.6s linear infinite;
+  animation: popconfirmSpinner var(--beaver-popconfirm-loader-duration) linear infinite;
 }
 
 /* 取消按钮 - ghost 变体 */
 .beaver-popconfirm__cancel {
-  background-color: #f5f5f5;
-  color: var(--beaver-color-text);
-  border: 1px solid #d9d9d9;
+  background-color: var(--beaver-popconfirm-button-cancel-bg);
+  color: var(--beaver-popconfirm-button-cancel-color);
+  border: 1px solid var(--beaver-popconfirm-button-cancel-border-color);
 }
 
 .beaver-popconfirm__cancel:hover:not(:disabled) {
-  background-color: #eeeeee;
-  border-color: #b3b3b3;
+  background-color: var(--beaver-popconfirm-button-cancel-hover-bg);
+  border-color: var(--beaver-popconfirm-button-cancel-hover-border-color);
 }
 
 .beaver-popconfirm__cancel:active:not(:disabled) {
-  background-color: #e6e6e6;
-  border-color: #8c8c8c;
+  background-color: var(--beaver-popconfirm-button-cancel-active-bg);
+  border-color: var(--beaver-popconfirm-button-cancel-active-border-color);
 }
 
 .beaver-popconfirm__cancel:disabled {
-  opacity: 0.6;
+  opacity: var(--beaver-popconfirm-button-cancel-disabled-opacity);
   cursor: not-allowed;
 }
+
+/* ===== 动画定义 ===== */
 
 /* 加载旋转动画 */
 @keyframes popconfirmSpinner {
@@ -212,11 +326,11 @@
   }
 }
 
-/* Popconfirm 淡入动画 */
+/* Popconfirm 淡入动画：从小到正常大小并逐渐显示 */
 @keyframes popconfirmFadeIn {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(var(--beaver-popconfirm-fade-in-scale));
   }
   to {
     opacity: 1;
