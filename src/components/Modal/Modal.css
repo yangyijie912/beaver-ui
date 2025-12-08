@@ -1,4 +1,83 @@
-/* Modal 样式 - 使用全局 tokens 变量 */
+:root {
+  /* ===== 内容区域尺寸 ===== */
+
+  /* 最大宽度：防止内容过宽，保持良好的可读性 */
+  --beaver-modal-content-max-width: 90vw;
+  /* 最大高度：防止内容过高，保证至少有滚动空间 */
+  --beaver-modal-content-max-height: 90vh;
+
+  /* ===== 边框 ===== */
+
+  /* 边框定义：包括宽度和颜色 */
+  --beaver-modal-border: 1px solid #e8e8e8;
+  /* 分隔线颜色：头部、页脚与内容区的分隔 */
+  --beaver-modal-divider-color: #f0f0f0;
+
+  /* ===== 颜色定义 ===== */
+
+  /* 背景颜色 */
+  --beaver-modal-bg: #ffffff;
+  /* 标题文字颜色 */
+  --beaver-modal-title-color: #333333;
+  /* 关闭按钮颜色 */
+  --beaver-modal-close-btn-color: #666666;
+  /* 关闭按钮 Hover 颜色 */
+  --beaver-modal-close-btn-hover-color: #333333;
+  /* 遮罩背景颜色 */
+  --beaver-modal-overlay-bg: rgba(0, 0, 0, 0.55);
+
+  /* ===== 阴影定义 ===== */
+
+  /* 内容区投影：为整个对话框添加阴影 */
+  --beaver-modal-box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+
+  /* ===== 尺寸定义 ===== */
+
+  /* 内边距：内容与边框的距离，同时作为头部、内容、页脚的基础间距 */
+  --beaver-modal-padding: 24px;
+  /* 头部下边距：标题与内容区的间距 */
+  --beaver-modal-header-margin-bottom: 16px;
+  /* 页脚上边距：内容区与页脚的间距 */
+  --beaver-modal-footer-margin-top: 16px;
+  /* 关闭按钮大小 */
+  --beaver-modal-close-btn-size: 24px;
+  /* 关闭按钮字体大小 */
+  --beaver-modal-close-btn-font-size: 16px;
+  /* 关闭按钮与标题的距离 */
+  --beaver-modal-close-btn-gap: 12px;
+
+  /* ===== 文本样式 ===== */
+
+  /* 标题字体大小 */
+  --beaver-modal-title-font-size: 18px;
+  /* 标题字体粗细 */
+  --beaver-modal-title-font-weight: 600;
+  /* 内容区文字颜色 */
+  --beaver-modal-body-color: var(--beaver-color-text, #333333);
+  /* 内容区字体大小 */
+  --beaver-modal-body-font-size: var(--beaver-font-size-md, 14px);
+  /* 内容区行高 */
+  --beaver-modal-body-line-height: 1.5;
+
+  /* ===== 动画定义 ===== */
+
+  /* 遮罩淡入/淡出动画时长 */
+  --beaver-modal-mask-transition-duration: 0.3s;
+  /* 内容区打开/关闭动画时长 */
+  --beaver-modal-content-transition-duration: 0.3s;
+
+  /* ===== 层级管理 ===== */
+
+  /* Modal 的 z-index：保证显示在其他浮层之上 */
+  --beaver-modal-z-index: 9999;
+  /* 页脚按钮间距 */
+  --beaver-modal-footer-gap: 12px;
+}
+
+/**
+ * Modal 组件样式
+ * 使用 CSS 变量进行定义，便于主题定制和样式维护
+ */
 
 /* Portal 容器 */
 .beaver-modal-portal {
@@ -11,12 +90,13 @@
   pointer-events: none;
 }
 
+/* 遮罩层 */
 .beaver-modal__mask {
   position: absolute;
   inset: 0;
   background-color: var(--beaver-modal-overlay-bg);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--beaver-modal-mask-transition-duration) ease;
   pointer-events: none;
   z-index: 0;
 }
@@ -26,6 +106,7 @@
   pointer-events: auto;
 }
 
+/* Modal 内容包装器 - 居中布局容器 */
 .beaver-modal-wrapper {
   position: fixed;
   inset: 0;
@@ -40,18 +121,18 @@
   pointer-events: auto;
 }
 
+/* Modal 内容区域 */
 .beaver-modal__content {
   position: relative;
   background-color: var(--beaver-modal-bg);
-  border-radius: var(--beaver-modal-border-radius);
-  border: var(--beaver-modal-border);
+  border-radius: 8px;
   box-shadow: var(--beaver-modal-box-shadow);
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: var(--beaver-modal-content-max-width);
+  max-height: var(--beaver-modal-content-max-height);
   overflow-y: auto;
   transform: scale(0.9);
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all var(--beaver-modal-content-transition-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
   pointer-events: auto;
 }
 
@@ -60,17 +141,18 @@
   opacity: 1;
 }
 
-/* 头部样式 */
+/* Modal 头部 */
 .beaver-modal__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--beaver-modal-padding);
   padding-bottom: var(--beaver-modal-header-margin-bottom);
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--beaver-modal-divider-color);
   flex-shrink: 0;
 }
 
+/* Modal 标题 */
 .beaver-modal__title {
   font-size: var(--beaver-modal-title-font-size);
   font-weight: var(--beaver-modal-title-font-weight);
@@ -81,6 +163,7 @@
   word-break: break-word;
 }
 
+/* Modal 关闭按钮 */
 .beaver-modal__close {
   appearance: none;
   -webkit-appearance: none;
@@ -95,44 +178,42 @@
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
-  margin-left: var(--beaver-space-md, 12px);
-  font-size: 16px;
+  margin-left: var(--beaver-modal-close-btn-gap);
+  font-size: var(--beaver-modal-close-btn-font-size);
   transition: color 0.2s ease;
 }
 
 .beaver-modal__close:hover {
-  color: #333;
+  color: var(--beaver-modal-close-btn-hover-color);
 }
 
 .beaver-modal__close:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 var(--beaver-focus-ring) rgba(var(--beaver-color-primary-rgb), 0.12);
+  box-shadow: 0 0 0 4px rgba(var(--beaver-color-primary-rgb), 0.12);
   border-radius: 4px;
 }
 
-/* 内容区域 */
+/* Modal 内容区域 */
 .beaver-modal__body {
   padding: var(--beaver-modal-padding);
-  color: var(--beaver-color-text);
-  font-size: var(--beaver-font-size-md);
-  line-height: 1.5;
+  color: var(--beaver-modal-body-color);
+  font-size: var(--beaver-modal-body-font-size);
+  line-height: var(--beaver-modal-body-line-height);
 }
 
-/* 页脚样式 */
+/* Modal 页脚 */
 .beaver-modal__footer {
   padding: var(--beaver-modal-padding);
   padding-top: var(--beaver-modal-footer-margin-top);
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--beaver-modal-divider-color);
   display: flex;
   justify-content: flex-end;
-  gap: var(--beaver-space-md, 12px);
+  gap: var(--beaver-modal-footer-gap);
   flex-shrink: 0;
 }
 
-/* 显示隐藏通过 opacity 和 transform 控制 */
-/* 已在 .beaver-modal__content 和 .beaver-modal-wrapper.beaver-modal--active .beaver-modal__content 中定义 */
-
-/* 响应式处理 */
+/* ===== 响应式处理 ===== */
+/* 在移动设备上减小内边距，更充分利用屏幕空间 */
 @media (max-width: 768px) {
   .beaver-modal__content {
     width: 90vw !important;

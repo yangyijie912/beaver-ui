@@ -42,6 +42,15 @@ export const vars = {
   focus: {
     ring: '4px',
   },
+  zIndex: {
+    modal: 9999, // Modal 层级
+    drawer: 9998, // Drawer 层级
+    tooltip: 6000, // Tooltip 层级
+    selectMenu: 5000, // 选择框下拉菜单 层级
+    tableHeader: 3000, // 表格头部层级
+    tableSticky: 1000, // 表格粘性列层级
+    datepicker: 5001, // 日期选择器层级
+  },
   // 全局宽度/尺寸：尽量仅保留跨组件共享的值。组件专属尺寸将放到 `components.<name>` 下。
   components: {
     table: {
@@ -68,39 +77,6 @@ export const vars = {
       // 层级：表头与粘性列的 z-index
       'z-index-header': '3000',
       'z-index-sticky': '1000',
-    },
-    modal: {
-      'border-radius': '8px', // modal 圆角
-      padding: '24px', // modal 内边距
-      'header-margin-bottom': '16px', // 头部下边距
-      'footer-margin-top': '16px', // 页脚上边距
-      'overlay-bg': 'rgba(0, 0, 0, 0.55)', // 遮罩背景色（增强了透明度）
-      bg: '#ffffff', // modal 背景色
-      'z-index': '9999', // modal 层级（高于所有其他组件）
-      'box-shadow': '0 10px 40px rgba(0, 0, 0, 0.15)', // modal 阴影
-      border: '1px solid #e8e8e8', // modal 边框
-      'title-font-size': '18px', // 标题字体大小
-      'title-font-weight': '600', // 标题字体粗细
-      'title-color': '#333', // 标题颜色
-      'close-btn-size': '24px', // 关闭按钮大小
-      'close-btn-color': '#666', // 关闭按钮颜色
-    },
-    drawer: {
-      'border-radius': '4px', // 抽屉圆角
-      padding: '24px', // 抽屉内边距
-      'header-margin-bottom': '16px', // 头部下边距
-      'footer-margin-top': '16px', // 页脚上边距
-      'overlay-bg': 'rgba(0, 0, 0, 0.45)', // 遮罩背景色
-      bg: '#ffffff', // 抽屉背景色
-      'z-index': '9998', // 抽屉层级（低于 modal）
-      'box-shadow': '0 8px 32px rgba(0, 0, 0, 0.12)', // 抽屉阴影
-      'title-font-size': '16px', // 标题字体大小
-      'title-font-weight': '600', // 标题字体粗细
-      'title-color': '#333', // 标题颜色
-      'close-btn-size': '20px', // 关闭按钮大小
-      'close-btn-color': '#666', // 关闭按钮颜色
-      'animation-duration-open': '0.35s', // 打开动画时长
-      'animation-duration-close': '0.25s', // 关闭动画时长
     },
     datepicker: {
       'picker-bg': '#ffffff', // 日期选择器面板背景色

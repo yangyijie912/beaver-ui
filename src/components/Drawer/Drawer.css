@@ -1,14 +1,106 @@
+:root {
+  /* ===== 颜色定义 ===== */
+
+  /* 背景颜色 */
+  --beaver-drawer-bg: #ffffff;
+  /* 标题文字颜色 */
+  --beaver-drawer-title-color: #333333;
+  /* 关闭按钮颜色 */
+  --beaver-drawer-close-btn-color: #666666;
+  /* 关闭按钮 Hover 背景色 */
+  --beaver-drawer-close-btn-hover-bg: #f5f5f5;
+  /* 关闭按钮 Hover 边框色 */
+  --beaver-drawer-close-btn-hover-border-color: #e0e0e0;
+  /* 遮罩背景颜色 */
+  --beaver-drawer-overlay-bg: rgba(0, 0, 0, 0.45);
+
+  /* ===== 边框相关 ===== */
+
+  /* 圆角大小 */
+  --beaver-drawer-border-radius: 4px;
+  /* 分隔线颜色：头部、页脚与内容区的分隔 */
+  --beaver-drawer-divider-color: #f0f0f0;
+
+  /* ===== 阴影定义 ===== */
+
+  /* 内容区投影 */
+  --beaver-drawer-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  /* ===== 尺寸定义 ===== */
+  /* 内边距：内容与边框的距离 */
+  --beaver-drawer-padding: 24px;
+  /* 头部下边距：标题与内容区的间距 */
+  --beaver-drawer-header-margin-bottom: 16px;
+  /* 页脚上边距：内容区与页脚的间距 */
+  --beaver-drawer-footer-margin-top: 16px;
+  /* 关闭按钮大小 */
+  --beaver-drawer-close-btn-size: 20px;
+  /* 关闭按钮字体大小 */
+  --beaver-drawer-close-btn-font-size: 16px;
+
+  /* ===== 文本样式 ===== */
+
+  /* 标题字体大小 */
+  --beaver-drawer-title-font-size: 16px;
+  /* 标题字体粗细 */
+  --beaver-drawer-title-font-weight: 600;
+
+  /* ===== 动画定义 ===== */
+
+  /* 打开动画时长：Drawer 从隐藏到显示 */
+  --beaver-drawer-animation-duration-open: 0.35s;
+  /* 关闭动画时长：Drawer 从显示到隐藏 */
+  --beaver-drawer-animation-duration-close: 0.25s;
+  /* 动画缓动函数：平滑的滑动效果 */
+  --beaver-drawer-animation-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* ===== 层级管理 ===== */
+
+  /* Drawer 的 z-index：保证显示在其他浮层之上（低于 Modal） */
+  --beaver-drawer-z-index: 9998;
+
+  /* ===== 间距 ===== */
+
+  /* 头部和页脚中元素的间距 */
+  --beaver-drawer-gap: 12px;
+
+  /* ===== 响应式相关 ===== */
+
+  /* 小屏幕上水平方向 Drawer 的宽度 */
+  --beaver-drawer-mobile-width: 80vw;
+  /* 小屏幕上水平方向 Drawer 的最大宽度 */
+  --beaver-drawer-mobile-max-width: 85%;
+  /* 小屏幕上竖直方向 Drawer 的高度 */
+  --beaver-drawer-mobile-height: 60vh;
+  /* 小屏幕上竖直方向 Drawer 的最大高度 */
+  --beaver-drawer-mobile-max-height: 80%;
+  /* 小屏幕上的内边距 */
+  --beaver-drawer-mobile-padding: var(--beaver-space-lg, 16px);
+
+  /* ===== 滚动条相关 ===== */
+
+  /* 滚动条宽度 */
+  --beaver-drawer-scrollbar-width: 8px;
+  /* 滚动条轨道背景 */
+  --beaver-drawer-scrollbar-track-bg: transparent;
+  /* 滚动条滑块背景色 */
+  --beaver-drawer-scrollbar-thumb-bg: #d0d0d0;
+  /* 滚动条滑块圆角 */
+  --beaver-drawer-scrollbar-thumb-radius: 4px;
+  /* 滚动条滑块 Hover 背景色 */
+  --beaver-drawer-scrollbar-thumb-hover-bg: #b0b0b0;
+}
+
 /**
  * Drawer 组件样式
- * 使用全局 tokens 变量管理样式
+ * 使用 CSS 变量进行定义，便于主题定制和样式维护
  * 支持四个方向（left、right、top、bottom）的抽屉展示
  */
 
 /* ===== Portal 容器 ===== */
 /**
- * Portal容器样式
+ * Portal 容器样式
  * - 固定定位覆盖整个视口
- * - z-index设置为Drawer层级
+ * - z-index 设置为 Drawer 层级
  * - pointer-events: none 保证遮罩层可以接收点击事件
  */
 .beaver-drawer-portal {
@@ -24,9 +116,9 @@
 /* ===== 遮罩层样式 ===== */
 /**
  * 遮罩层
- * - 覆盖整个viewport
+ * - 覆盖整个 viewport
  * - 初始状态为透明
- * - 激活时显示半透明黑色背景
+ * - 激活时显示半透明背景
  * - 平滑过渡效果
  */
 .beaver-drawer__mask {
@@ -50,10 +142,10 @@
 
 /* ===== 包装容器样式 ===== */
 /**
- * Drawer包装容器
- * - 固定定位，覆盖整个viewport
- * - flex布局用于内容对齐
- * - 初始状态pointer-events: none，激活时启用
+ * Drawer 包装容器
+ * - 固定定位，覆盖整个 viewport
+ * - flex 布局用于内容对齐
+ * - 初始状态 pointer-events: none，激活时启用
  */
 .beaver-drawer-wrapper {
   position: fixed;
@@ -111,7 +203,7 @@
 
 /* ===== 内容容器样式 ===== */
 /**
- * Drawer内容容器
+ * Drawer 内容容器
  * - 背景色和边框样式
  * - 阴影效果增强深度感
  * - 初始状态：缩小和透明（根据方向不同）
@@ -133,9 +225,7 @@
 /**
  * 右侧抽屉的内容样式
  * - 完整占满高度
- * - 初始状态从右侧滑入（translateX向右）
- * - 真实的拉抽屉效果
- * - 首次挂载时不使用过渡，防止闪现
+ * - 初始状态从右侧滑入
  */
 .beaver-drawer--right .beaver-drawer__content {
   height: 100%;
@@ -147,8 +237,7 @@
 /**
  * 左侧抽屉的内容样式
  * - 完整占满高度
- * - 初始状态从左侧滑入（translateX向左）
- * - 首次挂载时不使用过渡
+ * - 初始状态从左侧滑入
  */
 .beaver-drawer--left .beaver-drawer__content {
   height: 100%;
@@ -160,8 +249,7 @@
 /**
  * 顶部抽屉的内容样式
  * - 完整占满宽度
- * - 初始状态从顶部滑入（translateY向上）
- * - 首次挂载时不使用过渡
+ * - 初始状态从顶部滑入
  */
 .beaver-drawer--top .beaver-drawer__content {
   width: 100%;
@@ -173,8 +261,7 @@
 /**
  * 底部抽屉的内容样式
  * - 完整占满宽度
- * - 初始状态从底部滑入（translateY向下）
- * - 首次挂载时不使用过渡
+ * - 初始状态从底部滑入
  */
 .beaver-drawer--bottom .beaver-drawer__content {
   width: 100%;
@@ -192,7 +279,7 @@
 .beaver-drawer-wrapper.beaver-drawer--active .beaver-drawer__content {
   transform: translateX(0) translateY(0);
   opacity: 1;
-  transition: all var(--beaver-drawer-animation-duration-open) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all var(--beaver-drawer-animation-duration-open) var(--beaver-drawer-animation-timing);
 }
 
 /**
@@ -201,15 +288,15 @@
  * - 快速收起效果
  */
 .beaver-drawer-wrapper:not(.beaver-drawer--active) .beaver-drawer__content {
-  transition: all var(--beaver-drawer-animation-duration-close) cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all var(--beaver-drawer-animation-duration-close) var(--beaver-drawer-animation-timing);
 }
 
 /* ===== 头部样式 ===== */
 /**
- * Drawer头部容器
- * - flexbox布局实现标题和关闭按钮的对齐
+ * Drawer 头部容器
+ * - flexbox 布局实现标题和关闭按钮的对齐
  * - 下边框分隔内容
- * - 内边距来自tokens
+ * - 内边距来自 tokens
  */
 .beaver-drawer__header {
   display: flex;
@@ -217,16 +304,15 @@
   justify-content: space-between;
   padding: var(--beaver-drawer-padding);
   padding-bottom: var(--beaver-drawer-header-margin-bottom);
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--beaver-drawer-divider-color);
   flex-shrink: 0;
-  gap: var(--beaver-space-md);
+  gap: var(--beaver-drawer-gap);
 }
 
 /**
- * Drawer标题样式
- * - 使用tokens中的title配置
- * - 默认字体大小、粗细和颜色
- * - flex: 1确保标题占据可用空间
+ * Drawer 标题样式
+ * - 使用 tokens 中的 title 配置
+ * - flex: 1 确保标题占据可用空间
  */
 .beaver-drawer__title {
   font-size: var(--beaver-drawer-title-font-size);
@@ -241,10 +327,9 @@
 /**
  * 关闭按钮样式
  * - 固定大小
- * - 使用SVG图标（1em相对单位便于缩放）
- * - hover效果通过opacity
- * - border-radius使其圆形
- * - cursor: pointer表示可点击
+ * - hover 效果通过背景色变化
+ * - border-radius 使其圆角
+ * - cursor: pointer 表示可点击
  */
 .beaver-drawer__close {
   display: flex;
@@ -257,26 +342,27 @@
   border-radius: 4px;
   cursor: pointer;
   color: var(--beaver-drawer-close-btn-color);
-  font-size: 16px;
+  font-size: var(--beaver-drawer-close-btn-font-size);
   padding: 0;
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 /**
- * 关闭按钮hover效果
+ * 关闭按钮 hover 效果
  * - 背景色变化
+ * - 边框色变化
  * - 增强交互反馈
  */
 .beaver-drawer__close:hover {
-  background-color: #f5f5f5;
-  border-color: #e0e0e0;
+  background-color: var(--beaver-drawer-close-btn-hover-bg);
+  border-color: var(--beaver-drawer-close-btn-hover-border-color);
 }
 
 /**
- * 关闭按钮focus效果
+ * 关闭按钮 focus 效果
  * - 聚焦时的可访问性提示
- * - 外围阴影表示焦点
+ * - 外围轮廓表示焦点
  */
 .beaver-drawer__close:focus-visible {
   outline: 2px solid var(--beaver-color-primary);
@@ -284,9 +370,9 @@
 }
 
 /**
- * 关闭按钮SVG图标样式
+ * 关闭按钮 SVG 图标样式
  * - 继承文字颜色
- * - 宽高为1em（相对于font-size）
+ * - 宽高为 1em（相对于 font-size）
  */
 .beaver-drawer__close svg {
   width: 1em;
@@ -296,10 +382,10 @@
 
 /* ===== 主体内容样式 ===== */
 /**
- * Drawer主体内容区域
- * - flex: 1使其占据所有可用空间
- * - overflow-y: auto支持内部滚动
- * - 内边距来自tokens
+ * Drawer 主体内容区域
+ * - flex: 1 使其占据所有可用空间
+ * - overflow-y: auto 支持内部滚动
+ * - 内边距来自 tokens
  */
 .beaver-drawer__body {
   flex: 1;
@@ -310,7 +396,7 @@
 
 /**
  * 主体内容的最后一个元素
- * - 移除底部margin避免过多间距
+ * - 移除底部 margin 避免过多间距
  */
 .beaver-drawer__body > :last-child {
   margin-bottom: 0;
@@ -318,10 +404,10 @@
 
 /* ===== 页脚样式 ===== */
 /**
- * Drawer页脚容器
- * - flexbox布局
+ * Drawer 页脚容器
+ * - flexbox 布局
  * - 当有内容时显示上边框分隔操作区
- * - 内边距和间距来自tokens
+ * - 内边距和间距来自 tokens
  * - 自动换行以支持多个按钮
  * - 当为空时完全隐藏（不占空间、无边框）
  */
@@ -329,10 +415,10 @@
   display: none;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--beaver-space-md);
+  gap: var(--beaver-drawer-gap);
   padding: var(--beaver-drawer-padding);
   padding-top: var(--beaver-drawer-footer-margin-top);
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--beaver-drawer-divider-color);
   flex-shrink: 0;
   flex-wrap: wrap;
 }
@@ -347,70 +433,70 @@
 /* ===== 响应式样式 ===== */
 /**
  * 移动设备适配
- * - 小屏幕上，Drawer占据更多空间
+ * - 小屏幕上，Drawer 占据更多空间
  * - 避免内容过窄或过高
  */
 @media (max-width: 640px) {
   /**
    * 水平方向的抽屉在小屏幕上调整
-   * - 左/右方向的抽屉宽度调整为80%
+   * - 左/右方向的抽屉宽度调整为 var 值
    */
   .beaver-drawer--left .beaver-drawer__content,
   .beaver-drawer--right .beaver-drawer__content {
-    width: 80vw;
-    max-width: 85%;
+    width: var(--beaver-drawer-mobile-width);
+    max-width: var(--beaver-drawer-mobile-max-width);
   }
 
   /**
    * 竖直方向的抽屉在小屏幕上调整
-   * - 上/下方向的抽屉高度调整为60%
+   * - 上/下方向的抽屉高度调整为 var 值
    */
   .beaver-drawer--top .beaver-drawer__content,
   .beaver-drawer--bottom .beaver-drawer__content {
-    height: 60vh;
-    max-height: 80%;
+    height: var(--beaver-drawer-mobile-height);
+    max-height: var(--beaver-drawer-mobile-max-height);
   }
 
   /**
-   * 小屏幕上的头部和页脚内边距调整
+   * 小屏幕上的头部、内容和页脚内边距调整
    */
   .beaver-drawer__header,
   .beaver-drawer__body,
   .beaver-drawer__footer {
-    padding-left: var(--beaver-space-lg);
-    padding-right: var(--beaver-space-lg);
+    padding-left: var(--beaver-drawer-mobile-padding);
+    padding-right: var(--beaver-drawer-mobile-padding);
   }
 }
 
-/* ===== 禁用滚动条样式 ===== */
+/* ===== 滚动条样式 ===== */
 /**
- * 自定义滚动条外观（webkit浏览器）
- * - 滚动条宽度设置为8px
+ * 自定义滚动条外观（webkit 浏览器）
+ * - 滚动条宽度设置为变量值
  * - 轨道背景透明
  * - 滑块背景浅灰色
  */
 .beaver-drawer__body::-webkit-scrollbar {
-  width: 8px;
+  width: var(--beaver-drawer-scrollbar-width);
 }
 
 .beaver-drawer__body::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--beaver-drawer-scrollbar-track-bg);
 }
 
 .beaver-drawer__body::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
-  border-radius: 4px;
+  background: var(--beaver-drawer-scrollbar-thumb-bg);
+  border-radius: var(--beaver-drawer-scrollbar-thumb-radius);
 }
 
 .beaver-drawer__body::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b0;
+  background: var(--beaver-drawer-scrollbar-thumb-hover-bg);
 }
 
 /* ===== 无遮罩模式 ===== */
 /**
- * 当mask=false时的样式
+ * 当 mask=false 时的样式
  * - 遮罩不显示
- * 注：实际隐藏由JavaScript控制
+ * 注：实际隐藏由 JavaScript 控制
  */
 .beaver-drawer-wrapper.beaver-drawer--no-mask .beaver-drawer__mask {
   display: none;
