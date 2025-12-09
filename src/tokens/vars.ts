@@ -53,31 +53,6 @@ export const vars = {
   },
   // 全局宽度/尺寸：尽量仅保留跨组件共享的值。组件专属尺寸将放到 `components.<name>` 下。
   components: {
-    table: {
-      'header-bg': '#f8fafc', // 表头背景
-      'header-color': '#6e6f6f', // 表头文字颜色
-      'hover-bg': '#ecf4fe', // 表格行 hover 背景
-      'selected-bg': '#f7fcfe', // 表格行 选中 背景
-      'border-color': '#f0f0f0', // 表格边框颜色
-      'fixed-bg': '#ffffff', // 表格固定（粘性）列的背景
-      'vertical-border-color': '#f0f0f0', // 列间竖向分隔线颜色
-      'sticky-border-color': '#f0f0f0', // 粘性列专用的分隔线颜色
-      'empty-icon-color': '#dce0e6', // 空状态图标颜色
-      'empty-height': '200px', // 空状态（暂无数据）占位高度：如果不存在则通过内容自适应
-      'empty-color': '#909399', // 空状态文字颜色
-      'empty-bg': '#ffffff', // 空状态背景色
-      'empty-box-width': 'min(360px, 60%)', // 空占位内层 box 宽度
-      'select-col-width': '40px', // 选择列宽度
-      'shadow-width': '8px', // 滚动阴影宽度
-      'scrollbar-height': '16px', // 滚动条高度回退值
-      'scrollbar-width': '0px', // 当没有滚动条时的回退宽度
-      'left-sticky-width': '0px', // 左侧粘性列总宽度回退值
-      'right-sticky-width': '0px', // 右侧粘性列总宽度回退值
-      'header-height': '0px', // 表头高度回退值
-      // 层级：表头与粘性列的 z-index
-      'z-index-header': '3000',
-      'z-index-sticky': '1000',
-    },
     datepicker: {
       'picker-bg': '#ffffff', // 日期选择器面板背景色
       'picker-border-color': '#e8e8e8', // 日期选择器面板边框颜色

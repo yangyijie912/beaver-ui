@@ -44,7 +44,7 @@
   z-index: var(--beaver-table-z-index-header, 3000);
   background: var(--beaver-table-header-bg, #f8fafc);
   background-clip: border-box;
-  color: var(--beaver-table-header-color);
+  color: var(--beaver-table-header-color, #6e6f6f);
 }
 
 /* 粘性列基础样式 */
@@ -113,12 +113,12 @@
 /* 行内粘性列背景 */
 .beaver-table tbody tr:hover .beaver-table__cell--sticky--left,
 .beaver-table tbody tr:hover .beaver-table__cell--sticky--right {
-  background: var(--beaver-table-hover-bg);
+  background: var(--beaver-table-hover-bg, #ecf4fe);
 }
 
 .beaver-table tbody tr:hover .beaver-table__cell--sticky-edge-left:not(.beaver-table__select-col),
 .beaver-table tbody tr:hover .beaver-table__cell--sticky-edge-right:not(.beaver-table__select-col) {
-  background: var(--beaver-table-hover-bg);
+  background: var(--beaver-table-hover-bg, #ecf4fe);
 }
 
 .beaver-table tbody tr.beaver-table__row--selected .beaver-table__cell--sticky--left,
@@ -128,7 +128,7 @@
 
 .beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__cell--sticky--left,
 .beaver-table tbody tr.beaver-table__row--selected:hover .beaver-table__cell--sticky--right {
-  background: var(--beaver-table-hover-bg);
+  background: var(--beaver-table-hover-bg, #ecf4fe);
 }
 
 /* 右侧粘性列 1px 白色缝隙问题修复 */
@@ -147,7 +147,7 @@
 }
 
 .beaver-table tbody tr:hover td:last-child.beaver-table__cell--sticky--right {
-  box-shadow: -1px 0 0 0 var(--beaver-table-hover-bg);
+  box-shadow: -1px 0 0 0 var(--beaver-table-hover-bg, #ecf4fe);
 }
 
 .beaver-table tbody tr.beaver-table__row--selected td:last-child.beaver-table__cell--sticky--right {
@@ -163,9 +163,9 @@
 }
 
 .beaver-table tbody tr.beaver-table__row--selected:hover td:last-child.beaver-table__cell--sticky--right {
-  box-shadow: -1px 0 0 0 var(--beaver-table-hover-bg);
+  box-shadow: -1px 0 0 0 var(--beaver-table-hover-bg, #ecf4fe);
 }
 
 .beaver-table tbody tr.beaver-table__row--selected:hover td:last-child.beaver-table__cell--sticky--right::before {
-  background: var(--beaver-table-hover-bg);
+  background: var(--beaver-table-hover-bg, #ecf4fe);
 }
