@@ -25,7 +25,10 @@ interface PanelRendererProps {
   onDateClick: (date: Date) => void;
   onDateHover: (date: Date | null) => void;
   onMonthChange: (monthIndex: number, year: number) => void;
+  // 用于 月份面板 的年份导航（不触发选择，仅改变显示年份）
   onYearChange: (year: number) => void;
+  // 用于 年份面板 的年份选择（用户点击某年以选择）
+  onYearClick?: (year: number) => void;
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onTimeChange?: (time: Date) => void;
@@ -49,6 +52,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
   onDateHover,
   onMonthChange,
   onYearChange,
+  onYearClick,
   onPrevMonth,
   onNextMonth,
   onTimeChange,
@@ -117,7 +121,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
       <YearPanel
         currentMonth={currentMonth}
         selectedYear={isRange ? rangeStart : selectedDate}
-        onYearClick={onYearChange}
+        onYearClick={onYearClick || (() => {})}
         disabledYear={disabledDate}
       />
     );

@@ -121,15 +121,31 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
      */
     const handleInputFocus = useCallback(() => {
       setIsFocused(true);
-      if (picker === 'datetime' && isRange) {
-        // datetime range 模式：初始化为第一步
-        rangeState.setSelectingStart(true);
-        rangeState.setTempDateTimeStart(null);
-        rangeState.setTempDateTimeEnd(null);
-        rangeState.setConfirmedStartDate(null);
+      // 如果输入框已有已选日期，打开时应该定位到该日期所在的月份/年份
+      if (!isRange) {
+        if (singleState.currentDate) {
+          singleState.setCurrentMonth(new Date(singleState.currentDate));
+        }
       } else {
-        rangeState.resetRangeState();
+        // range 模式：优先使用 startDate，若无则使用 endDate
+        const currentRange = rangeState.currentRange;
+        if (currentRange && currentRange.startDate) {
+          rangeState.setCurrentMonth(new Date(currentRange.startDate));
+        } else if (currentRange && currentRange.endDate) {
+          rangeState.setCurrentMonth(new Date(currentRange.endDate));
+        }
+
+        if (picker === 'datetime') {
+          // datetime range 模式：初始化为第一步
+          rangeState.setSelectingStart(true);
+          rangeState.setTempDateTimeStart(null);
+          rangeState.setTempDateTimeEnd(null);
+          rangeState.setConfirmedStartDate(null);
+        } else {
+          rangeState.resetRangeState();
+        }
       }
+
       open();
     }, [picker, isRange, setIsFocused, open, rangeState]);
 
@@ -227,6 +243,20 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         handleMonthSelect(0, year);
       },
       [handleMonthSelect]
+    );
+
+    // 当在月份面板中点击年份导航（上一年/下一年）时，只改变展示年份，不应触发选择或关闭面板
+    const handleYearNavigate = useCallback(
+      (year: number) => {
+        const newMonth = new Date(currentMonth);
+        newMonth.setFullYear(year);
+        if (isRange) {
+          rangeState.setCurrentMonth(newMonth);
+        } else {
+          singleState.setCurrentMonth(newMonth);
+        }
+      },
+      [currentMonth, isRange, rangeState, singleState]
     );
 
     const handleTimeChange = useCallback(
@@ -513,7 +543,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                 onDateClick={handleDateClick}
                 onDateHover={handleDateHover}
                 onMonthChange={handleMonthSelect}
-                onYearChange={handleYearSelect}
+                onYearChange={handleYearNavigate}
+                onYearClick={handleYearSelect}
                 onPrevMonth={handlePrevMonth}
                 onNextMonth={handleNextMonth}
                 onTimeChange={handleTimeChange}
