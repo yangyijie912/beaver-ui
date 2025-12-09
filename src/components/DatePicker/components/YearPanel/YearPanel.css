@@ -1,7 +1,6 @@
 /* 年份选择面板样式 */
 
 .beaver-datepicker-year-panel {
-  padding: var(--beaver-datepicker-panel-padding);
   background: #fff;
   width: 100%;
   box-sizing: border-box;
@@ -61,7 +60,7 @@
   &.ghost {
     opacity: 0.25;
     cursor: not-allowed;
-    color: var(--beaver-color-text-secondary);
+    color: var(--beaver-color-text, #333);
     border-color: #f0f0f0;
 
     &:hover {

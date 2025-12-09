@@ -1,7 +1,6 @@
 /* 时间选择面板样式 */
 
 .beaver-datepicker-time-panel {
-  padding: var(--beaver-datepicker-panel-padding);
   background: #fff;
 }
 
@@ -42,7 +41,6 @@
 
   label {
     font-size: 12px;
-    color: var(--beaver-color-text-secondary);
     font-weight: 500;
   }
 }

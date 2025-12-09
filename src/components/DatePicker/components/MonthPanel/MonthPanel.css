@@ -1,7 +1,6 @@
 /* 月份选择面板样式 */
 
 .beaver-datepicker-month-panel {
-  padding: var(--beaver-datepicker-panel-padding);
   background: #fff;
   width: 100%;
   box-sizing: border-box;

@@ -28,10 +28,6 @@
   /* focus 的 box-shadow 值 */
   --beaver-select-focus: 0 0 0 var(--beaver-focus-ring, 3px) rgba(var(--beaver-color-primary-rgb, 11, 102, 209), 0.12);
 
-  /* 下拉菜单阴影与 z-index */
-  --beaver-select-box-shadow: 0 8px 24px rgba(20, 30, 50, 0.12);
-  --beaver-select-z-index: 5000;
-
   /* 图标、箭头、spinner 尺寸 */
   --beaver-select-icon-size: 18px;
   --beaver-select-arrow-size: 14px;
@@ -43,6 +39,8 @@
 
   /* 下拉菜单相关 */
   --beaver-select-max-height: 260px;
+  --beaver-select-box-shadow: 0 8px 24px rgba(20, 30, 50, 0.12);
+  --beaver-select-z-index: var(--beaver-z-index-select-menu, 5000);
 }
 
 .beaver-select-wrapper {
