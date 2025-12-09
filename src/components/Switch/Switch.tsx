@@ -22,14 +22,6 @@ export type SwitchProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'o
   unCheckedChildren?: React.ReactNode;
 };
 
-/**
- * Switch 组件
- * - 使用场景：在两种状态之间切换（如开/关、启用/禁用）
- * - 支持自定义尺寸（小/中/大）
- * - 支持禁用和加载状态
- * - 支持受控和非受控模式
- * - 支持在开关上显示自定义标签
- */
 const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
   (
     {

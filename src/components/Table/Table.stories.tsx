@@ -2,6 +2,16 @@ import React from 'react';
 import Table, { Column } from './Table';
 import type { Meta, StoryObj } from '@storybook/react';
 
+/**
+ * Table 组件
+ *
+ * - 使用场景：展示和操作结构化数据的表格
+ * - 支持可选的多选框列，便于选择多行数据
+ * - 支持受控和非受控的行选择状态管理
+ * - 支持固定表头和固定列，提升大数据量表格的可用性
+ * - 支持自定义单元格渲染，满足复杂展示需求
+ * - 支持边框样式和空状态展示
+ */
 const meta: Meta<typeof Table> = {
   title: 'Components/Table',
   component: Table,

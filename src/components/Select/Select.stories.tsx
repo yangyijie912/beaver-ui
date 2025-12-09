@@ -7,6 +7,13 @@ const decoratorStyle: React.CSSProperties & Record<string, string> = {
   '--beaver-select-width': '200px',
 };
 
+/** Select 组件
+ * - 使用场景：在多个选项中进行选择，支持单选和多选
+ * - 支持搜索和过滤选项
+ * - 支持创建新选项
+ * - 支持键盘导航
+ * - 支持自定义样式和图标
+ */
 const meta: Meta<typeof Select> = {
   title: 'Components/Select',
   component: Select,

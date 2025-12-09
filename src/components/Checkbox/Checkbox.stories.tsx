@@ -2,6 +2,13 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import Checkbox from './Checkbox';
 
+/**
+ * Checkbox 组件
+ * - 使用场景：在多个选项中进行多选
+ * - 支持三态显示（选中、未选中、中间态）
+ * - 支持禁用状态
+ * - 支持自定义标签内容
+ */
 const meta: Meta<typeof Checkbox> = {
   title: 'Components/Checkbox',
   component: Checkbox,

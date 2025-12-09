@@ -1,14 +1,3 @@
-/**
- * DatePicker 日期选择器组件
- *
- * - 使用场景：用户输入或选择日期，支持单选和范围选择
- * - 支持多种日期格式
- * - 支持禁用特定日期
- * - 支持时间选择（可选）
- * - 支持键盘快捷键
- * - 支持日期范围选择
- */
-
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import Input from '../Input/Input';
 import { useDatePickerState, useDatePickerUI } from './hooks/useDatePickerState';
@@ -18,10 +7,6 @@ import { formatDate, parseDate } from './utils';
 import type { DatePickerProps } from './types';
 import './DatePicker.css';
 
-/**
- * DatePicker 组件
- * 提供日期选择功能，支持单选、范围选择等模式
- */
 const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
   (
     {

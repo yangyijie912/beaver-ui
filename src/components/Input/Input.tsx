@@ -30,16 +30,6 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
   onClear?: () => void;
 };
 
-/**
- * Input 组件
- * - 使用场景：接收用户的文本输入
- * - 支持多行文本输入（textarea）
- * - 支持输入校验状态（错误、成功）
- * - 支持禁用状态
- * - 支持自定义宽度
- * - 支持前置/后置内容插槽（如图标、清除按钮等）
- * - 支持多种尺寸（small、medium、large）
- */
 const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
   (
     {

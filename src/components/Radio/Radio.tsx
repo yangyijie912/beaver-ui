@@ -9,13 +9,6 @@ export type RadioProps = React.InputHTMLAttributes<HTMLInputElement> & {
   inputClassName?: string;
 };
 
-/**
- * Radio 组件
- * - 使用场景：在一组选项中进行单选
- * - 支持与 RadioGroup 组件配合使用，管理一组单选按钮
- * - 支持禁用状态
- * - 支持自定义标签内容
- */
 const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
   ({ label, className, inputClassName, disabled, onChange, ...props }, ref) => {
     // 获取单选按钮组上下文

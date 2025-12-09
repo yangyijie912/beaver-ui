@@ -5,16 +5,6 @@ import { usePopconfirmPosition } from './hooks/usePopconfirmPosition';
 import type { PopconfirmProps } from './types';
 import './Popconfirm.css';
 
-/**
- * Popconfirm 组件 - 弹出式确认框
- *
- * - 使用场景： 在执行重要或不可逆操作前，要求用户进行确认，避免误操作
- * - 支持自定义标题和描述文本
- * - 支持确认和取消按钮的文本、样式和禁用状态
- * - 支持异步确认操作，显示加载状态
- * - 支持多种位置（上/下/左/右）
- * - 支持遮罩层和点击遮罩关闭
- */
 const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
   (
     {

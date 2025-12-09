@@ -15,14 +15,6 @@ export interface TooltipProps {
   portal?: boolean;
 }
 
-/**
- * Tooltip 组件
- * - 使用场景：为元素提供简洁的文字提示信息
- * - 支持多种位置（上/下/左/右）
- * - 支持 React 节点内容
- * - 支持 portal 渲染，避免裁切问题
- * - 支持内容为空时不显示 Tooltip
- */
 const Tooltip: React.FC<TooltipProps> = ({ content, placement = 'top', children, portal = true }) => {
   const id = useId();
   const triggerRef = useRef<HTMLSpanElement | null>(null);

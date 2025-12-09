@@ -6,6 +6,16 @@ import React, { useState } from 'react';
 import DatePicker from './DatePicker';
 import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 
+/**
+ * DatePicker 日期选择器组件
+ *
+ * - 使用场景：用户输入或选择日期，支持单选和范围选择
+ * - 支持多种日期格式
+ * - 支持禁用特定日期
+ * - 支持时间选择（可选）
+ * - 支持键盘快捷键
+ * - 支持日期范围选择
+ */
 const meta: Meta<typeof DatePicker> = {
   title: 'Components/DatePicker',
   component: DatePicker,

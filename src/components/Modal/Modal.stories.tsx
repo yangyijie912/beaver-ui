@@ -3,6 +3,13 @@ import Modal from './Modal';
 import Button from '../Button/Button';
 import type { Meta, StoryObj } from '@storybook/react';
 
+/** Modal 组件
+ * - 使用场景：展示重要信息或需要用户操作的内容，阻断背景交互
+ * - 支持多种尺寸预设（小、中、大）和自定义宽度
+ * - 支持遮罩点击关闭和按键关闭
+ * - 支持自定义标题、内容和页脚
+ * - 支持动画效果
+ */
 const meta: Meta<typeof Modal> = {
   title: 'Components/Modal',
   component: Modal,

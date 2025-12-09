@@ -3,6 +3,16 @@ import Pagination from './Pagination';
 import { en } from './locales';
 import type { Meta, StoryObj } from '@storybook/react';
 
+/**
+ * Pagination 组件
+ * - 使用场景：在数据量较大时，分割数据为多页进行展示和导航
+ * - 支持自定义每页条目数
+ * - 支持快速跳转到指定页码
+ * - 支持禁用状态
+ * - 支持国际化文案
+ * - 支持对齐方式自定义（左、中、右）
+ * - 支持受控和非受控用法
+ */
 const meta: Meta<typeof Pagination> = {
   title: 'Components/Pagination',
   component: Pagination,

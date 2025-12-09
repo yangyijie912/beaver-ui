@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Button from './Button';
 
+/**
+ * Button 组件
+ * - 使用场景：触发用户操作或事件
+ * - 支持样式变体（主要、幽灵、链接）
+ * - 支持不同尺寸（小、中、大）
+ * - 支持颜色变体（主色、危险色）
+ * - 支持禁用状态和加载状态
+ * - 支持自定义内容（文本、图标等）
+ */
 const meta: Meta<typeof Button> = {
   title: 'Components/Button',
   component: Button,

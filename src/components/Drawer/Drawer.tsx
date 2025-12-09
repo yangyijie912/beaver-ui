@@ -15,16 +15,6 @@ const sizeMap: Record<string, string> = {
   large: '520px',
 };
 
-/**
- * Drawer 组件
- *
- * - 使用场景：侧边栏或抽屉式面板，用于展示附加内容或操作选项
- * - 支持四个方向展示（左、右、上、下）
- * - 支持多种尺寸预设或自定义尺寸
- * - 支持遮罩点击关闭和按键关闭
- * - 支持自定义标题、内容和页脚
- * - 平滑的动画效果，可以通过覆盖css类自定义动画或时长
- */
 const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
   (
     {
