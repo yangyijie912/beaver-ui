@@ -3,6 +3,9 @@ import Input from '../Input/Input';
 import { useDatePickerState, useDatePickerUI } from './hooks/useDatePickerState';
 import CalendarPanel from './components/CalendarPanel';
 import Header from './components/Header';
+import MonthPanel from './components/MonthPanel';
+import YearPanel from './components/YearPanel';
+import TimePanel from './components/TimePanel';
 import { formatDate, parseDate } from './utils';
 import type { DatePickerProps } from './types';
 import './DatePicker.css';
@@ -62,6 +65,14 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           ? `${formatDate(currentRange.startDate, format)} ~ ${formatDate(currentRange.endDate, format)}`
           : '';
       }
+      if (picker === 'month' && currentDate) {
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        return `${year}-${month}`;
+      }
+      if (picker === 'year' && currentDate) {
+        return `${currentDate.getFullYear()}`;
+      }
       return currentDate ? formatDate(currentDate, format) : '';
     });
 
@@ -71,6 +82,11 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     const [rangeStartDate, setRangeStartDate] = useState<Date | null>(null);
     // 鼠标悬停的日期（用于显示临时范围）
     const [hoverDate, setHoverDate] = useState<Date | null>(null);
+
+    // 选择器类型状态
+    const [panelType, setPanelType] = useState<'calendar' | 'month' | 'year' | 'time'>(
+      picker === 'month' ? 'month' : picker === 'year' ? 'year' : 'calendar'
+    );
 
     /**
      * 处理输入框值变化
@@ -269,9 +285,17 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             : ''
         );
       } else {
-        setInputValue(currentDate ? formatDate(currentDate, format) : '');
+        if (picker === 'month' && currentDate) {
+          const year = currentDate.getFullYear();
+          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          setInputValue(`${year}-${month}`);
+        } else if (picker === 'year' && currentDate) {
+          setInputValue(`${currentDate.getFullYear()}`);
+        } else {
+          setInputValue(currentDate ? formatDate(currentDate, format) : '');
+        }
       }
-    }, [currentDate, currentRange, format, isRange]);
+    }, [currentDate, currentRange, format, isRange, picker]);
 
     // 计算 wrapper 样式
     const wrapperStyle: React.CSSProperties = {
@@ -359,20 +383,189 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
               }}
             >
               {/* 头部 */}
-              <Header currentMonth={currentMonth} onPrevMonth={handlePrevMonth} onNextMonth={handleNextMonth} />
+              {(picker === 'date' || picker === 'daterange') && (
+                <Header currentMonth={currentMonth} onPrevMonth={handlePrevMonth} onNextMonth={handleNextMonth} />
+              )}
 
-              {/* 日历面板 */}
-              <CalendarPanel
-                currentMonth={currentMonth}
-                selectedDate={!isRange ? currentDate : undefined}
-                selectedRange={isRange ? currentRange : undefined}
-                rangeStart={isRange && !selectingStart ? rangeStartDate : undefined}
-                hoverDate={isRange && !selectingStart ? hoverDate : undefined}
-                disabledDate={disabledDate}
-                onDateClick={handleDateClick}
-                onDateHover={handleDateHover}
-                isRange={isRange}
-              />
+              {/* 日期日历面板 */}
+              {(picker === 'date' || picker === 'daterange') && panelType === 'calendar' && (
+                <CalendarPanel
+                  currentMonth={currentMonth}
+                  selectedDate={!isRange ? currentDate : undefined}
+                  selectedRange={isRange ? currentRange : undefined}
+                  rangeStart={isRange && !selectingStart ? rangeStartDate : undefined}
+                  hoverDate={isRange && !selectingStart ? hoverDate : undefined}
+                  disabledDate={disabledDate}
+                  onDateClick={handleDateClick}
+                  onDateHover={handleDateHover}
+                  isRange={isRange}
+                />
+              )}
+
+              {/* 月份选择面板 */}
+              {picker === 'month' && (
+                <MonthPanel
+                  currentMonth={currentMonth}
+                  selectedMonth={currentDate}
+                  onMonthClick={(year, monthIndex) => {
+                    const newDate = new Date(year, monthIndex, 1);
+                    handleDateChange(newDate);
+                    // 月份选择器只显示年-月，不显示日期
+                    const monthStr = `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
+                    setInputValue(monthStr);
+                    close();
+                  }}
+                  onYearChange={(year) => {
+                    setCurrentMonth(new Date(year, 0, 1));
+                  }}
+                  disabledMonth={disabledDate}
+                />
+              )}
+
+              {/* 年份选择面板 */}
+              {picker === 'year' && (
+                <YearPanel
+                  currentMonth={currentMonth}
+                  selectedYear={currentDate}
+                  onYearClick={(year) => {
+                    const newDate = new Date(year, 0, 1);
+                    handleDateChange(newDate);
+                    // 年份选择器只显示年份
+                    setInputValue(`${year}`);
+                    close();
+                  }}
+                  disabledYear={disabledDate}
+                />
+              )}
+
+              {/* 日期+时间选择面板 */}
+              {picker === 'datetime' && (
+                <>
+                  <Header currentMonth={currentMonth} onPrevMonth={handlePrevMonth} onNextMonth={handleNextMonth} />
+                  {panelType === 'calendar' && (
+                    <CalendarPanel
+                      currentMonth={currentMonth}
+                      selectedDate={currentDate}
+                      disabledDate={disabledDate}
+                      onDateClick={(date) => {
+                        setCurrentMonth(date);
+                        // 切换到时间选择面板
+                        setPanelType('time');
+                      }}
+                      onDateHover={handleDateHover}
+                      isRange={false}
+                    />
+                  )}
+                  {panelType === 'time' && (
+                    <>
+                      <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--beaver-color-border)' }}>
+                        <button
+                          onClick={() => setPanelType('calendar')}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--beaver-color-primary)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                          }}
+                          type="button"
+                        >
+                          ← 返回日期选择
+                        </button>
+                      </div>
+                      <TimePanel
+                        selectedTime={currentDate}
+                        onTimeChange={(time) => {
+                          handleDateChange(time);
+                          setInputValue(formatDate(time, format));
+                        }}
+                        timeFormat="24h"
+                      />
+                      <div style={{ padding: '8px 12px', borderTop: '1px solid var(--beaver-color-border)' }}>
+                        <button
+                          onClick={() => close()}
+                          style={{
+                            width: '100%',
+                            padding: '6px 12px',
+                            background: 'var(--beaver-color-primary)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                          }}
+                          type="button"
+                        >
+                          确定
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+
+              {/* 日期范围+时间选择面板 */}
+              {picker === 'datetimerange' && (
+                <>
+                  <Header currentMonth={currentMonth} onPrevMonth={handlePrevMonth} onNextMonth={handleNextMonth} />
+                  {panelType === 'calendar' && (
+                    <CalendarPanel
+                      currentMonth={currentMonth}
+                      selectedRange={currentRange}
+                      rangeStart={!selectingStart ? rangeStartDate : undefined}
+                      hoverDate={!selectingStart ? hoverDate : undefined}
+                      disabledDate={disabledDate}
+                      onDateClick={handleDateClick}
+                      onDateHover={handleDateHover}
+                      isRange={true}
+                    />
+                  )}
+                  {panelType === 'time' && currentRange && (
+                    <>
+                      <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--beaver-color-border)' }}>
+                        <button
+                          onClick={() => setPanelType('calendar')}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--beaver-color-primary)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                          }}
+                          type="button"
+                        >
+                          ← 返回日期选择
+                        </button>
+                      </div>
+                      <TimePanel
+                        selectedTime={currentRange.startDate}
+                        onTimeChange={(time) => {
+                          handleRangeChange(time, currentRange.endDate);
+                        }}
+                        timeFormat="24h"
+                      />
+                      <div style={{ padding: '8px 12px', borderTop: '1px solid var(--beaver-color-border)' }}>
+                        <button
+                          onClick={() => close()}
+                          style={{
+                            width: '100%',
+                            padding: '6px 12px',
+                            background: 'var(--beaver-color-primary)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                          }}
+                          type="button"
+                        >
+                          确定
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           )}
         </div>

@@ -3,6 +3,19 @@
  * 使用 CSS 变量（已在 vars.ts 中定义）来实现主题定制
  */
 
+:root {
+  /* 面板内容宽度（不含 padding）- 248px + 16px*2 padding = 280px 总宽度 */
+  --beaver-datepicker-panel-content-width: 248px;
+  /* 头部下间距 */
+  --beaver-datepicker-header-margin-bottom: 14px;
+  /* 网格间距 */
+  --beaver-datepicker-grid-gap: 10px;
+  /* 月份/年份单元格 padding */
+  --beaver-datepicker-cell-padding: 12px 6px;
+  /* 月份/年份单元格最小高度 */
+  --beaver-datepicker-cell-min-height: 38px;
+}
+
 .beaver-datepicker-wrapper {
   display: inline-block;
   position: relative;
@@ -47,6 +60,8 @@
   padding: var(--beaver-datepicker-picker-padding);
   margin-top: var(--beaver-datepicker-gap);
   animation: beaver-datepicker-slide-down 0.2s ease-out;
+  width: calc(var(--beaver-datepicker-panel-content-width) + 32px);
+  box-sizing: border-box;
 }
 
 @keyframes beaver-datepicker-slide-down {
@@ -68,7 +83,7 @@
   height: var(--beaver-datepicker-header-height);
   background-color: var(--beaver-datepicker-header-bg);
   padding: 0 var(--beaver-datepicker-gap);
-  margin-bottom: var(--beaver-datepicker-gap);
+  margin-bottom: var(--beaver-datepicker-header-margin-bottom);
   border-radius: var(--beaver-datepicker-picker-border-radius);
   font-weight: var(--beaver-datepicker-header-font-weight);
   color: var(--beaver-datepicker-header-color);

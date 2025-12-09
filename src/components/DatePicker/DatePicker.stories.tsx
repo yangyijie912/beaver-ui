@@ -245,18 +245,103 @@ export const DisabledDateRange: Story = {
 };
 
 /**
- * 完整演示：多个选项组合
+ * 按类型选择（Picker Types）- 月份选择
+ */
+export const PickerMonth: Story = {
+  name: '月份选择',
+  args: {
+    picker: 'month',
+    placeholder: '选择月份',
+  },
+};
+
+/**
+ * 按类型选择（Picker Types）- 年份选择
+ */
+export const PickerYear: Story = {
+  name: '年份选择',
+  args: {
+    picker: 'year',
+    placeholder: '选择年份',
+  },
+};
+
+/**
+ * 按类型选择（Picker Types）- 日期+时间选择
+ */
+export const PickerDateTime: Story = {
+  name: '日期和时间选择',
+  args: {
+    picker: 'datetime',
+    placeholder: '选择日期和时间',
+  },
+};
+
+/**
+ * 按类型选择（Picker Types）- 日期范围+时间选择
+ */
+export const PickerDateTimeRange: Story = {
+  name: '日期和时间范围选择',
+  args: {
+    picker: 'datetimerange',
+    placeholder: '选择日期时间范围',
+  },
+};
+
+/**
+ * Picker 类型演示：所有选择器类型对比
+ */
+export const AllPickerTypes: Story = {
+  name: '所有选择器类型',
+  render: () => (
+    <div style={{ display: 'flex', gap: '30px', width: '100%', flexWrap: 'wrap' }}>
+      <div>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>日期选择 (date)</label>
+        <DatePicker picker="date" placeholder="选择日期" width="100%" />
+      </div>
+      <div>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>月份选择 (month)</label>
+        <DatePicker picker="month" placeholder="选择月份" width="100%" />
+      </div>
+      <div>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>年份选择 (year)</label>
+        <DatePicker picker="year" placeholder="选择年份" width="100%" />
+      </div>
+      <div>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>日期时间选择 (datetime)</label>
+        <DatePicker picker="datetime" placeholder="选择日期和时间" width="100%" />
+      </div>
+      <div>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>日期范围选择 (daterange)</label>
+        <DatePicker picker="daterange" placeholder="选择日期范围" width="100%" />
+      </div>
+      <div>
+        <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+          日期时间范围选择 (datetimerange)
+        </label>
+        <DatePicker picker="datetimerange" placeholder="选择日期时间范围" width="100%" />
+      </div>
+    </div>
+  ),
+};
+
+/**
+ * 完整演示：所有功能组合测试
  */
 export const Complete: Story = {
   name: '完整演示',
   render: () => {
     const [singleDate, setSingleDate] = useState<Date | null>(null);
     const [rangeDate, setRangeDate] = useState<{ startDate: Date; endDate: Date } | null>(null);
+    const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
+    const [selectedYear, setSelectedYear] = useState<Date | null>(null);
+    const [dateTime, setDateTime] = useState<Date | null>(null);
+    const [dateTimeRange, setDateTimeRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div>
-          <h3>单选日期</h3>
+          <h3>单选日期 (date)</h3>
           <DatePicker
             value={singleDate}
             onChange={setSingleDate}
@@ -270,7 +355,51 @@ export const Complete: Story = {
         </div>
 
         <div>
-          <h3>日期范围选择</h3>
+          <h3>月份选择 (month)</h3>
+          <DatePicker
+            picker="month"
+            value={selectedMonth}
+            onChange={setSelectedMonth}
+            placeholder="选择月份"
+            width="100%"
+          />
+          {selectedMonth && (
+            <p style={{ marginTop: '10px', color: '#666' }}>
+              选中: {selectedMonth.getFullYear()}年{selectedMonth.getMonth() + 1}月
+            </p>
+          )}
+        </div>
+
+        <div>
+          <h3>年份选择 (year)</h3>
+          <DatePicker
+            picker="year"
+            value={selectedYear}
+            onChange={setSelectedYear}
+            placeholder="选择年份"
+            width="100%"
+          />
+          {selectedYear && <p style={{ marginTop: '10px', color: '#666' }}>选中: {selectedYear.getFullYear()}年</p>}
+        </div>
+
+        <div>
+          <h3>日期+时间选择 (datetime)</h3>
+          <DatePicker
+            picker="datetime"
+            value={dateTime}
+            onChange={setDateTime}
+            placeholder="选择日期和时间"
+            width="100%"
+          />
+          {dateTime && (
+            <p style={{ marginTop: '10px', color: '#666' }}>
+              选中: {dateTime.toLocaleDateString('zh-CN')} {dateTime.toLocaleTimeString('zh-CN')}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <h3>日期范围选择 (daterange)</h3>
           <DatePicker
             picker="daterange"
             valueRange={rangeDate}
@@ -283,6 +412,24 @@ export const Complete: Story = {
             <p style={{ marginTop: '10px', color: '#666' }}>
               选中范围: {rangeDate.startDate.toLocaleDateString('zh-CN')} ~{' '}
               {rangeDate.endDate.toLocaleDateString('zh-CN')}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <h3>日期+时间范围选择 (datetimerange)</h3>
+          <DatePicker
+            picker="datetimerange"
+            valueRange={dateTimeRange}
+            onRangeChange={setDateTimeRange}
+            placeholder="选择日期时间范围"
+            width="100%"
+          />
+          {dateTimeRange && (
+            <p style={{ marginTop: '10px', color: '#666' }}>
+              选中范围: {dateTimeRange.startDate.toLocaleDateString('zh-CN')}{' '}
+              {dateTimeRange.startDate.toLocaleTimeString('zh-CN')} ~{' '}
+              {dateTimeRange.endDate.toLocaleDateString('zh-CN')} {dateTimeRange.endDate.toLocaleTimeString('zh-CN')}
             </p>
           )}
         </div>
@@ -302,6 +449,11 @@ export const Complete: Story = {
         <div>
           <h3>小尺寸禁用状态</h3>
           <DatePicker size="small" disabled placeholder="已禁用" defaultValue={new Date()} width="100%" />
+        </div>
+
+        <div>
+          <h3>大尺寸自定义宽度</h3>
+          <DatePicker size="large" placeholder="大尺寸选择器" width="100%" />
         </div>
       </div>
     );
