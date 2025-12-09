@@ -59,7 +59,8 @@ export const parseDate = (dateString: string, fmt: DateFormat = 'YYYY-MM-DD'): D
  */
 export const getCalendarDays = (date: Date): (Date | null)[] => {
   const first = startOfMonth(date);
-  const _last = endOfMonth(date);
+  // 获取当月的最后一天（暂不直接使用，但保留注释以便将来扩展）
+  // const _last = endOfMonth(date);
 
   // 获取第一行的起始日期（前月的填充）
   const startDate = new Date(first);

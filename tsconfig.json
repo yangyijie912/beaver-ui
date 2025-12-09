@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "types": ["vite/client", "node", "vitest", "vitest/globals"]
+    "types": ["vite/client", "node", "vitest", "vitest/globals"],
+    "noUnusedLocals": true, // 没有使用的变量报错
+    "noUnusedParameters": true, // 没有使用的参数报错
+    "noFallthroughCasesInSwitch": true, // switch语句必须有break或return
+    "allowUnusedLabels": false, // 不允许未使用的标签
+    "allowUnreachableCode": false // 不允许不可达代码
   },
   "include": ["src", "stories", ".storybook/**/*", "*.ts", "*.mts", "*.cts", "scripts/**/*", "playground/**/*"],
   "exclude": ["node_modules", "dist", "**/*.css.ts"]
