@@ -8,9 +8,13 @@
 export type DateFormat = 'YYYY-MM-DD' | 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY/MM/DD';
 
 /**
- * 选择器类型
+ * 日期选择的粒度类型
+ * - year: 年份选择
+ * - month: 月份选择
+ * - date: 日期选择
+ * - datetime: 日期+时间选择
  */
-export type PickerType = 'date' | 'month' | 'year' | 'datetime' | 'daterange' | 'datetimerange';
+export type PickerType = 'year' | 'month' | 'date' | 'datetime';
 
 /**
  * 日期范围对象
@@ -27,8 +31,11 @@ export type DatePickerProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'onChange' | 'value' | 'defaultValue' | 'type' | 'size'
 > & {
-  /** 选择器类型 */
+  /** 日期选择的粒度类型 */
   picker?: PickerType;
+
+  /** 是否为范围选择模式 (默认为 false，即单选模式) */
+  range?: boolean;
 
   /** 当前选中的日期（单选模式） */
   value?: Date | null;
@@ -65,9 +72,6 @@ export type DatePickerProps = Omit<
 
   /** 禁用的日期判断函数 */
   disabledDate?: (date: Date) => boolean;
-
-  /** 是否显示时间选择（当 picker 为 'datetime' 或 'datetimerange' 时有效） */
-  showTime?: boolean;
 
   /** 时间格式（24小时制或12小时制）*/
   timeFormat?: '24h' | '12h';

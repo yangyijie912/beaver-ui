@@ -21,7 +21,9 @@ const MonthPanel: React.FC<MonthPanelProps> = ({
   onYearChange,
   disabledMonth,
 }) => {
-  const [displayYear, setDisplayYear] = useState(currentMonth.getFullYear());
+  // 如果有选中的月份，显示该月份所在的年份；否则显示当前月份所在的年份
+  const initialYear = selectedMonth ? selectedMonth.getFullYear() : currentMonth.getFullYear();
+  const [displayYear, setDisplayYear] = useState(initialYear);
 
   const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
 
@@ -29,7 +31,7 @@ const MonthPanel: React.FC<MonthPanelProps> = ({
     (monthIndex: number) => {
       const testDate = new Date(displayYear, monthIndex, 1);
       if (!disabledMonth?.(testDate)) {
-        onMonthClick(displayYear, monthIndex);
+        onMonthClick(monthIndex, displayYear);
       }
     },
     [displayYear, onMonthClick, disabledMonth]

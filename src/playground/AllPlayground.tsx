@@ -155,7 +155,8 @@ function App() {
                 : '未选择'}
             </div>
             <DatePicker
-              picker="daterange"
+              picker="date"
+              range={true}
               valueRange={dateRangeValue}
               onRangeChange={setDateRangeValue}
               placeholder="请选择日期范围"
