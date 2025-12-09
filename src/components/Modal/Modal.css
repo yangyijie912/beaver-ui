@@ -8,8 +8,6 @@
 
   /* ===== 边框 ===== */
 
-  /* 边框定义：包括宽度和颜色 */
-  --beaver-modal-border: 1px solid #e8e8e8;
   /* 分隔线颜色：头部、页脚与内容区的分隔 */
   --beaver-modal-divider-color: #f0f0f0;
 

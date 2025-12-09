@@ -49,7 +49,26 @@ function collectFilesFromTargets(targets) {
     if (stat.isDirectory()) {
       for (const f of walk(abs)) files.add(f);
     } else if (stat.isFile()) {
-      if (FILE_EXTS.includes(path.extname(abs).toLowerCase())) files.add(abs);
+      const ext = path.extname(abs).toLowerCase();
+      if (FILE_EXTS.includes(ext)) {
+        files.add(abs);
+        // 如果是单个 CSS/预处理文件，尝试同时包含同目录下同名的组件文件
+        // 例如：扫描 `Popconfirm.css` 时同时包含 `Popconfirm.tsx` / `Popconfirm.jsx` / `Popconfirm.ts` / `Popconfirm.js`
+        const cssLike = ['.css', '.scss', '.less', '.sass'];
+        if (cssLike.includes(ext)) {
+          const dir = path.dirname(abs);
+          const base = path.basename(abs, ext);
+          const companionExts = ['.tsx', '.jsx', '.ts', '.js', '.html', '.htm'];
+          for (const ce of companionExts) {
+            const cand = path.join(dir, base + ce);
+            try {
+              if (fs.existsSync(cand) && fs.statSync(cand).isFile()) files.add(cand);
+            } catch (e) {
+              // ignore
+            }
+          }
+        }
+      }
     }
   }
   return Array.from(files);
@@ -60,15 +79,18 @@ function extract(file) {
   const lines = text.split(/\r?\n/);
   const defs = new Set();
   const uses = [];
+  // 为了避免注释中的误报，先去掉块注释和行注释（简单启发式）
+  const scanText = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\n)\s*\/\/.*$/gm, '');
 
   const defRegex = /(--[a-zA-Z0-9_-]+)\s*:\s*[^;\n]+/g;
   let m;
-  while ((m = defRegex.exec(text))) {
+  while ((m = defRegex.exec(scanText))) {
     // 确保这是一个属性定义而不是选择器或伪类（例如 `.foo--default:not(...)`）
     const idx = m.index;
-    const prevChar = idx > 0 ? text[idx - 1] : undefined;
-    if (prevChar && !/\s|\{|;/.test(prevChar)) {
-      // 上一个字符不是空白、{ 或 ;，很可能不是属性定义，跳过
+    const prevChar = idx > 0 ? scanText[idx - 1] : undefined;
+    // 允许在内联 style 中常见的前导字符，比如 `=` / `"` / `'`，以及常规的空白、`{`、`;`、`(`
+    if (prevChar && !/[\s\{\;=\(\[\"\']/.test(prevChar)) {
+      // 上一个字符看起来像选择器的一部分，跳过
       continue;
     }
     defs.add(m[1]);
@@ -77,15 +99,17 @@ function extract(file) {
   // 识别在 JS/TS/JSX/TSX 中通过 element.style.setProperty 或 setProperty(...) 动态设置的 CSS 变量
   // 比如：buttonRef.current.style.setProperty('--switch-actual-content-width', `${w}px`)
   const setPropRegex = /setProperty\(\s*['"`](--[a-zA-Z0-9_-]+)['"`]\s*,/g;
-  while ((m = setPropRegex.exec(text))) {
+  while ((m = setPropRegex.exec(scanText))) {
     defs.add(m[1]);
   }
 
   // 识别在 JS/TS/JSX/TSX 的对象字面量中直接设置的 CSS 变量
   // 比如：{ ['--arrow-offset']: `${offset}px`, ... } 或 { '--my-var': 'value' }
   // 包括 TypeScript 类型断言的情况：['--var-name' as any]: value
-  const objectPropRegex = /\[\s*['"`](--[a-zA-Z0-9_-]+)['"`](?:\s+as\s+\w+)?\s*\]|['"`](--[a-zA-Z0-9_-]+)['"` ]\s*:/g;
-  while ((m = objectPropRegex.exec(text))) {
+  // 匹配对象字面量或者作为键的 CSS 变量，例如: { ['--x']: val } 或 { '--x': val }
+  const objectPropRegex =
+    /(?:\[\s*['"`](--[a-zA-Z0-9_-]+)['"`]\s*(?:as\s+\w+)?\s*\]|['"`](--[a-zA-Z0-9_-]+)['"`]\s*:\s*)/g;
+  while ((m = objectPropRegex.exec(scanText))) {
     defs.add(m[1] || m[2]);
   }
 
@@ -154,10 +178,14 @@ function main() {
   const defsByFile = new Map(); // file -> Set(vars)
   const defsByName = new Map(); // var -> Set(files)
 
-  for (const f of files) {
+  // 为避免误报，Defs（定义）与 Uses（使用）都应基于整个仓库进行收集，
+  // 但在输出“按文件列出的未定义变量”时我们只报告用户指定的目标文件中的未定义项。
+  const defsFiles = walk(ROOT);
+  const usesFiles = walk(ROOT);
+
+  for (const f of defsFiles) {
     try {
-      const { defs, uses } = extract(f);
-      // 记录 file -> defs
+      const { defs } = extract(f);
       if (!defsByFile.has(f)) defsByFile.set(f, new Set());
       for (const d of defs) {
         allDefs.add(d);
@@ -165,12 +193,38 @@ function main() {
         if (!defsByName.has(d)) defsByName.set(d, new Set());
         defsByName.get(d).add(f);
       }
+    } catch (err) {
+      // 忽略无法读取的文件
+    }
+  }
+
+  for (const f of usesFiles) {
+    try {
+      const { uses } = extract(f);
       for (const u of uses) {
         if (!usesByName.has(u.name)) usesByName.set(u.name, []);
         usesByName.get(u.name).push(u);
       }
     } catch (err) {
       // 忽略无法读取的文件
+    }
+  }
+
+  // 调试模式：输出 tokens 中的项在 usesByName 中的存在情况，便于诊断未使用误报
+  if (process.env.DEBUG_TOKENS === '1') {
+    const suspect = Array.from(allDefs)
+      .filter((d) => d.indexOf('--beaver-') === 0)
+      .slice(0, 200);
+    console.log('\n[DEBUG] 检查 tokens 在 usesByName 中的匹配:');
+    for (const t of suspect) {
+      const present = usesByName.has(t);
+      const occ = usesByName.get(t) || [];
+      console.log(`  ${t} -> used: ${present} (occurrences: ${occ.length})`);
+      if (occ.length) {
+        for (const o of occ.slice(0, 3)) {
+          console.log(`    - ${path.relative(ROOT, o.file)}:${o.line} -> ${o.text}`);
+        }
+      }
     }
   }
 
@@ -198,6 +252,9 @@ function main() {
     for (const v of undefinedVars) {
       const occ = usesByName.get(v) || [];
       for (const o of occ) {
+        // 只将用户指定目标文件（normalizedFiles）中的未定义使用加入报告
+        const abs = path.normalize(path.resolve(o.file));
+        if (!normalizedFiles.has(abs)) continue;
         const rel = path.relative(ROOT, o.file);
         if (!fileVars[rel]) fileVars[rel] = new Set();
         fileVars[rel].add(v);
@@ -219,6 +276,9 @@ function main() {
     // 按文件分组输出未使用的定义
     const unusedByFile = {};
     for (const file of defsByFile.keys()) {
+      // 只将用户实际扫描的文件（normalizedFiles）纳入未使用定义的输出范围
+      const abs = path.normalize(path.resolve(file));
+      if (!normalizedFiles.has(abs)) continue;
       const defsSet = defsByFile.get(file) || new Set();
       const unusedInFile = Array.from(defsSet).filter((d) => unusedVars.includes(d));
       if (unusedInFile.length) unusedByFile[path.relative(ROOT, file)] = unusedInFile.sort();
