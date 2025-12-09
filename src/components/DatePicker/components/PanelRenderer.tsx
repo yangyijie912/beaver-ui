@@ -74,6 +74,8 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
             currentMonth={currentMonth}
             selectedDate={selectedDate}
             rangeStart={rangeStart}
+            selectedRange={selectedRange}
+            hoverDate={hoverDate}
             disabledDate={disabledDate}
             onDateClick={onDateClick}
             onDateHover={onDateHover}
@@ -108,6 +110,10 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
       <MonthPanel
         currentMonth={currentMonth}
         selectedMonth={isRange ? rangeStart : selectedDate}
+        selectedRange={selectedRange}
+        rangeStart={rangeStart}
+        hoverDate={hoverDate}
+        isRange={isRange}
         onMonthClick={onMonthChange}
         onYearChange={onYearChange}
         disabledMonth={disabledDate}
@@ -121,6 +127,10 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
       <YearPanel
         currentMonth={currentMonth}
         selectedYear={isRange ? rangeStart : selectedDate}
+        selectedRange={selectedRange}
+        rangeStart={rangeStart}
+        hoverDate={hoverDate}
+        isRange={isRange}
         onYearClick={onYearClick || (() => {})}
         disabledYear={disabledDate}
       />

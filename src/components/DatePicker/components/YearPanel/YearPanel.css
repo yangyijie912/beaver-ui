@@ -43,6 +43,19 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
+  &.beaver-datepicker-in-range {
+    background-color: rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.08);
+    border-color: rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.12);
+    color: var(--beaver-color-text);
+  }
+
+  &.beaver-datepicker-range-edge {
+    background-color: rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.16);
+    border-color: var(--beaver-color-primary);
+    color: var(--beaver-color-primary);
+    font-weight: 600;
+  }
+
   &.disabled {
     opacity: 0.5;
     cursor: not-allowed;

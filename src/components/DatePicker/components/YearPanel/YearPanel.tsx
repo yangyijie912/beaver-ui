@@ -8,6 +8,10 @@ import './YearPanel.css';
 interface YearPanelProps {
   currentMonth: Date;
   selectedYear?: Date | null;
+  selectedRange?: import('../../types').DateRange | null;
+  rangeStart?: Date | null;
+  hoverDate?: Date | null;
+  isRange?: boolean;
   onYearClick: (year: number) => void;
   onDecadeChange?: (startYear: number) => void;
   disabledYear?: (date: Date) => boolean;
@@ -16,6 +20,10 @@ interface YearPanelProps {
 const YearPanel: React.FC<YearPanelProps> = ({
   currentMonth,
   selectedYear,
+  selectedRange,
+  rangeStart,
+  hoverDate,
+  isRange = false,
   onYearClick,
   onDecadeChange,
   disabledYear,
@@ -46,6 +54,36 @@ const YearPanel: React.FC<YearPanelProps> = ({
     onDecadeChange?.(newStart);
   }, [startYear, onDecadeChange]);
 
+  const isYearInRange = (year: number) => {
+    if (!isRange) return false;
+    if (selectedRange) {
+      const start = selectedRange.startDate.getFullYear();
+      const end = selectedRange.endDate.getFullYear();
+      const min = Math.min(start, end);
+      const max = Math.max(start, end);
+      return year >= min && year <= max;
+    }
+    if (rangeStart && hoverDate) {
+      const s = rangeStart.getFullYear();
+      const h = hoverDate.getFullYear();
+      const min = Math.min(s, h);
+      const max = Math.max(s, h);
+      return year >= min && year <= max;
+    }
+    return false;
+  };
+
+  const isYearEdge = (year: number) => {
+    if (!isRange) return false;
+    if (selectedRange) {
+      return year === selectedRange.startDate.getFullYear() || year === selectedRange.endDate.getFullYear();
+    }
+    if (rangeStart && hoverDate) {
+      return year === rangeStart.getFullYear() || year === hoverDate.getFullYear();
+    }
+    return false;
+  };
+
   return (
     <div className="beaver-datepicker-year-panel">
       {/* 十年期导航 - 使用统一的日期头部样式 */}
@@ -68,13 +106,15 @@ const YearPanel: React.FC<YearPanelProps> = ({
           const isSelected = selectedYear && selectedYear.getFullYear() === year;
           const isDisabled = disabledYear?.(testDate);
           const isGhost = year < startYear || year > startYear + 9;
+          const inRange = isYearInRange(year) && !isDisabled;
+          const isEdge = isYearEdge(year);
 
           return (
             <button
               key={year}
               className={`beaver-datepicker-year-cell ${isSelected ? 'selected' : ''} ${
                 isDisabled ? 'disabled' : ''
-              } ${isGhost ? 'ghost' : ''}`}
+              } ${isGhost ? 'ghost' : ''} ${inRange ? 'beaver-datepicker-in-range' : ''} ${isEdge ? 'beaver-datepicker-range-edge' : ''}`}
               onClick={() => handleYearClick(year)}
               disabled={isDisabled}
               type="button"

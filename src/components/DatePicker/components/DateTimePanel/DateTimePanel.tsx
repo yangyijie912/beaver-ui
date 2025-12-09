@@ -16,6 +16,10 @@ interface DateTimePanelProps {
   selectedDate?: Date | null;
   /** 范围选择时的起始日期 */
   rangeStart?: Date | null;
+  /** 选中的日期范围（范围选择模式） */
+  selectedRange?: import('../../types').DateRange | null;
+  /** 鼠标悬停日期（用于临时范围） */
+  hoverDate?: Date | null;
   /** 禁用日期判断函数 */
   disabledDate?: (date: Date) => boolean;
   /** 日期点击回调 */
@@ -40,6 +44,8 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
   currentMonth,
   selectedDate,
   rangeStart,
+  selectedRange,
+  hoverDate,
   disabledDate,
   onDateClick,
   onDateHover,
@@ -66,13 +72,13 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
           <CalendarPanel
             currentMonth={currentMonth}
             selectedDate={rangeStart || selectedDate}
-            selectedRange={undefined}
-            rangeStart={undefined}
-            hoverDate={undefined}
+            selectedRange={selectedRange}
+            rangeStart={rangeStart}
+            hoverDate={hoverDate}
             disabledDate={disabledDate}
             onDateClick={onDateClick}
             onDateHover={onDateHover}
-            isRange={false}
+            isRange={true}
           />
         </div>
 
