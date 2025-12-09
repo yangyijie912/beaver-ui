@@ -1,38 +1,42 @@
 /* 时间选择面板样式 */
 
 .beaver-datepicker-time-panel {
-  background: #fff;
+  background: transparent;
+  width: 100%;
 }
 
 .beaver-datepicker-time-input-group {
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 12px 0;
+  gap: 8px;
+  padding: 0;
 }
 
 .beaver-datepicker-time-input {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 
   input {
     width: 50px;
-    padding: 8px 6px;
+    height: 32px;
+    padding: 6px 4px;
     border: 1px solid var(--beaver-color-border);
     border-radius: 4px;
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: var(--beaver-color-text);
+    background-color: var(--beaver-color-bg);
     transition: all 0.2s ease;
 
     &:focus {
       outline: none;
       border-color: var(--beaver-color-primary);
-      box-shadow: 0 0 0 2px rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.1);
+      box-shadow: 0 0 0 2px rgba(14, 170, 224, 0.1);
     }
 
     &:hover:not(:focus) {
@@ -43,13 +47,13 @@
   label {
     font-size: 12px;
     font-weight: 500;
+    color: var(--beaver-color-text-secondary, #666);
+    margin: 0;
+    min-width: 20px;
+    order: -1;
   }
 }
 
 .beaver-datepicker-time-separator {
-  color: var(--beaver-color-text);
-  font-weight: 600;
-  margin: 0 2px;
-  margin-bottom: 30px;
-  font-size: 16px;
+  display: none;
 }

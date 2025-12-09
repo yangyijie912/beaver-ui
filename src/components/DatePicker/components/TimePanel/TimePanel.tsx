@@ -18,13 +18,20 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
 
   const maxHours = timeFormat === '24h' ? 23 : 11;
 
+  // 当 selectedTime 变化时同步状态
+  React.useEffect(() => {
+    setHours(selectedTime?.getHours() ?? 0);
+    setMinutes(selectedTime?.getMinutes() ?? 0);
+    setSeconds(selectedTime?.getSeconds() ?? 0);
+  }, [selectedTime]);
+
   const handleHoursChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = Math.min(Math.max(parseInt(e.target.value) || 0, 0), maxHours);
       setHours(value);
       updateTime(value, minutes, seconds);
     },
-    [minutes, seconds]
+    [minutes, seconds, selectedTime]
   );
 
   const handleMinutesChange = useCallback(
@@ -33,7 +40,7 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
       setMinutes(value);
       updateTime(hours, value, seconds);
     },
-    [hours, seconds]
+    [hours, seconds, selectedTime]
   );
 
   const handleSecondsChange = useCallback(
@@ -42,11 +49,12 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
       setSeconds(value);
       updateTime(hours, minutes, value);
     },
-    [hours, minutes]
+    [hours, minutes, selectedTime]
   );
 
   const updateTime = (h: number, m: number, s: number) => {
-    const newTime = new Date(selectedTime || new Date());
+    if (!selectedTime) return;
+    const newTime = new Date(selectedTime);
     newTime.setHours(h, m, s);
     onTimeChange(newTime);
   };

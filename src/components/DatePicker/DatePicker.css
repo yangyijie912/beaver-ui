@@ -93,7 +93,7 @@
   background-color: rgba(0, 0, 0, 0.08);
 }
 
-/* 日期选择器面板 */
+/* 普通日期面板宽度 */
 .beaver-datepicker-panel {
   position: absolute;
   top: 100%;
@@ -108,6 +108,11 @@
   animation: beaver-datepicker-slide-down 0.2s ease-out;
   width: calc(var(--beaver-datepicker-panel-content-width, 248px) + 32px);
   box-sizing: border-box;
+}
+
+/* 日期+时间组合面板宽度 */
+.beaver-datepicker-panel:has(.beaver-datepicker-datetime-panel) {
+  width: calc(var(--beaver-datepicker-panel-content-width, 248px) + 180px + 1px + 32px);
 }
 
 @keyframes beaver-datepicker-slide-down {
