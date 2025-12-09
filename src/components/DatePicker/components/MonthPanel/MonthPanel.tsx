@@ -30,9 +30,7 @@ const MonthPanel: React.FC<MonthPanelProps> = ({
   disabledMonth,
 }) => {
   // 调试输出，便于确认 props 是否正确传入
-  React.useEffect(() => {
-    console.log('[MonthPanel] props:', { selectedRange, rangeStart, hoverDate, isRange, selectedMonth });
-  }, [selectedRange, rangeStart, hoverDate, isRange, selectedMonth]);
+  React.useEffect(() => {}, [selectedRange, rangeStart, hoverDate, isRange, selectedMonth]);
   // 如果有选中的月份，显示该月份所在的年份；否则显示当前月份所在的年份
   const initialYear = selectedMonth ? selectedMonth.getFullYear() : currentMonth.getFullYear();
   const [displayYear, setDisplayYear] = useState(initialYear);
@@ -89,16 +87,23 @@ const MonthPanel: React.FC<MonthPanelProps> = ({
 
   const isMonthEdge = (year: number, monthIndex: number) => {
     if (!isRange) return false;
-    const curVal = year * 12 + monthIndex;
+    const cur = new Date(year, monthIndex, 1);
     if (selectedRange) {
-      const sVal = selectedRange.startDate.getFullYear() * 12 + selectedRange.startDate.getMonth();
-      const eVal = selectedRange.endDate.getFullYear() * 12 + selectedRange.endDate.getMonth();
-      return curVal === sVal || curVal === eVal;
+      const start = selectedRange.startDate;
+      const end = selectedRange.endDate;
+      return (
+        (start.getFullYear() === cur.getFullYear() && start.getMonth() === cur.getMonth()) ||
+        (end.getFullYear() === cur.getFullYear() && end.getMonth() === cur.getMonth())
+      );
     }
-    if (rangeStart && hoverDate) {
-      const sVal = rangeStart.getFullYear() * 12 + rangeStart.getMonth();
-      const hVal = hoverDate.getFullYear() * 12 + hoverDate.getMonth();
-      return curVal === sVal || curVal === hVal;
+    if (rangeStart) {
+      if (hoverDate) {
+        return (
+          (rangeStart.getFullYear() === cur.getFullYear() && rangeStart.getMonth() === cur.getMonth()) ||
+          (hoverDate.getFullYear() === cur.getFullYear() && hoverDate.getMonth() === cur.getMonth())
+        );
+      }
+      return rangeStart.getFullYear() === cur.getFullYear() && rangeStart.getMonth() === cur.getMonth();
     }
     return false;
   };

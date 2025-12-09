@@ -71,6 +71,32 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     // 输入框显示文本状态
     const [inputValue, setInputValue] = useState<string>('');
 
+    // 引入一个全局指针监听器以判断指针是否在日历可交互区域内
+    React.useEffect(() => {
+      if (!isOpen) return;
+
+      const handler = (e: PointerEvent) => {
+        try {
+          const panel = panelRef.current;
+          if (!panel) return;
+          // 日历根节点（左侧可交互区域）
+          const calendarEl = panel.querySelector('.beaver-datepicker-calendar');
+          if (!calendarEl) return;
+
+          const target = e.target as Node | null;
+          // 如果指针不在日历区域内，则清除 hover
+          if (!target || !(calendarEl === target || calendarEl.contains(target))) {
+            rangeState.setHoverDate(null);
+          }
+        } catch {
+          // 忽略
+        }
+      };
+
+      window.addEventListener('pointermove', handler);
+      return () => window.removeEventListener('pointermove', handler);
+    }, [isOpen, rangeState]);
+
     /**
      * 同步 inputValue 与当前选中的日期
      */
@@ -170,7 +196,6 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             } else {
               // 第二个日期选择：临时保存结束日期
               rangeState.setTempDateTimeEnd(dateOnly);
-              rangeState.setTempStartDate(dateOnly);
             }
           } else {
             // 普通日期/月份/年份范围选择模式：点击后立即确定
@@ -532,12 +557,13 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                   picker === 'datetime' && isRange
                     ? rangeState.selectingStart
                       ? rangeState.tempDateTimeStart
-                      : rangeState.tempDateTimeEnd
+                      : rangeState.confirmedStartDate
                     : isRange
                       ? rangeState.tempStartDate
                       : undefined
                 }
                 hoverDate={rangeState.hoverDate}
+                tempRangeEnd={rangeState.tempDateTimeEnd}
                 isRange={isRange}
                 disabledDate={disabledDate}
                 onDateClick={handleDateClick}

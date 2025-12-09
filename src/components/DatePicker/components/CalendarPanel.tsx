@@ -18,12 +18,15 @@ interface CalendarPanelProps {
   rangeStart?: Date | null;
   /** 鼠标悬停的日期 */
   hoverDate?: Date | null;
+  /** 临时的结束日期（datetime 两步流程中点击的结束日期，尚未确认） */
+  tempRangeEnd?: Date | null;
   /** 禁用日期判断函数 */
   disabledDate?: (date: Date) => boolean;
   /** 日期点击回调 */
   onDateClick: (date: Date) => void;
   /** 鼠标悬停回调 */
   onDateHover?: (date: Date | null) => void;
+  /** （已移除）onInteractiveLeave 已由全局监听器处理 */
   /** 是否为范围选择模式 */
   isRange?: boolean;
 }
@@ -38,25 +41,20 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({
   selectedRange,
   rangeStart,
   hoverDate,
+  tempRangeEnd,
   disabledDate,
   onDateClick,
   onDateHover,
   isRange = false,
 }) => {
   React.useEffect(() => {
-    if (isRange) {
-      console.log('[CalendarPanel] Received props:', {
-        isRange,
-        hasSelectedRange: !!selectedRange,
-        selectedRange: selectedRange
-          ? {
-              start: selectedRange.startDate.toISOString().split('T')[0],
-              end: selectedRange.endDate.toISOString().split('T')[0],
-            }
-          : null,
-      });
-    }
+    // debug logs removed
   }, [isRange, selectedRange]);
+  // 判断是否为已点击但未确认的临时结束日期（仅在 datetime 两步流程中出现）
+  const isTempClickedEnd = (date: Date): boolean => {
+    if (!isRange || !tempRangeEnd) return false;
+    return isSameDay(date, tempRangeEnd);
+  };
   // 获取日历的所有日期（包括前后月的填充日期）
   const calendarDays = getCalendarDays(currentMonth);
 
@@ -106,9 +104,14 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({
       return isSameDay(date, selectedRange.startDate) || isSameDay(date, selectedRange.endDate);
     }
 
-    // 临时范围的边界（悬停过程中）
-    if (rangeStart && hoverDate) {
-      return isSameDay(date, rangeStart) || isSameDay(date, hoverDate);
+    // 临时范围的边界（悬停过程中或仅选中起始日期）
+    if (rangeStart) {
+      const effectiveEnd = hoverDate ?? tempRangeEnd ?? null;
+      if (effectiveEnd) {
+        return isSameDay(date, rangeStart) || isSameDay(date, effectiveEnd);
+      }
+      // 没有任何结束日期时也要把起始日期标记为边界（选中起点后立即显示）
+      return isSameDay(date, rangeStart);
     }
 
     return false;
@@ -116,14 +119,15 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({
 
   // 判断日期是否在临时范围内（鼠标悬停时显示的范围）
   const isInHoverRange = (date: Date): boolean => {
-    if (!isRange || !rangeStart || !hoverDate) return false;
+    if (!isRange || !rangeStart) return false;
+    const effectiveEnd = hoverDate ?? tempRangeEnd ?? null;
+    if (!effectiveEnd) return false;
     const d = clearTime(date);
     const start = clearTime(rangeStart);
-    const hover = clearTime(hoverDate);
-    if (!d || !start || !hover) return false;
-    // 临时范围是从 rangeStart 到 hoverDate
-    const minTime = Math.min(start.getTime(), hover.getTime());
-    const maxTime = Math.max(start.getTime(), hover.getTime());
+    const end = clearTime(effectiveEnd);
+    if (!d || !start || !end) return false;
+    const minTime = Math.min(start.getTime(), end.getTime());
+    const maxTime = Math.max(start.getTime(), end.getTime());
     return d.getTime() >= minTime && d.getTime() <= maxTime;
   };
 
@@ -152,6 +156,7 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({
             // 范围高亮：已确认范围 或 鼠标悬停时的临时范围
             const inRange = (isDateInRange(date) || isInHoverRange(date)) && !isOtherMonth;
             const isEdge = isRangeEdge(date);
+            const isTempEnd = isTempClickedEnd(date);
 
             return (
               <div
@@ -160,7 +165,7 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({
                   isDisabledDate ? 'beaver-datepicker-disabled' : ''
                 } ${isOtherMonth ? 'beaver-datepicker-other-month' : ''} ${
                   inRange ? 'beaver-datepicker-in-range' : ''
-                } ${isEdge ? 'beaver-datepicker-range-edge' : ''}`}
+                } ${isEdge ? 'beaver-datepicker-range-edge' : ''} ${isTempEnd ? 'beaver-datepicker-temp-end' : ''}`}
                 onClick={() => {
                   if (!isDisabledDate) {
                     onDateClick(date);

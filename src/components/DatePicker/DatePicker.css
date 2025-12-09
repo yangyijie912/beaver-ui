@@ -261,6 +261,13 @@
   background-color: rgba(14, 170, 224, 0.1);
 }
 
+/* 用户点击的临时结束日期（尚未确认）——蓝色边框样式 */
+.beaver-datepicker-cell.beaver-datepicker-temp-end {
+  box-sizing: border-box;
+  border: 2px solid var(--beaver-datepicker-temp-end-border, #0eaae0);
+  background-clip: padding-box;
+}
+
 /* 禁用日期 */
 .beaver-datepicker-cell.beaver-datepicker-disabled {
   color: var(--beaver-datepicker-date-cell-disabled-color, #999);

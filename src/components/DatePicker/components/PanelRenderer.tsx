@@ -20,6 +20,7 @@ interface PanelRendererProps {
   selectedRange?: DateRange | null;
   rangeStart?: Date | null;
   hoverDate?: Date | null;
+  tempRangeEnd?: Date | null;
   isRange: boolean;
   disabledDate?: (date: Date) => boolean;
   onDateClick: (date: Date) => void;
@@ -46,6 +47,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
   selectedRange,
   rangeStart,
   hoverDate,
+  tempRangeEnd,
   isRange,
   disabledDate,
   onDateClick,
@@ -76,6 +78,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
             rangeStart={rangeStart}
             selectedRange={selectedRange}
             hoverDate={hoverDate}
+            tempRangeEnd={tempRangeEnd}
             disabledDate={disabledDate}
             onDateClick={onDateClick}
             onDateHover={onDateHover}
@@ -94,6 +97,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
             selectedRange={selectedRange}
             rangeStart={rangeStart}
             hoverDate={hoverDate}
+            tempRangeEnd={tempRangeEnd}
             disabledDate={disabledDate}
             onDateClick={onDateClick}
             onDateHover={onDateHover}

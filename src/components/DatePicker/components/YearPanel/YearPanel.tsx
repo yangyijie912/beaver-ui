@@ -78,8 +78,11 @@ const YearPanel: React.FC<YearPanelProps> = ({
     if (selectedRange) {
       return year === selectedRange.startDate.getFullYear() || year === selectedRange.endDate.getFullYear();
     }
-    if (rangeStart && hoverDate) {
-      return year === rangeStart.getFullYear() || year === hoverDate.getFullYear();
+    if (rangeStart) {
+      if (hoverDate) {
+        return year === rangeStart.getFullYear() || year === hoverDate.getFullYear();
+      }
+      return year === rangeStart.getFullYear();
     }
     return false;
   };

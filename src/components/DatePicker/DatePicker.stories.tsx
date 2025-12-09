@@ -389,3 +389,31 @@ export const AllEightCases: Story = {
     );
   },
 };
+
+/**
+ * 日期 + 时间选择范围
+ */
+export const DateTimeRange: Story = {
+  name: '日期时间范围选择',
+  render: () => {
+    const [range, setRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
+    return (
+      <div>
+        <DatePicker
+          picker="datetime"
+          range={true}
+          valueRange={range}
+          onRangeChange={setRange}
+          placeholder="选择日期时间范围"
+          timeFormat="24h"
+          width={400}
+        />
+        <p style={{ marginTop: '10px' }}>
+          {range
+            ? `选中范围: ${range.startDate.toLocaleDateString('zh-CN')} ${range.startDate.toLocaleTimeString('zh-CN')} ~ ${range.endDate.toLocaleDateString('zh-CN')} ${range.endDate.toLocaleTimeString('zh-CN')}`
+            : '未选择'}
+        </p>
+      </div>
+    );
+  },
+};

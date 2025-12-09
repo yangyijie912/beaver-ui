@@ -20,6 +20,8 @@ interface DateTimePanelProps {
   selectedRange?: import('../../types').DateRange | null;
   /** 鼠标悬停日期（用于临时范围） */
   hoverDate?: Date | null;
+  /** 临时的结束日期（datetime 两步流程中点击的结束日期，尚未确认） */
+  tempRangeEnd?: Date | null;
   /** 禁用日期判断函数 */
   disabledDate?: (date: Date) => boolean;
   /** 日期点击回调 */
@@ -38,6 +40,8 @@ interface DateTimePanelProps {
   timeFormat?: '24h' | '12h';
   /** 确定回调（仅在范围模式下使用） */
   onConfirm?: () => void;
+  /** 仅在日历交互区域移出时触发（不含时间面板） */
+  // (已移除) onInteractiveLeave 已由 DatePicker 的全局监听处理
 }
 
 const DateTimePanel: React.FC<DateTimePanelProps> = ({
@@ -46,6 +50,7 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
   rangeStart,
   selectedRange,
   hoverDate,
+  tempRangeEnd,
   disabledDate,
   onDateClick,
   onDateHover,
@@ -75,6 +80,7 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
             selectedRange={selectedRange}
             rangeStart={rangeStart}
             hoverDate={hoverDate}
+            tempRangeEnd={tempRangeEnd}
             disabledDate={disabledDate}
             onDateClick={onDateClick}
             onDateHover={onDateHover}
