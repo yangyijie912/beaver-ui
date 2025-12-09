@@ -46,6 +46,7 @@ export const vars = {
     modal: 9999, // Modal 层级
     drawer: 9998, // Drawer 层级
     tooltip: 6000, // Tooltip 层级
+    popconfirm: 5999, // Popconfirm 层级
     selectMenu: 5000, // 选择框下拉菜单 层级
     tableHeader: 3000, // 表格头部层级
     tableSticky: 1000, // 表格粘性列层级

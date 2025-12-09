@@ -28,6 +28,7 @@
   --beaver-z-index-modal: 9999;
   --beaver-z-index-drawer: 9998;
   --beaver-z-index-tooltip: 6000;
+  --beaver-z-index-popconfirm: 5999;
   --beaver-z-index-select-menu: 5000;
   --beaver-z-index-table-header: 3000;
   --beaver-z-index-table-sticky: 1000;

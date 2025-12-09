@@ -67,7 +67,7 @@
   /* ===== 层级管理 ===== */
 
   /* Modal 的 z-index：保证显示在其他浮层之上 */
-  --beaver-modal-z-index: 9999;
+  --beaver-modal-z-index: var(--beaver-z-index-modal, 9999);
   /* 页脚按钮间距 */
   --beaver-modal-footer-gap: 12px;
 }

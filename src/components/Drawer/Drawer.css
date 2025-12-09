@@ -56,7 +56,7 @@
   /* ===== 层级管理 ===== */
 
   /* Drawer 的 z-index：保证显示在其他浮层之上（低于 Modal） */
-  --beaver-drawer-z-index: 9998;
+  --beaver-drawer-z-index: var(--beaver-z-index-drawer, 9998);
 
   /* ===== 间距 ===== */
 
@@ -89,12 +89,6 @@
   /* 滚动条滑块 Hover 背景色 */
   --beaver-drawer-scrollbar-thumb-hover-bg: #b0b0b0;
 }
-
-/**
- * Drawer 组件样式
- * 使用 CSS 变量进行定义，便于主题定制和样式维护
- * 支持四个方向（left、right、top、bottom）的抽屉展示
- */
 
 /* ===== Portal 容器 ===== */
 /**
