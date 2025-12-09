@@ -143,6 +143,7 @@ function printUsageAndExit() {
   console.log('\n用法：');
   console.log('  node scripts/find-undefined-css-vars.mjs            # 扫描整个仓库');
   console.log('  node scripts/find-undefined-css-vars.mjs <path>...  # 只扫描指定的文件或目录');
+  console.log('  可选：添加 `--local` 标志使定义/使用限定在目标范围（仅目标文件内查找定义和使用）');
   console.log('示例：');
   console.log('  node scripts/find-undefined-css-vars.mjs src/components/Input/Input.css');
   process.exit(0);
@@ -152,11 +153,16 @@ function main() {
   const argv = process.argv.slice(2);
   if (argv.includes('-h') || argv.includes('--help')) return printUsageAndExit();
 
-  const targets = argv.length ? argv : [ROOT];
+  // 支持可选标志：--local
+  const localIndex = argv.indexOf('--local');
+  const localScope = localIndex !== -1;
+  // 过滤掉 flags，剩下的为目标路径
+  const targets = argv.filter((a) => a !== '--local');
+  const effectiveTargets = targets.length ? targets : [ROOT];
   const tokensPath = path.resolve(ROOT, 'src', 'tokens', 'tokens.css');
 
   console.log('开始扫描...');
-  let files = argv.length ? collectFilesFromTargets(argv) : walk(ROOT);
+  let files = effectiveTargets.length ? collectFilesFromTargets(effectiveTargets) : walk(ROOT);
 
   // 判断是否扫描的是单个文件
   const isSingleFileScan =
@@ -166,10 +172,12 @@ function main() {
 
   // 始终包含全局 tokens 文件，确保全局变量定义被正确识别
   const normalizedTokensPath = path.normalize(tokensPath);
-  const normalizedFiles = new Set(files.map((f) => path.normalize(path.resolve(f))));
+  let normalizedFiles = new Set(files.map((f) => path.normalize(path.resolve(f))));
 
-  if (fs.existsSync(tokensPath) && !normalizedFiles.has(normalizedTokensPath)) {
+  if (fs.existsSync(tokensPath) && !normalizedFiles.has(path.normalize(path.resolve(tokensPath)))) {
     files.push(tokensPath);
+    // 重新计算 normalizedFiles，确保 tokensPath 被包含
+    normalizedFiles = new Set(files.map((f) => path.normalize(path.resolve(f))));
   }
 
   const allDefs = new Set();
@@ -178,10 +186,11 @@ function main() {
   const defsByFile = new Map(); // file -> Set(vars)
   const defsByName = new Map(); // var -> Set(files)
 
-  // 为避免误报，Defs（定义）与 Uses（使用）都应基于整个仓库进行收集，
-  // 但在输出“按文件列出的未定义变量”时我们只报告用户指定的目标文件中的未定义项。
-  const defsFiles = walk(ROOT);
-  const usesFiles = walk(ROOT);
+  // 根据 --local 标志选择作用域：
+  // - 默认（全局）：在整个仓库中收集 defs 和 uses（更准确，避免跨文件误报）。
+  // - --local：仅在用户指定的目标文件集合内收集 defs 和 uses（用于检测目标范围内的缺失定义）。
+  const defsFiles = localScope ? files : walk(ROOT);
+  const usesFiles = localScope ? files : walk(ROOT);
 
   for (const f of defsFiles) {
     try {
