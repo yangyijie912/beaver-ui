@@ -18,9 +18,9 @@ interface UseSelectInputEventsParams {
   allowCreate: boolean;
   filterSelected: boolean;
   onChange?: (value: string | string[]) => void;
-  committedRef: React.MutableRefObject<boolean>;
-  userTypedRef: React.MutableRefObject<boolean>;
-  searchRef: React.MutableRefObject<HTMLInputElement | null>;
+  committedRef: React.RefObject<boolean>;
+  userTypedRef: React.RefObject<boolean>;
+  searchRef: React.RefObject<HTMLInputElement | null>;
 }
 
 /**
@@ -62,7 +62,7 @@ export function useSelectInputEvents({
       if (controlledValue === undefined) setInternalValue(prev);
       onChange?.(prev);
       setQuery('');
-      committedRef.current = true;
+      (committedRef as unknown as { current: boolean | null }).current = true;
       if (filterSelected) {
         setOpen(false);
       }
@@ -73,12 +73,12 @@ export function useSelectInputEvents({
     if (controlledValue === undefined) setInternalValue(value);
     onChange?.(value);
     if (searchable) {
-      userTypedRef.current = false;
+      (userTypedRef as unknown as { current: boolean | null }).current = false;
       setQuery('');
     } else {
       setQuery('');
     }
-    committedRef.current = true;
+    (committedRef as unknown as { current: boolean | null }).current = true;
     setOpen(false);
   };
 
@@ -101,16 +101,16 @@ export function useSelectInputEvents({
     const raw = e.target.value;
 
     // 单选 + 可搜索：第一次输入时只获取增量
-    if (!userTypedRef.current && !multiple && searchable) {
+    if (!(userTypedRef as unknown as { current: boolean | null }).current && !multiple && searchable) {
       let added = raw.replace(state.query, '');
       if (added === '') added = raw;
-      userTypedRef.current = true;
+      (userTypedRef as unknown as { current: boolean | null }).current = true;
       setQuery(added);
       setHighlighted(0);
       return;
     }
 
-    userTypedRef.current = true;
+    (userTypedRef as unknown as { current: boolean | null }).current = true;
     setQuery(raw);
     setHighlighted(0);
   };
@@ -120,7 +120,7 @@ export function useSelectInputEvents({
    */
   const handleInputFocus = () => {
     setInputFocused(true);
-    if (!userTypedRef.current && searchable && !multiple && state.query) {
+    if (!(userTypedRef as unknown as { current: boolean | null }).current && searchable && !multiple && state.query) {
       setTimeout(() => searchRef.current?.select(), 0);
     }
   };
@@ -130,8 +130,8 @@ export function useSelectInputEvents({
    */
   const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     e.stopPropagation();
-    if (committedRef.current) {
-      committedRef.current = false;
+    if ((committedRef as unknown as { current: boolean | null }).current) {
+      (committedRef as unknown as { current: boolean | null }).current = false;
       setInputFocused(false);
       return;
     }

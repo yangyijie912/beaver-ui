@@ -28,7 +28,7 @@ export function useWrapSize() {
 }
 
 type ScrollStateInput = {
-  wrapRef: React.MutableRefObject<HTMLDivElement | null> | null;
+  wrapRef: React.RefObject<HTMLDivElement | null> | null;
   effectiveLeftFixed: number;
   effectiveRightFixed: number;
   fixedHeader: boolean;

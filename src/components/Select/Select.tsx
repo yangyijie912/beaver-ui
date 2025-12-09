@@ -58,7 +58,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       rootRef.current = el;
       if (ref) {
         if (typeof ref === 'function') (ref as any)(el);
-        else (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+        else (ref as unknown as { current: HTMLDivElement | null }).current = el;
       }
     };
     const listRef = useRef<HTMLUListElement | null>(null);

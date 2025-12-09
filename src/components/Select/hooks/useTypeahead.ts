@@ -30,12 +30,12 @@ export type UseTypeaheadHandlers = {
     setHighlighted: (v: number) => void;
   }) => void;
   clear: () => void;
-  userTypedRef: React.MutableRefObject<boolean>;
+  userTypedRef: React.RefObject<boolean>;
 };
 
 export default function useTypeahead(
   timeout = 700,
-  externalUserTypedRef?: React.MutableRefObject<boolean>
+  externalUserTypedRef?: React.RefObject<boolean>
 ): UseTypeaheadHandlers {
   const timer = useRef<number | null>(null);
   const userTypedRef = externalUserTypedRef ?? useRef<boolean>(false);
@@ -53,9 +53,9 @@ export default function useTypeahead(
   }
 
   function handleBackspace({ query, setQuery, options, setHighlighted }: any) {
-    const wasUserTyped = userTypedRef.current;
+    const wasUserTyped = (userTypedRef as unknown as { current: boolean }).current;
     const newQ = wasUserTyped ? query.slice(0, -1) : '';
-    userTypedRef.current = true;
+    (userTypedRef as unknown as { current: boolean }).current = true;
     setQuery(newQ);
     scheduleClear(setQuery);
     const src = newQ
@@ -70,8 +70,9 @@ export default function useTypeahead(
   }
 
   function handleChar({ key, query, setQuery, options, multiple, searchable, setHighlighted }: any) {
-    const newQ = !userTypedRef.current && !multiple && searchable ? key : query + key;
-    userTypedRef.current = true;
+    const newQ =
+      !(userTypedRef as unknown as { current: boolean }).current && !multiple && searchable ? key : query + key;
+    (userTypedRef as unknown as { current: boolean }).current = true;
     setQuery(newQ);
     scheduleClear(setQuery);
     const q = newQ.trim().toLowerCase();

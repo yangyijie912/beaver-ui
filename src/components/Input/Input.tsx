@@ -63,7 +63,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
         }
       } else {
         try {
-          (ref as React.MutableRefObject<any>).current = node;
+          (ref as unknown as { current: HTMLInputElement | null }).current = node;
         } catch (_e) {
           // ignore
         }
