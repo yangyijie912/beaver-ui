@@ -10,7 +10,7 @@ type RadioGroupContextType = {
 // 用于单选按钮组的上下文
 export const RadioGroupContext = React.createContext<RadioGroupContextType | null>(null);
 
-export type RadioGroupProps = {
+export type RadioGroupProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> & {
   name?: string;
   /** 受控选中值 */
   value?: string | number;
@@ -22,52 +22,45 @@ export type RadioGroupProps = {
   vertical?: boolean;
   /** 选中值变化时的回调 */
   onChange?: (value: string | number, event?: React.ChangeEvent<HTMLInputElement>) => void;
-  children?: React.ReactNode;
-  className?: string;
 };
 
-const RadioGroup: React.FC<RadioGroupProps> = ({
-  name,
-  value: valueProp,
-  defaultValue,
-  disabled,
-  vertical,
-  onChange,
-  children,
-  className,
-}) => {
-  const [valueState, setValueState] = React.useState<string | number | null>(
-    valueProp !== undefined ? valueProp : (defaultValue ?? null)
-  );
+const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
+  ({ name, value: valueProp, defaultValue, disabled, vertical, onChange, children, className }, ref) => {
+    const [valueState, setValueState] = React.useState<string | number | null>(
+      valueProp !== undefined ? valueProp : (defaultValue ?? null)
+    );
 
-  React.useEffect(() => {
-    if (valueProp !== undefined) setValueState(valueProp);
-  }, [valueProp]);
+    React.useEffect(() => {
+      if (valueProp !== undefined) setValueState(valueProp);
+    }, [valueProp]);
 
-  const handleChange = (val: string | number, event?: React.ChangeEvent<HTMLInputElement>) => {
-    if (valueProp === undefined) {
-      setValueState(val);
-    }
-    onChange?.(val, event);
-  };
+    const handleChange = (val: string | number, event?: React.ChangeEvent<HTMLInputElement>) => {
+      if (valueProp === undefined) {
+        setValueState(val);
+      }
+      onChange?.(val, event);
+    };
 
-  // 创建上下文值
-  const ctx = useMemo(
-    () => ({ name, value: valueState, disabled, onChange: handleChange }),
-    [name, valueState, disabled]
-  );
+    // 创建上下文值
+    const ctx = useMemo(
+      () => ({ name, value: valueState, disabled, onChange: handleChange }),
+      [name, valueState, disabled]
+    );
 
-  const groupClass = ['beaver-radio-group', className, vertical ? 'beaver-radio-group--vertical' : '']
-    .filter(Boolean)
-    .join(' ');
+    const groupClass = ['beaver-radio-group', className, vertical ? 'beaver-radio-group--vertical' : '']
+      .filter(Boolean)
+      .join(' ');
 
-  return (
-    <RadioGroupContext.Provider value={ctx}>
-      <div role="radiogroup" className={groupClass}>
-        {children}
-      </div>
-    </RadioGroupContext.Provider>
-  );
-};
+    return (
+      <RadioGroupContext.Provider value={ctx}>
+        <div role="radiogroup" className={groupClass} ref={ref as React.Ref<HTMLDivElement>}>
+          {children}
+        </div>
+      </RadioGroupContext.Provider>
+    );
+  }
+);
+
+RadioGroup.displayName = 'RadioGroup';
 
 export default RadioGroup;

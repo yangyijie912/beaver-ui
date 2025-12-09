@@ -27,7 +27,7 @@ export type Row = Record<string, any>;
 /**
  * Table 组件的 props 定义
  */
-export type Props = {
+export type Props = React.HTMLAttributes<HTMLDivElement> & {
   /** 列定义 */
   columns: Column[];
   /** 行数据 */
