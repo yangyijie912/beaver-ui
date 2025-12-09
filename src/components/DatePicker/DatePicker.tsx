@@ -113,6 +113,12 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     // 鼠标悬停的日期（用于显示临时范围）
     const [hoverDate, setHoverDate] = useState<Date | null>(null);
 
+    // datetimerange 模式下的临时日期选择（点击确定前）
+    const [tempDateTimeStart, setTempDateTimeStart] = useState<Date | null>(null);
+    const [tempDateTimeEnd, setTempDateTimeEnd] = useState<Date | null>(null);
+    // datetimerange 已确定的第一个日期（在第一步确定后）
+    const [confirmedStartDate, setConfirmedStartDate] = useState<Date | null>(null);
+
     // 选择器类型状态（用于月份和年份选择）
     const [panelType] = useState<'calendar' | 'month' | 'year'>(
       picker === 'month' ? 'month' : picker === 'year' ? 'year' : 'calendar'
@@ -158,11 +164,20 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
      */
     const handleInputFocus = useCallback(() => {
       setIsFocused(true);
-      setRangeStartDate(null);
-      setHoverDate(null);
-      setSelectingStart(true);
+      if (picker === 'datetimerange') {
+        // datetimerange 模式：初始化为第一步
+        setSelectingStart(true);
+        setTempDateTimeStart(null);
+        setTempDateTimeEnd(null);
+        setConfirmedStartDate(null);
+      } else {
+        // 其他范围模式
+        setRangeStartDate(null);
+        setHoverDate(null);
+        setSelectingStart(true);
+      }
       open();
-    }, [setIsFocused, open]);
+    }, [picker, open]);
 
     /**
      * 处理日期单元格点击
@@ -171,37 +186,54 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       (date: Date) => {
         if (isRange) {
           // 范围选择模式
-          if (selectingStart) {
-            // 选择范围开始日期
-            setTempStartDate(date);
-            setRangeStartDate(date);
-            setHoverDate(date);
-            setSelectingStart(false);
+          if (picker === 'datetimerange') {
+            // 日期范围+时间选择模式：临时保存日期，等待时间调整后点击确定
+            // 重置时间为 00:00:00
+            const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+            if (selectingStart) {
+              // 第一个日期选择：临时保存起始日期，但保持 selectingStart=true，不进入第二阶段
+              setTempDateTimeStart(dateOnly);
+              setRangeStartDate(dateOnly);
+              // 不改变 selectingStart，保持在第一个日期的调整阶段
+            } else {
+              // 第二个日期选择：临时保存结束日期
+              setTempDateTimeEnd(dateOnly);
+              setRangeStartDate(dateOnly);
+            }
           } else {
-            // 选择范围结束日期
-            // 避免使用非空断言，显式保护 tempStartDate
-            if (!tempStartDate) {
-              // 如果没有起始日期，直接设置为当前选择并继续等待结束日期
+            // 普通日期范围选择模式：点击后立即确定
+            if (selectingStart) {
+              // 选择范围开始日期
               setTempStartDate(date);
               setRangeStartDate(date);
               setHoverDate(date);
               setSelectingStart(false);
-              return;
+            } else {
+              // 选择范围结束日期
+              // 避免使用非空断言，显式保护 tempStartDate
+              if (!tempStartDate) {
+                // 如果没有起始日期，直接设置为当前选择并继续等待结束日期
+                setTempStartDate(date);
+                setRangeStartDate(date);
+                setHoverDate(date);
+                setSelectingStart(false);
+                return;
+              }
+              const start = tempStartDate;
+              const end = date;
+              const [startDate, endDate] = start <= end ? [start, end] : [end, start];
+              handleRangeChange(startDate, endDate);
+              setInputValue(
+                useTimePattern
+                  ? `${formatWithPattern(startDate, internalPattern)} ~ ${formatWithPattern(endDate, internalPattern)}`
+                  : `${formatDate(startDate, format)} ~ ${formatDate(endDate, format)}`
+              );
+              setSelectingStart(true);
+              setTempStartDate(null);
+              setRangeStartDate(null);
+              setHoverDate(null);
+              close();
             }
-            const start = tempStartDate;
-            const end = date;
-            const [startDate, endDate] = start <= end ? [start, end] : [end, start];
-            handleRangeChange(startDate, endDate);
-            setInputValue(
-              useTimePattern
-                ? `${formatWithPattern(startDate, internalPattern)} ~ ${formatWithPattern(endDate, internalPattern)}`
-                : `${formatDate(startDate, format)} ~ ${formatDate(endDate, format)}`
-            );
-            setSelectingStart(true);
-            setTempStartDate(null);
-            setRangeStartDate(null);
-            setHoverDate(null);
-            close();
           }
         } else {
           // 单选模式
@@ -213,6 +245,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       },
       [
         isRange,
+        picker,
         selectingStart,
         tempStartDate,
         handleDateChange,
@@ -227,16 +260,64 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     );
 
     /**
+     * 处理 datetimerange 的确定按钮
+     */
+    const handleDateTimeRangeConfirm = useCallback(() => {
+      if (selectingStart) {
+        // 第一步确定：保存第一个日期，进入第二步
+        if (tempDateTimeStart) {
+          // 保存已确定的第一个日期
+          setConfirmedStartDate(tempDateTimeStart);
+          // 清空临时第一个日期，为第二步做准备
+          setTempDateTimeStart(null);
+          // 进入第二步
+          setSelectingStart(false);
+        }
+      } else {
+        // 第二步确定：提交整个范围
+        if (confirmedStartDate && tempDateTimeEnd) {
+          const [startDate, endDate] =
+            confirmedStartDate <= tempDateTimeEnd
+              ? [confirmedStartDate, tempDateTimeEnd]
+              : [tempDateTimeEnd, confirmedStartDate];
+          handleRangeChange(startDate, endDate);
+          setInputValue(
+            useTimePattern
+              ? `${formatWithPattern(startDate, internalPattern)} ~ ${formatWithPattern(endDate, internalPattern)}`
+              : `${formatDate(startDate, format)} ~ ${formatDate(endDate, format)}`
+          );
+        }
+        // 重置所有状态
+        setSelectingStart(true);
+        setTempDateTimeStart(null);
+        setTempDateTimeEnd(null);
+        setConfirmedStartDate(null);
+        setRangeStartDate(null);
+        close();
+      }
+    }, [
+      selectingStart,
+      tempDateTimeStart,
+      confirmedStartDate,
+      tempDateTimeEnd,
+      handleRangeChange,
+      close,
+      useTimePattern,
+      internalPattern,
+    ]);
+
+    /**
      * 处理日期单元格鼠标悬停
      */
     const handleDateHover = useCallback(
       (date: Date | null) => {
-        if (isRange && !selectingStart) {
+        // 仅在普通范围选择模式下显示悬停效果
+        if (isRange && !selectingStart && picker === 'daterange') {
           // 在选择范围的第二个日期时，设置悬停日期以显示临时范围
           setHoverDate(date);
         }
       },
-      [isRange, selectingStart]
+      [isRange, selectingStart, picker]
     );
 
     /**
@@ -330,9 +411,32 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     }, [isOpen, close]);
 
     /**
+     * datetimerange 面板关闭时清空临时状态
+     */
+    useEffect(() => {
+      if (picker === 'datetimerange' && !isOpen) {
+        // 如果只选了起始日期但没选结束日期就关闭面板，说明输入无效
+        // 需要清空暂存的日期和输入框
+        if (confirmedStartDate && !tempDateTimeEnd) {
+          setInputValue('');
+        }
+        setTempDateTimeStart(null);
+        setTempDateTimeEnd(null);
+        setConfirmedStartDate(null);
+        setSelectingStart(true);
+        setRangeStartDate(null);
+      }
+    }, [picker, isOpen, confirmedStartDate, tempDateTimeEnd]);
+
+    /**
      * 同步 inputValue 和当前日期
      */
     useEffect(() => {
+      // datetimerange 模式由专门的 effect 处理，这里跳过
+      if (picker === 'datetimerange') {
+        return;
+      }
+
       if (isRange) {
         setInputValue(
           currentRange
@@ -361,7 +465,67 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           );
         }
       }
-    }, [currentDate, currentRange, format, isRange, picker]);
+    }, [currentDate, currentRange, format, isRange, picker, useTimePattern, internalPattern]);
+
+    /**
+     * datetimerange 第一个日期确定后，初始化第二个日期
+     */
+    useEffect(() => {
+      if (picker === 'datetimerange' && !selectingStart && !tempDateTimeEnd && confirmedStartDate) {
+        // 从第一步进入第二步，初始化结束日期为起始日期（用于时间选择器显示）
+        // 但不能立即赋值，因为这会让输入框显示范围
+        // 只在用户选择第二个日期时才显示范围
+        // 这里只是为了让时间选择器有一个初始值
+        // 实际上应该让 handleDateClick 处理
+      }
+    }, [picker, selectingStart, tempDateTimeEnd, confirmedStartDate]);
+
+    /**
+     * datetimerange 模式下，同步临时输入框显示
+     */
+    useEffect(() => {
+      if (picker === 'datetimerange' && isOpen) {
+        if (selectingStart) {
+          // 第一步：选择第一个日期，显示第一个日期
+          if (tempDateTimeStart) {
+            const tempDisplay = useTimePattern
+              ? formatWithPattern(tempDateTimeStart, internalPattern)
+              : formatDate(tempDateTimeStart, format);
+            setInputValue(tempDisplay);
+          } else {
+            setInputValue('');
+          }
+        } else {
+          // 第二步：选择第二个日期，显示范围
+          if (confirmedStartDate) {
+            const startDisplay = useTimePattern
+              ? formatWithPattern(confirmedStartDate, internalPattern)
+              : formatDate(confirmedStartDate, format);
+
+            if (tempDateTimeEnd) {
+              // 已选择结束日期，显示完整范围
+              const endDisplay = useTimePattern
+                ? formatWithPattern(tempDateTimeEnd, internalPattern)
+                : formatDate(tempDateTimeEnd, format);
+              setInputValue(`${startDisplay} ~ ${endDisplay}`);
+            } else {
+              // 还没选结束日期，显示起始日期 + 波浪符号，等待用户输入
+              setInputValue(`${startDisplay} ~ `);
+            }
+          }
+        }
+      }
+    }, [
+      picker,
+      selectingStart,
+      tempDateTimeStart,
+      confirmedStartDate,
+      tempDateTimeEnd,
+      isOpen,
+      useTimePattern,
+      internalPattern,
+      format,
+    ]);
 
     // 计算 wrapper 样式
     const wrapperStyle: React.CSSProperties = {
@@ -530,19 +694,40 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
               {picker === 'datetimerange' && (
                 <DateTimePanel
                   currentMonth={currentMonth}
-                  selectedRange={currentRange}
-                  rangeStart={!selectingStart ? rangeStartDate : undefined}
-                  hoverDate={!selectingStart ? hoverDate : undefined}
+                  selectedDate={undefined}
+                  rangeStart={selectingStart ? tempDateTimeStart : tempDateTimeEnd}
                   disabledDate={disabledDate}
                   onDateClick={handleDateClick}
                   onDateHover={handleDateHover}
                   onTimeChange={(time) => {
-                    if (currentRange) {
-                      handleRangeChange(time, currentRange.endDate);
+                    // 在范围模式下只更新临时状态
+                    if (selectingStart) {
+                      // 第一步：第一个日期的时间调整
+                      // 如果还没选日期，就用当天日期
+                      if (!tempDateTimeStart) {
+                        const today = new Date();
+                        const dateWithTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                        dateWithTime.setHours(time.getHours(), time.getMinutes(), time.getSeconds());
+                        setTempDateTimeStart(dateWithTime);
+                      } else {
+                        setTempDateTimeStart(time);
+                      }
+                    } else {
+                      // 第二步：第二个日期的时间调整
+                      // 如果还没选日期，就用当天日期
+                      if (!tempDateTimeEnd) {
+                        const today = new Date();
+                        const dateWithTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                        dateWithTime.setHours(time.getHours(), time.getMinutes(), time.getSeconds());
+                        setTempDateTimeEnd(dateWithTime);
+                      } else {
+                        setTempDateTimeEnd(time);
+                      }
                     }
                   }}
                   onPrevMonth={handlePrevMonth}
                   onNextMonth={handleNextMonth}
+                  onConfirm={handleDateTimeRangeConfirm}
                   isRange={true}
                   timeFormat="24h"
                 />

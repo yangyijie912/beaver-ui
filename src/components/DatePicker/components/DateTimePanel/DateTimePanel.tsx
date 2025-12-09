@@ -7,7 +7,6 @@ import React from 'react';
 import CalendarPanel from '../CalendarPanel';
 import TimePanel from '../TimePanel';
 import Header from '../Header';
-import type { DateRange } from '../../types';
 import './DateTimePanel.css';
 
 interface DateTimePanelProps {
@@ -15,12 +14,8 @@ interface DateTimePanelProps {
   currentMonth: Date;
   /** 选中的日期（单选模式） */
   selectedDate?: Date | null;
-  /** 选中的日期范围（范围选择模式） */
-  selectedRange?: DateRange | null;
   /** 范围选择时的起始日期 */
   rangeStart?: Date | null;
-  /** 鼠标悬停的日期 */
-  hoverDate?: Date | null;
   /** 禁用日期判断函数 */
   disabledDate?: (date: Date) => boolean;
   /** 日期点击回调 */
@@ -37,14 +32,14 @@ interface DateTimePanelProps {
   isRange?: boolean;
   /** 时间格式 */
   timeFormat?: '24h' | '12h';
+  /** 确定回调（仅在范围模式下使用） */
+  onConfirm?: () => void;
 }
 
 const DateTimePanel: React.FC<DateTimePanelProps> = ({
   currentMonth,
   selectedDate,
-  selectedRange,
   rangeStart,
-  hoverDate,
   disabledDate,
   onDateClick,
   onDateHover,
@@ -53,9 +48,12 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
   onNextMonth,
   isRange = false,
   timeFormat = '24h',
+  onConfirm,
 }) => {
-  // 确定当前显示的时间（单选或范围选择的起始日期）
-  const currentTime = isRange ? selectedRange?.startDate : selectedDate;
+  // 确定当前显示的时间
+  // 范围模式下：显示当前选择的日期（rangeStart）
+  // 单选模式下：显示 selectedDate 的时间
+  const currentTime = isRange ? rangeStart : selectedDate;
 
   return (
     <div className="beaver-datepicker-datetime-panel">
@@ -67,14 +65,14 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
         <div className="beaver-datepicker-datetime-calendar">
           <CalendarPanel
             currentMonth={currentMonth}
-            selectedDate={!isRange ? selectedDate : undefined}
-            selectedRange={isRange ? selectedRange : undefined}
-            rangeStart={isRange && rangeStart ? rangeStart : undefined}
-            hoverDate={isRange && hoverDate ? hoverDate : undefined}
+            selectedDate={rangeStart || selectedDate}
+            selectedRange={undefined}
+            rangeStart={undefined}
+            hoverDate={undefined}
             disabledDate={disabledDate}
             onDateClick={onDateClick}
             onDateHover={onDateHover}
-            isRange={isRange}
+            isRange={false}
           />
         </div>
 
@@ -87,6 +85,15 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
           <TimePanel selectedTime={currentTime} onTimeChange={onTimeChange} timeFormat={timeFormat} />
         </div>
       </div>
+
+      {/* 底部操作按钮 */}
+      {isRange && (
+        <div className="beaver-datepicker-datetime-footer">
+          <button className="beaver-datepicker-datetime-confirm-btn" onClick={onConfirm} type="button">
+            确定
+          </button>
+        </div>
+      )}
     </div>
   );
 };

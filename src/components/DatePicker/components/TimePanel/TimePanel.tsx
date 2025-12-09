@@ -53,9 +53,9 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
   );
 
   const updateTime = (h: number, m: number, s: number) => {
-    if (!selectedTime) return;
-    const newTime = new Date(selectedTime);
-    newTime.setHours(h, m, s);
+    // 如果没有选中日期，使用今天作为默认日期
+    const baseDate = selectedTime || new Date();
+    const newTime = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), h, m, s);
     onTimeChange(newTime);
   };
 
