@@ -53,6 +53,35 @@ export const parseDate = (dateString: string, fmt: DateFormat = 'YYYY-MM-DD'): D
 };
 
 /**
+ * 使用自定义 pattern（例如 'YYYY-MM-DD HH:mm:ss'）格式化日期
+ * 不修改现有类型定义，供需要精确时间格式的场景使用
+ */
+export const formatWithPattern = (date: Date | null | undefined, pattern: string): string => {
+  if (!date) return '';
+  try {
+    // 简单 token 转换，支持 YYYY -> yyyy, DD -> dd
+    const dfns = String(pattern).replace(/YYYY/g, 'yyyy').replace(/DD/g, 'dd');
+    return format(new Date(date), dfns, { locale: zhCN });
+  } catch {
+    return '';
+  }
+};
+
+/**
+ * 使用自定义 pattern 解析字符串（例如 'YYYY-MM-DD HH:mm:ss'）为 Date
+ */
+export const parseWithPattern = (dateString: string, pattern: string): Date | null => {
+  if (!dateString) return null;
+  try {
+    const dfns = String(pattern).replace(/YYYY/g, 'yyyy').replace(/DD/g, 'dd');
+    const parsed = parse(dateString, dfns, new Date(), { locale: zhCN });
+    return isValid(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
+/**
  * 获取月份的所有日期数组（包含前后月的填充日期）
  * @param date 指定月份的任意日期
  * @returns 包含 42 个日期的数组（6 行 × 7 列）

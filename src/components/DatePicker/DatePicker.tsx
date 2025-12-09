@@ -6,7 +6,7 @@ import Header from './components/Header';
 import MonthPanel from './components/MonthPanel';
 import YearPanel from './components/YearPanel';
 import TimePanel from './components/TimePanel';
-import { formatDate, parseDate } from './utils';
+import { formatDate, parseDate, formatWithPattern, parseWithPattern } from './utils';
 import type { DatePickerProps } from './types';
 import './DatePicker.css';
 
@@ -55,14 +55,40 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
     // 输入框引用
     const inputRef = useRef<HTMLInputElement>(null);
+    // 合并内部 ref 与外部 forwarded ref，确保外部能够拿到 input 节点
+    const setInputRefs = useCallback(
+      (node: HTMLInputElement | null) => {
+        inputRef.current = node;
+        if (!ref) return;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else {
+          try {
+            (ref as { current: HTMLInputElement | null }).current = node;
+          } catch (_) {}
+        }
+      },
+      [ref]
+    );
     const wrapperRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
+
+    // 计算最终使用的显示/解析模式：
+    // - 如果是 datetime/datetimerange 且用户未传入带时间的自定义 format（仍为默认 'YYYY-MM-DD'），
+    //   我们在内部使用一个带时分秒的 pattern 展示（不改变 prop 的类型定义）。
+    const useTimePattern = (picker === 'datetime' || picker === 'datetimerange') && format === 'YYYY-MM-DD';
+    const internalPattern = useTimePattern ? 'YYYY-MM-DD HH:mm:ss' : format;
 
     // 输入框文本状态
     const [inputValue, setInputValue] = useState<string>(() => {
       if (isRange) {
         return currentRange
-          ? `${formatDate(currentRange.startDate, format)} ~ ${formatDate(currentRange.endDate, format)}`
+          ? useTimePattern
+            ? `${formatWithPattern(currentRange.startDate, internalPattern)} ~ ${formatWithPattern(
+                currentRange.endDate,
+                internalPattern
+              )}`
+            : `${formatDate(currentRange.startDate, format)} ~ ${formatDate(currentRange.endDate, format)}`
           : '';
       }
       if (picker === 'month' && currentDate) {
@@ -73,7 +99,11 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       if (picker === 'year' && currentDate) {
         return `${currentDate.getFullYear()}`;
       }
-      return currentDate ? formatDate(currentDate, format) : '';
+      return currentDate
+        ? useTimePattern
+          ? formatWithPattern(currentDate, internalPattern)
+          : formatDate(currentDate, format)
+        : '';
     });
 
     // 范围选择的第一个日期选择状态
@@ -97,14 +127,14 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         setInputValue(val);
 
         // 单选模式下尝试解析日期
-        if (!isRange && val.length === 10) {
-          const parsed = parseDate(val, format);
+        if (!isRange) {
+          const parsed = useTimePattern ? parseWithPattern(val, internalPattern) : parseDate(val, format);
           if (parsed && !disabledDate?.(parsed)) {
             setCurrentMonth(parsed);
           }
         }
       },
-      [format, isRange, disabledDate, setCurrentMonth]
+      [format, isRange, disabledDate, setCurrentMonth, useTimePattern, internalPattern]
     );
 
     /**
@@ -115,13 +145,13 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
       // 单选模式下，验证输入的日期
       if (!isRange && inputValue) {
-        const parsed = parseDate(inputValue, format);
+        const parsed = useTimePattern ? parseWithPattern(inputValue, internalPattern) : parseDate(inputValue, format);
         if (parsed) {
           handleDateChange(parsed);
-          setInputValue(formatDate(parsed, format));
+          setInputValue(useTimePattern ? formatWithPattern(parsed, internalPattern) : formatDate(parsed, format));
         }
       }
-    }, [inputValue, format, isRange, setIsFocused, handleDateChange]);
+    }, [inputValue, format, isRange, setIsFocused, handleDateChange, useTimePattern, internalPattern]);
 
     /**
      * 处理输入框获焦
@@ -149,11 +179,24 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             setSelectingStart(false);
           } else {
             // 选择范围结束日期
-            const start = tempStartDate!;
+            // 避免使用非空断言，显式保护 tempStartDate
+            if (!tempStartDate) {
+              // 如果没有起始日期，直接设置为当前选择并继续等待结束日期
+              setTempStartDate(date);
+              setRangeStartDate(date);
+              setHoverDate(date);
+              setSelectingStart(false);
+              return;
+            }
+            const start = tempStartDate;
             const end = date;
             const [startDate, endDate] = start <= end ? [start, end] : [end, start];
             handleRangeChange(startDate, endDate);
-            setInputValue(`${formatDate(startDate, format)} ~ ${formatDate(endDate, format)}`);
+            setInputValue(
+              useTimePattern
+                ? `${formatWithPattern(startDate, internalPattern)} ~ ${formatWithPattern(endDate, internalPattern)}`
+                : `${formatDate(startDate, format)} ~ ${formatDate(endDate, format)}`
+            );
             setSelectingStart(true);
             setTempStartDate(null);
             setRangeStartDate(null);
@@ -163,7 +206,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         } else {
           // 单选模式
           handleDateChange(date);
-          setInputValue(formatDate(date, format));
+          setInputValue(useTimePattern ? formatWithPattern(date, internalPattern) : formatDate(date, format));
           setCurrentMonth(date);
           close();
         }
@@ -172,13 +215,14 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         isRange,
         selectingStart,
         tempStartDate,
-        format,
         handleDateChange,
         handleRangeChange,
         close,
         setTempStartDate,
         setCurrentMonth,
         setRangeStartDate,
+        useTimePattern,
+        internalPattern,
       ]
     );
 
@@ -240,7 +284,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         if (e.key === 'Escape') {
           close();
         } else if (e.key === 'Enter' && isOpen && inputValue && !isRange) {
-          const parsed = parseDate(inputValue, format);
+          const parsed = useTimePattern ? parseWithPattern(inputValue, internalPattern) : parseDate(inputValue, format);
           if (parsed && !disabledDate?.(parsed)) {
             handleDateChange(parsed);
             setCurrentMonth(parsed);
@@ -248,7 +292,18 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           }
         }
       },
-      [isOpen, inputValue, isRange, format, disabledDate, handleDateChange, close, setCurrentMonth]
+      [
+        isOpen,
+        inputValue,
+        isRange,
+        format,
+        disabledDate,
+        handleDateChange,
+        close,
+        setCurrentMonth,
+        useTimePattern,
+        internalPattern,
+      ]
     );
 
     /**
@@ -281,7 +336,12 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       if (isRange) {
         setInputValue(
           currentRange
-            ? `${formatDate(currentRange.startDate, format)} ~ ${formatDate(currentRange.endDate, format)}`
+            ? useTimePattern
+              ? `${formatWithPattern(currentRange.startDate, internalPattern)} ~ ${formatWithPattern(
+                  currentRange.endDate,
+                  internalPattern
+                )}`
+              : `${formatDate(currentRange.startDate, format)} ~ ${formatDate(currentRange.endDate, format)}`
             : ''
         );
       } else {
@@ -292,7 +352,13 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         } else if (picker === 'year' && currentDate) {
           setInputValue(`${currentDate.getFullYear()}`);
         } else {
-          setInputValue(currentDate ? formatDate(currentDate, format) : '');
+          setInputValue(
+            currentDate
+              ? useTimePattern
+                ? formatWithPattern(currentDate, internalPattern)
+                : formatDate(currentDate, format)
+              : ''
+          );
         }
       }
     }, [currentDate, currentRange, format, isRange, picker]);
@@ -327,7 +393,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         <div ref={wrapperRef} className={wrapperClassName} style={wrapperStyle}>
           {/* 使用 Input 组件替代原生 input */}
           <Input
-            ref={inputRef || ref}
+            ref={setInputRefs}
             type="text"
             placeholder={placeholder}
             value={inputValue}
@@ -448,6 +514,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                       selectedDate={currentDate}
                       disabledDate={disabledDate}
                       onDateClick={(date) => {
+                        // 保存选择的日期（防止用户仅点击日期后直接确认时间导致没有 date）
+                        handleDateChange(date);
                         setCurrentMonth(date);
                         // 切换到时间选择面板
                         setPanelType('time');
@@ -477,13 +545,25 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                         selectedTime={currentDate}
                         onTimeChange={(time) => {
                           handleDateChange(time);
-                          setInputValue(formatDate(time, format));
+                          setInputValue(
+                            useTimePattern ? formatWithPattern(time, internalPattern) : formatDate(time, format)
+                          );
                         }}
                         timeFormat="24h"
                       />
                       <div style={{ padding: '8px 12px', borderTop: '1px solid var(--beaver-color-border)' }}>
                         <button
-                          onClick={() => close()}
+                          onClick={() => {
+                            // 在确认时确保输入框更新为包含时间的字符串
+                            if (currentDate) {
+                              setInputValue(
+                                useTimePattern
+                                  ? formatWithPattern(currentDate, internalPattern)
+                                  : formatDate(currentDate, format)
+                              );
+                            }
+                            close();
+                          }}
                           style={{
                             width: '100%',
                             padding: '6px 12px',
@@ -546,7 +626,19 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                       />
                       <div style={{ padding: '8px 12px', borderTop: '1px solid var(--beaver-color-border)' }}>
                         <button
-                          onClick={() => close()}
+                          onClick={() => {
+                            if (currentRange) {
+                              setInputValue(
+                                useTimePattern
+                                  ? `${formatWithPattern(currentRange.startDate, internalPattern)} ~ ${formatWithPattern(
+                                      currentRange.endDate,
+                                      internalPattern
+                                    )}`
+                                  : `${formatDate(currentRange.startDate, format)} ~ ${formatDate(currentRange.endDate, format)}`
+                              );
+                            }
+                            close();
+                          }}
                           style={{
                             width: '100%',
                             padding: '6px 12px',

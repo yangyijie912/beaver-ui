@@ -51,6 +51,9 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
     onTimeChange(newTime);
   };
 
+  // 不要在 mount/selectedTime 改变时自动回传时间（会导致无限循环）。
+  // 父组件应在用户点击“确定”或在 onTimeChange 的交互中接收时间值。
+
   return (
     <div className="beaver-datepicker-time-panel">
       <div className="beaver-datepicker-time-input-group">

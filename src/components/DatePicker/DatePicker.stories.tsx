@@ -294,7 +294,15 @@ export const PickerDateTimeRange: Story = {
 export const AllPickerTypes: Story = {
   name: '所有选择器类型',
   render: () => (
-    <div style={{ display: 'flex', gap: '30px', width: '100%', flexWrap: 'wrap' }}>
+    <div
+      style={{
+        display: 'grid',
+        gap: '30px',
+        width: '100%',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        alignItems: 'start',
+      }}
+    >
       <div>
         <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>日期选择 (date)</label>
         <DatePicker picker="date" placeholder="选择日期" width="100%" />

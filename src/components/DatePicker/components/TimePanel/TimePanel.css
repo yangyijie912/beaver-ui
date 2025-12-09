@@ -9,6 +9,7 @@
   align-items: flex-end;
   justify-content: center;
   gap: 4px;
+  padding: 12px 0;
 }
 
 .beaver-datepicker-time-input {
@@ -20,7 +21,7 @@
   input {
     width: 50px;
     padding: 8px 6px;
-    border: 2px solid var(--beaver-color-border);
+    border: 1px solid var(--beaver-color-border);
     border-radius: 4px;
     text-align: center;
     font-size: 16px;
@@ -49,6 +50,6 @@
   color: var(--beaver-color-text);
   font-weight: 600;
   margin: 0 2px;
-  margin-bottom: 8px;
+  margin-bottom: 30px;
   font-size: 16px;
 }
