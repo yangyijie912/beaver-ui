@@ -2,7 +2,7 @@ import React from 'react';
 
 export type ModalSize = 'small' | 'medium' | 'large';
 
-export interface ModalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+export type ModalProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   /**  控制Modal是否打开 */
   open: boolean;
   /**  关闭Modal时的回调 */
@@ -35,7 +35,7 @@ export interface ModalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
   contentClassName?: string;
   /** 是否禁用动画 */
   /** `animated` prop 已移除：组件默认启用动画。如需修改动画，请覆盖 CSS 类。 */
-}
+};
 
 export type ModalHandle = {
   /**

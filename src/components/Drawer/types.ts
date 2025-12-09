@@ -17,7 +17,7 @@ export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
  */
 export type DrawerSize = 'small' | 'medium' | 'large';
 
-export interface DrawerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+export type DrawerProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   /** 控制Drawer是否打开  */
   open: boolean;
 
@@ -90,7 +90,7 @@ export interface DrawerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
    * @default true
    */
   mask?: boolean;
-}
+};
 
 /**
  * Drawer句柄接口，通过ref获取

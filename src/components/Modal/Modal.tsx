@@ -142,4 +142,4 @@ Modal.displayName = 'Modal';
 
 export default Modal;
 export { ModalHeader, ModalFooter };
-export type { ModalProps } from './types';
+export type { ModalProps, ModalSize } from './types';

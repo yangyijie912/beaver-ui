@@ -294,3 +294,4 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
 Popconfirm.displayName = 'Popconfirm';
 
 export default Popconfirm;
+export type { PopconfirmProps } from './types';

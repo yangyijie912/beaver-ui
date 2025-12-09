@@ -3,7 +3,7 @@ import React from 'react';
 /**
  * Popconfirm 组件的 Props 类型定义
  */
-export interface PopconfirmProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+export type PopconfirmProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   /**  用于触发 popconfirm 显示的子元素 */
   children: React.ReactElement;
 
@@ -63,4 +63,4 @@ export interface PopconfirmProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 
   /**  是否显示加载状态（确认按钮会显示加载中），默认为 false */
   okLoading?: boolean;
-}
+};

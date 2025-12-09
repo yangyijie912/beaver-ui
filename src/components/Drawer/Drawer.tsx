@@ -179,4 +179,3 @@ Drawer.displayName = 'Drawer';
 
 export default Drawer;
 export { DrawerHeader, DrawerFooter };
-export type { DrawerProps } from './types';
