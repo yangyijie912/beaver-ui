@@ -74,6 +74,7 @@ export const Disabled: Story = {
   args: {
     disabled: true,
     placeholder: '已禁用',
+    defaultValue: new Date('2024-01-15'),
   },
 };
 
@@ -86,21 +87,6 @@ export const ReadOnly: Story = {
     readOnly: true,
     defaultValue: new Date('2024-01-15'),
     placeholder: '只读模式',
-  },
-};
-
-/**
- * 禁用特定日期
- */
-export const DisabledDates: Story = {
-  name: '禁用特定日期',
-  args: {
-    placeholder: '已禁用周末',
-    disabledDate: (date: Date) => {
-      // 禁用周末
-      const day = date.getDay();
-      return day === 0 || day === 6;
-    },
   },
 };
 
@@ -160,26 +146,6 @@ export const Formats: Story = {
 };
 
 /**
- * 范围选择（日期范围）
- */
-export const DateRange: Story = {
-  name: '日期范围选择',
-  render: () => {
-    const [range, setRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
-    return (
-      <div>
-        <DatePicker picker="date" range={true} valueRange={range} onRangeChange={setRange} placeholder="选择日期范围" />
-        <p style={{ marginTop: '10px' }}>
-          {range
-            ? `选中范围: ${range.startDate.toLocaleDateString('zh-CN')} ~ ${range.endDate.toLocaleDateString('zh-CN')}`
-            : '未选择'}
-        </p>
-      </div>
-    );
-  },
-};
-
-/**
  * 自定义宽度
  */
 export const CustomWidth: Story = {
@@ -197,6 +163,21 @@ export const CustomWidth: Story = {
       </div>
     </>
   ),
+};
+
+/**
+ * 禁用特定日期
+ */
+export const DisabledDates: Story = {
+  name: '禁用特定日期',
+  args: {
+    placeholder: '已禁用周末',
+    disabledDate: (date: Date) => {
+      // 禁用周末
+      const day = date.getDay();
+      return day === 0 || day === 6;
+    },
+  },
 };
 
 /**
@@ -235,158 +216,12 @@ export const NoPastDates: Story = {
 export const DisabledDateRange: Story = {
   name: '禁用指定日期范围',
   args: {
-    placeholder: '禁用2024年1月10日至20日',
+    placeholder: '禁用2025年11月10日至20日',
     disabledDate: (date: Date) => {
-      const startDisable = new Date('2024-01-10');
-      const endDisable = new Date('2024-01-20');
+      const startDisable = new Date('2025-11-10');
+      const endDisable = new Date('2025-11-20');
       return date >= startDisable && date <= endDisable;
     },
-  },
-};
-
-/**
- * 8 种情况的组合演示（方便测试）
- */
-export const AllEightCases: Story = {
-  name: '8种情况组合演示',
-  render: () => {
-    const [year, setYear] = useState<Date | null>(null);
-    const [yearRange, setYearRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
-    const [month, setMonth] = useState<Date | null>(null);
-    const [monthRange, setMonthRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
-    const [date, setDate] = useState<Date | null>(null);
-    const [dateRange, setDateRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
-    const [dateTime, setDateTime] = useState<Date | null>(null);
-    const [dateTimeRange, setDateTimeRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
-
-    return (
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-        {/* 第一列：单选模式 */}
-        <div>
-          <h2 style={{ borderBottom: '2px solid #0066cc', paddingBottom: '10px', color: '#0066cc' }}>
-            📌 单选模式 (single)
-          </h2>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>1️⃣ 年份选择</h4>
-            <DatePicker picker="year" value={year} onChange={setYear} placeholder="选择年份" width="100%" />
-            {year && <p style={{ color: '#666', fontSize: '12px' }}>✓ {year.getFullYear()}</p>}
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>3️⃣ 月份选择</h4>
-            <DatePicker picker="month" value={month} onChange={setMonth} placeholder="选择月份" width="100%" />
-            {month && (
-              <p style={{ color: '#666', fontSize: '12px' }}>
-                ✓ {month.getFullYear()}年{month.getMonth() + 1}月
-              </p>
-            )}
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>5️⃣ 日期选择</h4>
-            <DatePicker picker="date" value={date} onChange={setDate} placeholder="选择日期" width="100%" />
-            {date && <p style={{ color: '#666', fontSize: '12px' }}>✓ {date.toLocaleDateString('zh-CN')}</p>}
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>7️⃣ 日期+时间选择</h4>
-            <DatePicker
-              picker="datetime"
-              value={dateTime}
-              onChange={setDateTime}
-              placeholder="选择日期和时间"
-              width="100%"
-              timeFormat="24h"
-            />
-            {dateTime && (
-              <p style={{ color: '#666', fontSize: '12px' }}>
-                ✓ {dateTime.toLocaleDateString('zh-CN')} {dateTime.toLocaleTimeString('zh-CN')}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* 第二列：范围选择模式 */}
-        <div>
-          <h2 style={{ borderBottom: '2px solid #ff6600', paddingBottom: '10px', color: '#ff6600' }}>
-            📌 范围模式 (range)
-          </h2>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>2️⃣ 年份范围选择</h4>
-            <DatePicker
-              picker="year"
-              range={true}
-              valueRange={yearRange}
-              onRangeChange={setYearRange}
-              placeholder="选择年份范围"
-              width="100%"
-            />
-            {yearRange && (
-              <p style={{ color: '#666', fontSize: '12px' }}>
-                ✓ {yearRange.startDate.getFullYear()} ~ {yearRange.endDate.getFullYear()}
-              </p>
-            )}
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>4️⃣ 月份范围选择</h4>
-            <DatePicker
-              picker="month"
-              range={true}
-              valueRange={monthRange}
-              onRangeChange={setMonthRange}
-              placeholder="选择月份范围"
-              width="100%"
-            />
-            {monthRange && (
-              <p style={{ color: '#666', fontSize: '12px' }}>
-                ✓ {monthRange.startDate.getFullYear()}年{monthRange.startDate.getMonth() + 1}月 ~{' '}
-                {monthRange.endDate.getFullYear()}年{monthRange.endDate.getMonth() + 1}月
-              </p>
-            )}
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>6️⃣ 日期范围选择</h4>
-            <DatePicker
-              picker="date"
-              range={true}
-              valueRange={dateRange}
-              onRangeChange={setDateRange}
-              placeholder="选择日期范围"
-              width="100%"
-            />
-            {dateRange && (
-              <p style={{ color: '#666', fontSize: '12px' }}>
-                ✓ {dateRange.startDate.toLocaleDateString('zh-CN')} ~ {dateRange.endDate.toLocaleDateString('zh-CN')}
-              </p>
-            )}
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <h4>8️⃣ 日期+时间范围选择</h4>
-            <DatePicker
-              picker="datetime"
-              range={true}
-              valueRange={dateTimeRange}
-              onRangeChange={setDateTimeRange}
-              placeholder="选择日期时间范围"
-              width="100%"
-              timeFormat="24h"
-            />
-            {dateTimeRange && (
-              <p style={{ color: '#666', fontSize: '12px' }}>
-                ✓ {dateTimeRange.startDate.toLocaleDateString('zh-CN')}{' '}
-                {dateTimeRange.startDate.toLocaleTimeString('zh-CN')} ~{' '}
-                {dateTimeRange.endDate.toLocaleDateString('zh-CN')} {dateTimeRange.endDate.toLocaleTimeString('zh-CN')}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-    );
   },
 };
 
@@ -413,6 +248,154 @@ export const DateTimeRange: Story = {
             ? `选中范围: ${range.startDate.toLocaleDateString('zh-CN')} ${range.startDate.toLocaleTimeString('zh-CN')} ~ ${range.endDate.toLocaleDateString('zh-CN')} ${range.endDate.toLocaleTimeString('zh-CN')}`
             : '未选择'}
         </p>
+      </div>
+    );
+  },
+};
+
+/**
+ * 8 种不同的组合
+ * picker: year | month | date | datetime
+ * range: true | false
+ */
+export const AllEightCases: Story = {
+  name: '8种模式组合演示',
+  render: () => {
+    const [year, setYear] = useState<Date | null>(null);
+    const [yearRange, setYearRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
+    const [month, setMonth] = useState<Date | null>(null);
+    const [monthRange, setMonthRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
+    const [date, setDate] = useState<Date | null>(null);
+    const [dateRange, setDateRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
+    const [dateTime, setDateTime] = useState<Date | null>(null);
+    const [dateTimeRange, setDateTimeRange] = useState<{ startDate: Date; endDate: Date } | null>(null);
+
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+        {/* 第一列：单选模式 */}
+        <div>
+          <h2 style={{ borderBottom: '2px solid #0066cc', paddingBottom: '10px', color: '#0066cc' }}>
+            单选模式 (默认)
+          </h2>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>年份选择</h4>
+            <DatePicker picker="year" value={year} onChange={setYear} placeholder="选择年份" width="100%" />
+            {year && <p style={{ color: '#666', fontSize: '12px' }}>✓ {year.getFullYear()}</p>}
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>月份选择</h4>
+            <DatePicker picker="month" value={month} onChange={setMonth} placeholder="选择月份" width="100%" />
+            {month && (
+              <p style={{ color: '#666', fontSize: '12px' }}>
+                ✓ {month.getFullYear()}年{month.getMonth() + 1}月
+              </p>
+            )}
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>日期选择</h4>
+            <DatePicker picker="date" value={date} onChange={setDate} placeholder="选择日期" width="100%" />
+            {date && <p style={{ color: '#666', fontSize: '12px' }}>✓ {date.toLocaleDateString('zh-CN')}</p>}
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>日期+时间选择</h4>
+            <DatePicker
+              picker="datetime"
+              value={dateTime}
+              onChange={setDateTime}
+              placeholder="选择日期和时间"
+              width="100%"
+              timeFormat="24h"
+            />
+            {dateTime && (
+              <p style={{ color: '#666', fontSize: '12px' }}>
+                ✓ {dateTime.toLocaleDateString('zh-CN')} {dateTime.toLocaleTimeString('zh-CN')}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* 第二列：范围选择模式 */}
+        <div>
+          <h2 style={{ borderBottom: '2px solid #ff6600', paddingBottom: '10px', color: '#ff6600' }}>
+            范围模式 (range)
+          </h2>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>年份范围选择</h4>
+            <DatePicker
+              picker="year"
+              range
+              valueRange={yearRange}
+              onRangeChange={setYearRange}
+              placeholder="选择年份范围"
+              width="100%"
+            />
+            {yearRange && (
+              <p style={{ color: '#666', fontSize: '12px' }}>
+                ✓ {yearRange.startDate.getFullYear()} ~ {yearRange.endDate.getFullYear()}
+              </p>
+            )}
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>月份范围选择</h4>
+            <DatePicker
+              picker="month"
+              range
+              valueRange={monthRange}
+              onRangeChange={setMonthRange}
+              placeholder="选择月份范围"
+              width="100%"
+            />
+            {monthRange && (
+              <p style={{ color: '#666', fontSize: '12px' }}>
+                ✓ {monthRange.startDate.getFullYear()}年{monthRange.startDate.getMonth() + 1}月 ~{' '}
+                {monthRange.endDate.getFullYear()}年{monthRange.endDate.getMonth() + 1}月
+              </p>
+            )}
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>日期范围选择</h4>
+            <DatePicker
+              picker="date"
+              range
+              valueRange={dateRange}
+              onRangeChange={setDateRange}
+              placeholder="选择日期范围"
+              width="100%"
+            />
+            {dateRange && (
+              <p style={{ color: '#666', fontSize: '12px' }}>
+                ✓ {dateRange.startDate.toLocaleDateString('zh-CN')} ~ {dateRange.endDate.toLocaleDateString('zh-CN')}
+              </p>
+            )}
+          </div>
+
+          <div style={{ marginBottom: '20px' }}>
+            <h4>日期+时间范围选择</h4>
+            <DatePicker
+              picker="datetime"
+              range
+              valueRange={dateTimeRange}
+              onRangeChange={setDateTimeRange}
+              placeholder="选择日期时间范围"
+              width="100%"
+              timeFormat="24h"
+            />
+            {dateTimeRange && (
+              <p style={{ color: '#666', fontSize: '12px' }}>
+                ✓ {dateTimeRange.startDate.toLocaleDateString('zh-CN')}{' '}
+                {dateTimeRange.startDate.toLocaleTimeString('zh-CN')} ~{' '}
+                {dateTimeRange.endDate.toLocaleDateString('zh-CN')} {dateTimeRange.endDate.toLocaleTimeString('zh-CN')}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     );
   },
