@@ -7,6 +7,7 @@ import React from 'react';
 import CalendarPanel from '../CalendarPanel';
 import TimePanel from '../TimePanel';
 import Header from '../Header';
+import Button from '../../../Button/Button';
 import './DateTimePanel.css';
 
 interface DateTimePanelProps {
@@ -123,9 +124,9 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
       {/* 底部操作按钮 */}
       {isRange && (
         <div className="beaver-datepicker-datetime-footer">
-          <button className="beaver-datepicker-datetime-confirm-btn" onClick={onConfirm} type="button">
+          <Button variant="primary" onClick={onConfirm}>
             确定
-          </button>
+          </Button>
         </div>
       )}
     </div>

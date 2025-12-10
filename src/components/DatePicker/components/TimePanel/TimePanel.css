@@ -47,7 +47,7 @@
   label {
     font-size: 12px;
     font-weight: 500;
-    color: var(--beaver-color-text-secondary, #666);
+    color: var(--beaver-datepicker-text-secondary, #666);
     margin: 0;
     min-width: 20px;
     order: -1;

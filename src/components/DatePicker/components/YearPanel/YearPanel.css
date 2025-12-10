@@ -74,7 +74,7 @@
   &.ghost {
     opacity: 0.25;
     cursor: not-allowed;
-    color: var(--beaver-color-text, #333);
+    color: var(--beaver-datepicker-text, #333);
     border-color: #f0f0f0;
 
     &:hover {
