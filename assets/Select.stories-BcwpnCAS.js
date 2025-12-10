@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-u17CrQMm.js";import{R as C}from"./iframe-DrRAcTtF.js";import{S as t}from"./Select-5FP5kIe8.js";import"./preload-helper-PPVm8Dsz.js";import"./index-Ci4OHB6e.js";import"./index-CK-JP5ii.js";const O={"--beaver-select-width":"200px"},R={title:"Components/Select",component:t,tags:["autodocs"],decorators:[s=>e.jsx("div",{style:O,children:e.jsx(s,{})})],parameters:{docs:{description:{component:`Select 组件
+import{j as e}from"./jsx-runtime-u17CrQMm.js";import{R as C}from"./iframe-DVSZfAXH.js";import{S as t}from"./Select-CUTxM6sn.js";import"./preload-helper-PPVm8Dsz.js";import"./index-Cg998742.js";import"./index-C3W7RVA2.js";const O={"--beaver-select-width":"200px"},R={title:"Components/Select",component:t,tags:["autodocs"],decorators:[s=>e.jsx("div",{style:O,children:e.jsx(s,{})})],parameters:{docs:{description:{component:`Select 组件
 - 使用场景：在多个选项中进行选择，支持单选和多选
 - 支持搜索和过滤选项
 - 支持创建新选项

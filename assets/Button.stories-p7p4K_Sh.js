@@ -1,4 +1,4 @@
-import{j as r}from"./jsx-runtime-u17CrQMm.js";import{B as a}from"./Button-1jTwx0M_.js";import"./iframe-DrRAcTtF.js";import"./preload-helper-PPVm8Dsz.js";const u={title:"Components/Button",component:a,tags:["autodocs"],argTypes:{color:{control:"text",description:"按钮颜色，支持 'primary'、'danger' 或任意 CSS 颜色值"}},parameters:{docs:{description:{component:`Button 组件
+import{j as r}from"./jsx-runtime-u17CrQMm.js";import{B as a}from"./Button-DN6G_7vr.js";import"./iframe-DVSZfAXH.js";import"./preload-helper-PPVm8Dsz.js";const u={title:"Components/Button",component:a,tags:["autodocs"],argTypes:{color:{control:"text",description:"按钮颜色，支持 'primary'、'danger' 或任意 CSS 颜色值"}},parameters:{docs:{description:{component:`Button 组件
 - 使用场景：触发用户操作或事件
 - 支持样式变体（主要、幽灵、链接）
 - 支持不同尺寸（小、中、大）

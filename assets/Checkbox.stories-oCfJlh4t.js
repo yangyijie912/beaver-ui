@@ -1,4 +1,4 @@
-import{j as o}from"./jsx-runtime-u17CrQMm.js";import{C as c}from"./Checkbox-DNjD9nnm.js";import"./iframe-DrRAcTtF.js";import"./preload-helper-PPVm8Dsz.js";const g={title:"Components/Checkbox",component:c,tags:["autodocs"],parameters:{docs:{description:{component:`Checkbox 组件
+import{j as o}from"./jsx-runtime-u17CrQMm.js";import{C as c}from"./Checkbox-DSOZ_Bfv.js";import"./iframe-DVSZfAXH.js";import"./preload-helper-PPVm8Dsz.js";const g={title:"Components/Checkbox",component:c,tags:["autodocs"],parameters:{docs:{description:{component:`Checkbox 组件
 - 使用场景：在多个选项中进行多选
 - 支持三态显示（选中、未选中、中间态）
 - 支持禁用状态
