@@ -29,7 +29,7 @@ jobs:
     needs: unit-tests
     runs-on: ubuntu-latest
     env:
-      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+      PLAYWRIGHT_BROWSERS_PATH: '~/.cache/ms-playwright'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node
@@ -47,12 +47,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: "${{ runner.os }}-playwright-browsers-${{ hashFiles('**/pnpm-lock.yaml') }}"
           restore-keys: |
             ${{ runner.os }}-playwright-browsers-
       - name: Install Playwright browsers
         env:
-          PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+          PLAYWRIGHT_BROWSERS_PATH: '~/.cache/ms-playwright'
         run: pnpm dlx playwright install --with-deps
       - name: Debug: list Playwright cache
         run: ls -la ~/.cache/ms-playwright || true
