@@ -32,7 +32,10 @@ const MonthPanel: React.FC<MonthPanelProps> = ({
   // 调试输出，便于确认 props 是否正确传入
   React.useEffect(() => {}, [selectedRange, rangeStart, hoverDate, isRange, selectedMonth]);
   // 如果有选中的月份，显示该月份所在的年份；否则显示当前月份所在的年份
-  const initialYear = selectedMonth ? selectedMonth.getFullYear() : currentMonth.getFullYear();
+  // 验证 currentMonth 和 selectedMonth 的有效性
+  const validCurrentMonth = isNaN(currentMonth.getTime()) ? new Date() : currentMonth;
+  const validSelectedMonth = selectedMonth && !isNaN(selectedMonth.getTime()) ? selectedMonth : null;
+  const initialYear = validSelectedMonth ? validSelectedMonth.getFullYear() : validCurrentMonth.getFullYear();
   const [displayYear, setDisplayYear] = useState(initialYear);
 
   const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];

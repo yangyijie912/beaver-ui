@@ -28,7 +28,7 @@ export const shouldUseTimePattern = (picker: PickerType, format: DateFormat): bo
  * 格式化单个日期
  */
 export const formatSingleDate = (date: Date | null | undefined, picker: PickerType, format: DateFormat): string => {
-  if (!date) return '';
+  if (!date || isNaN(date.getTime())) return '';
 
   const useTimePattern = shouldUseTimePattern(picker, format);
   const pattern = getInternalPattern(picker, format);
@@ -62,6 +62,9 @@ export const formatRangeDate = (
   if (!range) return '';
 
   const { startDate, endDate } = range;
+  // 验证日期有效性
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return '';
+
   const startStr = formatSingleDate(startDate, picker, format);
   const endStr = formatSingleDate(endDate, picker, format);
 

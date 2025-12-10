@@ -70,6 +70,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
     // 输入框显示文本状态
     const [inputValue, setInputValue] = useState<string>('');
+    // 用于标记用户是否正在编辑输入框（防止外部状态变化覆盖用户输入）
+    const isEditingRef = useRef(false);
 
     // 引入一个全局指针监听器以判断指针是否在日历可交互区域内
     React.useEffect(() => {
@@ -99,8 +101,14 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
     /**
      * 同步 inputValue 与当前选中的日期
+     * 仅在用户未主动编辑时进行同步
      */
     useEffect(() => {
+      // 如果用户正在编辑输入框，不应该被外部状态变化覆盖
+      if (isEditingRef.current) {
+        return;
+      }
+
       if (isRange && rangeState.currentRange) {
         setInputValue(formatRangeDate(rangeState.currentRange, picker, format));
       } else if (!isRange && singleState.currentDate) {
@@ -112,52 +120,53 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
     /**
      * 处理输入框值变化
+     * 允许用户输入，但这些输入不会改变任何日期状态
+     * 只在打开面板时影响用户体验
      */
-    const handleInputChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        setInputValue(val);
-
-        if (!isRange) {
-          const parsed = parseSingleDate(val, picker, format);
-          if (parsed && !disabledDate?.(parsed)) {
-            singleState.setCurrentMonth(parsed);
-          }
-        }
-      },
-      [isRange, picker, format, disabledDate, singleState]
-    );
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      isEditingRef.current = true;
+      setInputValue(val);
+      // 用户的手动输入仅用于显示，不会导致任何状态改变
+      // 失焦时这些输入会被清空，恢复为最后选择的有效日期
+    }, []);
 
     /**
      * 处理输入框失焦
+     * 清除任何手动输入，恢复为基于 currentDate 的有效日期
      */
     const handleInputBlur = useCallback(() => {
-      setIsFocused(false);
+      // 清除编辑标记
+      isEditingRef.current = false;
 
-      if (!isRange && inputValue) {
-        const parsed = parseSingleDate(inputValue, picker, format);
-        if (parsed) {
-          singleState.handleDateChange(parsed);
-        }
+      // 立即重置 inputValue，触发 useEffect 来根据 currentDate 同步显示
+      // 这会清除用户的任何手动输入
+      if (isRange && rangeState.currentRange) {
+        setInputValue(formatRangeDate(rangeState.currentRange, picker, format));
+      } else if (!isRange && singleState.currentDate) {
+        setInputValue(formatSingleDate(singleState.currentDate, picker, format));
+      } else {
+        setInputValue('');
       }
-    }, [inputValue, isRange, picker, format, setIsFocused, singleState]);
+    }, [isRange, singleState.currentDate, rangeState.currentRange, picker, format, singleState, rangeState]);
 
     /**
      * 处理输入框获焦 - 打开选择器
      */
     const handleInputFocus = useCallback(() => {
+      isEditingRef.current = true;
       setIsFocused(true);
       // 如果输入框已有已选日期，打开时应该定位到该日期所在的月份/年份
       if (!isRange) {
-        if (singleState.currentDate) {
+        if (singleState.currentDate && !isNaN(singleState.currentDate.getTime())) {
           singleState.setCurrentMonth(new Date(singleState.currentDate));
         }
       } else {
         // range 模式：优先使用 startDate，若无则使用 endDate
         const currentRange = rangeState.currentRange;
-        if (currentRange && currentRange.startDate) {
+        if (currentRange && currentRange.startDate && !isNaN(currentRange.startDate.getTime())) {
           rangeState.setCurrentMonth(new Date(currentRange.startDate));
-        } else if (currentRange && currentRange.endDate) {
+        } else if (currentRange && currentRange.endDate && !isNaN(currentRange.endDate.getTime())) {
           rangeState.setCurrentMonth(new Date(currentRange.endDate));
         }
 
@@ -166,8 +175,12 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           if (currentRange) {
             // 已有选择，恢复为已完成状态方便用户修改
             rangeState.setSelectingStart(false);
-            rangeState.setConfirmedStartDate(new Date(currentRange.startDate));
-            rangeState.setTempDateTimeEnd(new Date(currentRange.endDate));
+            if (!isNaN(currentRange.startDate.getTime())) {
+              rangeState.setConfirmedStartDate(new Date(currentRange.startDate));
+            }
+            if (!isNaN(currentRange.endDate.getTime())) {
+              rangeState.setTempDateTimeEnd(new Date(currentRange.endDate));
+            }
             rangeState.setTempDateTimeStart(null);
           } else {
             // 没有选择，重置为第一步
@@ -239,6 +252,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           }
         } else {
           // 单选模式
+          isEditingRef.current = false;
           singleState.handleDateChange(date);
           singleState.setCurrentMonth(date);
           close();
@@ -386,6 +400,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         // e 可能为 undefined（从 Input 的 onClear 调用），因此使用可选链
         e?.stopPropagation();
 
+        isEditingRef.current = false;
+
         if (isRange) {
           rangeState.handleRangeChange(null, null);
           rangeState.resetRangeState();
@@ -397,6 +413,13 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       },
       [isRange, rangeState, singleState]
     );
+
+    /**
+     * 处理清除（专门为 Input 的 onClear 回调）
+     */
+    const handleClearFromInput = useCallback(() => {
+      handleClear();
+    }, [handleClear]);
 
     /**
      * 处理键盘快捷键
@@ -465,9 +488,10 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     /**
      * datetime range 模式下，同步临时输入框显示
      * 实时显示用户在两步流程中的选择
+     * 但当用户正在编辑输入框时，不应该覆盖用户的输入
      */
     useEffect(() => {
-      if (picker === 'datetime' && isRange && isOpen) {
+      if (picker === 'datetime' && isRange && isOpen && !isEditingRef.current) {
         if (rangeState.selectingStart) {
           // 第一步：选择第一个日期，显示第一个日期
           if (rangeState.tempDateTimeStart) {
@@ -602,8 +626,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             readOnly={readOnly}
             size={size}
             autoComplete="off"
-            allowClear={allowClear && !!inputValue && !disabled}
-            onClear={() => handleClear(undefined)}
+            allowClear={allowClear && !disabled}
+            onClear={handleClearFromInput}
             suffixClassName="beaver-datepicker-suffix"
             {...rest}
           />

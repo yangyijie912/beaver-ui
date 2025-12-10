@@ -137,42 +137,57 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
     };
 
     // 如果有前置或后置内容，或启用了 allowClear，需要包装在容器中
-    if (prefix || suffix || allowClear) {
+    // 关键：始终返回 wrapper 结构，以保持 DOM 节点稳定（防止焦点丢失）
+    const shouldRenderWrapper = prefix || suffix || allowClear;
+
+    const inputElement = (
+      <input
+        ref={setRefs as any}
+        className={classList.join(' ')}
+        aria-invalid={validation === 'error'}
+        disabled={disabled}
+        size={htmlSize}
+        style={mergedStyle}
+        {...(restInput as React.InputHTMLAttributes<HTMLInputElement>)}
+      />
+    );
+
+    if (shouldRenderWrapper) {
       return (
         <div className={`beaver-input-wrapper beaver-input-wrapper--${size}`}>
           {prefix && <div className={`beaver-input-prefix ${prefixClassName || ''}`}>{prefix}</div>}
-          <input
-            ref={setRefs as any}
-            className={classList.join(' ')}
-            aria-invalid={validation === 'error'}
-            disabled={disabled}
-            size={htmlSize}
-            style={mergedStyle}
-            {...(restInput as React.InputHTMLAttributes<HTMLInputElement>)}
-          />
+          {inputElement}
           {/* 如果传入 suffix，优先渲染；否则当 allowClear 为 true 时渲染清除按钮 */}
           {suffix ? (
             <div className={`beaver-input-suffix ${suffixClassName || ''}`}>{suffix}</div>
-          ) : allowClear ? (
-            <div className={`beaver-input-suffix ${suffixClassName || ''}`}>
-              <button
-                type="button"
-                className="beaver-input-clear"
-                onMouseDown={handleClearMouseDown}
-                onClick={handleClear}
-                aria-label="clear"
-              >
-                ✕
-              </button>
-            </div>
-          ) : null}
+          ) : (
+            allowClear && (
+              <div className={`beaver-input-suffix ${suffixClassName || ''}`}>
+                <button
+                  type="button"
+                  className="beaver-input-clear"
+                  onMouseDown={handleClearMouseDown}
+                  onClick={handleClear}
+                  aria-label="clear"
+                  style={{
+                    // 根据输入值的内容，控制清除按钮的可见性
+                    visibility: (restInput as any).value ? 'visible' : 'hidden',
+                    opacity: (restInput as any).value ? 1 : 0,
+                    transition: 'opacity 0.2s ease, visibility 0.2s ease',
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+            )
+          )}
         </div>
       );
     }
 
     return (
       <input
-        ref={ref as React.Ref<HTMLInputElement>}
+        ref={setRefs as any}
         className={classList.join(' ')}
         aria-invalid={validation === 'error'}
         disabled={disabled}

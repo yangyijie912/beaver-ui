@@ -28,7 +28,7 @@ const YearPanel: React.FC<YearPanelProps> = ({
   onDecadeChange,
   disabledYear,
 }) => {
-  const currentYear = currentMonth.getFullYear();
+  const currentYear = isNaN(currentMonth.getTime()) ? new Date().getFullYear() : currentMonth.getFullYear();
   const [startYear, setStartYear] = useState(Math.floor(currentYear / 10) * 10);
   const years = Array.from({ length: 12 }, (_, i) => startYear + i);
 

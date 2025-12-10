@@ -50,13 +50,17 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({
   React.useEffect(() => {
     // debug logs removed
   }, [isRange, selectedRange]);
+
+  // 验证 currentMonth 的有效性，如果无效则使用今天
+  const validCurrentMonth = isNaN(currentMonth.getTime()) ? new Date() : currentMonth;
+
   // 判断是否为已点击但未确认的临时结束日期（仅在 datetime 两步流程中出现）
   const isTempClickedEnd = (date: Date): boolean => {
     if (!isRange || !tempRangeEnd) return false;
     return isSameDay(date, tempRangeEnd);
   };
   // 获取日历的所有日期（包括前后月的填充日期）
-  const calendarDays = getCalendarDays(currentMonth);
+  const calendarDays = getCalendarDays(validCurrentMonth);
 
   // 分组成 6 行
   const weeks: (Date | null)[][] = [];
@@ -77,7 +81,7 @@ const CalendarPanel: React.FC<CalendarPanelProps> = ({
 
   // 判断日期是否为当前月份
   const isCurrentMonth = (date: Date | null): boolean => {
-    return date ? isSameMonth(date, currentMonth) : false;
+    return date ? isSameMonth(date, validCurrentMonth) : false;
   };
 
   // 判断日期是否在范围内（包含起始和结束日期）
