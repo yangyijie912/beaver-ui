@@ -51,6 +51,7 @@
 `Modal` - 模态框  
 `Tooltip` - 文字提示组件  
 `Popconfirm` - 弹出式确认框  
-`Drawer` - 抽屉组件
+`Drawer` - 抽屉组件  
+`DatePicker` - 日期选择器
 
 正在更新中......

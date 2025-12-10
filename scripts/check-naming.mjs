@@ -71,7 +71,6 @@ async function run() {
     let totalIs = 0;
     let totalBem = 0;
     for (const r of results) {
-      console.log(`文件： ${path.relative(ROOT, r.file)}`);
       if (r.isMatches.length) {
         console.log('  -> 检测到 `is-` 类：');
         for (const it of r.isMatches) {
@@ -80,20 +79,16 @@ async function run() {
         }
       }
       if (r.bemMatches.length) {
-        console.log('  -> 检测到 BEM 修饰符：');
         for (const it of r.bemMatches) {
-          console.log(`     ${it.line}: ${it.match}`);
           totalBem++;
         }
       }
       if (r.isMatches.length && r.bemMatches.length) {
         console.log('  !! 同一文件中同时使用了 `is-*` 与 BEM（建议将 `is-*` 迁移为 BEM 修饰符）');
       }
-      console.log('');
     }
 
     console.log(`总结：有 ${results.length} 个文件包含匹配项 — ${totalIs} 个 \`is-*\` 出现，${totalBem} 个 BEM 出现。`);
-    console.log('建议：用 BEM 修饰符替换 `is-*` 状态类（例如 `component__elem--disabled`）。');
     // 报告性的检查：不作为失败条件，保持退出码为 0
     process.exit(0);
   } catch (err) {
