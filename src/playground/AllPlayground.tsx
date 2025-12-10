@@ -13,6 +13,7 @@ import Drawer from '../components/Drawer/Drawer';
 import Table, { Column } from '../components/Table/Table';
 import Tooltip from '../components/Tooltip/Tooltip';
 import Popconfirm from '../components/Popconfirm/Popconfirm';
+import Upload from '../components/Upload/Upload';
 import '../tokens/tokens.css';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -338,6 +339,63 @@ function App() {
           <Popconfirm title="确定要删除吗？" placement="top">
             <Button color="danger">删除</Button>
           </Popconfirm>
+        </div>
+      </Section>
+
+      {/* Upload演示 */}
+      <Section title="Upload">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div>
+            <div style={{ marginBottom: 8 }}>基础上传（多文件）</div>
+            <Upload
+              action="/api/upload"
+              multiple
+              accept="*"
+              dragText="拖拽文件到此处，或点击选择文件"
+              buttonText="选择文件"
+              showFileList
+            />
+          </div>
+
+          <div>
+            <div style={{ marginBottom: 8 }}>单文件上传</div>
+            <Upload
+              action="/api/upload"
+              multiple={false}
+              dragText="拖拽单个文件到此处上传"
+              buttonText="选择单个文件"
+              showFileList
+            />
+          </div>
+
+          <div>
+            <div style={{ marginBottom: 8 }}>限制文件大小（最大 2MB）</div>
+            <Upload
+              action="/api/upload"
+              maxSize={2 * 1024 * 1024}
+              maxCount={5}
+              accept="*"
+              dragText="拖拽文件到此处（最大 2MB，最多 5 个）"
+              sizeLimitMessage="文件大小不超过 2MB"
+              showFileList
+            />
+          </div>
+
+          <div>
+            <div style={{ marginBottom: 8 }}>限制文件类型（仅图片）</div>
+            <Upload
+              action="/api/upload"
+              accept="image/*"
+              dragText="仅支持图片文件"
+              buttonText="选择图片"
+              showFileList
+            />
+          </div>
+
+          <div>
+            <div style={{ marginBottom: 8 }}>禁用状态</div>
+            <Upload disabled dragText="上传已禁用" buttonText="选择文件" />
+          </div>
         </div>
       </Section>
     </div>
