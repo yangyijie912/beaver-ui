@@ -185,17 +185,32 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
           if (picker === 'datetime') {
             // datetime range 模式：需要两步确认（日期+时间）
-            // 重置时间为 00:00:00
-            const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-
             if (selectingStart) {
               // 第一个日期选择：临时保存起始日期，等待时间调整后点击确定
+              // 重置时间为 00:00:00
+              const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
               rangeState.setTempDateTimeStart(dateOnly);
               rangeState.setTempStartDate(dateOnly);
               // 不改变 selectingStart，保持在第一个日期的时间调整阶段
             } else {
-              // 第二个日期选择：临时保存结束日期
-              rangeState.setTempDateTimeEnd(dateOnly);
+              // 第二个日期选择：临时保存结束日期（保留时间部分）
+              // 如果还没有设置时间，则使用当前时间 00:00:00
+              if (rangeState.tempDateTimeEnd) {
+                // 已经有时间设置了，只更新日期部分
+                const newDate = new Date(
+                  date.getFullYear(),
+                  date.getMonth(),
+                  date.getDate(),
+                  rangeState.tempDateTimeEnd.getHours(),
+                  rangeState.tempDateTimeEnd.getMinutes(),
+                  rangeState.tempDateTimeEnd.getSeconds()
+                );
+                rangeState.setTempDateTimeEnd(newDate);
+              } else {
+                // 还没有设置时间，使用 00:00:00
+                const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+                rangeState.setTempDateTimeEnd(dateOnly);
+              }
             }
           } else {
             // 普通日期/月份/年份范围选择模式：点击后立即确定
@@ -331,6 +346,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         if (rangeState.tempDateTimeStart) {
           rangeState.setConfirmedStartDate(rangeState.tempDateTimeStart);
           rangeState.setTempDateTimeStart(null);
+          // 重置结束日期的时间部分，以便第二步的时间框显示初始状态（00:00:00）
+          rangeState.setTempDateTimeEnd(null);
           rangeState.setSelectingStart(false);
         }
       } else {
@@ -576,6 +593,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                 onTimeChange={handleTimeChange}
                 timeFormat={timeFormat}
                 onDateTimeRangeConfirm={handleDateTimeRangeConfirm}
+                selectingStart={picker === 'datetime' && isRange ? rangeState.selectingStart : undefined}
               />
             </div>
           )}

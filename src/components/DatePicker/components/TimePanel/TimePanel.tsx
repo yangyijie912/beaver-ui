@@ -20,9 +20,16 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
 
   // 当 selectedTime 变化时同步状态
   React.useEffect(() => {
-    setHours(selectedTime?.getHours() ?? 0);
-    setMinutes(selectedTime?.getMinutes() ?? 0);
-    setSeconds(selectedTime?.getSeconds() ?? 0);
+    if (selectedTime) {
+      setHours(selectedTime.getHours());
+      setMinutes(selectedTime.getMinutes());
+      setSeconds(selectedTime.getSeconds());
+    } else {
+      // 当 selectedTime 为 null 时，重置为初始状态
+      setHours(0);
+      setMinutes(0);
+      setSeconds(0);
+    }
   }, [selectedTime]);
 
   const handleHoursChange = useCallback(
@@ -67,7 +74,8 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
       <div className="beaver-datepicker-time-input-group">
         <div className="beaver-datepicker-time-input">
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             min="0"
             max={maxHours}
             value={String(hours).padStart(2, '0')}
@@ -78,7 +86,8 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
         <span className="beaver-datepicker-time-separator">:</span>
         <div className="beaver-datepicker-time-input">
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             min="0"
             max="59"
             value={String(minutes).padStart(2, '0')}
@@ -89,7 +98,8 @@ const TimePanel: React.FC<TimePanelProps> = ({ selectedTime, onTimeChange, timeF
         <span className="beaver-datepicker-time-separator">:</span>
         <div className="beaver-datepicker-time-input">
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
             min="0"
             max="59"
             value={String(seconds).padStart(2, '0')}

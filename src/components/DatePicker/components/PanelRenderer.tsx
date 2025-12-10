@@ -35,6 +35,8 @@ interface PanelRendererProps {
   onTimeChange?: (time: Date) => void;
   timeFormat?: '24h' | '12h';
   onDateTimeRangeConfirm?: () => void;
+  /** datetime range 的第一步还是第二步 */
+  selectingStart?: boolean;
 }
 
 /**
@@ -60,6 +62,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
   onTimeChange,
   timeFormat = '24h',
   onDateTimeRangeConfirm,
+  selectingStart,
 }) => {
   // 日期和日期范围使用日历面板
   if (picker === 'date' || picker === 'datetime') {
@@ -88,6 +91,7 @@ export const PanelRenderer: React.FC<PanelRendererProps> = ({
             onConfirm={onDateTimeRangeConfirm}
             isRange={isRange}
             timeFormat={timeFormat}
+            selectingStart={selectingStart}
           />
         ) : (
           /* 纯日期日历面板 */

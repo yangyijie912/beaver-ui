@@ -40,6 +40,8 @@ interface DateTimePanelProps {
   timeFormat?: '24h' | '12h';
   /** 确定回调（仅在范围模式下使用） */
   onConfirm?: () => void;
+  /** datetime range 的第一步还是第二步 */
+  selectingStart?: boolean;
   /** 仅在日历交互区域移出时触发（不含时间面板） */
   // (已移除) onInteractiveLeave 已由 DatePicker 的全局监听处理
 }
@@ -60,11 +62,28 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
   isRange = false,
   timeFormat = '24h',
   onConfirm,
+  selectingStart,
 }) => {
   // 确定当前显示的时间
-  // 范围模式下：显示当前选择的日期（rangeStart）
+  // datetime range 模式下：
+  //   - 第一步（selectingStart=true）：显示 rangeStart（tempDateTimeStart）
+  //   - 第二步（selectingStart=false）：显示 tempRangeEnd（tempDateTimeEnd），但先显示初始值（null）直到用户选择日期
   // 单选模式下：显示 selectedDate 的时间
-  const currentTime = isRange ? rangeStart : selectedDate;
+  let currentTime: Date | null = null;
+
+  if (!isRange) {
+    // 单选模式
+    currentTime = selectedDate ?? null;
+  } else if (selectingStart === true) {
+    // 第一步：显示起始日期的时间
+    currentTime = rangeStart ?? null;
+  } else if (selectingStart === false) {
+    // 第二步：显示结束日期的时间（或null让TimePanel显示初始状态）
+    currentTime = tempRangeEnd ?? null;
+  } else {
+    // 非 datetime range 的范围模式（比如 date range）
+    currentTime = rangeStart ?? null;
+  }
 
   return (
     <div className="beaver-datepicker-datetime-panel">
