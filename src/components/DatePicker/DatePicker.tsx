@@ -404,6 +404,26 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Escape') {
+          // 如果是未完成的范围选择，视为取消并清空输入
+          const isIncompleteSelection = (() => {
+            if (picker === 'datetime' && isRange) {
+              if (rangeState.selectingStart) {
+                return !!rangeState.tempDateTimeStart;
+              } else {
+                return !!rangeState.confirmedStartDate && !rangeState.tempDateTimeEnd;
+              }
+            }
+            if (isRange) {
+              return rangeState.selectingStart && !!rangeState.tempStartDate;
+            }
+            return false;
+          })();
+
+          if (isIncompleteSelection) {
+            setInputValue('');
+            rangeState.resetRangeState();
+          }
+
           close();
         } else if (e.key === 'Enter' && isOpen && inputValue && !isRange) {
           const parsed = parseSingleDate(inputValue, picker, format);
@@ -414,7 +434,21 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           }
         }
       },
-      [isOpen, inputValue, isRange, picker, format, disabledDate, singleState, close]
+      [
+        isOpen,
+        inputValue,
+        isRange,
+        picker,
+        format,
+        disabledDate,
+        singleState,
+        close,
+        rangeState.selectingStart,
+        rangeState.tempDateTimeStart,
+        rangeState.confirmedStartDate,
+        rangeState.tempDateTimeEnd,
+        rangeState.tempStartDate,
+      ]
     );
 
     /**
@@ -479,6 +513,32 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           panelRef.current &&
           !panelRef.current.contains(e.target as Node)
         ) {
+          // 如果用户在未完成选择（例如 range 的第一步/第二步未确认）时点外面关闭面板，视为无效输入，清空输入框
+          const isIncompleteSelection = (() => {
+            if (picker === 'datetime' && isRange) {
+              // datetime range 两步流程
+              if (rangeState.selectingStart) {
+                // 在第一步但已经选了临时起始日期（未点击确定）
+                return !!rangeState.tempDateTimeStart;
+              } else {
+                // 在第二步：已确认起始但尚未选择结束时间
+                return !!rangeState.confirmedStartDate && !rangeState.tempDateTimeEnd;
+              }
+            }
+
+            if (isRange) {
+              // 非 datetime 的范围选择：第一步选了临时起始但未完成第二步
+              return rangeState.selectingStart && !!rangeState.tempStartDate;
+            }
+
+            return false;
+          })();
+
+          if (isIncompleteSelection) {
+            setInputValue('');
+            rangeState.resetRangeState();
+          }
+
           close();
         }
       };
@@ -489,7 +549,17 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           document.removeEventListener('mousedown', handleClickOutside);
         };
       }
-    }, [isOpen, close]);
+    }, [
+      isOpen,
+      close,
+      picker,
+      isRange,
+      rangeState.selectingStart,
+      rangeState.tempDateTimeStart,
+      rangeState.confirmedStartDate,
+      rangeState.tempDateTimeEnd,
+      rangeState.tempStartDate,
+    ]);
 
     /**
      * 计算面板位置
