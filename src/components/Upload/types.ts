@@ -32,7 +32,18 @@ export type UploadProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' 
   /** 是否支持多个文件上传 */
   multiple?: boolean;
 
-  /** 接受的文件类型（如 'image/*', '.pdf', '.doc,.docx' 等） */
+  /**
+   * 接受的文件类型，遵循 HTML input[type="file"] accept 属性规范
+   * - 不指定此属性：不做限制，接受所有文件类型
+   * - 单一类型：'image/jpeg' | 'image/*' | '.pdf'
+   * - 多个类型：用逗号分隔，如 'image/*,.pdf,.doc,.docx'
+   *
+   * @example
+   * accept="image/*"                    // 所有图片
+   * accept="image/jpeg,image/png"       // 仅 JPEG 和 PNG
+   * accept=".pdf,.doc,.docx"            // 仅这些扩展名
+   * accept="image/*,.pdf"               // 图片或 PDF
+   */
   accept?: string;
 
   /** 是否显示已上传文件列表 */
