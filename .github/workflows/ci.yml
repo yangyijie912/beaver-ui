@@ -53,7 +53,7 @@ jobs:
       - name: Install Playwright browsers
         env:
           PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
-        run: pnpm exec playwright install --with-deps
+        run: pnpm dlx playwright install --with-deps
       - name: Debug: list Playwright cache
         run: ls -la ~/.cache/ms-playwright || true
       - name: Run browser tests
