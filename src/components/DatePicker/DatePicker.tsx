@@ -382,8 +382,9 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
      * 处理清除
      */
     const handleClear = useCallback(
-      (e: React.MouseEvent) => {
-        e.stopPropagation();
+      (e?: React.MouseEvent) => {
+        // e 可能为 undefined（从 Input 的 onClear 调用），因此使用可选链
+        e?.stopPropagation();
 
         if (isRange) {
           rangeState.handleRangeChange(null, null);
@@ -393,7 +394,6 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         }
 
         setInputValue('');
-        inputRef.current?.focus();
       },
       [isRange, rangeState, singleState]
     );
@@ -532,34 +532,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             readOnly={readOnly}
             size={size}
             autoComplete="off"
-            suffix={
-              allowClear && inputValue && !disabled ? (
-                <button
-                  className="beaver-datepicker-clear-btn"
-                  onClick={handleClear}
-                  title="清除"
-                  type="button"
-                  aria-label="清除日期"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '20px',
-                    height: '20px',
-                    padding: 0,
-                    margin: 0,
-                    border: 'none',
-                    background: 'transparent',
-                    color: 'var(--beaver-color-disabled)',
-                    cursor: 'pointer',
-                    borderRadius: '50%',
-                    fontSize: '14px',
-                  }}
-                >
-                  ✕
-                </button>
-              ) : null
-            }
+            allowClear={allowClear && !!inputValue && !disabled}
+            onClear={() => handleClear(undefined)}
             suffixClassName="beaver-datepicker-suffix"
             {...rest}
           />

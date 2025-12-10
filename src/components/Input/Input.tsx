@@ -130,6 +130,12 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
       }
     };
 
+    const handleClearMouseDown = (e: React.MouseEvent) => {
+      // 阻止在按下清除按钮时让输入框获得焦点（会触发打开面板）
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
     // 如果有前置或后置内容，或启用了 allowClear，需要包装在容器中
     if (prefix || suffix || allowClear) {
       return (
@@ -149,7 +155,13 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
             <div className={`beaver-input-suffix ${suffixClassName || ''}`}>{suffix}</div>
           ) : allowClear ? (
             <div className={`beaver-input-suffix ${suffixClassName || ''}`}>
-              <button type="button" className="beaver-input-clear" onClick={handleClear} aria-label="clear">
+              <button
+                type="button"
+                className="beaver-input-clear"
+                onMouseDown={handleClearMouseDown}
+                onClick={handleClear}
+                aria-label="clear"
+              >
                 ✕
               </button>
             </div>
