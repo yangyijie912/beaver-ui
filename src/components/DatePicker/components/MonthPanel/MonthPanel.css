@@ -33,6 +33,7 @@
     color: var(--beaver-color-primary);
     background-color: rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.06);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--beaver-color-primary);
   }
 
   &.selected {
@@ -44,15 +45,15 @@
   }
 
   &.beaver-datepicker-in-range {
-    background-color: rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.08);
-    border-color: rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.12);
+    background-color: var(--beaver-datepicker-date-cell-hover-bg, #ecf4fe);
+    border-color: var(--beaver-datepicker-date-cell-hover-bg, #ecf4fe);
     color: var(--beaver-color-text);
   }
 
   &.beaver-datepicker-range-edge {
-    background-color: rgba(var(--beaver-color-primary-rgb, 0, 0, 0), 0.16);
-    border-color: var(--beaver-color-primary);
-    color: var(--beaver-color-primary);
+    background-color: var(--beaver-datepicker-date-cell-selected-bg, #0eaae0);
+    border-color: var(--beaver-datepicker-date-cell-selected-bg, #0eaae0);
+    color: var(--beaver-datepicker-date-cell-selected-color, #ffffff);
     font-weight: 600;
   }
 

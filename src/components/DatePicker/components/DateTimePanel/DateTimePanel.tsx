@@ -103,7 +103,10 @@ const DateTimePanel: React.FC<DateTimePanelProps> = ({
             disabledDate={disabledDate}
             onDateClick={onDateClick}
             onDateHover={onDateHover}
-            isRange={true}
+            // 对于 datetime range 的两步流程：
+            // - 第一步（selectingStart === true）：仅高亮起始日期，使用单选高亮
+            // - 第二步（selectingStart === false）：恢复范围模式以显示起始/结束范围
+            isRange={isRange && !selectingStart}
           />
         </div>
 

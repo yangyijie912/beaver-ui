@@ -215,10 +215,7 @@
   color: var(--beaver-datepicker-date-cell-color, #333);
   transition: all 0.2s ease;
   position: relative;
-}
-
-.beaver-datepicker-cell:hover:not(.beaver-datepicker-disabled):not(.beaver-datepicker-other-month) {
-  background-color: var(--beaver-datepicker-date-cell-hover-bg, #ecf4fe);
+  box-sizing: border-box;
 }
 
 /* 选中日期 */
@@ -226,10 +223,6 @@
   background-color: var(--beaver-datepicker-date-cell-selected-bg, #0eaae0);
   color: var(--beaver-datepicker-date-cell-selected-color, #ffffff);
   font-weight: 600;
-}
-
-.beaver-datepicker-cell.beaver-datepicker-selected:hover {
-  background-color: var(--beaver-datepicker-date-cell-selected-bg, #0eaae0);
 }
 
 /* 范围选择中的日期 */
@@ -298,4 +291,20 @@
 /* 全宽模式 */
 .beaver-datepicker-wrapper.beaver-datepicker-fullwidth {
   width: 100%;
+}
+
+/* hover */
+.beaver-datepicker-cell:hover:not(.beaver-datepicker-disabled):not(.beaver-datepicker-other-month) {
+  background-color: var(--beaver-datepicker-date-cell-hover-bg, #ecf4fe);
+}
+
+.beaver-datepicker-cell.beaver-datepicker-selected:hover {
+  background-color: var(--beaver-datepicker-date-cell-selected-bg, #0eaae0);
+}
+.beaver-datepicker-cell.beaver-datepicker-selected:hover,
+.beaver-datepicker-cell.beaver-datepicker-range-edge:hover {
+  color: var(--beaver-color-primary, #0eaae0);
+  border: 1px solid var(--beaver-color-primary, #0eaae0);
+  box-sizing: border-box;
+  background-clip: padding-box;
 }
