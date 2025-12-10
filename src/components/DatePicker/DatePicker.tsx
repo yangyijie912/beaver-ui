@@ -162,11 +162,20 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
         }
 
         if (picker === 'datetime') {
-          // datetime range 模式：初始化为第一步
-          rangeState.setSelectingStart(true);
-          rangeState.setTempDateTimeStart(null);
-          rangeState.setTempDateTimeEnd(null);
-          rangeState.setConfirmedStartDate(null);
+          // datetime range 模式：根据当前选择恢复状态
+          if (currentRange) {
+            // 已有选择，恢复为已完成状态方便用户修改
+            rangeState.setSelectingStart(false);
+            rangeState.setConfirmedStartDate(new Date(currentRange.startDate));
+            rangeState.setTempDateTimeEnd(new Date(currentRange.endDate));
+            rangeState.setTempDateTimeStart(null);
+          } else {
+            // 没有选择，重置为第一步
+            rangeState.setSelectingStart(true);
+            rangeState.setTempDateTimeStart(null);
+            rangeState.setTempDateTimeEnd(null);
+            rangeState.setConfirmedStartDate(null);
+          }
         } else {
           rangeState.resetRangeState();
         }
