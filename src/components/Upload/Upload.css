@@ -1,56 +1,36 @@
 :root {
-  /* ===== Upload 组件尺寸定义 ===== */
-
-  /* 边框样式 */
+  /* Upload 组件尺寸与配色变量（只定义变量） */
   --beaver-upload-border-width: 2px;
   --beaver-upload-border-radius: 6px;
-
-  /* 上传区域尺寸 */
   --beaver-upload-min-height: 100px;
   --beaver-upload-padding-default: 16px;
-
-  /* ===== Upload 组件颜色定义 ===== */
-
-  /* 边框颜色 */
   --beaver-upload-border-color: #d9d9d9;
   --beaver-upload-border-color-hover: #40a9ff;
-
-  /* 背景颜色 */
   --beaver-upload-bg-color: #fafafa;
   --beaver-upload-bg-color-hover: #f5f5f5;
-
-  /* 文字颜色 */
-  --beaver-upload-text-color: var(--beaver-color-text, #333);
+  --beaver-upload-text-color: #333;
   --beaver-upload-text-color-secondary: #999;
-
-  /* ===== Upload 组件进度条定义 ===== */
-
   --beaver-upload-progress-height: 4px;
   --beaver-upload-progress-bg: #f0f0f0;
   --beaver-upload-progress-fill: #1890ff;
-
-  /* ===== Upload 组件列表项定义 ===== */
-
   --beaver-upload-list-item-padding: 8px 12px;
-
-  /* ===== Upload 组件间距定义 ===== */
-
   --beaver-upload-item-gap: 8px;
+  --beaver-upload-avatar-size: 96px;
+  --beaver-upload-avatar-size-mobile: 64px;
+  --beaver-upload-avatar-radius: 8px;
 }
 
-/**
- * Upload 组件主容器
- */
 .beaver-upload {
-  display: flex;
-  flex-direction: column;
-  gap: var(--beaver-upload-item-gap);
   font-family: inherit;
 }
 
-/**
- * Upload 上传区域
- */
+.beaver-upload--avatar .beaver-upload__stack {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
 .beaver-upload__area {
   display: flex;
   flex-direction: column;
@@ -62,29 +42,17 @@
   background-color: var(--beaver-upload-bg-color);
   padding: var(--beaver-upload-padding-default);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.16s ease;
 }
-
-/**
- * Upload 上传区域 - 悬停状态
- */
 .beaver-upload__area:hover {
   border-color: var(--beaver-upload-border-color-hover);
   background-color: var(--beaver-upload-bg-color-hover);
 }
-
-/**
- * Upload 上传区域 - 拖拽状态
- */
 .beaver-upload--dragging .beaver-upload__area {
   border-color: var(--beaver-upload-border-color-hover);
   background-color: var(--beaver-upload-bg-color-hover);
-  box-shadow: 0 0 0 4px rgba(64, 169, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(64, 169, 255, 0.06);
 }
-
-/**
- * Upload 上传区域 - 禁用状态
- */
 .beaver-upload--disabled .beaver-upload__area {
   cursor: not-allowed;
   opacity: 0.6;
@@ -92,68 +60,64 @@
   border-color: #e5e7eb;
 }
 
-/**
- * Upload 上传区域图标
- */
 .beaver-upload__icon {
   font-size: 48px;
   margin-bottom: var(--beaver-upload-item-gap);
   opacity: 0.8;
 }
-
-/**
- * Upload 上传区域文本
- */
 .beaver-upload__text {
   color: var(--beaver-upload-text-color);
-  font-size: var(--beaver-font-size-md, 14px);
+  font-size: 14px;
   text-align: center;
   margin-bottom: var(--beaver-upload-item-gap);
   line-height: 1.5;
 }
 
-/**
- * Upload 上传按钮
- */
 .beaver-upload__button {
   padding: 6px 16px;
   border: 1px solid var(--beaver-color-primary, #0eaae0);
   border-radius: 4px;
   background-color: transparent;
   color: var(--beaver-color-primary, #0eaae0);
-  font-size: var(--beaver-font-size-md, 14px);
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.16s ease;
 }
-
-/**
- * Upload 上传按钮 - 悬停状态
- */
 .beaver-upload__button:hover:not(:disabled) {
   background-color: var(--beaver-color-primary, #0eaae0);
-  color: white;
+  color: #fff;
 }
-
-/**
- * Upload 上传按钮 - 禁用状态
- */
 .beaver-upload__button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-/**
- * Upload 文件列表
- */
+/* 简易按钮风格（default 变体） */
+.beaver-upload__button-default {
+  padding: 6px 16px;
+  border: 1px solid var(--beaver-color-primary, #0eaae0);
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--beaver-color-primary, #0eaae0);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+.beaver-upload__button-default:hover:not(:disabled) {
+  background-color: var(--beaver-color-primary, #0eaae0);
+  color: #fff;
+}
+.beaver-upload__button-default:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .beaver-upload__list {
   display: flex;
   flex-direction: column;
   gap: var(--beaver-upload-item-gap);
 }
 
-/**
- * Upload 文件列表项
- */
 .beaver-upload__item {
   display: flex;
   align-items: flex-start;
@@ -161,37 +125,22 @@
   padding: var(--beaver-upload-list-item-padding);
   border: 1px solid #e5e7eb;
   border-radius: 4px;
-  background-color: #ffffff;
-  transition: all 0.3s ease;
+  background: #fff;
+  transition: all 0.16s ease;
 }
-
-/**
- * Upload 文件列表项 - 上传中
- */
 .beaver-upload__item--uploading {
   border-color: var(--beaver-upload-progress-fill);
   background-color: rgba(24, 144, 255, 0.05);
 }
-
-/**
- * Upload 文件列表项 - 成功
- */
 .beaver-upload__item--success {
   border-color: var(--beaver-color-success, #10b987);
   background-color: rgba(16, 185, 135, 0.05);
 }
-
-/**
- * Upload 文件列表项 - 错误
- */
 .beaver-upload__item--error {
   border-color: var(--beaver-color-error, #e44444);
   background-color: rgba(228, 68, 68, 0.05);
 }
 
-/**
- * Upload 文件列表项图标
- */
 .beaver-upload__item-icon {
   flex-shrink: 0;
   font-size: 20px;
@@ -199,10 +148,6 @@
   text-align: center;
   line-height: 24px;
 }
-
-/**
- * Upload 文件列表项信息
- */
 .beaver-upload__item-info {
   flex: 1;
   min-width: 0;
@@ -210,36 +155,21 @@
   flex-direction: column;
   gap: 4px;
 }
-
-/**
- * Upload 文件名称
- */
 .beaver-upload__item-name {
   color: var(--beaver-upload-text-color);
-  font-size: var(--beaver-font-size-md, 14px);
+  font-size: 14px;
   font-weight: 500;
   word-break: break-all;
 }
-
-/**
- * Upload 文件大小
- */
 .beaver-upload__item-size {
   color: var(--beaver-upload-text-color-secondary);
-  font-size: var(--beaver-font-size-sm, 12px);
+  font-size: 12px;
 }
-
-/**
- * Upload 错误信息
- */
 .beaver-upload__item-error {
   color: var(--beaver-color-error, #e44444);
-  font-size: var(--beaver-font-size-sm, 12px);
+  font-size: 12px;
 }
 
-/**
- * Upload 进度条容器
- */
 .beaver-upload__progress {
   width: 100%;
   height: var(--beaver-upload-progress-height);
@@ -248,49 +178,349 @@
   overflow: hidden;
   margin-top: 2px;
 }
-
-/**
- * Upload 进度条填充
- */
 .beaver-upload__progress-bar {
   height: 100%;
   background-color: var(--beaver-upload-progress-fill);
-  transition: width 0.3s ease;
+  transition: width 0.24s ease;
   border-radius: 2px;
 }
 
-/**
- * Upload 移除按钮
- */
 .beaver-upload__remove-btn {
   flex-shrink: 0;
   padding: 0;
   width: 24px;
   height: 24px;
-  border: none;
-  background-color: transparent;
+  border: 0;
+  background: transparent;
   color: var(--beaver-upload-text-color-secondary);
   font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.16s ease;
   margin-top: 2px;
 }
-
-/**
- * Upload 移除按钮 - 悬停状态
- */
 .beaver-upload__remove-btn:hover:not(:disabled) {
   color: var(--beaver-color-error, #e44444);
-  background-color: rgba(228, 68, 68, 0.1);
+  background-color: rgba(228, 68, 68, 0.08);
 }
-
-/**
- * Upload 移除按钮 - 禁用状态
- */
 .beaver-upload__remove-btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* ===== 头像上传相关样式 ===== */
+
+/* 文件列表容器 - 根据 listType 显示不同样式 */
+.beaver-upload__file-list {
+  width: 100%;
+  margin-top: 12px; /* 保证上传触发器与文件列表之间有统一间距 */
+}
+
+/* 列表样式（默认）*/
+.beaver-upload:not(.beaver-upload--picture-list) .beaver-upload__file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--beaver-upload-item-gap);
+}
+
+/* 图片样式（picture list） */
+.beaver-upload--picture-list .beaver-upload__file-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--beaver-upload-avatar-size), 1fr));
+  gap: 12px; /* 图片风格下的项间距设为 12px */
+  margin-top: 12px; /* 上传区与展示区留出间距 */
+}
+
+/* 缩略图网格容器 - 仅用于 avatar 变体的上传触发器 */
+.beaver-upload__thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--beaver-upload-avatar-size), 1fr));
+  gap: 12px; /* 触发器网格间距设为 12px */
+  width: 100%;
+  margin-top: 12px; /* 与上传区保持一定距离 */
+}
+
+/* 缩略图容器 */
+.beaver-upload__thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 缩略图内部（图片容器） */
+.beaver-upload__thumb-inner {
+  position: relative;
+  width: var(--beaver-upload-avatar-size);
+  height: var(--beaver-upload-avatar-size);
+  border-radius: var(--beaver-upload-avatar-radius);
+  overflow: hidden;
+  background: #f5f5f5;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+/* 缩略图方形变体（触发器） */
+.beaver-upload__area--square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px dashed var(--beaver-upload-border-color);
+  background-color: var(--beaver-upload-bg-color);
+  transition: all 0.16s ease;
+  padding: 0;
+  min-height: auto;
+}
+
+.beaver-upload__area--square:hover {
+  border-color: var(--beaver-upload-border-color-hover);
+  background-color: var(--beaver-upload-bg-color-hover);
+}
+
+/* 缩略图图片 */
+.beaver-upload__thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #fafafa;
+}
+
+/* 缩略图内部状态变体 */
+.beaver-upload__thumb-inner--error {
+  border-color: var(--beaver-color-error, #e44444);
+}
+
+.beaver-upload__thumb-inner--success {
+  border-color: var(--beaver-color-success, #10b987);
+}
+
+.beaver-upload__thumb-inner--uploading {
+  border-color: var(--beaver-upload-progress-fill);
+}
+
+/* 缩略图覆盖层（悬停时显示的操作按钮） */
+.beaver-upload__thumb-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  transition: all 0.16s ease;
+}
+
+.beaver-upload__thumb-inner:hover .beaver-upload__thumb-overlay {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* 头像按钮（查看/删除） */
+.beaver-upload__avatar-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.16s ease;
+  flex-shrink: 0;
+  font-size: 0;
+}
+
+.beaver-upload__avatar-btn svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.beaver-upload__avatar-btn:hover {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: scale(1.08);
+}
+
+.beaver-upload__avatar-btn--view {
+  color: #1890ff;
+}
+
+.beaver-upload__avatar-btn--remove {
+  color: #ff4d4f;
+}
+
+/* 缩略图名称 */
+.beaver-upload__thumb-name {
+  font-size: 12px;
+  color: var(--beaver-upload-text-color);
+  text-align: center;
+  word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  max-height: 2.4em;
+}
+
+/* avatar 变体下的触发器（方形上传按钮）隐藏名称 */
+.beaver-upload--avatar .beaver-upload__trigger-avatar .beaver-upload__thumb-name {
+  display: none;
+}
+
+/* 列表样式（list type）的文件项 - 水平布局 */
+.beaver-upload__file-list .beaver-upload__thumb {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  padding: var(--beaver-upload-list-item-padding);
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  transition: all 0.16s ease;
+}
+
+.beaver-upload__file-list .beaver-upload__thumb-inner {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+/* 非图片文件的图标占位 */
+.beaver-upload__file-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.beaver-upload__file-icon-label {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #fafafa, #f0f0f0);
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #ececec;
+}
+
+.beaver-upload__file-list .beaver-upload__thumb-name {
+  text-align: left;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+.beaver-upload__file-list .beaver-upload__thumb-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.beaver-upload__file-list .beaver-upload__thumb-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.beaver-upload__action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--beaver-upload-text-color-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.beaver-upload__action-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.beaver-upload__action-btn--view:hover {
+  color: var(--beaver-color-primary, #1890ff);
+}
+.beaver-upload__action-btn--remove:hover {
+  color: var(--beaver-color-error, #ff4d4f);
+}
+
+/* 图片样式（picture list）的文件项 - 垂直布局 */
+.beaver-upload--picture-list .beaver-upload__thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 图片样式的缩略图 - 恢复为正常尺寸 */
+.beaver-upload--picture-list .beaver-upload__thumb-inner {
+  width: var(--beaver-upload-avatar-size);
+  height: var(--beaver-upload-avatar-size);
+}
+
+/* 图片样式的缩略图名称 - 显示为两行 */
+.beaver-upload--picture-list .beaver-upload__thumb-name {
+  display: none;
+}
+
+/* 列表风格下上传失败时文件名为错误色 */
+.beaver-upload__file-list .beaver-upload__thumb-name.beaver-upload__thumb-name--error {
+  color: var(--beaver-color-error, #e44444);
+}
+
+/* 头像行容器 */
+.beaver-upload__avatar-row {
+  width: 100%;
+}
+
+/* 头像触发器 */
+.beaver-upload__trigger-avatar {
+  display: contents;
+}
+
+/* 非 avatar 触发器 - 使用 display: contents 防止影响用户自定义内容 */
+.beaver-upload:not(.beaver-upload--avatar) .beaver-upload__trigger {
+  display: contents;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  :root {
+    --beaver-upload-avatar-size: var(--beaver-upload-avatar-size-mobile);
+  }
+
+  .beaver-upload__thumb-grid {
+    grid-template-columns: repeat(auto-fill, minmax(var(--beaver-upload-avatar-size-mobile), 1fr));
+    gap: 8px;
+  }
+
+  .beaver-upload__avatar-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .beaver-upload__avatar-btn svg {
+    width: 14px;
+    height: 14px;
+  }
 }

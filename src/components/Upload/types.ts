@@ -100,8 +100,20 @@ export type UploadProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' 
   /** 其他自定义数据，会附加到请求中 */
   data?: Record<string, any>;
 
-  /** 是否启用拖拽上传 */
-  drag?: boolean;
+  /** 内置样式变体：'default' | 'avatar' | 'drag' */
+  variant?: 'default' | 'avatar' | 'drag';
+
+  /** 文件列表展示风格：'list' | 'picture'，默认为 'list' */
+  listType?: 'list' | 'picture';
+
+  /** 初始文件列表（用于示例或受控场景） */
+  defaultFileList?: UploadFile[];
+
+  /** 自定义触发渲染函数，接收 open 方法 */
+  renderTrigger?: (controls: { open: () => void }) => React.ReactNode;
+
+  /** 自定义触发节点（优先于 variant 的内置触发） */
+  children?: React.ReactNode;
 };
 
 export default UploadProps;

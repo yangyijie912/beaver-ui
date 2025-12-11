@@ -26,10 +26,11 @@ export const useUploadFiles = (
   onSuccess?: (response: any, file: UploadFile) => void,
   onError?: (error: Error, file: UploadFile) => void,
   onProgress?: (event: ProgressEvent, file: UploadFile) => void,
-  onRemove?: (file: UploadFile) => void
+  onRemove?: (file: UploadFile) => void,
+  initialFiles?: UploadFile[]
 ) => {
-  // 文件列表状态
-  const [files, setFiles] = React.useState<UploadFile[]>([]);
+  // 文件列表状态，支持传入初始文件（例如 Storybook 示例）
+  const [files, setFiles] = React.useState<UploadFile[]>(initialFiles || []);
 
   /**
    * 更新文件状态

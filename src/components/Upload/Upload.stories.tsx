@@ -53,6 +53,36 @@ const meta: Meta<typeof Upload> = {
       description: '最大文件大小（字节）',
     },
   },
+  // 默认参数
+  args: {
+    defaultFileList: [
+      {
+        uid: 'demo-1',
+        name: 'landscape.png',
+        status: 'success',
+        response: { url: 'https://picsum.photos/300/300' },
+      },
+      {
+        uid: 'demo-2',
+        name: 'avatar.jpg',
+        status: 'uploading',
+        percent: 48,
+        response: { url: 'https://picsum.photos/300/300' },
+      },
+      {
+        uid: 'avatar-1',
+        name: 'report.pdf',
+        status: 'success',
+        response: { url: '' },
+      },
+      {
+        uid: 'avatar-2',
+        name: 'notes.txt',
+        status: 'error',
+        error: '上传失败',
+      },
+    ],
+  },
 };
 
 export default meta;
@@ -293,4 +323,127 @@ export const Complete: Story = {
     dragText: '拖拽文件到此处，或点击选择文件（最多 5 个，每个不超过 5MB）',
     buttonText: '选择文件',
   },
+};
+
+/**
+ * 自定义触发（children 插槽）
+ */
+export const CustomTrigger: Story = {
+  name: '自定义触发（children）',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 320 }}>
+      <Upload {...args}>
+        <button type="button">一个新的上传</button>
+      </Upload>
+    </div>
+  ),
+  args: {
+    action: '/api/upload',
+  },
+};
+
+/**
+ * 函数式插槽 renderTrigger 示例
+ */
+export const RenderTrigger: Story = {
+  name: '函数式插槽（renderTrigger）',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 320 }}>
+      <Upload
+        {...args}
+        renderTrigger={({ open }) => (
+          <a onClick={open} style={{ cursor: 'pointer', color: '#0eaae0' }}>
+            自定义触发（renderTrigger）
+          </a>
+        )}
+      />
+    </div>
+  ),
+};
+
+/**
+ * 简易按钮风格（默认）
+ * - 在外层容器设置宽度可以限制文件展示区域宽度
+ */
+export const DefaultButton: Story = {
+  name: '简易按钮风格',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 500 }}>
+      <Upload {...args} />
+    </div>
+  ),
+  args: {
+    buttonText: '选择文件',
+  },
+};
+
+/**
+ * 拖拽风格
+ */
+export const DragStyle: Story = {
+  name: '拖拽风格',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 500 }}>
+      <Upload {...args} variant="drag" />
+    </div>
+  ),
+  args: {
+    dragText: '拖拽文件到此处，或点击选择文件',
+    buttonText: '选择文件',
+  },
+};
+
+/**
+ * 头像风格
+ */
+export const AvatarStyle: Story = {
+  name: '头像风格',
+  render: (args: UploadArgs) => (
+    <div>
+      <Upload {...args} variant="avatar" />
+    </div>
+  ),
+};
+
+/**
+ * 简易按钮风格（默认） + 图片展示
+ */
+export const DefaultButtonWithPicture: Story = {
+  name: '简易按钮风格+图片展示',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 500 }}>
+      <Upload {...args} listType="picture" />
+    </div>
+  ),
+  args: {
+    buttonText: '选择文件',
+  },
+};
+
+/**
+ * 拖拽风格 + 图片展示
+ */
+export const DragStyleWithPicture: Story = {
+  name: '拖拽风格+图片展示',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 500 }}>
+      <Upload {...args} variant="drag" listType="picture" />
+    </div>
+  ),
+  args: {
+    dragText: '拖拽文件到此处，或点击选择文件',
+    buttonText: '选择文件',
+  },
+};
+
+/**
+ * 头像风格 + 列表展示
+ */
+export const AvatarStyleWithList: Story = {
+  name: '头像风格+列表展示',
+  render: (args: UploadArgs) => (
+    <div>
+      <Upload {...args} variant="avatar" listType="list" />
+    </div>
+  ),
 };

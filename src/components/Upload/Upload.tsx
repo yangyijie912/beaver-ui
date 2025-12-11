@@ -2,28 +2,9 @@ import React from 'react';
 import './Upload.css';
 import type { UploadProps } from './types';
 import { useUploadFiles, useDragAndDrop } from './hooks';
-import { formatFileSize } from './utils';
+import Thumb from './components/Thumb';
+import TriggerSquare from './components/TriggerSquare';
 
-/**
- * Upload 组件
- * 
- * 用于文件上传，支持以下功能：
- * - 单文件或多文件上传
- * - 拖拽上传
- * - 自定义上传端点
- * - 进度显示
- * - 文件列表展示
- * - 文件验证（大小、类型等）
- * 
- * @example
- * ```tsx
- * <Upload
- *   action="/api/upload"
- *   multiple
- *   onChange={(files) => console.log(files)}
- * />
- * ```
- */
 const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
   (
     {
@@ -49,7 +30,10 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
       headers = {},
       fieldName = 'file',
       data = {},
-      drag = true,
+      variant = 'default',
+      listType = variant === 'avatar' ? 'picture' : 'list',
+      renderTrigger,
+      children,
       ...props
     },
     ref
@@ -57,10 +41,19 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
     // 输入框引用
     const inputRef = React.useRef<HTMLInputElement>(null);
 
-    // 使用文件管理 Hook
-    const { files, handleFileSelect: handleFileSelectBase, removeFile } = useUploadFiles(
+    // 不再强制 avatar 单文件：尊重用户传入的 multiple
+    const effectiveMultiple = multiple;
+
+    // 使用文件管理 Hook（支持 defaultFileList）
+    const defaultFileList = (props as any)?.defaultFileList as any[] | undefined;
+
+    const {
+      files,
+      handleFileSelect: handleFileSelectBase,
+      removeFile,
+    } = useUploadFiles(
       action,
-      multiple,
+      effectiveMultiple,
       maxCount,
       maxSize,
       accept,
@@ -74,12 +67,16 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
       onSuccess,
       onError,
       onProgress,
-      onRemove
+      onRemove,
+      defaultFileList
     );
+
+    // 如果使用内置 drag 变体则强制启用拖拽行为，其他变体则不启用拖拽
+    const effectiveDrag = variant === 'drag' ? true : false;
 
     // 使用拖拽 Hook
     const { dragging, handleDragEnter, handleDragLeave, handleDragOver, handleDrop } = useDragAndDrop(
-      drag,
+      effectiveDrag,
       disabled,
       (fileList) => {
         handleFileSelectBase(fileList, autoUpload);
@@ -111,16 +108,92 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
     /**
      * 触发文件选择
      */
-    const triggerInput = () => {
+    const open = () => {
       if (!disabled) {
         inputRef.current?.click();
       }
     };
 
     const classList = ['beaver-upload'];
+    if (variant === 'avatar') classList.push('beaver-upload--avatar');
+    if (variant === 'drag') classList.push('beaver-upload--drag');
+    if (listType === 'picture') classList.push('beaver-upload--picture-list');
     if (dragging) classList.push('beaver-upload--dragging');
     if (disabled) classList.push('beaver-upload--disabled');
     if (className) classList.push(className);
+
+    // 构建触发节点（如果用户提供 children 或 renderTrigger，则不放入内部 stack）
+    let triggerNode: React.ReactNode = null;
+
+    if (children) {
+      if (React.isValidElement(children)) {
+        triggerNode = React.cloneElement(children as React.ReactElement<any>, {
+          onClick: (e: any) => {
+            const orig = (children as any).props?.onClick;
+            if (typeof orig === 'function') {
+              try {
+                orig(e);
+              } catch {
+                // ignore
+              }
+            }
+            open();
+          },
+          tabIndex: (children as any).props?.tabIndex ?? 0,
+        });
+      } else {
+        triggerNode = (
+          <div className="beaver-upload__trigger" onClick={open} role="button" tabIndex={0}>
+            {children}
+          </div>
+        );
+      }
+    } else if (renderTrigger) {
+      triggerNode = renderTrigger({ open });
+    }
+
+    // 生成每个文件的预览 URL（response.url 优先，其次为 createObjectURL）
+    const [previews, setPreviews] = React.useState<Record<string, string>>({});
+    const createdUrlsRef = React.useRef<string[]>([]);
+
+    React.useEffect(() => {
+      // 清理上一次 createObjectURL
+      createdUrlsRef.current.forEach((u) => {
+        try {
+          URL.revokeObjectURL(u);
+        } catch (_e) {
+          /* ignore */
+        }
+      });
+      createdUrlsRef.current = [];
+
+      const next: Record<string, string> = {};
+      files.forEach((f) => {
+        if (f.response?.url) {
+          next[f.uid] = f.response.url;
+        } else if (f.file) {
+          // 总是为本地文件创建预览 URL（即使上传失败也能看到图片）
+          const u = URL.createObjectURL(f.file);
+          next[f.uid] = u;
+          createdUrlsRef.current.push(u);
+        }
+      });
+
+      setPreviews(next);
+
+      return () => {
+        createdUrlsRef.current.forEach((u) => {
+          try {
+            URL.revokeObjectURL(u);
+          } catch (_e) {
+            /* ignore */
+          }
+        });
+        createdUrlsRef.current = [];
+      };
+    }, [files]);
+
+    const { drag: _drag, ...restProps } = props as any;
 
     return (
       <div
@@ -130,13 +203,13 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        {...props}
+        {...restProps}
       >
         {/* 隐藏的文件输入框 */}
         <input
           ref={inputRef}
           type="file"
-          multiple={multiple}
+          multiple={effectiveMultiple}
           accept={accept}
           onChange={handleInputChange}
           className="beaver-upload__input"
@@ -144,64 +217,150 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
           style={{ display: 'none' }}
         />
 
-        {/* 上传区域 */}
-        <div className="beaver-upload__area" onClick={triggerInput}>
-          <div className="beaver-upload__icon">📁</div>
-          <div className="beaver-upload__text">{dragText}</div>
-          <button
-            type="button"
-            className="beaver-upload__button"
-            disabled={disabled}
-            onClick={(e) => {
-              e.stopPropagation();
-              triggerInput();
-            }}
-          >
-            {buttonText}
-          </button>
-        </div>
+        {/* 内部布局区（只包含组件自身的区域和文件缩略图） */}
+        <div className="beaver-upload__stack">
+          {variant === 'avatar' ? (
+            <div className="beaver-upload__avatar-row">
+              {/* avatar 变体：根据 listType 决定展示方式 */}
+              {listType === 'picture' ? (
+                /* 图片网格展示（原有行为） */
+                <div className="beaver-upload__thumb-grid">
+                  {files.length > 0
+                    ? files.map((file) => {
+                        const url = previews[file.uid];
+                        return (
+                          <Thumb
+                            key={file.uid}
+                            file={file}
+                            url={url}
+                            onView={() => {
+                              const u = previews[file.uid];
+                              if (u) window.open(u, '_blank');
+                            }}
+                            onRemove={(uid) => removeFile(uid)}
+                            isList={false}
+                          />
+                        );
+                      })
+                    : null}
 
-        {/* 文件列表 */}
-        {showFileList && files.length > 0 && (
-          <div className="beaver-upload__list">
-            {files.map((file) => (
-              <div key={file.uid} className={`beaver-upload__item beaver-upload__item--${file.status}`}>
-                <div className="beaver-upload__item-icon">
-                  {file.status === 'uploading' && '⏳'}
-                  {file.status === 'success' && '✓'}
-                  {file.status === 'error' && '✕'}
-                  {file.status === 'ready' && '📄'}
+                  {/* 默认上传触发器（如果没有自定义 trigger） */}
+                  {!triggerNode && <TriggerSquare onClick={open} />}
+
+                  {/* 自定义 trigger（如果用户提供则渲染在行内） */}
+                  {triggerNode && <div className="beaver-upload__trigger-avatar">{triggerNode}</div>}
                 </div>
-                <div className="beaver-upload__item-info">
-                  <div className="beaver-upload__item-name">{file.name}</div>
-                  <div className="beaver-upload__item-size">
-                    {formatFileSize(file.file.size)}
+              ) : (
+                /* list 模式：触发器保留在上方，文件列表在下方以列表样式展示 */
+                <>
+                  <div className="beaver-upload__trigger-avatar-container">
+                    {!triggerNode && <TriggerSquare onClick={open} />}
+                    {triggerNode && <div className="beaver-upload__trigger-avatar">{triggerNode}</div>}
                   </div>
-                  {file.error && (
-                    <div className="beaver-upload__item-error">{file.error}</div>
-                  )}
-                  {file.status === 'uploading' && file.percent !== undefined && (
-                    <div className="beaver-upload__progress">
-                      <div
-                        className="beaver-upload__progress-bar"
-                        style={{ width: `${file.percent}%` }}
-                      />
+
+                  {showFileList && files.length > 0 && (
+                    <div className="beaver-upload__file-list">
+                      {files.map((file) => {
+                        const url = previews[file.uid];
+                        return (
+                          <Thumb
+                            key={file.uid}
+                            file={file}
+                            url={url}
+                            onView={() => {
+                              const u = previews[file.uid];
+                              if (u) window.open(u, '_blank');
+                            }}
+                            onRemove={(uid) => removeFile(uid)}
+                            isList={true}
+                          />
+                        );
+                      })}
                     </div>
                   )}
-                </div>
-                <button
-                  type="button"
-                  className="beaver-upload__remove-btn"
-                  onClick={() => removeFile(file.uid)}
-                  title="移除"
-                  disabled={disabled}
-                >
-                  ✕
+                </>
+              )}
+            </div>
+          ) : variant === 'default' ? (
+            /* default 变体：简易按钮风格 */
+            <>
+              {triggerNode}
+              {!triggerNode && (
+                <button type="button" className="beaver-upload__button-default" disabled={disabled} onClick={open}>
+                  {buttonText}
                 </button>
-              </div>
-            ))}
-          </div>
-        )}
+              )}
+              {/* default 变体也展示文件列表（当启用 showFileList 时） */}
+              {showFileList && files.length > 0 && (
+                <div className="beaver-upload__file-list">
+                  {files.map((file) => {
+                    const url = previews[file.uid];
+                    return (
+                      <Thumb
+                        key={file.uid}
+                        file={file}
+                        url={url}
+                        onView={() => {
+                          const u = previews[file.uid];
+                          if (u) window.open(u, '_blank');
+                        }}
+                        onRemove={(uid) => removeFile(uid)}
+                        isList={listType !== 'picture'}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          ) : (
+            /* drag 变体：拖拽区域（虚线框） */
+            <>
+              {/* 如果用户传入 trigger（children 或 renderTrigger），将其渲染在外面，避免被内部 layout 影响 */}
+              {triggerNode}
+
+              {/* 默认上传区域（当没有 children/renderTrigger 时展示） */}
+              {!triggerNode && (
+                <div className="beaver-upload__area" onClick={open}>
+                  <div className="beaver-upload__icon">📁</div>
+                  <div className="beaver-upload__text">{dragText}</div>
+                  <button
+                    type="button"
+                    className="beaver-upload__button"
+                    disabled={disabled}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      open();
+                    }}
+                  >
+                    {buttonText}
+                  </button>
+                </div>
+              )}
+
+              {/* 文件列表 */}
+              {showFileList && files.length > 0 && (
+                <div className="beaver-upload__file-list">
+                  {files.map((file) => {
+                    const url = previews[file.uid];
+                    return (
+                      <Thumb
+                        key={file.uid}
+                        file={file}
+                        url={url}
+                        onView={() => {
+                          const u = previews[file.uid];
+                          if (u) window.open(u, '_blank');
+                        }}
+                        onRemove={(uid) => removeFile(uid)}
+                        isList={listType !== 'picture'}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     );
   }
