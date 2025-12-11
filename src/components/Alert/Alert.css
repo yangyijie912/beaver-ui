@@ -1,0 +1,326 @@
+/* ===== Alert 全局提示组件样式 ===== */
+/* 参考 Input.css 的设计模式，定义所有 CSS 变量和样式 */
+
+:root {
+  /* ===== Alert 颜色定义 ===== */
+  /* 基础背景颜色（浅色背景，便于与正常内容区分） */
+  --beaver-alert-bg-color: #fff;
+  --beaver-alert-bg-color-success: #f0fdf4;
+  --beaver-alert-bg-color-warning: #fefce8;
+  --beaver-alert-bg-color-error: #fef2f2;
+  --beaver-alert-bg-color-info: #f0f9ff;
+
+  /* 边框颜色（左侧指示条和边框） */
+  --beaver-alert-border-color-success: var(--beaver-color-success, #10b987);
+  --beaver-alert-border-color-warning: var(--beaver-color-warning, #f59e0b);
+  --beaver-alert-border-color-error: var(--beaver-color-error, #e44444);
+  --beaver-alert-border-color-info: var(--beaver-color-primary, #0eaae0);
+
+  /* 文本颜色 */
+  --beaver-alert-text-color-success: #047857;
+  --beaver-alert-text-color-warning: #92400e;
+  --beaver-alert-text-color-error: #7f1d1d;
+  --beaver-alert-text-color-info: #0c4a6e;
+
+  /* 图标颜色（通常与文本颜色相同） */
+  --beaver-alert-icon-color-success: var(--beaver-alert-text-color-success);
+  --beaver-alert-icon-color-warning: var(--beaver-alert-text-color-warning);
+  --beaver-alert-icon-color-error: var(--beaver-alert-text-color-error);
+  --beaver-alert-icon-color-info: var(--beaver-alert-text-color-info);
+
+  /* ===== 间距和尺寸定义 ===== */
+  /* 整体内边距 */
+  --beaver-alert-padding: var(--beaver-space-md, 12px);
+  --beaver-alert-padding-compact: var(--beaver-space-sm, 8px);
+
+  /* 图标和文本之间的间隔 */
+  --beaver-alert-icon-gap: var(--beaver-space-sm, 8px);
+
+  /* 标题和描述之间的间隔 */
+  --beaver-alert-title-message-gap: var(--beaver-space-xs, 6px);
+
+  /* 关闭按钮相关 */
+  --beaver-alert-close-button-size: 20px;
+  --beaver-alert-close-button-gap: var(--beaver-space-md, 12px);
+
+  /* 左侧颜色条宽度 */
+  --beaver-alert-border-width: 4px;
+
+  /* 图标容器大小 */
+  --beaver-alert-icon-size: 20px;
+
+  /* ===== 字体定义 ===== */
+  --beaver-alert-font-size: var(--beaver-font-size-md, 14px);
+  --beaver-alert-title-font-size: var(--beaver-font-size-md, 14px);
+  --beaver-alert-title-font-weight: 600;
+
+  /* ===== 动画和过渡 ===== */
+  --beaver-alert-transition-duration: 200ms;
+  --beaver-alert-transition-timing: ease;
+}
+
+/* ===== 基础样式 ===== */
+.beaver-alert {
+  /* 基本布局和样式 */
+  display: flex;
+  align-items: flex-start;
+  gap: var(--beaver-alert-icon-gap);
+  padding: var(--beaver-alert-padding);
+  background-color: var(--beaver-alert-bg-color);
+  border: 1px solid var(--beaver-alert-border-color-info);
+  border-radius: 6px;
+  font-size: var(--beaver-alert-font-size);
+  line-height: 1.5;
+  box-sizing: border-box;
+
+  /* 动画过渡 */
+  transition: all var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
+
+  /* 确保 Alert 占据足够的宽度 */
+  width: 100%;
+}
+
+/* ===== Alert 内部元素结构 ===== */
+
+/* 左侧颜色指示条 */
+.beaver-alert__border {
+  flex-shrink: 0;
+  width: var(--beaver-alert-border-width);
+  height: auto;
+  min-height: 24px;
+  background-color: var(--beaver-alert-border-color-info);
+  border-radius: 2px;
+  transition: background-color var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
+}
+
+/* 图标容器 */
+.beaver-alert__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--beaver-alert-icon-size);
+  height: var(--beaver-alert-icon-size);
+  color: var(--beaver-alert-icon-color-info);
+  font-size: 16px;
+  font-weight: 600;
+  transition: color var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
+}
+
+/* 主要内容区域 */
+.beaver-alert__content {
+  flex: 1;
+  min-width: 0;
+  /* 确保长文本可以正确换行 */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 标题 */
+.beaver-alert__title {
+  font-size: var(--beaver-alert-title-font-size);
+  font-weight: var(--beaver-alert-title-font-weight);
+  color: var(--beaver-alert-text-color-info);
+  margin: 0;
+  transition: color var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
+}
+
+/* 描述/消息 */
+.beaver-alert__message {
+  margin-top: var(--beaver-alert-title-message-gap);
+  color: var(--beaver-alert-text-color-info);
+  opacity: 0.85;
+  transition: color var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
+}
+
+/* 当没有标题时，消息不需要额外的间距 */
+.beaver-alert__title ~ .beaver-alert__message {
+  margin-top: var(--beaver-alert-title-message-gap);
+}
+
+.beaver-alert__message:first-child {
+  margin-top: 0;
+}
+
+/* 关闭按钮 */
+.beaver-alert__close {
+  flex-shrink: 0;
+  width: var(--beaver-alert-close-button-size);
+  height: var(--beaver-alert-close-button-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--beaver-alert-text-color-info);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
+  opacity: 0.6;
+
+  /* 增加可点击区域 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--beaver-alert-close-button-gap);
+}
+
+.beaver-alert__close:hover {
+  opacity: 1;
+}
+
+.beaver-alert__close:active {
+  opacity: 0.8;
+}
+
+/* ===== Alert 类型修饰符（BEM modifier） ===== */
+
+/* 成功状态 */
+.beaver-alert--success {
+  background-color: var(--beaver-alert-bg-color-success);
+  border-color: var(--beaver-alert-border-color-success);
+}
+
+.beaver-alert--success .beaver-alert__border {
+  background-color: var(--beaver-alert-border-color-success);
+}
+
+.beaver-alert--success .beaver-alert__icon {
+  color: var(--beaver-alert-icon-color-success);
+}
+
+.beaver-alert--success .beaver-alert__title {
+  color: var(--beaver-alert-text-color-success);
+}
+
+.beaver-alert--success .beaver-alert__message {
+  color: var(--beaver-alert-text-color-success);
+}
+
+.beaver-alert--success .beaver-alert__close {
+  color: var(--beaver-alert-text-color-success);
+}
+
+/* 警告状态 */
+.beaver-alert--warning {
+  background-color: var(--beaver-alert-bg-color-warning);
+  border-color: var(--beaver-alert-border-color-warning);
+}
+
+.beaver-alert--warning .beaver-alert__border {
+  background-color: var(--beaver-alert-border-color-warning);
+}
+
+.beaver-alert--warning .beaver-alert__icon {
+  color: var(--beaver-alert-icon-color-warning);
+}
+
+.beaver-alert--warning .beaver-alert__title {
+  color: var(--beaver-alert-text-color-warning);
+}
+
+.beaver-alert--warning .beaver-alert__message {
+  color: var(--beaver-alert-text-color-warning);
+}
+
+.beaver-alert--warning .beaver-alert__close {
+  color: var(--beaver-alert-text-color-warning);
+}
+
+/* 错误状态 */
+.beaver-alert--error {
+  background-color: var(--beaver-alert-bg-color-error);
+  border-color: var(--beaver-alert-border-color-error);
+}
+
+.beaver-alert--error .beaver-alert__border {
+  background-color: var(--beaver-alert-border-color-error);
+}
+
+.beaver-alert--error .beaver-alert__icon {
+  color: var(--beaver-alert-icon-color-error);
+}
+
+.beaver-alert--error .beaver-alert__title {
+  color: var(--beaver-alert-text-color-error);
+}
+
+.beaver-alert--error .beaver-alert__message {
+  color: var(--beaver-alert-text-color-error);
+}
+
+.beaver-alert--error .beaver-alert__close {
+  color: var(--beaver-alert-text-color-error);
+}
+
+/* 信息状态（默认） */
+.beaver-alert--info {
+  background-color: var(--beaver-alert-bg-color-info);
+  border-color: var(--beaver-alert-border-color-info);
+}
+
+.beaver-alert--info .beaver-alert__border {
+  background-color: var(--beaver-alert-border-color-info);
+}
+
+.beaver-alert--info .beaver-alert__icon {
+  color: var(--beaver-alert-icon-color-info);
+}
+
+.beaver-alert--info .beaver-alert__title {
+  color: var(--beaver-alert-text-color-info);
+}
+
+.beaver-alert--info .beaver-alert__message {
+  color: var(--beaver-alert-text-color-info);
+}
+
+.beaver-alert--info .beaver-alert__close {
+  color: var(--beaver-alert-text-color-info);
+}
+
+/* ===== Alert 紧凑模式修饰符 ===== */
+.beaver-alert--compact {
+  padding: var(--beaver-alert-padding-compact);
+}
+
+.beaver-alert--compact .beaver-alert__message {
+  margin-top: 0;
+  display: inline;
+}
+
+/* ===== Alert 无边框模式修饰符 ===== */
+.beaver-alert--no-border .beaver-alert__border {
+  display: none;
+}
+
+/* 调整无边框时的间距 */
+.beaver-alert--no-border {
+  gap: var(--beaver-alert-icon-gap);
+}
+
+/* ===== 响应式设计 ===== */
+/* 在小屏幕上减少内边距，使用户体验更好 */
+@media (max-width: 640px) {
+  .beaver-alert {
+    padding: var(--beaver-alert-padding-compact);
+  }
+
+  .beaver-alert__icon {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+  }
+
+  .beaver-alert__close {
+    width: 18px;
+    height: 18px;
+    font-size: 16px;
+  }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  .beaver-alert__close {
+    display: none;
+  }
+}

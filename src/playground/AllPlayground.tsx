@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import Alert from '../components/Alert/Alert';
 import Button from '../components/Button/Button';
 import Checkbox from '../components/Checkbox/Checkbox';
 import Input from '../components/Input/Input';
@@ -70,6 +71,69 @@ function App() {
   return (
     <div style={{ maxWidth: 900, margin: '24px auto', padding: 12, fontFamily: 'Arial, sans-serif' }}>
       <h2>Beaver UI — Playground (All Components)</h2>
+
+      <Section title="Alert">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* 信息型提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>信息提示</div>
+            <Alert type="info" title="提示信息" message="这是一条信息提示，用于向用户显示重要信息。" closable />
+          </div>
+
+          {/* 成功型提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>成功提示</div>
+            <Alert type="success" title="操作成功" message="您的操作已完成，所有更改已保存。" closable />
+          </div>
+
+          {/* 警告型提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>警告提示</div>
+            <Alert type="warning" title="请注意" message="这个操作可能会影响您的数据，请谨慎处理。" closable />
+          </div>
+
+          {/* 错误型提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>错误提示</div>
+            <Alert
+              type="error"
+              title="操作失败"
+              message="由于网络连接问题，操作无法完成。请检查网络后重试。"
+              closable
+            />
+          </div>
+
+          {/* 仅消息，无标题 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>仅消息（无标题）</div>
+            <Alert type="info" message="这是一条简短的提示信息" closable />
+          </div>
+
+          {/* 紧凑模式 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>紧凑模式</div>
+            <Alert type="success" message="紧凑模式的提示信息" closable compact />
+          </div>
+
+          {/* 无左侧边框 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>无左侧颜色条</div>
+            <Alert type="warning" message="这个提示没有左侧的颜色指示条" showBorder={false} closable />
+          </div>
+
+          {/* 自定义图标 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>自定义图标</div>
+            <Alert
+              type="success"
+              title="自定义图标示例"
+              message="使用 Emoji 或其他内容替换默认图标"
+              icon="🎉"
+              closable
+            />
+          </div>
+        </div>
+      </Section>
 
       <Section title="Button">
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>

@@ -1,3 +1,4 @@
+export { default as Alert } from './components/Alert/Alert';
 export { default as Button } from './components/Button/Button';
 export { default as Radio } from './components/Radio/Radio';
 export { default as RadioGroup } from './components/Radio/RadioGroup';
