@@ -39,7 +39,7 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
     const open = isControlled ? controlledOpen : internalOpen;
 
     // 位置计算状态
-    const [isReady, setIsReady] = useState(false);
+    // const [isReady, setIsReady] = useState(false);
 
     // Refs
     const triggerRef = useRef<HTMLElement>(null);
@@ -173,14 +173,9 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
 
     // 当 open 状态改变时，重新计算位置
     useEffect(() => {
+      // 简单刷新来让 hook 重新计算
       if (open) {
-        // 使用 requestAnimationFrame 确保 Portal 已经渲染
-        const frameId = requestAnimationFrame(() => {
-          setIsReady(true);
-        });
-        return () => cancelAnimationFrame(frameId);
-      } else {
-        setIsReady(false);
+        // 触发位置重新计算
       }
     }, [open]);
 
@@ -202,7 +197,9 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
      * 触发元素被克隆并添加事件处理器
      */
     const trigger = cloneElement(children as React.ReactElement<any>, {
-      ref: triggerRef,
+      ref: (el: HTMLElement) => {
+        triggerRef.current = el;
+      },
       onClick: (e: React.MouseEvent<HTMLElement>) => {
         // 调用原有的 onClick 处理器
         const originalOnClick = (children as React.ReactElement<any>).props?.onClick;
@@ -220,7 +217,7 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
         {trigger}
 
         {/* Popconfirm 内容（使用 Portal 渲染到 body） */}
-        {open && isReady && (
+        {open && (
           <Portal>
             {/* 遮罩 */}
             {showMask && (
@@ -233,8 +230,9 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
             {/* Popconfirm 包装器（用于定位） */}
             <div
               ref={wrapperRef}
-              className={`beaver-popconfirm-wrapper beaver-popconfirm--${placement} ${className}`}
+              className={`beaver-popconfirm-wrapper beaver-popconfirm--${position.placement || placement} ${className}`}
               style={{
+                position: 'fixed',
                 top: `${position.top}px`,
                 left: `${position.left}px`,
               }}

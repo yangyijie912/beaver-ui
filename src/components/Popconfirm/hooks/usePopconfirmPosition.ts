@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react';
 
-/**
- * 位置计算的结果类型
- */
 interface PositionResult {
   top: number;
   left: number;
-  arrowOffset?: number; // 箭头相对于 content 中心的偏移
+  arrowOffset?: number;
+  placement?: string;
 }
 
-/**
- * usePopconfirmPosition Hook - 计算 popconfirm 相对于触发元素的位置
- * 自动调整位置以避免超出视口边界
- */
 export const usePopconfirmPosition = (
   triggerRef: React.RefObject<HTMLElement>,
   contentRef: React.RefObject<HTMLDivElement>,
@@ -24,118 +18,132 @@ export const usePopconfirmPosition = (
   const [position, setPosition] = useState<PositionResult>({ top: 0, left: 0, arrowOffset: 0 });
 
   useEffect(() => {
-    if (!triggerRef.current) {
-      return;
-    }
+    if (!_open) return;
 
-    const calculatePosition = () => {
-      if (!triggerRef.current) {
-        return;
-      }
+    const trigger = triggerRef.current;
+    const content = contentRef.current;
 
-      const triggerRect = triggerRef.current.getBoundingClientRect();
+    if (!trigger || !content) return;
 
-      // 如果内容还未挂载，使用默认尺寸进行初步计算
-      const contentWidth = contentRef.current?.offsetWidth || 250;
-      const contentHeight = contentRef.current?.offsetHeight || 100;
-
+    const updatePosition = () => {
+      const triggerRect = trigger.getBoundingClientRect();
+      const contentWidth = content.offsetWidth || 250;
+      const contentHeight = content.offsetHeight || 100;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
-      let top = 0;
-      let left = 0;
       const triggerWidth = triggerRect.width;
       const triggerHeight = triggerRect.height;
 
-      // 计算基础位置
-      const placementLower = placement.toLowerCase();
+      // 基础位置计算
+      let top = 0;
+      let left = 0;
+      let currentPlacement = placement.toLowerCase();
 
-      if (placementLower === 'top') {
-        top = triggerRect.top - contentHeight - gap;
-        // top (center)
-        left = triggerRect.left + (triggerWidth - contentWidth) / 2;
-      } else if (placementLower === 'bottom') {
+      const placements: Record<string, () => void> = {
+        top: () => {
+          top = triggerRect.top - contentHeight - gap;
+          left = triggerRect.left + (triggerWidth - contentWidth) / 2;
+        },
+        bottom: () => {
+          top = triggerRect.bottom + gap;
+          left = triggerRect.left + (triggerWidth - contentWidth) / 2;
+        },
+        left: () => {
+          left = triggerRect.left - contentWidth - gap;
+          top = triggerRect.top + (triggerHeight - contentHeight) / 2;
+        },
+        right: () => {
+          left = triggerRect.right + gap;
+          top = triggerRect.top + (triggerHeight - contentHeight) / 2;
+        },
+      };
+
+      placements[currentPlacement]?.();
+
+      // 自动方向切换（flip）
+      if (currentPlacement === 'top' && top < 0) {
+        currentPlacement = 'bottom';
         top = triggerRect.bottom + gap;
-        // bottom (center)
-        left = triggerRect.left + (triggerWidth - contentWidth) / 2;
-      } else if (placementLower === 'left') {
-        left = triggerRect.left - contentWidth - gap;
-        top = triggerRect.top + (triggerHeight - contentHeight) / 2;
-      } else if (placementLower === 'right') {
+      } else if (currentPlacement === 'bottom' && top + contentHeight > viewportHeight) {
+        currentPlacement = 'top';
+        top = triggerRect.top - contentHeight - gap;
+      } else if (currentPlacement === 'left' && left < 0) {
+        currentPlacement = 'right';
         left = triggerRect.right + gap;
-        top = triggerRect.top + (triggerHeight - contentHeight) / 2;
+      } else if (currentPlacement === 'right' && left + contentWidth > viewportWidth) {
+        currentPlacement = 'left';
+        left = triggerRect.left - contentWidth - gap;
       }
 
-      // 保存初始位置用于箭头计算
-      let adjustedLeft = left;
-      let adjustedTop = top;
+      // 贴边调整（shift）- 智能处理
+      // 原则：
+      // 1. 只在 trigger 还可见时进行贴边调整
+      // 2. 当 trigger 开始离开屏幕时，Popconfirm 也跟着离开
 
-      // 调整位置以避免超出视口
-      if (left < 0) {
-        adjustedLeft = 8;
-      } else if (left + contentWidth > viewportWidth) {
-        adjustedLeft = viewportWidth - contentWidth - 8;
+      // 检查 trigger 是否仍在视口范围内（至少有一部分可见）
+      const triggerVisible =
+        triggerRect.bottom > 0 &&
+        triggerRect.top < viewportHeight &&
+        triggerRect.right > 0 &&
+        triggerRect.left < viewportWidth;
+
+      if (triggerVisible) {
+        // trigger 可见，进行贴边调整
+
+        // 水平方向
+        const leftVisible = left + contentWidth > 0;
+        const rightVisible = left < viewportWidth;
+
+        if (leftVisible && rightVisible) {
+          if (left < 8) {
+            left = 8;
+          } else if (left + contentWidth > viewportWidth - 8) {
+            left = viewportWidth - contentWidth - 8;
+          }
+        }
+
+        // 竖直方向
+        const topVisible = top + contentHeight > 0;
+        const bottomVisible = top < viewportHeight;
+
+        if (topVisible && bottomVisible) {
+          if (top < 8) {
+            top = 8;
+          } else if (top + contentHeight > viewportHeight - 8) {
+            top = viewportHeight - contentHeight - 8;
+          }
+        }
       }
+      // 否则 trigger 已离开屏幕，Popconfirm 跟着离开，不进行贴边调整
 
-      if (top < 0) {
-        adjustedTop = 8;
-      } else if (top + contentHeight > viewportHeight) {
-        adjustedTop = viewportHeight - contentHeight - 8;
-      }
-
-      // 计算箭头偏移 - 对于上下方向，计算水平偏移；对于左右方向，计算垂直偏移
-      let arrowOffset = 0;
+      // 箭头偏移
       const triggerCenterX = triggerRect.left + triggerWidth / 2;
       const triggerCenterY = triggerRect.top + triggerHeight / 2;
-      const contentCenterX = adjustedLeft + contentWidth / 2;
-      const contentCenterY = adjustedTop + contentHeight / 2;
+      const contentCenterX = left + contentWidth / 2;
+      const contentCenterY = top + contentHeight / 2;
 
-      if (placementLower.startsWith('top') || placementLower.startsWith('bottom')) {
-        // 对于上下方向，箭头应该水平对准触发元素中心
+      let arrowOffset = 0;
+      if (currentPlacement === 'top' || currentPlacement === 'bottom') {
         arrowOffset = triggerCenterX - contentCenterX;
-        // 限制箭头偏移不超出内容框范围（留出一些边距）
         arrowOffset = Math.max(-contentWidth / 2 + 16, Math.min(contentWidth / 2 - 16, arrowOffset));
-      } else if (placementLower === 'left' || placementLower === 'right') {
-        // 对于左右方向，箭头应该垂直对准触发元素中心
+      } else if (currentPlacement === 'left' || currentPlacement === 'right') {
         arrowOffset = triggerCenterY - contentCenterY;
-        // 限制箭头偏移不超出内容框范围（留出一些边距）
         arrowOffset = Math.max(-contentHeight / 2 + 16, Math.min(contentHeight / 2 - 16, arrowOffset));
       }
 
-      setPosition({
-        top: adjustedTop,
-        left: adjustedLeft,
-        arrowOffset,
-      });
+      setPosition({ top, left, arrowOffset, placement: currentPlacement });
     };
 
-    // 立即计算一次
-    calculatePosition();
-
-    // 使用 ResizeObserver 监听内容大小变化
-    let resizeObserver: ResizeObserver | null = null;
-    if (contentRef.current) {
-      resizeObserver = new ResizeObserver(() => {
-        calculatePosition();
-      });
-      resizeObserver.observe(contentRef.current);
-    }
-
-    // 延迟后再计算一次，确保内容已经渲染
-    const timeoutId = setTimeout(calculatePosition, 0);
-
-    // 监听窗口调整大小和滚动事件
-    const resizeListener = calculatePosition;
-    const scrollListener = calculatePosition;
-
-    window.addEventListener('resize', resizeListener);
-    window.addEventListener('scroll', scrollListener);
+    updatePosition();
+    const timerId = setInterval(updatePosition, 100);
+    window.addEventListener('scroll', updatePosition);
+    window.addEventListener('resize', updatePosition);
 
     return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', resizeListener);
-      window.removeEventListener('scroll', scrollListener);
-      resizeObserver?.disconnect();
+      clearInterval(timerId);
+      window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
     };
   }, [triggerRef, contentRef, placement, gap, _open]);
 

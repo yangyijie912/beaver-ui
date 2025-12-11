@@ -5,6 +5,7 @@ import useFilteredOptions, { SelectOptionWithNew } from './hooks/useFilteredOpti
 import useKeyboardNavigation from './hooks/useKeyboardNavigation';
 import useTypeahead from './hooks/useTypeahead';
 import { useSelectUI } from './hooks/useSelectUI';
+import { useMenuPosition } from '../../hooks/useMenuPosition';
 import OptionList from './display/OptionList';
 import SearchInput from './display/SearchInput';
 import { SelectTags } from './components/SelectTags';
@@ -66,11 +67,15 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const committedRef = useRef<boolean>(false);
     const userTypedRef = useRef<boolean>(false);
     const searchTimer = useRef<number | null>(null);
+    const menuRef = useRef<HTMLDivElement | null>(null);
 
     const { handleBackspace, handleChar } = useTypeahead(700, userTypedRef);
 
     // 下拉菜单宽度（与触发器保持一致）
     const [menuWidth, setMenuWidth] = useState<number | null>(null);
+
+    // 使用 floating-ui 计算菜单位置
+    const menuPosition = useMenuPosition(rootRef, menuRef, open, 4);
 
     // 菜单宽度在打开前测量（避免打开时内容撑开触发器）
     useEffect(() => {
@@ -518,28 +523,16 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
 
         {/* 下拉菜单 */}
         {open &&
-          (() => {
-            const el = rootRef.current;
-            let menuStyle: React.CSSProperties | undefined = undefined;
-            if (el) {
-              const rect = el.getBoundingClientRect();
-              const left = rect.left + window.scrollX;
-              const top = rect.bottom + window.scrollY;
-              const vwRemaining = Math.max(window.innerWidth - rect.left - 16, 0);
-              // 将菜单宽度固定为触发器宽度（或视窗剩余宽度的最小值），避免长内容撑开
-              const desiredWidth = menuWidth ? Math.min(menuWidth, vwRemaining) : undefined;
-              menuStyle = {
-                position: 'absolute',
-                left: `${left}px`,
-                top: `${top}px`,
-                width: desiredWidth ? `${desiredWidth}px` : 'auto',
-                minWidth: menuWidth && desiredWidth === undefined ? `${menuWidth}px` : undefined,
-                maxWidth: `${vwRemaining}px`,
-                boxSizing: 'border-box',
+          createPortal(
+            <div
+              ref={menuRef}
+              style={{
+                position: 'fixed',
+                left: `${menuPosition.x}px`,
+                top: `${menuPosition.y}px`,
                 zIndex: 'var(--beaver-select-z-index, 5000)',
-              };
-            }
-            return createPortal(
+              }}
+            >
               <OptionList
                 menuOptions={menuOptions}
                 highlighted={highlighted}
@@ -549,12 +542,16 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                 renderHighlightedLabel={(label) => renderHighlightedLabel(label, query)}
                 noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
                 listRef={listRef}
-                menuStyle={menuStyle}
+                menuStyle={{
+                  width: menuWidth ? `${menuWidth}px` : 'auto',
+                  boxSizing: 'border-box',
+                  minWidth: menuWidth ? `${menuWidth}px` : undefined,
+                }}
                 menuClassName={menuClassName}
-              />,
-              document.body
-            );
-          })()}
+              />
+            </div>,
+            document.body
+          )}
 
         {/* 隐藏的原生 select，用于保持表单兼容性 */}
         {multiple === true ? (

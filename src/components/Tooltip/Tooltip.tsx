@@ -1,6 +1,6 @@
 import React, { useId, useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { computePosition, offset, flip, shift, arrow, autoUpdate } from '@floating-ui/dom';
+import { useFloatingPosition } from '../../hooks/useFloatingPosition';
 import './Tooltip.css';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
@@ -57,58 +57,20 @@ const Tooltip = React.forwardRef<HTMLSpanElement, TooltipProps>(
       };
     }, [hasContent]);
 
-    // 使用 Floating UI 计算位置并自动更新（支持 flip/shift/arrow）
+    // 使用 useFloatingPosition hook 计算位置
+    const floatingPosition = useFloatingPosition(
+      triggerRef as React.RefObject<HTMLElement | null>,
+      contentRef as React.RefObject<HTMLElement | null>,
+      { placement: placement as any, gap, showArrow: true },
+      isVisible
+    );
+
+    // 更新样式和放置位置
     useEffect(() => {
-      if (!isVisible) return;
-
-      const reference = triggerRef.current as Element | null;
-      const floating = contentRef.current as HTMLElement | null;
-      if (!reference || !floating) return;
-
-      const arrowEl = floating.querySelector('.beaver-tooltip__arrow') as HTMLElement | null;
-
-      const cleanup = autoUpdate(reference, floating, async () => {
-        try {
-          const middleware = [offset(gap), flip(), shift({ padding: 8 })];
-          if (arrowEl) middleware.push(arrow({ element: arrowEl }));
-
-          const {
-            x,
-            y,
-            placement: newPlacement,
-            middlewareData,
-          } = await computePosition(reference, floating, {
-            placement: placement as any,
-            strategy: 'fixed',
-            middleware,
-          });
-
-          setStyle({ left: Math.round(x || 0), top: Math.round(y || 0) });
-          setComputedPlacement(newPlacement || placement);
-
-          // 处理箭头偏移（将 arrow 的坐标转换为以 50% 为中心的偏移）
-          if (arrowEl && middlewareData && middlewareData.arrow) {
-            const arrowData = middlewareData.arrow;
-            const cw = floating.offsetWidth;
-            const ch = floating.offsetHeight;
-            let offsetVal = 0;
-            if ((newPlacement || placement).startsWith('top') || (newPlacement || placement).startsWith('bottom')) {
-              const arrowX = arrowData.x ?? 0;
-              offsetVal = arrowX - cw / 2 + (arrowEl.offsetWidth / 2 || 0);
-              setArrowStyle({ left: `calc(50% + ${Math.round(offsetVal)}px)` });
-            } else {
-              const arrowY = arrowData.y ?? 0;
-              offsetVal = arrowY - ch / 2 + (arrowEl.offsetHeight / 2 || 0);
-              setArrowStyle({ top: `calc(50% + ${Math.round(offsetVal)}px)` });
-            }
-          }
-        } catch {
-          // ignore
-        }
-      });
-
-      return () => cleanup && cleanup();
-    }, [isVisible, placement]);
+      setStyle({ left: floatingPosition.x, top: floatingPosition.y });
+      setComputedPlacement(floatingPosition.placement);
+      setArrowStyle(floatingPosition.arrowStyle);
+    }, [floatingPosition]);
 
     // wrapper：在一个可聚焦/可监听的 span 上挂载事件与 ref，避免针对子元素 clone 出现类型问题
     // 只有在有内容时才添加 aria-describedby，否则避免空的描述符
@@ -134,7 +96,12 @@ const Tooltip = React.forwardRef<HTMLSpanElement, TooltipProps>(
         style={{ ...style }}
       >
         <div className="beaver-tooltip__inner">{content}</div>
-        <div className="beaver-tooltip__arrow" data-placement={computedPlacement} style={arrowStyle} />
+        <div
+          className="beaver-tooltip__arrow"
+          data-placement={computedPlacement}
+          data-floating-arrow
+          style={arrowStyle}
+        />
       </div>
     ) : null;
 

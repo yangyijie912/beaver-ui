@@ -3,6 +3,7 @@ import Input from '../Input/Input';
 import { useSingleDatePicker } from './hooks/useSingleDatePicker';
 import { useRangeDatePicker } from './hooks/useRangeDatePicker';
 import { useDatePickerUI } from './hooks/useDatePickerState';
+import { useMenuPosition } from '../../hooks/useMenuPosition';
 import PanelRenderer from './components/PanelRenderer';
 import { formatSingleDate, formatRangeDate, parseSingleDate } from './utils/inputFormatter';
 import type { DatePickerProps } from './types';
@@ -51,6 +52,9 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     const inputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
+
+    // 使用 floating-ui 计算面板位置
+    const panelPosition = useMenuPosition(wrapperRef, panelRef, isOpen, 4);
 
     // 合并 ref（支持 forwardRef）
     const setInputRefs = useCallback(
@@ -585,20 +589,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       rangeState.tempStartDate,
     ]);
 
-    /**
-     * 计算面板位置
-     */
-    const [panelPosition, setPanelPosition] = useState<{ top?: number; left?: number }>({});
-
-    useEffect(() => {
-      if (isOpen && inputRef.current && panelRef.current) {
-        const rect = inputRef.current.getBoundingClientRect();
-        setPanelPosition({
-          top: rect.height + 4,
-          left: 0,
-        });
-      }
-    }, [isOpen]);
+    // 使用 floating-ui 计算的面板位置已在上面处理
 
     // 计算 wrapper 样式
     const wrapperStyle: React.CSSProperties = {

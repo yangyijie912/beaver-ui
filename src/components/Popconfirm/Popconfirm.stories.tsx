@@ -258,3 +258,148 @@ export const DeleteOperation: Story = {
     );
   },
 };
+
+/**
+ * 纵向滚动贴边 - 演示纵向滚动时的自动贴边和跟随行为
+ */
+export const VerticalScrolling: Story = {
+  name: '纵向滚动贴边演示',
+  render: () => (
+    <div
+      style={{
+        height: '400px',
+        overflow: 'auto',
+        border: '1px solid #ccc',
+        padding: '20px',
+        backgroundColor: '#fafafa',
+      }}
+    >
+      <div style={{ minHeight: '100px' }}>
+        <p>向下滚动查看更多内容...</p>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '40px', margin: '100px 0' }}>
+        <div style={{ flex: 1, textAlign: 'center' }}>
+          <p style={{ marginBottom: '10px' }}>顶部贴边 - placement=top</p>
+          <Popconfirm title="这会自动切换到 bottom" placement="top" description="空间不足时自动转换">
+            <Button variant="primary">按钮</Button>
+          </Popconfirm>
+        </div>
+
+        <div style={{ flex: 1, textAlign: 'center' }}>
+          <p style={{ marginBottom: '10px' }}>底部贴边 - placement=bottom</p>
+          <Popconfirm title="这会自动切换到 top" placement="bottom" description="空间不足时自动转换">
+            <Button variant="primary">按钮</Button>
+          </Popconfirm>
+        </div>
+      </div>
+
+      <div style={{ margin: '100px 0', textAlign: 'center' }}>
+        <p style={{ marginBottom: '10px' }}>页面顶部 - 向上滚动时跟随离开</p>
+        <Popconfirm title="向上滚动时我会跟着离开屏幕" placement="top">
+          <Button variant="primary">向上滚动试试</Button>
+        </Popconfirm>
+      </div>
+
+      <div style={{ minHeight: '200px' }}>
+        <p>继续向下滚动...</p>
+      </div>
+    </div>
+  ),
+};
+
+/**
+ * 横向滚动贴边（左侧）- 演示左侧的贴边情况
+ */
+export const HorizontalScrollingLeft: Story = {
+  name: '横向滚动贴边（左侧）',
+  render: () => (
+    <div
+      style={{
+        width: '100%',
+        height: '300px',
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        border: '1px solid #ccc',
+        backgroundColor: '#fafafa',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '20px',
+        gap: '100px',
+      }}
+    >
+      <div style={{ minWidth: '100px', textAlign: 'center' }}>
+        <p style={{ marginBottom: '10px', fontSize: '12px' }}>最左侧</p>
+        <Popconfirm title="贴边示例" description="向左滑动时跟随离开" placement="left">
+          <Button variant="primary">按钮</Button>
+        </Popconfirm>
+      </div>
+
+      <div style={{ minWidth: '100px', textAlign: 'center' }}>
+        <p style={{ marginBottom: '10px', fontSize: '12px' }}>左侧贴边</p>
+        <Popconfirm title="左侧贴边" description="自动向内偏移" placement="left">
+          <Button variant="primary">按钮</Button>
+        </Popconfirm>
+      </div>
+
+      <div style={{ minWidth: '100px', textAlign: 'center' }}>
+        <p style={{ marginBottom: '10px', fontSize: '12px' }}>中间</p>
+        <Popconfirm title="中间位置" description="正常展示" placement="left">
+          <Button variant="primary">按钮</Button>
+        </Popconfirm>
+      </div>
+
+      <div style={{ minWidth: '200px' }}>
+        <p style={{ fontSize: '12px', color: '#666' }}>继续向右滚动...</p>
+      </div>
+    </div>
+  ),
+};
+
+/**
+ * 横向滚动贴边（右侧）- 演示右侧的贴边情况
+ */
+export const HorizontalScrollingRight: Story = {
+  name: '横向滚动贴边（右侧）',
+  render: () => (
+    <div
+      style={{
+        width: '100%',
+        height: '300px',
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        border: '1px solid #ccc',
+        backgroundColor: '#fafafa',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '20px',
+        gap: '100px',
+      }}
+    >
+      <div style={{ minWidth: '200px' }}>
+        <p style={{ fontSize: '12px', color: '#666' }}>向右滚动查看...</p>
+      </div>
+
+      <div style={{ minWidth: '100px', textAlign: 'center' }}>
+        <p style={{ marginBottom: '10px', fontSize: '12px' }}>中间</p>
+        <Popconfirm title="中间位置" description="正常展示" placement="right">
+          <Button variant="primary">按钮</Button>
+        </Popconfirm>
+      </div>
+
+      <div style={{ minWidth: '100px', textAlign: 'center' }}>
+        <p style={{ marginBottom: '10px', fontSize: '12px' }}>右侧贴边</p>
+        <Popconfirm title="右侧贴边" description="自动向内偏移" placement="right">
+          <Button variant="primary">按钮</Button>
+        </Popconfirm>
+      </div>
+
+      <div style={{ minWidth: '100px', textAlign: 'center' }}>
+        <p style={{ marginBottom: '10px', fontSize: '12px' }}>最右侧</p>
+        <Popconfirm title="贴边示例" description="向右滑动时跟随离开" placement="right">
+          <Button variant="primary">按钮</Button>
+        </Popconfirm>
+      </div>
+    </div>
+  ),
+};
