@@ -252,14 +252,19 @@ export const NoDrag: Story = {
 };
 
 /**
- * 禁用状态
+ * 不同风格的禁用状态
  */
-export const Disabled: Story = {
+export const DisabledVariants: Story = {
   name: '禁用状态',
+  render: (args: UploadArgs) => (
+    <div style={{ display: 'grid', gap: 24, width: 500 }}>
+      <Upload {...args} variant="default" buttonText="默认风格（禁用）" />
+      <Upload {...args} variant="avatar" />
+      <Upload {...args} variant="drag" dragText="拖拽风格（禁用）" />
+    </div>
+  ),
   args: {
     disabled: true,
-    dragText: '上传已禁用',
-    buttonText: '上传（已禁用）',
   },
 };
 

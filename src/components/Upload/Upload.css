@@ -44,7 +44,7 @@
   cursor: pointer;
   transition: all 0.16s ease;
 }
-.beaver-upload__area:hover {
+.beaver-upload:not(.beaver-upload--disabled) .beaver-upload__area:hover {
   border-color: var(--beaver-upload-border-color-hover);
   background-color: var(--beaver-upload-bg-color-hover);
 }
@@ -54,6 +54,13 @@
   box-shadow: 0 0 0 4px rgba(64, 169, 255, 0.06);
 }
 .beaver-upload--disabled .beaver-upload__area {
+  cursor: not-allowed;
+  opacity: 0.6;
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.beaver-upload--disabled .beaver-upload__area--square {
   cursor: not-allowed;
   opacity: 0.6;
   background-color: #f9fafb;
@@ -71,45 +78,6 @@
   text-align: center;
   margin-bottom: var(--beaver-upload-item-gap);
   line-height: 1.5;
-}
-
-.beaver-upload__button {
-  padding: 6px 16px;
-  border: 1px solid var(--beaver-color-primary, #0eaae0);
-  border-radius: 4px;
-  background-color: transparent;
-  color: var(--beaver-color-primary, #0eaae0);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-.beaver-upload__button:hover:not(:disabled) {
-  background-color: var(--beaver-color-primary, #0eaae0);
-  color: #fff;
-}
-.beaver-upload__button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-/* 简易按钮风格（default 变体） */
-.beaver-upload__button-default {
-  padding: 6px 16px;
-  border: 1px solid var(--beaver-color-primary, #0eaae0);
-  border-radius: 4px;
-  background-color: transparent;
-  color: var(--beaver-color-primary, #0eaae0);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-.beaver-upload__button-default:hover:not(:disabled) {
-  background-color: var(--beaver-color-primary, #0eaae0);
-  color: #fff;
-}
-.beaver-upload__button-default:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
 }
 
 .beaver-upload__list {
@@ -274,7 +242,7 @@
   min-height: auto;
 }
 
-.beaver-upload__area--square:hover {
+.beaver-upload:not(.beaver-upload--disabled) .beaver-upload__area--square:hover {
   border-color: var(--beaver-upload-border-color-hover);
   background-color: var(--beaver-upload-bg-color-hover);
 }
