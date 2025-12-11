@@ -1,5 +1,6 @@
 import React, { useId, useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { computePosition, offset, flip, shift, arrow, autoUpdate } from '@floating-ui/dom';
 import './Tooltip.css';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
@@ -23,6 +24,8 @@ const Tooltip = React.forwardRef<HTMLSpanElement, TooltipProps>(
     const [internalVisible, setInternalVisible] = useState(false);
     const isVisible = internalVisible;
     const [style, setStyle] = useState<React.CSSProperties>({});
+    const [arrowStyle, setArrowStyle] = useState<React.CSSProperties>({});
+    const [computedPlacement, setComputedPlacement] = useState<string>(placement);
 
     // 判定 content 是否为有效内容（null / undefined / 空字符串 都视为无内容）
     const hasContent = !(
@@ -54,50 +57,57 @@ const Tooltip = React.forwardRef<HTMLSpanElement, TooltipProps>(
       };
     }, [hasContent]);
 
-    // 计算位置：当可见时或窗口变化时重新计算
+    // 使用 Floating UI 计算位置并自动更新（支持 flip/shift/arrow）
     useEffect(() => {
       if (!isVisible) return;
-      const update = () => {
-        const trigger = triggerRef.current;
-        const contentEl = contentRef.current;
-        if (!trigger || !contentEl) return;
-        const rect = trigger.getBoundingClientRect();
-        const cw = contentEl.offsetWidth;
-        const ch = contentEl.offsetHeight;
-        let top = 0;
-        let left = 0;
-        if (placement === 'top') {
-          top = rect.top - gap - ch;
-          left = rect.left + rect.width / 2 - cw / 2;
-        } else if (placement === 'bottom') {
-          top = rect.bottom + gap;
-          left = rect.left + rect.width / 2 - cw / 2;
-        } else if (placement === 'left') {
-          top = rect.top + rect.height / 2 - ch / 2;
-          left = rect.left - gap - cw;
-        } else {
-          // right
-          top = rect.top + rect.height / 2 - ch / 2;
-          left = rect.right + gap;
-        }
-        // 简单的视窗边界修正（避免完全超出视窗）
-        const pad = 8;
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        if (left < pad) left = pad;
-        if (left + cw > vw - pad) left = vw - pad - cw;
-        if (top < pad) top = pad;
-        if (top + ch > vh - pad) top = vh - pad - ch;
 
-        setStyle({ left: Math.round(left), top: Math.round(top) });
-      };
-      update();
-      window.addEventListener('scroll', update, true);
-      window.addEventListener('resize', update);
-      return () => {
-        window.removeEventListener('scroll', update, true);
-        window.removeEventListener('resize', update);
-      };
+      const reference = triggerRef.current as Element | null;
+      const floating = contentRef.current as HTMLElement | null;
+      if (!reference || !floating) return;
+
+      const arrowEl = floating.querySelector('.beaver-tooltip__arrow') as HTMLElement | null;
+
+      const cleanup = autoUpdate(reference, floating, async () => {
+        try {
+          const middleware = [offset(gap), flip(), shift({ padding: 8 })];
+          if (arrowEl) middleware.push(arrow({ element: arrowEl }));
+
+          const {
+            x,
+            y,
+            placement: newPlacement,
+            middlewareData,
+          } = await computePosition(reference, floating, {
+            placement: placement as any,
+            strategy: 'fixed',
+            middleware,
+          });
+
+          setStyle({ left: Math.round(x || 0), top: Math.round(y || 0) });
+          setComputedPlacement(newPlacement || placement);
+
+          // 处理箭头偏移（将 arrow 的坐标转换为以 50% 为中心的偏移）
+          if (arrowEl && middlewareData && middlewareData.arrow) {
+            const arrowData = middlewareData.arrow;
+            const cw = floating.offsetWidth;
+            const ch = floating.offsetHeight;
+            let offsetVal = 0;
+            if ((newPlacement || placement).startsWith('top') || (newPlacement || placement).startsWith('bottom')) {
+              const arrowX = arrowData.x ?? 0;
+              offsetVal = arrowX - cw / 2 + (arrowEl.offsetWidth / 2 || 0);
+              setArrowStyle({ left: `calc(50% + ${Math.round(offsetVal)}px)` });
+            } else {
+              const arrowY = arrowData.y ?? 0;
+              offsetVal = arrowY - ch / 2 + (arrowEl.offsetHeight / 2 || 0);
+              setArrowStyle({ top: `calc(50% + ${Math.round(offsetVal)}px)` });
+            }
+          }
+        } catch {
+          // ignore
+        }
+      });
+
+      return () => cleanup && cleanup();
     }, [isVisible, placement]);
 
     // wrapper：在一个可聚焦/可监听的 span 上挂载事件与 ref，避免针对子元素 clone 出现类型问题
@@ -119,12 +129,12 @@ const Tooltip = React.forwardRef<HTMLSpanElement, TooltipProps>(
         role="tooltip"
         id={id}
         className={`beaver-tooltip__content`}
-        data-placement={placement}
+        data-placement={computedPlacement}
         data-state={isVisible ? 'visible' : 'hidden'}
-        style={style}
+        style={{ ...style }}
       >
         <div className="beaver-tooltip__inner">{content}</div>
-        <div className="beaver-tooltip__arrow" data-placement={placement} />
+        <div className="beaver-tooltip__arrow" data-placement={computedPlacement} style={arrowStyle} />
       </div>
     ) : null;
 

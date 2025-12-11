@@ -34,16 +34,45 @@ export const Top: Story = {
 export const DifferentPlacements: Story = {
   name: '不同位置示例',
   render: () => (
-    <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
-      <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 24,
+        width: '100%',
+      }}
+    >
+      <div style={{ display: 'flex', gap: 24, justifyContent: 'center' }}>
         <Tooltip content="左侧提示" placement="left">
-          <Button variant="primary">Left</Button>
+          <Button variant="primary">左侧提示</Button>
         </Tooltip>
-        <Tooltip content="下方提示" placement="bottom">
-          <Button variant="primary">Center</Button>
+        <Tooltip content="这是一个上方提示，但是在方位受限的情况下会自动调整位置" placement="top">
+          <Button variant="primary">上方提示</Button>
         </Tooltip>
         <Tooltip content="右侧提示" placement="right">
-          <Button variant="primary">Right</Button>
+          <Button variant="primary">右侧提示</Button>
+        </Tooltip>
+      </div>
+      <div style={{ display: 'flex', gap: 24 }}>
+        <Tooltip content="这是一个左侧提示，但是在方位受限的情况下会自动调整位置" placement="left">
+          <Button variant="primary">左侧提示</Button>
+        </Tooltip>
+        <Tooltip content="下方提示" placement="bottom">
+          <Button variant="primary">下方提示</Button>
+        </Tooltip>
+        <Tooltip content="右侧提示" placement="right">
+          <Button variant="primary">右侧提示</Button>
+        </Tooltip>
+      </div>
+      <div style={{ display: 'flex', gap: 24, flexDirection: 'row-reverse' }}>
+        <Tooltip content="这是一个右侧提示，但是在方位受限的情况下会自动调整位置" placement="right">
+          <Button variant="primary">右侧提示</Button>
+        </Tooltip>
+        <Tooltip content="下方提示" placement="bottom">
+          <Button variant="primary">下方提示</Button>
+        </Tooltip>
+        <Tooltip content="左侧提示" placement="left">
+          <Button variant="primary">左侧提示</Button>
         </Tooltip>
       </div>
     </div>
