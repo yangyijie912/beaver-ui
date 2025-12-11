@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Input from '../Input/Input';
 import { useSingleDatePicker } from './hooks/useSingleDatePicker';
 import { useRangeDatePicker } from './hooks/useRangeDatePicker';
@@ -53,8 +54,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     const wrapperRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
 
-    // 使用 floating-ui 计算面板位置
-    const panelPosition = useMenuPosition(wrapperRef, panelRef, isOpen, 4);
+    // 使用 floating-ui 计算面板位置（gap = 6 是面板和输入框之间的距离）
+    const panelPosition = useMenuPosition(wrapperRef, panelRef, isOpen, 6);
 
     // 合并 ref（支持 forwardRef）
     const setInputRefs = useCallback(
@@ -623,48 +624,53 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
             {...rest}
           />
 
-          {isOpen && (
-            <div
-              ref={panelRef}
-              className="beaver-datepicker-panel"
-              style={{
-                position: 'absolute',
-                top: `${panelPosition.top}px`,
-                left: `${panelPosition.left}px`,
-              }}
-            >
-              <PanelRenderer
-                picker={picker}
-                currentMonth={currentMonth}
-                selectedDate={!isRange ? singleState.currentDate : undefined}
-                selectedRange={isRange ? rangeState.currentRange : undefined}
-                rangeStart={
-                  picker === 'datetime' && isRange
-                    ? rangeState.selectingStart
-                      ? rangeState.tempDateTimeStart
-                      : rangeState.confirmedStartDate
-                    : isRange
-                      ? rangeState.tempStartDate
-                      : undefined
-                }
-                hoverDate={rangeState.hoverDate}
-                tempRangeEnd={rangeState.tempDateTimeEnd}
-                isRange={isRange}
-                disabledDate={disabledDate}
-                onDateClick={handleDateClick}
-                onDateHover={handleDateHover}
-                onMonthChange={handleMonthSelect}
-                onYearChange={handleYearNavigate}
-                onYearClick={handleYearSelect}
-                onPrevMonth={handlePrevMonth}
-                onNextMonth={handleNextMonth}
-                onTimeChange={handleTimeChange}
-                timeFormat={timeFormat}
-                onDateTimeRangeConfirm={handleDateTimeRangeConfirm}
-                selectingStart={picker === 'datetime' && isRange ? rangeState.selectingStart : undefined}
-              />
-            </div>
-          )}
+          {isOpen &&
+            createPortal(
+              <div
+                ref={panelRef}
+                className="beaver-datepicker-panel"
+                style={{
+                  position: 'fixed',
+                  left: `${panelPosition.x}px`,
+                  top: `${panelPosition.y}px`,
+                  visibility: panelPosition.measured ? 'visible' : 'hidden',
+                  pointerEvents: panelPosition.measured ? undefined : 'none',
+                  zIndex: 'var(--beaver-datepicker-z-index, 5000)',
+                }}
+              >
+                <PanelRenderer
+                  picker={picker}
+                  currentMonth={currentMonth}
+                  selectedDate={!isRange ? singleState.currentDate : undefined}
+                  selectedRange={isRange ? rangeState.currentRange : undefined}
+                  rangeStart={
+                    picker === 'datetime' && isRange
+                      ? rangeState.selectingStart
+                        ? rangeState.tempDateTimeStart
+                        : rangeState.confirmedStartDate
+                      : isRange
+                        ? rangeState.tempStartDate
+                        : undefined
+                  }
+                  hoverDate={rangeState.hoverDate}
+                  tempRangeEnd={rangeState.tempDateTimeEnd}
+                  isRange={isRange}
+                  disabledDate={disabledDate}
+                  onDateClick={handleDateClick}
+                  onDateHover={handleDateHover}
+                  onMonthChange={handleMonthSelect}
+                  onYearChange={handleYearNavigate}
+                  onYearClick={handleYearSelect}
+                  onPrevMonth={handlePrevMonth}
+                  onNextMonth={handleNextMonth}
+                  onTimeChange={handleTimeChange}
+                  timeFormat={timeFormat}
+                  onDateTimeRangeConfirm={handleDateTimeRangeConfirm}
+                  selectingStart={picker === 'datetime' && isRange ? rangeState.selectingStart : undefined}
+                />
+              </div>,
+              document.body
+            )}
         </div>
       </>
     );

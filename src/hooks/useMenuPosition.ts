@@ -63,9 +63,10 @@ export const useMenuPosition = (
         const menuShadow = parseBoxShadowExtent(csMenu.boxShadow || null);
         const outline = Math.abs(parseFloat(csTrigger.outlineWidth || '0')) || 0;
         const borderTop = Math.abs(parseFloat(csTrigger.borderTopWidth || '0')) || 0;
-        const menuPaddingTop = Math.abs(parseFloat(csMenu.paddingTop || '0')) || 0;
 
-        const visualGap = Math.max(0, gap + triggerShadow + menuShadow + outline + borderTop + menuPaddingTop);
+        // 不再把 menu 的 paddingTop 计入 visualGap，以避免在不同组件（例如 DatePicker）
+        // 同时存在外部 margin / 内部 padding 时出现不一致的视觉间距。
+        const visualGap = Math.max(0, gap + triggerShadow + menuShadow + outline + borderTop);
 
         const { x, y } = await computePosition(trigger, menu, {
           placement: 'bottom-start',

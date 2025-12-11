@@ -76,7 +76,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const [menuWidth, setMenuWidth] = useState<number | null>(null);
 
     // 使用 floating-ui 计算菜单位置
-    const menuPosition = useMenuPosition(rootRef, menuRef, open, 0);
+    const menuPosition = useMenuPosition(rootRef, menuRef, open, 6);
 
     // 菜单宽度在打开前测量（避免打开时内容撑开触发器）
     useEffect(() => {

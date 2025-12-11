@@ -58,11 +58,11 @@ export const WithDefaultValue: Story = {
 export const Sizes: Story = {
   name: '不同尺寸',
   render: () => (
-    <>
+    <div style={{ display: 'flex', gap: '20px', flexDirection: 'column' }}>
       <DatePicker size="small" placeholder="小尺寸" />
       <DatePicker size="medium" placeholder="中等尺寸" />
       <DatePicker size="large" placeholder="大尺寸" />
-    </>
+    </div>
   ),
 };
 

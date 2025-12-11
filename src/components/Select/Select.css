@@ -247,7 +247,7 @@
   right: auto;
   width: 100%;
   background: var(--beaver-select-bg);
-  margin: 6px 0;
+  margin: 0;
   border-radius: var(--beaver-radius-lg);
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: var(--beaver-select-box-shadow, 0 8px 24px rgba(20, 30, 50, 0.12));

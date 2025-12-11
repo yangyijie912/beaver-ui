@@ -97,16 +97,12 @@
 
 /* 普通日期面板宽度 */
 .beaver-datepicker-panel {
-  position: absolute;
-  top: 100%;
-  left: 0;
   z-index: var(--beaver-datepicker-picker-z-index, 5001);
   background-color: var(--beaver-datepicker-picker-bg, #ffffff);
   border: 1px solid var(--beaver-datepicker-picker-border-color, #e8e8e8);
   border-radius: var(--beaver-datepicker-picker-border-radius, 6px);
   box-shadow: var(--beaver-datepicker-picker-box-shadow, 0 6px 18px rgba(20, 30, 50, 0.2));
   padding: var(--beaver-datepicker-picker-padding, 12px 12px);
-  margin-top: var(--beaver-datepicker-gap, 8px);
   animation: beaver-datepicker-slide-down 0.2s ease-out;
   width: calc(var(--beaver-datepicker-panel-content-width, 248px) + 32px);
   box-sizing: border-box;
