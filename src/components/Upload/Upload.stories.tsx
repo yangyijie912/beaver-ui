@@ -10,49 +10,13 @@ import Upload from './Upload';
  * - 支持文件验证（大小、类型等）
  * - 支持自定义上传端点和上传函数
  * - 显示上传进度和文件列表
+ * - 支持多种风格（按钮、拖拽区、头像上传等）
+ * - 支持自定义触发节点渲染
  */
 const meta: Meta<typeof Upload> = {
   title: 'Components/Upload',
   component: Upload,
   tags: ['autodocs'],
-  argTypes: {
-    action: {
-      control: 'text',
-      description: '上传的 URL 端点',
-    },
-    multiple: {
-      control: 'boolean',
-      description: '是否支持多个文件上传',
-    },
-    accept: {
-      control: 'text',
-      description: '接受的文件类型（如 "image/*", ".pdf" 等）',
-    },
-    showFileList: {
-      control: 'boolean',
-      description: '是否显示已上传文件列表',
-    },
-    disabled: {
-      control: 'boolean',
-      description: '是否禁用上传',
-    },
-    autoUpload: {
-      control: 'boolean',
-      description: '是否自动上传文件',
-    },
-    drag: {
-      control: 'boolean',
-      description: '是否启用拖拽上传',
-    },
-    maxCount: {
-      control: 'number',
-      description: '最大上传文件数',
-    },
-    maxSize: {
-      control: 'number',
-      description: '最大文件大小（字节）',
-    },
-  },
 };
 
 export default meta;
