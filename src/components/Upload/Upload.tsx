@@ -71,8 +71,9 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
       defaultFileList
     );
 
-    // 如果使用内置 drag 变体则强制启用拖拽行为，其他变体则不启用拖拽
-    const effectiveDrag = variant === 'drag' ? true : false;
+    // 如果用户显式传入 `drag`，则以用户为准；否则在 variant === 'drag' 时默认启用拖拽
+    const propDrag = (props as any)?.drag;
+    const effectiveDrag = propDrag === undefined ? variant === 'drag' : Boolean(propDrag);
 
     // 使用拖拽 Hook
     const { dragging, handleDragEnter, handleDragLeave, handleDragOver, handleDrop } = useDragAndDrop(

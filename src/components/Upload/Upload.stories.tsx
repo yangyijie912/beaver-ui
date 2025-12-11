@@ -53,36 +53,6 @@ const meta: Meta<typeof Upload> = {
       description: '最大文件大小（字节）',
     },
   },
-  // 默认参数
-  args: {
-    defaultFileList: [
-      {
-        uid: 'demo-1',
-        name: 'landscape.png',
-        status: 'success',
-        response: { url: 'https://picsum.photos/300/300' },
-      },
-      {
-        uid: 'demo-2',
-        name: 'avatar.jpg',
-        status: 'uploading',
-        percent: 48,
-        response: { url: 'https://picsum.photos/300/300' },
-      },
-      {
-        uid: 'avatar-1',
-        name: 'report.pdf',
-        status: 'success',
-        response: { url: '' },
-      },
-      {
-        uid: 'avatar-2',
-        name: 'notes.txt',
-        status: 'error',
-        error: '上传失败',
-      },
-    ],
-  },
 };
 
 export default meta;
@@ -90,28 +60,194 @@ export default meta;
 type Story = StoryObj<typeof Upload>;
 type UploadArgs = Omit<React.ComponentProps<typeof Upload>, 'ref'>;
 
+const defaultFileList = [
+  {
+    uid: 'demo-1',
+    name: 'landscape.png',
+    status: 'success',
+    response: { url: 'https://picsum.photos/300/300' },
+  },
+  {
+    uid: 'demo-2',
+    name: 'avatar.jpg',
+    status: 'uploading',
+    percent: 48,
+    response: { url: 'https://picsum.photos/300/300' },
+  },
+  {
+    uid: 'avatar-1',
+    name: 'report.pdf',
+    status: 'success',
+    response: { url: '' },
+  },
+  {
+    uid: 'avatar-2',
+    name: 'notes.txt',
+    status: 'error',
+    error: '上传失败',
+  },
+];
+
 /**
- * 基础上传示例
+ * 基础上传
+ * - 通过 buttonText 设置按钮文本
  */
 export const Basic: Story = {
   name: '基础上传',
   args: {
     action: '/api/upload',
+    buttonText: '上传',
+  },
+};
+
+/**
+ * 拖拽风格
+ * - 通过设置 variant="drag" 启用拖拽上传风格
+ * - 通过 dragText 自定义提示文本
+ */
+export const DragStyle: Story = {
+  name: '拖拽风格',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 500 }}>
+      <Upload {...args} variant="drag" />
+    </div>
+  ),
+  args: {
     dragText: '拖拽文件到此处，或点击选择文件',
     buttonText: '选择文件',
   },
 };
 
 /**
+ * 头像风格
+ * - 通过设置 variant="avatar" 启用头像上传风格
+ */
+export const AvatarStyle: Story = {
+  name: '头像风格',
+  render: (args: UploadArgs) => (
+    <div>
+      <Upload {...args} variant="avatar" />
+    </div>
+  ),
+};
+
+/**
+ * 简易按钮风格（默认） + 图片展示
+ * - 通过设置 listType="picture" 启用图片展示风格
+ */
+export const DefaultButtonWithPicture: Story = {
+  name: '简易按钮风格+图片展示',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 500 }}>
+      <Upload {...args} listType="picture" />
+    </div>
+  ),
+  args: {
+    buttonText: '选择文件',
+    defaultFileList,
+  },
+};
+
+/**
+ * 拖拽风格 + 图片展示
+ */
+export const DragStyleWithPicture: Story = {
+  name: '拖拽风格+图片展示',
+  render: (args: UploadArgs) => (
+    <div style={{ width: 500 }}>
+      <Upload {...args} variant="drag" listType="picture" />
+    </div>
+  ),
+  args: {
+    dragText: '拖拽文件到此处，或点击选择文件',
+    buttonText: '选择文件',
+    defaultFileList,
+  },
+};
+
+/**
+ * 头像风格 + 列表展示
+ * - 通过设置 listType="list" 启用列表展示风格
+ */
+export const AvatarStyleWithList: Story = {
+  name: '头像风格+列表展示',
+  render: (args: UploadArgs) => (
+    <div>
+      <Upload {...args} variant="avatar" listType="list" />
+    </div>
+  ),
+  args: {
+    defaultFileList,
+  },
+};
+
+/**
  * 单文件上传
+ * - 通过设置 multiple=false 限制为单文件上传，反复上传只会更新文件
  */
 export const SingleFile: Story = {
   name: '单文件上传',
   args: {
     action: '/api/upload',
     multiple: false,
-    dragText: '拖拽文件到此处上传',
     buttonText: '选择单个文件',
+  },
+};
+
+/**
+ * 限制文件数量
+ * - 通过设置 maxCount 限制最大上传文件数
+ */
+export const LimitFileCount: Story = {
+  name: '限制文件数量',
+  args: {
+    action: '/api/upload',
+    maxCount: 3,
+    buttonText: '最多上传 3 个文件',
+  },
+};
+
+/**
+ * 限制文件类型
+ * - 通过设置 accept 限制可上传的文件类型
+ */
+export const LimitFileType: Story = {
+  name: '限制文件类型',
+  args: {
+    action: '/api/upload',
+    accept: 'image/*',
+    buttonText: '只支持图片文件',
+  },
+};
+
+/**
+ * 限制文件大小
+ * - 通过设置 maxSize 限制单个文件的最大大小
+ * - 通过 sizeLimitMessage 自定义超限时的错误提示
+ */
+export const LimitFileSize: Story = {
+  name: '限制文件大小',
+  args: {
+    action: '/api/upload',
+    maxSize: 1024 * 1024, // 1MB
+    sizeLimitMessage: '文件大小不超过 1MB',
+    dragText: '拖拽文件到此处（最大 1MB）',
+    variant: 'drag',
+  },
+};
+
+/**
+ * 无拖拽功能
+ * - 通过设置 drag=false 禁用拖拽上传功能
+ */
+export const NoDrag: Story = {
+  name: '禁用拖拽',
+  args: {
+    action: '/api/upload',
+    drag: false,
+    dragText: '点击下方按钮选择文件',
+    buttonText: '点击选择文件',
+    variant: 'drag',
   },
 };
 
@@ -135,109 +271,6 @@ export const HideFileList: Story = {
   args: {
     action: '/api/upload',
     showFileList: false,
-    dragText: '拖拽文件到此处',
-  },
-};
-
-/**
- * 限制文件类型
- */
-export const LimitFileType: Story = {
-  name: '限制文件类型',
-  args: {
-    action: '/api/upload',
-    accept: 'image/*',
-    dragText: '只支持图片文件',
-    buttonText: '选择图片',
-  },
-};
-
-/**
- * 限制文件大小
- */
-export const LimitFileSize: Story = {
-  name: '限制文件大小',
-  args: {
-    action: '/api/upload',
-    maxSize: 1024 * 1024, // 1MB
-    sizeLimitMessage: '文件大小不超过 1MB',
-    dragText: '拖拽文件到此处（最大 1MB）',
-  },
-};
-
-/**
- * 限制文件数量
- */
-export const LimitFileCount: Story = {
-  name: '限制文件数量',
-  args: {
-    action: '/api/upload',
-    maxCount: 3,
-    dragText: '最多上传 3 个文件',
-    buttonText: '选择文件',
-  },
-};
-
-/**
- * 手动上传
- */
-export const ManualUpload: Story = {
-  name: '手动上传',
-  render: (args: UploadArgs) => {
-    const [files, setFiles] = React.useState<any[]>([]);
-
-    const handleUpload = () => {
-      console.log('手动上传', files);
-    };
-
-    return (
-      <div>
-        <Upload {...args} autoUpload={false} onChange={(uploadFiles) => setFiles(uploadFiles)} />
-        <button onClick={handleUpload} style={{ marginTop: '12px', padding: '8px 16px', cursor: 'pointer' }}>
-          提交上传
-        </button>
-      </div>
-    );
-  },
-  args: {
-    dragText: '拖拽文件到此处，点击"提交上传"按钮手动上传',
-  },
-};
-
-/**
- * 自定义上传函数
- */
-export const CustomUpload: Story = {
-  name: '自定义上传函数',
-  render: (args: UploadArgs) => {
-    const customRequest = async (file: File) => {
-      // 模拟上传延迟
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log('自定义上传完成:', file.name);
-          resolve({ success: true, filename: file.name });
-        }, 2000);
-      });
-    };
-
-    return <Upload {...args} customRequest={customRequest} />;
-  },
-  args: {
-    dragText: '使用自定义上传函数',
-    buttonText: '选择文件',
-  },
-};
-
-/**
- * 无拖拽功能
- */
-export const NoDrag: Story = {
-  name: '无拖拽功能',
-  args: {
-    action: '/api/upload',
-    drag: false,
-    dragText: '点击下方按钮选择文件',
-    buttonText: '点击选择文件',
   },
 };
 
@@ -288,55 +321,127 @@ export const WithCallbacks: Story = {
 };
 
 /**
- * 完整示例
+ * 手动上传
+ * - 设置 autoUpload={false}
+ * - 通过 onChange 把选中的文件列表回调给父组件，但不会自动发起上传
+ * - 适用场景：需要在父组件中做额外处理后再上传（例如先校验、预览、合并表单数据或用户确认）
+ * - 组件只负责文件选择和列表管理，不负责实际发送请求，上传操作需手动控制
  */
-export const Complete: Story = {
-  name: '完整示例',
+export const ManualUpload: Story = {
+  name: '手动上传',
   render: (args: UploadArgs) => {
-    const [uploadedFiles, setUploadedFiles] = React.useState<any[]>([]);
+    const [files, setFiles] = React.useState<any[]>([]);
+
+    const handleUpload = () => {
+      console.log('手动上传', files);
+    };
 
     return (
-      <div style={{ padding: '20px', maxWidth: '600px' }}>
-        <h3>文件上传示例</h3>
-        <Upload
-          {...args}
-          maxCount={5}
-          maxSize={5 * 1024 * 1024} // 5MB
-          accept="image/*,.pdf,.doc,.docx"
-          onChange={(files) => {
-            console.log('文件列表变化:', files);
-            setUploadedFiles(files);
-          }}
-        />
-        <div style={{ marginTop: '20px' }}>
-          <h4>已上传文件统计</h4>
-          <p>总数: {uploadedFiles.length}</p>
-          <p>成功: {uploadedFiles.filter((f) => f.status === 'success').length}</p>
-          <p>失败: {uploadedFiles.filter((f) => f.status === 'error').length}</p>
-          <p>上传中: {uploadedFiles.filter((f) => f.status === 'uploading').length}</p>
-        </div>
+      <div>
+        <Upload {...args} autoUpload={false} onChange={(uploadFiles) => setFiles(uploadFiles)} />
+        <button onClick={handleUpload} style={{ marginTop: '12px', padding: '8px 16px', cursor: 'pointer' }}>
+          提交上传
+        </button>
       </div>
     );
   },
   args: {
-    action: '/api/upload',
-    dragText: '拖拽文件到此处，或点击选择文件（最多 5 个，每个不超过 5MB）',
+    dragText: '拖拽文件到此处，点击"提交上传"按钮手动上传',
+  },
+};
+
+/**
+ * 自定义上传函数
+ * - 通过 customRequest 提供自定义上传逻辑，替代默认的网络上传逻辑
+ * - 适用场景：需要使用特殊的上传协议或 SDK，用 fetch/axios、上传到第三方服务、分片上传、带特殊表单字段等，或需要在上传前后做额外处理
+ */
+export const CustomUpload: Story = {
+  name: '自定义上传函数',
+  render: (args: UploadArgs) => {
+    const customRequest = async (file: File) => {
+      // 模拟上传延迟
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log('自定义上传完成:', file.name);
+          resolve({ success: true, filename: file.name });
+        }, 2000);
+      });
+    };
+
+    return <Upload {...args} customRequest={customRequest} />;
+  },
+  args: {
+    dragText: '使用自定义上传函数',
     buttonText: '选择文件',
   },
 };
 
 /**
- * 自定义触发（children 插槽）
+ * children 完全自定义样式
  */
-export const CustomTrigger: Story = {
-  name: '自定义触发（children）',
-  render: (args: UploadArgs) => (
-    <div style={{ width: 320 }}>
-      <Upload {...args}>
-        <button type="button">一个新的上传</button>
-      </Upload>
-    </div>
-  ),
+export const CustomTriggerChildrenStyled: Story = {
+  name: '完全自定义样式',
+  render: (args: UploadArgs) => {
+    const [files, setFiles] = React.useState<any[]>([]);
+
+    return (
+      <div style={{ width: 360 }}>
+        <Upload {...args} onChange={(f) => setFiles(f)}>
+          <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                (e.currentTarget as HTMLElement).click();
+              }
+            }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              padding: '14px 18px',
+              borderRadius: 12,
+              background: 'linear-gradient(90deg,#ffecd2,#fcb69f)',
+              cursor: 'pointer',
+              boxShadow: '0 8px 20px rgba(0,0,0,0.08)',
+              userSelect: 'none',
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3v10" stroke="#5b3bdb" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M8 7l4-4 4 4" stroke="#5b3bdb" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M20 21H4a2 2 0 0 1-2-2v0a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2z"
+                stroke="#5b3bdb"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div style={{ lineHeight: 1 }}>
+              <div style={{ fontWeight: 700, color: '#3b2f7a' }}>上传你的创意文件</div>
+              <div style={{ fontSize: 12, color: '#4a4a4a' }}>支持 PNG / JPG / PDF • 点击或拖拽上传</div>
+            </div>
+          </div>
+        </Upload>
+
+        <div style={{ marginTop: 12, fontSize: 13, color: '#222' }}>
+          <strong>已选文件：</strong>
+          {files.length ? (
+            <ul style={{ margin: '6px 0 0', paddingLeft: 18 }}>
+              {files.map((f) => (
+                <li key={f.uid || f.name} style={{ fontSize: 13 }}>
+                  {f.name}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <span style={{ marginLeft: 6, color: '#666' }}>未选择任何文件</span>
+          )}
+        </div>
+      </div>
+    );
+  },
   args: {
     action: '/api/upload',
   },
@@ -344,106 +449,68 @@ export const CustomTrigger: Story = {
 
 /**
  * 函数式插槽 renderTrigger 示例
+ * - 通过 renderTrigger 自定义触发节点渲染
+ * - 当想完全自定义触发器（外观、事件、样式）但仍希望复用 Upload 的文件选择/管理逻辑时使用
+ * - 提供的 open 方法用于打开文件选择对话框
  */
 export const RenderTrigger: Story = {
-  name: '函数式插槽（renderTrigger）',
-  render: (args: UploadArgs) => (
+  name: '自定义触发',
+  render: (args: UploadArgs) => {
+    const [files, setFiles] = React.useState<any[]>([]);
+
+    return (
+      <div style={{ width: 320 }}>
+        <Upload
+          {...args}
+          onChange={(list) => setFiles(list)}
+          renderTrigger={({ open }) => (
+            <a onClick={open} style={{ cursor: 'pointer', color: '#0eaae0' }}>
+              自定义触发（renderTrigger）
+            </a>
+          )}
+        />
+
+        <div style={{ marginTop: 12, fontSize: 13 }}>
+          <strong>已选文件：</strong>
+          {files.length ? (
+            <span style={{ marginLeft: 6 }}>{files.map((f) => f.name).join(', ')}</span>
+          ) : (
+            <span style={{ marginLeft: 6, color: '#666' }}>未选择任何文件</span>
+          )}
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import React from 'react';
+import Upload from './Upload';
+
+export const RenderTriggerExample = () => {
+  const [files, setFiles] = React.useState([]);
+
+  return (
     <div style={{ width: 320 }}>
       <Upload
-        {...args}
+        action="/api/upload"
+        onChange={(list) => setFiles(list)}
         renderTrigger={({ open }) => (
           <a onClick={open} style={{ cursor: 'pointer', color: '#0eaae0' }}>
             自定义触发（renderTrigger）
           </a>
         )}
       />
-    </div>
-  ),
-};
 
-/**
- * 简易按钮风格（默认）
- * - 在外层容器设置宽度可以限制文件展示区域宽度
- */
-export const DefaultButton: Story = {
-  name: '简易按钮风格',
-  render: (args: UploadArgs) => (
-    <div style={{ width: 500 }}>
-      <Upload {...args} />
+      <div style={{ marginTop: 12 }}>
+        <strong>已选文件：</strong>
+        {files.length ? files.map((f) => f.name).join(', ') : '未选择任何文件'}
+      </div>
     </div>
-  ),
-  args: {
-    buttonText: '选择文件',
+  );
+};
+`,
+      },
+    },
   },
-};
-
-/**
- * 拖拽风格
- */
-export const DragStyle: Story = {
-  name: '拖拽风格',
-  render: (args: UploadArgs) => (
-    <div style={{ width: 500 }}>
-      <Upload {...args} variant="drag" />
-    </div>
-  ),
-  args: {
-    dragText: '拖拽文件到此处，或点击选择文件',
-    buttonText: '选择文件',
-  },
-};
-
-/**
- * 头像风格
- */
-export const AvatarStyle: Story = {
-  name: '头像风格',
-  render: (args: UploadArgs) => (
-    <div>
-      <Upload {...args} variant="avatar" />
-    </div>
-  ),
-};
-
-/**
- * 简易按钮风格（默认） + 图片展示
- */
-export const DefaultButtonWithPicture: Story = {
-  name: '简易按钮风格+图片展示',
-  render: (args: UploadArgs) => (
-    <div style={{ width: 500 }}>
-      <Upload {...args} listType="picture" />
-    </div>
-  ),
-  args: {
-    buttonText: '选择文件',
-  },
-};
-
-/**
- * 拖拽风格 + 图片展示
- */
-export const DragStyleWithPicture: Story = {
-  name: '拖拽风格+图片展示',
-  render: (args: UploadArgs) => (
-    <div style={{ width: 500 }}>
-      <Upload {...args} variant="drag" listType="picture" />
-    </div>
-  ),
-  args: {
-    dragText: '拖拽文件到此处，或点击选择文件',
-    buttonText: '选择文件',
-  },
-};
-
-/**
- * 头像风格 + 列表展示
- */
-export const AvatarStyleWithList: Story = {
-  name: '头像风格+列表展示',
-  render: (args: UploadArgs) => (
-    <div>
-      <Upload {...args} variant="avatar" listType="list" />
-    </div>
-  ),
 };
