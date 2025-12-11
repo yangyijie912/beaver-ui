@@ -219,66 +219,68 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
         {/* Popconfirm 内容（使用 Portal 渲染到 body） */}
         {open && (
           <Portal>
-            {/* 遮罩 */}
-            {showMask && (
-              <div
-                className={`beaver-popconfirm__mask ${showMask ? 'beaver-popconfirm--show-mask' : ''} ${maskClassName}`}
-                onClick={handleMaskClick}
-              />
-            )}
+            <div className="beaver-popconfirm-portal">
+              {/* 遮罩 */}
+              {showMask && (
+                <div
+                  className={`beaver-popconfirm__mask ${showMask ? 'beaver-popconfirm--show-mask' : ''} ${maskClassName}`}
+                  onClick={handleMaskClick}
+                />
+              )}
 
-            {/* Popconfirm 包装器（用于定位） */}
-            <div
-              ref={wrapperRef}
-              className={`beaver-popconfirm-wrapper beaver-popconfirm--${position.placement || placement} ${className}`}
-              style={{
-                position: 'fixed',
-                top: `${position.top}px`,
-                left: `${position.left}px`,
-              }}
-              {...rest}
-            >
-              {/* Popconfirm 内容 */}
+              {/* Popconfirm 包装器（用于定位） */}
               <div
-                ref={contentRef}
-                className={`beaver-popconfirm__content ${contentClassName}`}
-                style={
-                  {
-                    '--arrow-offset': `${position.arrowOffset || 0}px`,
-                  } as React.CSSProperties
-                }
+                ref={wrapperRef}
+                className={`beaver-popconfirm-wrapper beaver-popconfirm--${position.placement || placement} ${className}`}
+                style={{
+                  position: 'fixed',
+                  top: `${position.top}px`,
+                  left: `${position.left}px`,
+                }}
+                {...rest}
               >
-                {/* 箭头指示器 */}
-                <div className="beaver-popconfirm__arrow" />
+                {/* Popconfirm 内容 */}
+                <div
+                  ref={contentRef}
+                  className={`beaver-popconfirm__content ${contentClassName}`}
+                  style={
+                    {
+                      '--arrow-offset': `${position.arrowOffset || 0}px`,
+                    } as React.CSSProperties
+                  }
+                >
+                  {/* 箭头指示器 */}
+                  <div className="beaver-popconfirm__arrow" />
 
-                {/* 标题 */}
-                <div className="beaver-popconfirm__title">{title}</div>
+                  {/* 标题 */}
+                  <div className="beaver-popconfirm__title">{title}</div>
 
-                {/* 描述文本 */}
-                {description && <div className="beaver-popconfirm__description">{description}</div>}
+                  {/* 描述文本 */}
+                  {description && <div className="beaver-popconfirm__description">{description}</div>}
 
-                {/* 操作按钮 */}
-                <div className="beaver-popconfirm__actions">
-                  {/* 取消按钮 */}
-                  <Button
-                    className="beaver-popconfirm__cancel"
-                    variant={cancelVariant}
-                    size="small"
-                    onClick={handleCancel}
-                  >
-                    {cancelText}
-                  </Button>
+                  {/* 操作按钮 */}
+                  <div className="beaver-popconfirm__actions">
+                    {/* 取消按钮 */}
+                    <Button
+                      className="beaver-popconfirm__cancel"
+                      variant={cancelVariant}
+                      size="small"
+                      onClick={handleCancel}
+                    >
+                      {cancelText}
+                    </Button>
 
-                  {/* 确认按钮 */}
-                  <Button
-                    className={`beaver-popconfirm__ok ${okLoading ? 'beaver-popconfirm--ok-loading' : ''}`}
-                    variant={okVariant}
-                    size="small"
-                    disabled={okDisabled || okLoading}
-                    onClick={handleConfirm}
-                  >
-                    {okText}
-                  </Button>
+                    {/* 确认按钮 */}
+                    <Button
+                      className={`beaver-popconfirm__ok ${okLoading ? 'beaver-popconfirm--ok-loading' : ''}`}
+                      variant={okVariant}
+                      size="small"
+                      disabled={okDisabled || okLoading}
+                      onClick={handleConfirm}
+                    >
+                      {okText}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
