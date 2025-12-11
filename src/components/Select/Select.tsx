@@ -62,12 +62,13 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         else (ref as unknown as { current: HTMLDivElement | null }).current = el;
       }
     };
-    const listRef = useRef<HTMLUListElement | null>(null);
+
     const searchRef = useRef<HTMLInputElement | null>(null);
     const committedRef = useRef<boolean>(false);
     const userTypedRef = useRef<boolean>(false);
     const searchTimer = useRef<number | null>(null);
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const ulRef = useRef<HTMLUListElement | null>(null);
 
     const { handleBackspace, handleChar } = useTypeahead(700, userTypedRef);
 
@@ -75,7 +76,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const [menuWidth, setMenuWidth] = useState<number | null>(null);
 
     // 使用 floating-ui 计算菜单位置
-    const menuPosition = useMenuPosition(rootRef, menuRef, open, 4);
+    const menuPosition = useMenuPosition(rootRef, menuRef, open, 0);
 
     // 菜单宽度在打开前测量（避免打开时内容撑开触发器）
     useEffect(() => {
@@ -530,7 +531,12 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                 position: 'fixed',
                 left: `${menuPosition.x}px`,
                 top: `${menuPosition.y}px`,
+                visibility: menuPosition.measured ? 'visible' : 'hidden',
+                pointerEvents: menuPosition.measured ? undefined : 'none',
                 zIndex: 'var(--beaver-select-z-index, 5000)',
+                width: menuWidth ? `${menuWidth}px` : 'auto',
+                boxSizing: 'border-box',
+                minWidth: menuWidth ? `${menuWidth}px` : undefined,
               }}
             >
               <OptionList
@@ -541,7 +547,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                 onSelectByValue={(v) => handleSelectByValue(v)}
                 renderHighlightedLabel={(label) => renderHighlightedLabel(label, query)}
                 noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
-                listRef={listRef}
+                listRef={ulRef}
                 menuStyle={{
                   width: menuWidth ? `${menuWidth}px` : 'auto',
                   boxSizing: 'border-box',
