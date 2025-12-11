@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import Toast, { ToastProvider } from '../components/Toast/Toast';
 import Alert from '../components/Alert/Alert';
 import Button from '../components/Button/Button';
 import Checkbox from '../components/Checkbox/Checkbox';
@@ -131,6 +132,77 @@ function App() {
               icon="🎉"
               closable
             />
+          </div>
+        </div>
+      </Section>
+      <Section title="Toast">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* 成功提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>成功提示</div>
+            <Button size="small" variant="primary" onClick={() => Toast.success('操作已完成')}>
+              显示成功通知
+            </Button>
+          </div>
+
+          {/* 错误提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>错误提示</div>
+            <Button
+              size="small"
+              color="danger"
+              onClick={() => Toast.error('操作失败', { title: '错误提示', duration: 5000 })}
+            >
+              显示错误通知
+            </Button>
+          </div>
+
+          {/* 警告提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>警告提示</div>
+            <Button size="small" onClick={() => Toast.warning('请确认此操作')}>
+              显示警告通知
+            </Button>
+          </div>
+
+          {/* 信息提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>信息提示</div>
+            <Button size="small" onClick={() => Toast.info('这是一条提示信息', { title: '提示' })}>
+              显示信息通知
+            </Button>
+          </div>
+
+          {/* 加载提示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>加载提示</div>
+            <Button
+              size="small"
+              onClick={() => {
+                const id = Toast.loading('加载中...');
+                setTimeout(() => {
+                  Toast.close(id);
+                  Toast.success('加载完成');
+                }, 3000);
+              }}
+            >
+              显示加载通知
+            </Button>
+          </div>
+
+          {/* 多个通知 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>多个通知堆叠</div>
+            <Button
+              size="small"
+              onClick={() => {
+                Toast.success('第一条');
+                setTimeout(() => Toast.info('第二条'), 300);
+                setTimeout(() => Toast.warning('第三条'), 600);
+              }}
+            >
+              显示多个通知
+            </Button>
           </div>
         </div>
       </Section>
@@ -468,4 +540,8 @@ function App() {
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
-root.render(<App />);
+root.render(
+  <ToastProvider>
+    <App />
+  </ToastProvider>
+);

@@ -1,0 +1,376 @@
+/* ===== Toast 全局通知组件样式 ===== */
+/* 参考 Input.css 的设计模式，定义所有 CSS 变量和样式 */
+
+:root {
+  /* ===== Toast 容器定位和尺寸 ===== */
+  /* Toast 容器在页面顶部的位置 */
+  --beaver-toast-top: 20px;
+  --beaver-toast-right: 20px;
+  /* Toast 通知的最大宽度 */
+  --beaver-toast-max-width: 400px;
+  /* Toast 之间的间隔 */
+  --beaver-toast-gap: 12px;
+
+  /* ===== Toast 颜色定义 ===== */
+  /* 基础背景颜色 */
+  --beaver-toast-bg-color: #fff;
+  --beaver-toast-bg-color-success: #f0fdf4;
+  --beaver-toast-bg-color-warning: #fefce8;
+  --beaver-toast-bg-color-error: #fef2f2;
+  --beaver-toast-bg-color-info: #f0f9ff;
+  --beaver-toast-bg-color-loading: #f9fafb;
+
+  /* 边框颜色 */
+  --beaver-toast-border-color: #e5e7eb;
+  --beaver-toast-border-color-success: var(--beaver-color-success, #10b987);
+  --beaver-toast-border-color-warning: var(--beaver-color-warning, #f59e0b);
+  --beaver-toast-border-color-error: var(--beaver-color-error, #e44444);
+  --beaver-toast-border-color-info: var(--beaver-color-primary, #0eaae0);
+  --beaver-toast-border-color-loading: #d1d5db;
+
+  /* 文本颜色 */
+  --beaver-toast-text-color-success: #047857;
+  --beaver-toast-text-color-warning: #92400e;
+  --beaver-toast-text-color-error: #7f1d1d;
+  --beaver-toast-text-color-info: #0c4a6e;
+  --beaver-toast-text-color-loading: #374151;
+
+  /* 图标颜色 */
+  --beaver-toast-icon-color-success: var(--beaver-toast-text-color-success);
+  --beaver-toast-icon-color-warning: var(--beaver-toast-text-color-warning);
+  --beaver-toast-icon-color-error: var(--beaver-toast-text-color-error);
+  --beaver-toast-icon-color-info: var(--beaver-toast-text-color-info);
+  --beaver-toast-icon-color-loading: var(--beaver-color-primary, #0eaae0);
+
+  /* ===== Toast 间距和尺寸 ===== */
+  /* 内边距 */
+  --beaver-toast-padding: var(--beaver-space-md, 12px);
+  /* 图标尺寸 */
+  --beaver-toast-icon-size: 20px;
+  /* 图标和内容之间的间隔 */
+  --beaver-toast-icon-gap: var(--beaver-space-sm, 8px);
+  /* 标题和消息之间的间隔 */
+  --beaver-toast-title-message-gap: var(--beaver-space-xs, 6px);
+  /* 关闭按钮的尺寸和间隔 */
+  --beaver-toast-close-size: 20px;
+  --beaver-toast-close-gap: var(--beaver-space-md, 12px);
+
+  /* ===== 字体定义 ===== */
+  --beaver-toast-font-size: var(--beaver-font-size-md, 14px);
+  --beaver-toast-title-font-size: var(--beaver-font-size-md, 14px);
+  --beaver-toast-title-font-weight: 600;
+
+  /* ===== 动画和阴影 ===== */
+  /* Toast 的阴影效果 */
+  --beaver-toast-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* 动画时长 */
+  --beaver-toast-animation-duration: 300ms;
+  --beaver-toast-animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Toast 容器样式 ===== */
+.beaver-toast-container {
+  position: fixed;
+  top: var(--beaver-toast-top);
+  right: var(--beaver-toast-right);
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--beaver-toast-gap);
+  max-width: var(--beaver-toast-max-width);
+}
+
+/* ===== 单条 Toast 通知项样式 ===== */
+.beaver-toast {
+  /* 基本布局 */
+  display: flex;
+  align-items: flex-start;
+  gap: var(--beaver-toast-icon-gap);
+  padding: var(--beaver-toast-padding);
+  background-color: var(--beaver-toast-bg-color);
+  border: 1px solid var(--beaver-toast-border-color);
+  border-left: 4px solid var(--beaver-toast-border-color-info);
+  border-radius: 6px;
+  font-size: var(--beaver-toast-font-size);
+  line-height: 1.5;
+  box-shadow: var(--beaver-toast-box-shadow);
+  box-sizing: border-box;
+
+  /* 指针事件可以点击 */
+  pointer-events: auto;
+
+  /* 动画 */
+  animation: beaver-toast-slide-in var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
+  transition: all var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
+}
+
+/* ===== Toast 内部元素 ===== */
+
+/* 图标容器 */
+.beaver-toast__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--beaver-toast-icon-size);
+  height: var(--beaver-toast-icon-size);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--beaver-toast-icon-color-info);
+  transition: color var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
+}
+
+/* 加载动画spinner */
+.beaver-toast__spinner {
+  display: inline-block;
+  animation: beaver-toast-spin 1.2s linear infinite;
+}
+
+/* 内容区域 */
+.beaver-toast__content {
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 标题 */
+.beaver-toast__title {
+  font-size: var(--beaver-toast-title-font-size);
+  font-weight: var(--beaver-toast-title-font-weight);
+  color: var(--beaver-toast-text-color-info);
+  margin: 0;
+  transition: color var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
+}
+
+/* 消息内容 */
+.beaver-toast__message {
+  margin-top: var(--beaver-toast-title-message-gap);
+  color: var(--beaver-toast-text-color-info);
+  opacity: 0.85;
+  transition: color var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
+}
+
+/* 当没有标题时，消息不需要额外的顶部间距 */
+.beaver-toast__title ~ .beaver-toast__message {
+  margin-top: var(--beaver-toast-title-message-gap);
+}
+
+.beaver-toast__message:first-child {
+  margin-top: 0;
+}
+
+/* 关闭按钮 */
+.beaver-toast__close {
+  flex-shrink: 0;
+  width: var(--beaver-toast-close-size);
+  height: var(--beaver-toast-close-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--beaver-toast-text-color-info);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--beaver-toast-close-gap);
+}
+
+.beaver-toast__close:hover {
+  opacity: 1;
+}
+
+.beaver-toast__close:active {
+  opacity: 0.8;
+}
+
+/* ===== Toast 类型修饰符（BEM modifier） ===== */
+
+/* 成功状态 */
+.beaver-toast--success {
+  background-color: var(--beaver-toast-bg-color-success);
+  border-color: var(--beaver-toast-border-color-success);
+  border-left-color: var(--beaver-toast-border-color-success);
+}
+
+.beaver-toast--success .beaver-toast__icon {
+  color: var(--beaver-toast-icon-color-success);
+}
+
+.beaver-toast--success .beaver-toast__title {
+  color: var(--beaver-toast-text-color-success);
+}
+
+.beaver-toast--success .beaver-toast__message {
+  color: var(--beaver-toast-text-color-success);
+}
+
+.beaver-toast--success .beaver-toast__close {
+  color: var(--beaver-toast-text-color-success);
+}
+
+/* 警告状态 */
+.beaver-toast--warning {
+  background-color: var(--beaver-toast-bg-color-warning);
+  border-color: var(--beaver-toast-border-color-warning);
+  border-left-color: var(--beaver-toast-border-color-warning);
+}
+
+.beaver-toast--warning .beaver-toast__icon {
+  color: var(--beaver-toast-icon-color-warning);
+}
+
+.beaver-toast--warning .beaver-toast__title {
+  color: var(--beaver-toast-text-color-warning);
+}
+
+.beaver-toast--warning .beaver-toast__message {
+  color: var(--beaver-toast-text-color-warning);
+}
+
+.beaver-toast--warning .beaver-toast__close {
+  color: var(--beaver-toast-text-color-warning);
+}
+
+/* 错误状态 */
+.beaver-toast--error {
+  background-color: var(--beaver-toast-bg-color-error);
+  border-color: var(--beaver-toast-border-color-error);
+  border-left-color: var(--beaver-toast-border-color-error);
+}
+
+.beaver-toast--error .beaver-toast__icon {
+  color: var(--beaver-toast-icon-color-error);
+}
+
+.beaver-toast--error .beaver-toast__title {
+  color: var(--beaver-toast-text-color-error);
+}
+
+.beaver-toast--error .beaver-toast__message {
+  color: var(--beaver-toast-text-color-error);
+}
+
+.beaver-toast--error .beaver-toast__close {
+  color: var(--beaver-toast-text-color-error);
+}
+
+/* 信息状态（默认） */
+.beaver-toast--info {
+  background-color: var(--beaver-toast-bg-color-info);
+  border-color: var(--beaver-toast-border-color-info);
+  border-left-color: var(--beaver-toast-border-color-info);
+}
+
+.beaver-toast--info .beaver-toast__icon {
+  color: var(--beaver-toast-icon-color-info);
+}
+
+.beaver-toast--info .beaver-toast__title {
+  color: var(--beaver-toast-text-color-info);
+}
+
+.beaver-toast--info .beaver-toast__message {
+  color: var(--beaver-toast-text-color-info);
+}
+
+.beaver-toast--info .beaver-toast__close {
+  color: var(--beaver-toast-text-color-info);
+}
+
+/* 加载状态 */
+.beaver-toast--loading {
+  background-color: var(--beaver-toast-bg-color-loading);
+  border-color: var(--beaver-toast-border-color-loading);
+  border-left-color: var(--beaver-toast-border-color-loading);
+}
+
+.beaver-toast--loading .beaver-toast__icon {
+  color: var(--beaver-toast-icon-color-loading);
+}
+
+.beaver-toast--loading .beaver-toast__title {
+  color: var(--beaver-toast-text-color-loading);
+}
+
+.beaver-toast--loading .beaver-toast__message {
+  color: var(--beaver-toast-text-color-loading);
+}
+
+.beaver-toast--loading .beaver-toast__close {
+  color: var(--beaver-toast-text-color-loading);
+}
+
+/* ===== 动画定义 ===== */
+
+/* 滑入动画 */
+@keyframes beaver-toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 滑出动画 */
+@keyframes beaver-toast-slide-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* 加载spinner旋转动画 */
+@keyframes beaver-toast-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 640px) {
+  .beaver-toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    max-width: 100%;
+  }
+
+  .beaver-toast {
+    max-width: 100%;
+  }
+
+  .beaver-toast__icon {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+  }
+
+  .beaver-toast__close {
+    width: 18px;
+    height: 18px;
+    font-size: 16px;
+  }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  .beaver-toast-container {
+    display: none;
+  }
+}
