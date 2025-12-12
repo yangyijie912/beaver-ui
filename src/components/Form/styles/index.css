@@ -1,0 +1,291 @@
+:root {
+  /* ===== Form 尺寸定义 ===== */
+
+  /* Small 尺寸：紧凑型 */
+  --beaver-form-gap-small: 12px;
+  --beaver-form-label-font-size-small: var(--beaver-font-size-sm, 14px);
+  --beaver-form-item-margin-bottom-small: 12px;
+
+  /* Medium 尺寸：标准型（默认） */
+  --beaver-form-gap-medium: 16px;
+  --beaver-form-label-font-size-medium: var(--beaver-font-size-md, 16px);
+  --beaver-form-item-margin-bottom-medium: 16px;
+
+  /* Large 尺寸：宽松型 */
+  --beaver-form-gap-large: 20px;
+  --beaver-form-label-font-size-large: var(--beaver-font-size-lg, 18px);
+  --beaver-form-item-margin-bottom-large: 20px;
+
+  /* ===== Form 颜色定义 ===== */
+
+  /* 标签文字颜色 */
+  --beaver-form-label-color: var(--beaver-color-text, #333);
+  --beaver-form-label-color-disabled: var(--beaver-color-disabled, #9ca3af);
+
+  /* 必填标记颜色（红色） */
+  --beaver-form-required-mark-color: var(--beaver-color-error, #e44444);
+
+  /* 冒号颜色 */
+  --beaver-form-colon-color: var(--beaver-color-text, #333);
+
+  /* 错误提示颜色 */
+  --beaver-form-error-color: var(--beaver-color-error, #e44444);
+
+  /* 辅助说明文本颜色 */
+  --beaver-form-help-color: var(--beaver-color-disabled, #9ca3af);
+
+  /* ===== Form 尺寸与间距 ===== */
+
+  /* 标签宽度（用于 horizontal 布局，可被覆盖） */
+  --beaver-form-label-width: 100px;
+
+  /* FormItem 的水平间距（horizontal 布局）*/
+  --beaver-form-horizontal-gap: 16px;
+
+  /* ===== 动画和过渡 ===== */
+  --beaver-form-transition-duration: 120ms;
+}
+
+/**
+ * Form 容器样式
+ */
+.beaver-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/**
+ * vertical 布局（默认）：标签和输入框上下排列
+ */
+.beaver-form--vertical {
+  gap: var(--beaver-form-gap-medium);
+}
+
+.beaver-form--vertical.beaver-form--small {
+  gap: var(--beaver-form-gap-small);
+}
+
+.beaver-form--vertical.beaver-form--large {
+  gap: var(--beaver-form-gap-large);
+}
+
+/**
+ * horizontal 布局：标签和输入框左右排列
+ */
+.beaver-form--horizontal {
+  gap: 0;
+}
+
+/**
+ * inline 布局：所有字段在一行内排列
+ */
+.beaver-form--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--beaver-form-gap-medium);
+  align-items: center;
+}
+
+.beaver-form--inline.beaver-form--small {
+  gap: var(--beaver-form-gap-small);
+}
+
+.beaver-form--inline.beaver-form--large {
+  gap: var(--beaver-form-gap-large);
+}
+
+/**
+ * 禁用状态：整个表单禁用
+ */
+.beaver-form--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/**
+ * FormItem 容器样式
+ */
+.beaver-form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--beaver-form-item-margin-bottom-medium);
+}
+
+/* vertical 和 inline 布局下的 FormItem 基础样式 */
+.beaver-form--vertical .beaver-form-item,
+.beaver-form--inline .beaver-form-item {
+  margin-bottom: 0;
+  flex: 0 0 auto;
+}
+
+.beaver-form--vertical.beaver-form--small .beaver-form-item {
+  margin-bottom: var(--beaver-form-item-margin-bottom-small);
+}
+
+.beaver-form--vertical.beaver-form--large .beaver-form-item {
+  margin-bottom: var(--beaver-form-item-margin-bottom-large);
+}
+
+/**
+ * inline 布局：FormItem 内标签和输入框左右排列
+ */
+.beaver-form--inline .beaver-form-item {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--beaver-form-horizontal-gap);
+}
+
+/**
+ * horizontal 布局下的 FormItem 样式
+ */
+.beaver-form--horizontal .beaver-form-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--beaver-form-horizontal-gap);
+  margin-bottom: var(--beaver-form-item-margin-bottom-medium);
+}
+
+.beaver-form--horizontal.beaver-form--small .beaver-form-item {
+  margin-bottom: var(--beaver-form-item-margin-bottom-small);
+}
+
+.beaver-form--horizontal.beaver-form--large .beaver-form-item {
+  margin-bottom: var(--beaver-form-item-margin-bottom-large);
+}
+
+/**
+ * FormItem 标签样式
+ */
+.beaver-form-item__label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--beaver-form-label-font-size-medium);
+  color: var(--beaver-form-label-color);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.beaver-form--small .beaver-form-item__label {
+  font-size: var(--beaver-form-label-font-size-small);
+}
+
+.beaver-form--large .beaver-form-item__label {
+  font-size: var(--beaver-form-label-font-size-large);
+}
+
+/* horizontal 布局下，标签有固定宽度 */
+.beaver-form--horizontal .beaver-form-item__label {
+  width: var(--beaver-form-label-width);
+  flex: 0 0 auto;
+}
+
+/* inline 布局下，标签不换行 */
+.beaver-form--inline .beaver-form-item__label {
+  white-space: nowrap;
+}
+
+/* 禁用状态下的标签颜色 */
+.beaver-form--disabled .beaver-form-item__label {
+  color: var(--beaver-form-label-color-disabled);
+}
+
+/**
+ * 必填标记（红色 * 号）
+ */
+.beaver-form-item__required-mark {
+  color: var(--beaver-form-required-mark-color);
+  font-weight: bold;
+}
+
+/**
+ * 标签后面的冒号
+ */
+.beaver-form-item__colon {
+  color: var(--beaver-form-colon-color);
+}
+
+/**
+ * FormItem 输入框容器
+ */
+.beaver-form-item__control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+/* horizontal 布局下，让输入框容器充满剩余空间 */
+.beaver-form--horizontal .beaver-form-item__control {
+  flex: 1;
+}
+
+/* inline 布局下，输入框不超过内容宽度 */
+.beaver-form--inline .beaver-form-item__control {
+  flex: 0 0 auto;
+}
+
+/**
+ * FormItem 内的输入框样式调整
+ */
+.beaver-form-item__control input,
+.beaver-form-item__control textarea,
+.beaver-form-item__control select {
+  width: 100%;
+}
+
+/**
+ * 错误提示文本
+ */
+.beaver-form-item__error-message {
+  font-size: 12px;
+  color: var(--beaver-form-error-color);
+  margin-top: 4px;
+  animation: slideDown var(--beaver-form-transition-duration) ease-out;
+}
+
+/**
+ * 辅助说明文本
+ */
+.beaver-form-item__help {
+  font-size: 12px;
+  color: var(--beaver-form-help-color);
+  margin-top: 4px;
+}
+
+/**
+ * 动画：错误提示出现时的滑入动画
+ */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/**
+ * inline 布局下的特殊处理
+ */
+.beaver-form--inline .beaver-form-item__label {
+  margin-right: 8px;
+}
+
+.beaver-form--inline .beaver-form-item__error-message {
+  flex: 1 0 100%;
+  margin-left: 0;
+}
+
+/**
+ * horizontal 布局下，错误提示占满行宽
+ */
+.beaver-form--horizontal .beaver-form-item__error-message {
+  margin-left: var(--beaver-form-label-width);
+  margin-top: 4px;
+}

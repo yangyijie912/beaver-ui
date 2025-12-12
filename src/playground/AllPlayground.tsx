@@ -16,6 +16,7 @@ import Table, { Column } from '../components/Table/Table';
 import Tooltip from '../components/Tooltip/Tooltip';
 import Popconfirm from '../components/Popconfirm/Popconfirm';
 import Upload from '../components/Upload/Upload';
+import Form, { FormItem } from '../components/Form';
 import '../tokens/tokens.css';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -531,6 +532,211 @@ function App() {
           <div>
             <div style={{ marginBottom: 8 }}>禁用状态</div>
             <Upload disabled dragText="上传已禁用" buttonText="选择文件" />
+          </div>
+        </div>
+      </Section>
+
+      {/* Form演示 */}
+      <Section title="Form">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* 垂直布局示例 */}
+          <div>
+            <h4>垂直布局（Vertical）</h4>
+            <Form
+              initialValues={{ username: '', email: '', message: '' }}
+              onSubmit={(values) => {
+                console.log('表单提交数据:', values);
+                alert(`提交成功！数据：${JSON.stringify(values)}`);
+              }}
+              layout="vertical"
+            >
+              <FormItem
+                name="username"
+                label="用户名"
+                required
+                help="请输入 3-20 个字符"
+                rules={[
+                  {
+                    validate: (value) => (!value ? '用户名不能为空' : undefined),
+                  },
+                  {
+                    validate: (value) => (value?.length < 3 ? '用户名至少 3 个字符' : undefined),
+                  },
+                ]}
+              >
+                <Input placeholder="请输入用户名" />
+              </FormItem>
+
+              <FormItem
+                name="email"
+                label="邮箱"
+                required
+                rules={[
+                  {
+                    validate: (value) => (!value ? '邮箱不能为空' : undefined),
+                  },
+                  {
+                    validate: (value) =>
+                      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '请输入有效的邮箱地址' : undefined,
+                  },
+                ]}
+              >
+                <Input type="email" placeholder="请输入邮箱" />
+              </FormItem>
+
+              <FormItem
+                name="message"
+                label="留言"
+                help="可选，最多 200 个字符"
+                rules={[
+                  {
+                    validate: (value) => (value?.length > 200 ? '留言不超过 200 个字符' : undefined),
+                  },
+                ]}
+              >
+                <Input textarea rows={3} placeholder="请输入你的留言" />
+              </FormItem>
+
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  type="submit"
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#0b66d1',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: 14,
+                  }}
+                >
+                  提交
+                </button>
+                <button
+                  type="reset"
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#f5f5f5',
+                    color: '#333',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: 14,
+                  }}
+                >
+                  重置
+                </button>
+              </div>
+            </Form>
+          </div>
+
+          {/* 水平布局示例 */}
+          <div>
+            <h4>水平布局（Horizontal）</h4>
+            <Form
+              initialValues={{ name: '', age: '' }}
+              onSubmit={(values) => {
+                console.log('表单提交数据:', values);
+                alert(`提交成功！数据：${JSON.stringify(values)}`);
+              }}
+              layout="horizontal"
+              labelWidth={80}
+            >
+              <FormItem
+                name="name"
+                label="姓名"
+                required
+                rules={[
+                  {
+                    validate: (value) => (!value ? '姓名不能为空' : undefined),
+                  },
+                ]}
+              >
+                <Input placeholder="请输入姓名" />
+              </FormItem>
+
+              <FormItem
+                name="age"
+                label="年龄"
+                rules={[
+                  {
+                    validate: (value) => {
+                      if (!value) return undefined;
+                      const age = parseInt(value, 10);
+                      return age < 0 || age > 150 ? '请输入有效的年龄' : undefined;
+                    },
+                  },
+                ]}
+              >
+                <Input type="number" placeholder="请输入年龄" />
+              </FormItem>
+
+              <div style={{ marginLeft: 96 }}>
+                <button
+                  type="submit"
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#0b66d1',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: 14,
+                  }}
+                >
+                  提交
+                </button>
+              </div>
+            </Form>
+          </div>
+
+          {/* 行内布局示例 */}
+          <div>
+            <h4>行内布局（Inline）</h4>
+            <Form
+              initialValues={{ keyword: '', category: '' }}
+              onSubmit={(values) => {
+                console.log('表单提交数据:', values);
+                alert(`搜索：${JSON.stringify(values)}`);
+              }}
+              layout="inline"
+            >
+              <FormItem
+                name="keyword"
+                label="关键词"
+                rules={[
+                  {
+                    validate: (value) => (!value ? '关键词不能为空' : undefined),
+                  },
+                ]}
+              >
+                <Input placeholder="输入搜索关键词" style={{ width: 180 }} />
+              </FormItem>
+
+              <FormItem name="category" label="分类">
+                <select style={{ width: 120, padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}>
+                  <option value="">全部</option>
+                  <option value="news">新闻</option>
+                  <option value="blog">博客</option>
+                  <option value="docs">文档</option>
+                </select>
+              </FormItem>
+
+              <button
+                type="submit"
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#0b66d1',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: 14,
+                }}
+              >
+                搜索
+              </button>
+            </Form>
           </div>
         </div>
       </Section>

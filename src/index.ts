@@ -16,6 +16,7 @@ export { DrawerHeader, DrawerFooter } from './components/Drawer/Drawer';
 export { default as Tooltip } from './components/Tooltip/Tooltip';
 export { default as Popconfirm } from './components/Popconfirm/Popconfirm';
 export { default as Upload } from './components/Upload/Upload';
+export { default as Form, FormItem } from './components/Form';
 export * from './tokens';
 
 // 导入生成的 tokens CSS（由 `npm run gen:tokens` 生成为 `src/tokens/tokens.css`）
