@@ -1,12 +1,6 @@
 import React from 'react';
 import './Button.css';
 
-const sizes: Record<string, React.CSSProperties> = {
-  small: { padding: 'var(--beaver-space-xs) var(--beaver-space-md)', fontSize: 'var(--beaver-font-size-sm)' },
-  medium: { padding: 'var(--beaver-space-sm) var(--beaver-space-lg)', fontSize: 'var(--beaver-font-size-md)' },
-  large: { padding: 'var(--beaver-space-md) var(--beaver-space-xl)', fontSize: 'var(--beaver-font-size-lg)' },
-};
-
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'default' | 'primary' | 'ghost' | 'link';
   /** 颜色：'primary' | 'danger' 或任意 CSS 颜色字符串（如 'red' / '#333'） */
@@ -45,7 +39,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (loading) classList.push('beaver-button--loading');
     if (className) classList.push(className);
 
-    // 合并样式：尺寸样式 -> 传入的 props.style -> 用于任意颜色的自定义 CSS 变量
+    // 合并样式：传入的 props.style -> 用于任意颜色的自定义 CSS 变量
     const { style: incomingStyle, ...restProps } = props as any;
 
     // 判断 color 字符串是否为有效的 CSS 颜色值，否则回退到 primary 颜色
@@ -76,8 +70,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       }
     }
 
+    // 将尺寸作为类名加入（避免内联尺寸样式）
+    classList.push(`beaver-button--${size}`);
+
     const finalStyle: React.CSSProperties = {
-      ...sizes[size],
       ...(incomingStyle || {}),
       ...(buttonColorVar ? ({ ['--beaver-button-color']: buttonColorVar } as React.CSSProperties) : {}),
     };
