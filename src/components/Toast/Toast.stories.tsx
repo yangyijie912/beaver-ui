@@ -1,5 +1,5 @@
 import React from 'react';
-import Toast, { ToastProvider as ToastProviderStory } from './Toast';
+import Toast, { ToastProvider } from './Toast';
 import type { Meta, StoryObj } from '@storybook/react';
 import Button from '../Button/Button';
 
@@ -20,17 +20,6 @@ const meta: Meta = {
 };
 
 export default meta;
-
-/**
- * Toast 的包装器组件，用于在 Storybook 中演示
- */
-const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <ToastProviderStory>
-      <div>{children}</div>
-    </ToastProviderStory>
-  );
-};
 
 /**
  * 成功通知
@@ -68,7 +57,7 @@ export const Error: StoryObj = {
   name: '错误通知',
   render: () => (
     <ToastProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12 }}>
         <Button
           color="danger"
           onClick={() => {
@@ -100,7 +89,7 @@ export const Warning: StoryObj = {
   name: '警告通知',
   render: () => (
     <ToastProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12 }}>
         <Button
           onClick={() => {
             Toast.warning('此操作不可撤销');
@@ -129,7 +118,7 @@ export const Info: StoryObj = {
   name: '信息通知',
   render: () => (
     <ToastProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12 }}>
         <Button
           onClick={() => {
             Toast.info('页面将在5秒后刷新');
@@ -172,7 +161,7 @@ export const Loading: StoryObj = {
 
     return (
       <ToastProvider>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 12 }}>
           <Button variant="primary" onClick={handleStartLoading}>
             显示加载中（3秒后自动完成）
           </Button>
@@ -210,7 +199,7 @@ export const AllTypes: StoryObj = {
   name: '所有类型对比',
   render: () => (
     <ToastProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ display: 'flex', gap: 8 }}>
         <Button size="small" onClick={() => Toast.success('操作成功')}>
           Success
         </Button>
@@ -244,7 +233,7 @@ export const MultipleToasts: StoryObj = {
   name: '多条通知堆叠',
   render: () => (
     <ToastProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12 }}>
         <Button
           variant="primary"
           onClick={() => {
@@ -285,7 +274,7 @@ export const CustomDuration: StoryObj = {
   name: '自定义时长',
   render: () => (
     <ToastProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12 }}>
         <Button
           onClick={() => {
             Toast.success('1秒后关闭', { duration: 1000 });
@@ -319,7 +308,7 @@ export const CustomIcon: StoryObj = {
   name: '自定义图标',
   render: () => (
     <ToastProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12 }}>
         <Button
           onClick={() => {
             Toast.success('任务完成', { icon: '🎉' });
@@ -365,7 +354,7 @@ export const Callbacks: StoryObj = {
 
     return (
       <ToastProvider>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 12 }}>
           <Button
             onClick={() => {
               Toast.success('已保存', {
@@ -426,5 +415,26 @@ export const LongContent: StoryObj = {
         显示长内容通知
       </Button>
     </ToastProvider>
+  ),
+};
+
+/**
+ * 无需 Provider 的命令式用法示例
+ * 在没有显式包裹 `ToastProvider` 时，直接调用 `Toast` 会自动在 `document.body` 创建宿主容器并渲染
+ * 适用于简单场景或临时使用，无需手动添加 Provider，注意不要在 SSR 环境调用
+ */
+export const ImperativeNoProvider: StoryObj = {
+  name: '命令式（无需 Provider）',
+  render: () => (
+    <div style={{ display: 'flex', gap: 12 }}>
+      <Button
+        variant="primary"
+        onClick={() => {
+          Toast.success('直接调用 Toast.success，无需 Provider');
+        }}
+      >
+        直接调用（自动挂载）
+      </Button>
+    </div>
   ),
 };

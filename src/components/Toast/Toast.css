@@ -61,8 +61,7 @@
   --beaver-toast-title-font-weight: 600;
 
   /* ===== 动画和阴影 ===== */
-  /* Toast 的阴影效果 */
-  --beaver-toast-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* ===== 动画 ===== */
   /* 动画时长 */
   --beaver-toast-animation-duration: 300ms;
   --beaver-toast-animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
@@ -94,7 +93,7 @@
   border-radius: 6px;
   font-size: var(--beaver-toast-font-size);
   line-height: 1.5;
-  box-shadow: var(--beaver-toast-box-shadow);
+  /* 视觉上依赖边框和背景色来分离，而非阴影，保持与其他组件一致 */
   box-sizing: border-box;
 
   /* 指针事件可以点击 */

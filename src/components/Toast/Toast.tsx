@@ -1,5 +1,7 @@
 import React from 'react';
 import './Toast.css';
+import { createRoot, Root } from 'react-dom/client';
+import { createPortal } from 'react-dom';
 
 /**
  * Toast 通知类型
@@ -43,13 +45,19 @@ interface ToastItem extends ToastOptions {
 const ToastContainer = React.forwardRef<HTMLDivElement, { items: ToastItem[]; onRemove: (id: string) => void }>(
   (props, ref) => {
     const { items, onRemove } = props;
-    return (
+    if (typeof document === 'undefined') {
+      return null as any;
+    }
+
+    const container = (
       <div ref={ref} className="beaver-toast-container">
         {items.map((item) => (
           <ToastItem key={item.id} item={item} onRemove={() => onRemove(item.id)} />
         ))}
       </div>
     );
+
+    return createPortal(container, document.body);
   }
 );
 
@@ -127,6 +135,12 @@ class ToastManager {
   private listeners: Set<(items: ToastItem[]) => void> = new Set();
   private idCounter = 0;
 
+  /** 是否有显式的 ToastProvider 注册 */
+  private providerCount = 0;
+  private providerListeners: Set<(hasProvider: boolean) => void> = new Set();
+  /** generation 用于隔离不同宿主/场景的消息，切换 provider 时递增 */
+  private generation = 0;
+
   /**
    * 订阅消息队列变化
    */
@@ -137,11 +151,44 @@ class ToastManager {
     };
   }
 
+  subscribeProviderChange(listener: (hasProvider: boolean) => void) {
+    this.providerListeners.add(listener);
+    return () => this.providerListeners.delete(listener);
+  }
+
+  registerProvider() {
+    this.providerCount += 1;
+    // 先同步通知 providerListeners，让默认宿主有机会先取消它的订阅（避免 race）
+    this.providerListeners.forEach((l) => l(this.providerCount > 0));
+    // 切换到新的 generation，隔离此前的消息（避免跨 story/页面残留）
+    this.generation += 1;
+    this.items = [];
+    this.notify();
+  }
+
+  unregisterProvider() {
+    this.providerCount = Math.max(0, this.providerCount - 1);
+    this.providerListeners.forEach((l) => l(this.providerCount > 0));
+    // 如果所有 provider 都已卸载，提升 generation 并清空历史消息，避免卸载后旧消息被默认宿主继续渲染
+    if (this.providerCount === 0) {
+      this.generation += 1;
+      this.items = [];
+      this.notify();
+    }
+  }
+
+  hasProvider() {
+    return this.providerCount > 0;
+  }
+
   /**
    * 通知所有监听器
    */
   private notify() {
-    this.listeners.forEach((listener) => listener([...this.items]));
+    // 只把当前 generation 的消息分发给监听器，保证不同宿主/场景互不干扰
+    const current = this.generation;
+    const visible = this.items.filter((i: any) => (i as any).generation === current);
+    this.listeners.forEach((listener) => listener([...visible]));
   }
 
   /**
@@ -151,15 +198,29 @@ class ToastManager {
     return `toast-${++this.idCounter}-${Date.now()}`;
   }
 
+  /** 获取当前所有消息的快照（只读） */
+  getItems() {
+    return [...this.items];
+  }
+
+  /** 获取当前 generation（用于外部渲染过滤） */
+  getGeneration() {
+    return this.generation;
+  }
+
   /**
    * 添加通知到队列
    */
   private add(options: ToastOptions): string {
+    // 在添加第一个通知前确保有渲染容器（若没有显式 Provider）
+    tryEnsureDefaultHost();
+
     const id = this.generateId();
-    const item: ToastItem = {
+    const item: ToastItem & { generation?: number } = {
       ...options,
       id,
-    };
+      generation: this.generation,
+    } as any;
     this.items.push(item);
     this.notify();
     return id;
@@ -229,6 +290,69 @@ class ToastManager {
  */
 const toastManager = new ToastManager();
 
+// 默认宿主的 root 与容器引用（懒创建，仅在浏览器端）
+let _defaultRoot: Root | null = null;
+let _defaultContainer: HTMLElement | null = null;
+
+function tryEnsureDefaultHost() {
+  if (typeof window === 'undefined') return;
+  // 如果显式 Provider 存在，则不创建默认宿主
+  if (toastManager.hasProvider()) return;
+  if (_defaultRoot) return;
+
+  const existing = document.getElementById('beaver-toast-root');
+  const container = existing ?? document.createElement('div');
+  if (!existing) {
+    container.id = 'beaver-toast-root';
+    document.body.appendChild(container);
+  }
+
+  _defaultContainer = container;
+  _defaultRoot = createRoot(container);
+
+  // 立即订阅 manager 更新，并用 root.render 同步渲染 ToastContainer
+  const render = (items: ToastItem[]) => {
+    _defaultRoot!.render(<ToastContainer items={items} onRemove={(id) => toastManager.remove(id)} />);
+  };
+
+  // 先渲染当前状态（可能为空）——仅渲染当前 generation 的消息，避免显示其它场景遗留的通知
+  try {
+    const gen = (toastManager as any).getGeneration();
+    const initial = toastManager.getItems().filter((i: any) => (i as any).generation === gen);
+    render(initial);
+  } catch {
+    render([]);
+  }
+
+  // 添加订阅以便后续更新能够立即触发 root.render
+  const unsub = toastManager.subscribe((items) => render(items));
+
+  // 当有显式 Provider 注册时，取消订阅并清理默认宿主
+  const unsubProvider = toastManager.subscribeProviderChange((has) => {
+    if (has) {
+      unsub();
+      unsubProvider();
+      // 使用微任务延迟清理以避免与 Provider 的同步挂载冲突
+      Promise.resolve().then(() => cleanupDefaultHost());
+    }
+  });
+}
+
+function cleanupDefaultHost() {
+  if (_defaultRoot) {
+    try {
+      _defaultRoot.unmount();
+    } catch {
+      // ignore
+    }
+    _defaultRoot = null;
+  }
+  if (_defaultContainer && _defaultContainer.parentElement) {
+    _defaultContainer.parentElement.removeChild(_defaultContainer);
+    _defaultContainer = null;
+  }
+}
+
 /**
  * Toast 提供器组件
  *
@@ -238,9 +362,16 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [items, setItems] = React.useState<ToastItem[]>([]);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
+    // 使用 useLayoutEffect 在渲染提交后，绘制前注册 Provider，避免与默认宿主懒创建竞态
+    toastManager.registerProvider();
+    // 清理可能残留的全局通知，保证 Provider 挂载后是干净的状态
+    toastManager.clear();
     const unsubscribe = toastManager.subscribe(setItems);
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+      toastManager.unregisterProvider();
+    };
   }, []);
 
   const handleRemove = (id: string) => {
