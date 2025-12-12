@@ -34,8 +34,16 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
           // 检查是否为事件对象
           if (eventOrValue && typeof eventOrValue === 'object' && 'target' in eventOrValue) {
             const target = eventOrValue.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
-            // 对于 checkbox，使用 checked；对于其他元素，使用 value
-            newValue = 'checked' in target ? target.checked : target.value;
+            // 对于 checkbox/radio，需要使用 checked。注意：直接用 'checked' in target 会在所有 input 上为 true（属性存在），
+            // 因此应基于 element 类型判断（只能在真正的 checkbox/radio 上使用 checked）。
+            const isCheckboxLike =
+              (target as HTMLInputElement).tagName === 'INPUT' &&
+              ((target as HTMLInputElement).type === 'checkbox' || (target as HTMLInputElement).type === 'radio');
+            if (isCheckboxLike) {
+              newValue = (target as HTMLInputElement).checked;
+            } else {
+              newValue = (target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value;
+            }
           } else {
             // 直接传入值（来自 Select、Checkbox 等自定义组件）
             newValue = eventOrValue;
@@ -86,10 +94,11 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
         const isDatePicker = childDisplayName === 'DatePicker';
 
         if (isNativeInput) {
-          // 原生 HTML 元素
+          // 原生 HTML 元素：保留原始 childProps（例如 style）并覆盖需要的属性
           return React.cloneElement(
             child as React.ReactElement<any>,
             {
+              ...childProps,
               value: value !== undefined && value !== null ? String(value) : '',
               onChange: handleChange,
               onBlur: handleBlur,
@@ -98,8 +107,12 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
           );
         } else {
           // 自定义组件（如 Input、Select、Checkbox、Switch、DatePicker 等）
+          // 如果用户在 child.props.style 中传入了 width，把它也传给组件的 `width` prop，
+          // 这样像 Select 这种支持 `width` prop 的组件能正确应用宽度。
           // 自动传递 size、validation 和其他属性
           let validation: 'error' | 'success' | 'warning' | 'none' = 'none';
+          const incomingStyle = childProps.style as React.CSSProperties | undefined;
+          const incomingWidth = incomingStyle?.width;
           if (shouldShowError) {
             validation = 'error';
           } else if (touched && !error && value) {
@@ -121,6 +134,8 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             onBlur: handleBlur,
             disabled: childProps.disabled || form.disabled,
             validation: childProps.validation || validation, // 传递验证状态给子组件
+            // 把 style.width 映射到 width prop（仅在子组件未显式设置 width 时使用）
+            ...(incomingWidth !== undefined && childProps.width === undefined ? { width: incomingWidth } : {}),
           } as any;
 
           // 只为支持 size 的组件传递 size（Input、Select、Button、Switch 等支持，但 Checkbox、DatePicker 不支持）
@@ -128,11 +143,12 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             baseProps.size = childProps.size || form.size;
           }
 
-          // Checkbox 和 Switch 使用 checked 属性
+          // Checkbox 和 Switch 使用 checked 属性，保留 childProps
           if (isCheckbox || isSwitch) {
             return React.cloneElement(
               child as React.ReactElement<any>,
               {
+                ...childProps,
                 ...baseProps,
                 checked: Boolean(value),
               } as any
@@ -144,8 +160,9 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             return React.cloneElement(
               child as React.ReactElement<any>,
               {
+                ...childProps,
                 ...baseProps,
-                value: value !== undefined && value !== null ? String(value) : undefined,
+                value: value !== undefined && value !== null ? value : undefined,
               } as any
             );
           }
@@ -154,8 +171,9 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
           return React.cloneElement(
             child as React.ReactElement<any>,
             {
+              ...childProps,
               ...baseProps,
-              value: value !== undefined && value !== null ? String(value) : '',
+              value: value !== undefined && value !== null ? value : '',
             } as any
           );
         }

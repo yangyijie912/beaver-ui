@@ -191,7 +191,7 @@ export const InlineLayout: Story = {
             },
           ]}
         >
-          <Input placeholder="输入搜索关键词" style={{ width: 200 }} />
+          <Input placeholder="输入搜索关键词" width={150} />
         </FormItem>
 
         <FormItem name="category" label="分类">
@@ -203,7 +203,7 @@ export const InlineLayout: Story = {
               { label: '文档', value: 'docs' },
             ]}
             placeholder="请选择"
-            style={{ width: 120 }}
+            style={{ width: 150 }}
           />
         </FormItem>
 

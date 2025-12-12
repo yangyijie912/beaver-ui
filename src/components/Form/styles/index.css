@@ -181,6 +181,8 @@
 .beaver-form--horizontal .beaver-form-item__label {
   width: var(--beaver-form-label-width);
   flex: 0 0 auto;
+  justify-content: flex-end;
+  text-align: right;
 }
 
 /* inline 布局下，标签不换行 */
