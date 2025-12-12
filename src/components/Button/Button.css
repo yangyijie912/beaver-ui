@@ -2,17 +2,17 @@
   /* ===== 按钮尺寸定义 ===== */
 
   /* Small 尺寸 */
-  --beaver-button-height-small: 28px;
+  --beaver-button-height-small: 24px;
   --beaver-button-padding-small: 2px 12px;
   --beaver-button-font-size-small: var(--beaver-font-size-sm, 12px);
 
   /* Medium 尺寸*/
-  --beaver-button-height-medium: 36px;
+  --beaver-button-height-medium: 32px;
   --beaver-button-padding-medium: 6px 16px;
   --beaver-button-font-size-medium: var(--beaver-font-size-md, 14px);
 
   /* Large 尺寸 */
-  --beaver-button-height-large: 44px;
+  --beaver-button-height-large: 40px;
   --beaver-button-padding-large: 8px 20px;
   --beaver-button-font-size-large: var(--beaver-font-size-lg, 16px);
 
