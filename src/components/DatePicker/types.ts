@@ -5,7 +5,7 @@
 /**
  * 支持的日期格式
  */
-export type DateFormat = 'YYYY-MM-DD' | 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY/MM/DD';
+export type DateFormat = 'YYYY' | 'YYYY-MM' | 'MM/YYYY' | 'YYYY-MM-DD' | 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY/MM/DD';
 
 /**
  * 日期选择的粒度类型

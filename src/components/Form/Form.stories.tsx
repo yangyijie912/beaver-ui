@@ -447,8 +447,8 @@ export const ComprehensiveForm: Story = {
             </FormItem>
           </div>
           <div style={{ flex: 1 }}>
-            <FormItem name="birthday" label="出生日期">
-              <DatePicker picker="date" placeholder="选择出生日期" format="YYYY-MM-DD" />
+            <FormItem name="birthday" label="出生年月">
+              <DatePicker picker="month" placeholder="选择出生年月" format="YYYY-MM" />
             </FormItem>
           </div>
         </div>

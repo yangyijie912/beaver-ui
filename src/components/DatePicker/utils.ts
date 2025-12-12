@@ -12,13 +12,25 @@ import type { DateFormat } from './types';
  * @returns date-fns 格式字符串
  */
 export const getDateFormatString = (fmt: DateFormat): string => {
-  const formatMap: Record<DateFormat, string> = {
+  const formatMap: Record<string, string> = {
+    YYYY: 'yyyy',
     'YYYY-MM-DD': 'yyyy-MM-dd',
+    'YYYY-MM': 'yyyy-MM',
+    'MM/YYYY': 'MM/yyyy',
     'DD/MM/YYYY': 'dd/MM/yyyy',
     'MM/DD/YYYY': 'MM/dd/yyyy',
     'YYYY/MM/DD': 'yyyy/MM/dd',
   };
-  return formatMap[fmt] || 'yyyy-MM-dd';
+
+  // 已知的格式直接映射
+  if (typeof fmt === 'string' && formatMap[fmt]) return formatMap[fmt];
+
+  // 对未列出的自定义格式做通用 token 转换（保持 MM, H, m, s 等 date-fns token）
+  try {
+    return String(fmt).replace(/YYYY/g, 'yyyy').replace(/DD/g, 'dd');
+  } catch {
+    return 'yyyy-MM-dd';
+  }
 };
 
 /**
