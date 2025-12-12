@@ -3,17 +3,17 @@
 
   /* Small 尺寸：紧凑型，用于表单列表等空间受限的场景 */
   --beaver-input-padding-small: 2px 8px;
-  --beaver-input-height-small: 28px;
+  --beaver-input-height-small: 24px;
   --beaver-input-font-size-small: var(--beaver-font-size-sm, 14px);
 
   /* Medium 尺寸：标准型，最常用的尺寸 */
   --beaver-input-padding-medium: 4px 10px;
-  --beaver-input-height-medium: 36px;
+  --beaver-input-height-medium: 32px;
   --beaver-input-font-size-medium: var(--beaver-font-size-md, 16px);
 
   /* Large 尺寸：宽松型，用于突出的输入框或移动端 */
   --beaver-input-padding-large: 6px 12px;
-  --beaver-input-height-large: 44px;
+  --beaver-input-height-large: 40px;
   --beaver-input-font-size-large: var(--beaver-font-size-lg, 18px);
 
   /* ===== 颜色定义：状态色 ===== */
@@ -124,7 +124,7 @@
 /* Wrapper 容器：组合 input、prefix、suffix 为一个整体 */
 .beaver-input-wrapper {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--beaver-input-affix-gap);
   width: 100%;
   border: 1px solid var(--beaver-input-border-color);
@@ -181,7 +181,7 @@
 /* 前缀容器：用于放置图标或标签，位于输入框左侧 */
 .beaver-input-prefix {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
   color: var(--beaver-input-affix-color);
   white-space: nowrap;
@@ -194,7 +194,7 @@
 /* 后缀容器：用于放置图标或清除按钮，位于输入框右侧 */
 .beaver-input-suffix {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
   color: var(--beaver-input-affix-color);
   white-space: nowrap;

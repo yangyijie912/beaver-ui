@@ -48,14 +48,14 @@ export const Sizes: Story = {
   render: () => (
     <>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 16 }}>
-        <Switch size="sm" defaultChecked />
-        <Switch size="md" defaultChecked />
-        <Switch size="lg" defaultChecked />
+        <Switch size="small" defaultChecked />
+        <Switch size="medium" defaultChecked />
+        <Switch size="large" defaultChecked />
       </div>
       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-        <Switch size="sm" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
-        <Switch size="md" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
-        <Switch size="lg" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
+        <Switch size="small" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
+        <Switch size="medium" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
+        <Switch size="large" defaultChecked checkedChildren="开启" unCheckedChildren="关闭" />
       </div>
     </>
   ),

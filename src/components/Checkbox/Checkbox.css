@@ -32,6 +32,22 @@
   --beaver-checkbox-border-radius: 4px; /* Checkbox 和中间态小方块的圆角 */
 }
 
+/* ===== 尺寸类：通过 wrapper 类设置控件尺寸与标签字体 ===== */
+.beaver-checkbox-wrapper--small {
+  --beaver-checkbox-size: 14px;
+  --beaver-checkbox-font-size: var(--beaver-font-size-sm, 12px);
+}
+
+.beaver-checkbox-wrapper--medium {
+  --beaver-checkbox-size: 16px;
+  --beaver-checkbox-font-size: var(--beaver-font-size-md, 14px);
+}
+
+.beaver-checkbox-wrapper--large {
+  --beaver-checkbox-size: 18px;
+  --beaver-checkbox-font-size: var(--beaver-font-size-lg, 16px);
+}
+
 /* ===== 隐藏原生输入框 ===== */
 /* 隐藏原生输入框但保持其可聚焦；使用相邻的 span（.beaver-checkbox）作为视觉元素
    通过 opacity: 0 而不是 display: none 来保持其在文档流中的尺寸，以支持键盘交互
@@ -164,6 +180,7 @@
   line-height: 1;
   vertical-align: middle;
   color: var(--beaver-checkbox-text-color);
+  font-size: var(--beaver-checkbox-font-size, inherit);
 }
 
 /* ===== 禁用状态 ===== */

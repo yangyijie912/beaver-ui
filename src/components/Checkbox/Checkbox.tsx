@@ -1,5 +1,7 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef, useContext } from 'react';
 import './Checkbox.css';
+import { FormContext } from '../Form/components/Form';
+import type { FormContextType } from '../Form/types';
 
 export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: React.ReactNode;
@@ -12,6 +14,8 @@ export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ label, className, inputClassName, disabled, indeterminate = false, ...props }, ref) => {
     const localRef = useRef<HTMLInputElement | null>(null);
+    const formCtx = useContext(FormContext) as FormContextType | undefined;
+    const size = formCtx?.size ?? 'medium';
     const setRef = (el: HTMLInputElement | null) => {
       localRef.current = el;
       if (!ref) return;
@@ -45,7 +49,12 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     }, [indeterminate]);
 
     const inputExtraClass = inputClassName || '';
-    const wrapperClass = ['beaver-checkbox-wrapper', className, disabled ? 'beaver-checkbox-wrapper--disabled' : '']
+    const wrapperClass = [
+      'beaver-checkbox-wrapper',
+      `beaver-checkbox-wrapper--${size}`,
+      className,
+      disabled ? 'beaver-checkbox-wrapper--disabled' : '',
+    ]
       .filter(Boolean)
       .join(' ');
     const boxClass = [

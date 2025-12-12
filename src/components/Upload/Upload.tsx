@@ -2,6 +2,8 @@ import React from 'react';
 import './Upload.css';
 import { File } from '../../icons';
 import Button from '../Button/Button';
+import { FormContext } from '../Form/components/Form';
+import type { FormContextType } from '../Form/types';
 import type { UploadProps } from './types';
 import { useUploadFiles, useDragAndDrop } from './hooks';
 import Thumb from './components/Thumb';
@@ -35,11 +37,14 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
       variant = 'default',
       listType = variant === 'avatar' ? 'picture' : 'list',
       renderTrigger,
+      size: propSize,
       children,
       ...props
     },
     ref
   ) => {
+    const formCtx = React.useContext(FormContext) as FormContextType | undefined;
+    const effectiveSize: 'small' | 'medium' | 'large' | undefined = propSize ?? formCtx?.size;
     // 输入框引用
     const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -289,7 +294,12 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
             <>
               {triggerNode}
               {!triggerNode && (
-                <Button className="beaver-upload__button-default" disabled={disabled} onClick={open}>
+                <Button
+                  size={effectiveSize}
+                  className="beaver-upload__button-default"
+                  disabled={disabled}
+                  onClick={open}
+                >
                   {buttonText}
                 </Button>
               )}
@@ -329,6 +339,7 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
                   </div>
                   <div className="beaver-upload__text">{dragText}</div>
                   <Button
+                    size={effectiveSize}
                     disabled={disabled}
                     onClick={(e: any) => {
                       e.stopPropagation();

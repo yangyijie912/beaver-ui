@@ -30,7 +30,7 @@
 }
 
 /* Small 尺寸 */
-.beaver-switch.beaver-switch-sm {
+.beaver-switch.beaver-switch-small {
   --beaver-switch-height: var(--beaver-switch-height-small);
   --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-small);
   --beaver-switch-half-circle: var(--beaver-switch-half-circle-small);
@@ -38,7 +38,7 @@
 }
 
 /* Large 尺寸 */
-.beaver-switch.beaver-switch-lg {
+.beaver-switch.beaver-switch-large {
   --beaver-switch-height: var(--beaver-switch-height-large);
   --beaver-switch-thumb-size: var(--beaver-switch-thumb-size-large);
   --beaver-switch-half-circle: var(--beaver-switch-half-circle-large);

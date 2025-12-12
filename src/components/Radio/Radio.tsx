@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import './Radio.css';
 import { RadioGroupContext } from './RadioGroup';
+import { FormContext } from '../Form/components/Form';
+import type { FormContextType } from '../Form/types';
 
 export type RadioProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** 标签文本，可以是其它ReactNode */
@@ -13,11 +15,14 @@ const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
   ({ label, className, inputClassName, disabled, onChange, ...props }, ref) => {
     // 获取单选按钮组上下文
     const ctx = useContext(RadioGroupContext);
+    const formCtx = useContext(FormContext) as FormContextType | undefined;
+    const size = formCtx?.size ?? 'medium';
 
     // 组合 classNames
     const inputExtraClass = inputClassName || '';
     const wrapperClass = [
       'beaver-radio-wrapper',
+      `beaver-radio-wrapper--${size}`,
       className,
       (disabled ?? ctx?.disabled) ? 'beaver-radio-wrapper--disabled' : '',
     ]

@@ -39,6 +39,22 @@
   --beaver-radio-border-radius: 999px; /* Radio 的边框半径：999px 使其完全圆形 */
 }
 
+/* ===== 尺寸类：通过 wrapper 类设置控件尺寸与标签字体 ===== */
+.beaver-radio-wrapper--small {
+  --beaver-radio-size: 14px;
+  --beaver-radio-font-size: var(--beaver-font-size-sm, 12px);
+}
+
+.beaver-radio-wrapper--medium {
+  --beaver-radio-size: 16px;
+  --beaver-radio-font-size: var(--beaver-font-size-md, 14px);
+}
+
+.beaver-radio-wrapper--large {
+  --beaver-radio-size: 18px;
+  --beaver-radio-font-size: var(--beaver-font-size-lg, 16px);
+}
+
 /* ===== 隐藏原生输入框 ===== */
 /* 隐藏原生输入框但保持其可聚焦；使用相邻的 span（.beaver-radio）作为视觉元素
    通过 opacity: 0 而不是 display: none 来保持其在文档流中的尺寸，以支持键盘交互
@@ -136,6 +152,7 @@ label .beaver-radio + span,
   line-height: 1;
   vertical-align: middle;
   color: var(--beaver-radio-text-color);
+  font-size: var(--beaver-radio-font-size, inherit);
 }
 
 /* ===== 禁用状态 ===== */

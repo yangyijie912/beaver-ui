@@ -230,22 +230,68 @@ export const Sizes: Story = {
             <h4 style={{ marginTop: 0, marginBottom: 16 }}>
               {size === 'small' ? '小 (Small)' : size === 'medium' ? '中 (Medium)' : '大 (Large)'}
             </h4>
-            <Form initialValues={{ username: '' }} layout="vertical" size={size} style={{ maxWidth: 400 }}>
+            <Form
+              initialValues={{ username: '', email: '', userType: 'individual', newsletter: false }}
+              layout="horizontal"
+              size={size}
+              style={{ maxWidth: 720 }}
+            >
               <FormItem
-                name="username"
+                name={`username-${size}`}
                 label="用户名"
-                rules={[
-                  {
-                    validate: (value) => (!value ? '用户名不能为空' : undefined),
-                  },
-                ]}
+                rules={[{ validate: (value) => (!value ? '用户名不能为空' : undefined) }]}
               >
-                <Input placeholder="请输入用户名" />
+                <Input placeholder="请输入用户名" width={200} />
               </FormItem>
 
-              <Button variant="primary" type="submit" size={size}>
-                提交
-              </Button>
+              <FormItem name={`email-${size}`} label="邮箱">
+                <Input type="email" placeholder="请输入邮箱" width={200} />
+              </FormItem>
+
+              <FormItem name={`category-${size}`} label="分类">
+                <Select
+                  options={[
+                    { label: '全部', value: '' },
+                    { label: '新闻', value: 'news' },
+                    { label: '博客', value: 'blog' },
+                    { label: '文档', value: 'docs' },
+                  ]}
+                  placeholder="请选择"
+                  width={200}
+                />
+              </FormItem>
+
+              <FormItem name={`newsletter-${size}`} label="订阅">
+                <Checkbox label="订阅每周新闻" />
+              </FormItem>
+
+              <FormItem name={`userType-${size}`} label="用户类型">
+                <RadioGroup name={`userType-${size}`}>
+                  <Radio value="individual" label="个人" />
+                  <Radio value="enterprise" label="企业" />
+                </RadioGroup>
+              </FormItem>
+
+              <FormItem name={`notifications-${size}`} label="通知">
+                <Switch checkedChildren="开" unCheckedChildren="关" />
+              </FormItem>
+
+              <FormItem name={`birthday-${size}`} label="出生日期">
+                <DatePicker placeholder="选择日期" width={200} />
+              </FormItem>
+
+              <FormItem name={`attachments-${size}`} label="上传">
+                <Upload />
+              </FormItem>
+
+              <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 8 }}>
+                <Button variant="primary" type="submit" size={size}>
+                  提交
+                </Button>
+                <Button type="button" variant="ghost" size={size}>
+                  重置
+                </Button>
+              </div>
             </Form>
           </div>
         ))}

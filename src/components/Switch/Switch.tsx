@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './Switch.css';
+import { FormContext } from '../Form/components/Form';
+import type { FormContextType } from '../Form/types';
 
 export type SwitchProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> & {
   /** 非受控模式下的初始值 */
@@ -14,8 +16,8 @@ export type SwitchProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'o
   disabled?: boolean;
   /** 加载状态 */
   loading?: boolean;
-  /** 尺寸，影响开关轨道与拇指大小（'sm' | 'md' | 'lg'） */
-  size?: 'sm' | 'md' | 'lg';
+  /** 尺寸，影响开关轨道与拇指大小（'small' | 'medium' | 'large'） */
+  size?: 'small' | 'medium' | 'large';
   /** 在打开时显示的标签节点 */
   checkedChildren?: React.ReactNode;
   /** 在关闭时显示的标签节点 */
@@ -31,7 +33,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       onChangeEvent,
       disabled = false,
       loading = false,
-      size = 'md',
+      size: propSize = 'medium',
       checkedChildren,
       unCheckedChildren,
       className,
@@ -43,6 +45,10 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
     const [isChecked, setIsChecked] = React.useState<boolean>(() =>
       isControlled ? (checked as boolean) : !!defaultChecked
     );
+    const formCtx = useContext(FormContext) as FormContextType | undefined;
+    const effectiveSize: 'small' | 'medium' | 'large' =
+      (propSize as 'small' | 'medium' | 'large') ?? formCtx?.size ?? 'medium';
+
     const textRef = React.useRef<HTMLSpanElement>(null);
     const buttonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -62,7 +68,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         const actualContentWidth = Math.max(minContentWidth, halfCircleWidth + textWidth + 8); // 半圆 + 文字 + padding
         buttonRef.current.style.setProperty('--switch-actual-content-width', `${actualContentWidth}px`);
       }
-    }, [checkedChildren, unCheckedChildren, size]);
+    }, [checkedChildren, unCheckedChildren, effectiveSize]);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (disabled || loading) return;
@@ -78,7 +84,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
     if (isChecked) classList.push('beaver-switch-checked');
     if (disabled) classList.push('beaver-switch-disabled');
     if (loading) classList.push('beaver-switch-loading');
-    if (size && size !== 'md') classList.push(`beaver-switch-${size}`);
+    if (effectiveSize && effectiveSize !== 'medium') classList.push(`beaver-switch-${effectiveSize}`);
     if (className) classList.push(className);
 
     return (

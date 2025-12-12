@@ -82,6 +82,9 @@ export type UploadProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' 
   /** 上传按钮的文本 */
   buttonText?: string;
 
+  /** 尺寸：'small' | 'medium' | 'large'（优先级：props > Form 上下文） */
+  size?: 'small' | 'medium' | 'large';
+
   /** 最大上传文件数 */
   maxCount?: number;
 

@@ -1,4 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useContext } from 'react';
+import { FormContext } from '../Form/components/Form';
+import type { FormContextType } from '../Form/types';
 import { createPortal } from 'react-dom';
 import Input from '../Input/Input';
 import { useSingleDatePicker } from './hooks/useSingleDatePicker';
@@ -27,7 +30,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       readOnly = false,
       allowClear = true,
       disabledDate,
-      size = 'medium',
+      size: propSize,
       width,
       className = '',
       style = {},
@@ -36,6 +39,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     },
     ref
   ) => {
+    const formCtx = useContext(FormContext) as FormContextType | undefined;
+    const size = propSize ?? formCtx?.size ?? 'medium';
     const isRange = range === true;
 
     // 使用对应的 Hook 管理状态

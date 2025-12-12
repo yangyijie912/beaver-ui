@@ -44,6 +44,7 @@
   cursor: pointer;
   transition: all 0.16s ease;
 }
+
 .beaver-upload:not(.beaver-upload--disabled) .beaver-upload__area:hover {
   border-color: var(--beaver-upload-border-color-hover);
   background-color: var(--beaver-upload-bg-color-hover);
