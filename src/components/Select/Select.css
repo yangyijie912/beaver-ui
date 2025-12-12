@@ -326,7 +326,7 @@
 
 .beaver-select__option {
   list-style: none;
-  padding: var(--beaver-space-sm2, 10px) var(--beaver-space-md2, 14px);
+  padding: 8px 12px;
   border-radius: var(--beaver-radius-md, 6px);
   cursor: pointer;
   color: var(--beaver-select-text);
@@ -389,4 +389,26 @@
   cursor: default;
   background: transparent;
   pointer-events: none;
+}
+
+/* 菜单尺寸修正：因为菜单通过 portal 渲染到 body，无法继承触发器的修饰类。
+   通过在生成菜单时添加 `beaver-select__menu--${size}` 类名，并基于该类调整下拉项样式。 */
+.beaver-select__menu.beaver-select__menu--small .beaver-select__option {
+  padding: 6px 10px;
+  font-size: var(--beaver-select-font-size-small, 12px);
+  border-radius: var(--beaver-radius-sm, 6px);
+}
+.beaver-select__menu.beaver-select__menu--large .beaver-select__option {
+  padding: 8px 12px;
+  font-size: var(--beaver-select-font-size-large, 16px);
+  border-radius: var(--beaver-radius-lg, 8px);
+}
+
+.beaver-select__menu.beaver-select__menu--small .beaver-select__opt-checkmark svg {
+  width: 14px;
+  height: 14px;
+}
+.beaver-select__menu.beaver-select__menu--large .beaver-select__opt-checkmark svg {
+  width: 18px;
+  height: 18px;
 }

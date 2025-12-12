@@ -539,22 +539,27 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                 minWidth: menuWidth ? `${menuWidth}px` : undefined,
               }}
             >
-              <OptionList
-                menuOptions={menuOptions}
-                highlighted={highlighted}
-                internalValue={internalValue}
-                onHighlight={(i) => setHighlighted(i)}
-                onSelectByValue={(v) => handleSelectByValue(v)}
-                renderHighlightedLabel={(label) => renderHighlightedLabel(label, query)}
-                noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
-                listRef={ulRef}
-                menuStyle={{
-                  width: menuWidth ? `${menuWidth}px` : 'auto',
-                  boxSizing: 'border-box',
-                  minWidth: menuWidth ? `${menuWidth}px` : undefined,
-                }}
-                menuClassName={menuClassName}
-              />
+              {(() => {
+                const resolvedMenuClassName = `${menuClassName ? menuClassName + ' ' : ''}beaver-select__menu--${size}`;
+                return (
+                  <OptionList
+                    menuOptions={menuOptions}
+                    highlighted={highlighted}
+                    internalValue={internalValue}
+                    onHighlight={(i) => setHighlighted(i)}
+                    onSelectByValue={(v) => handleSelectByValue(v)}
+                    renderHighlightedLabel={(label) => renderHighlightedLabel(label, query)}
+                    noDataLabel={getNoDataLabel(options.length === 0, searchable, userTypedRef.current, query)}
+                    listRef={ulRef}
+                    menuStyle={{
+                      width: menuWidth ? `${menuWidth}px` : 'auto',
+                      boxSizing: 'border-box',
+                      minWidth: menuWidth ? `${menuWidth}px` : undefined,
+                    }}
+                    menuClassName={resolvedMenuClassName}
+                  />
+                );
+              })()}
             </div>,
             document.body
           )}
