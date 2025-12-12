@@ -8,7 +8,7 @@ export const vars = {
     primary: '#0eaae0',
     'primary-rgb': '14 170 224',
     text: '#333',
-    border: '#aaa',
+    border: '#bdbdbd',
     disabled: '#9ca3af',
     success: '#10b987',
     warning: '#f59e00',

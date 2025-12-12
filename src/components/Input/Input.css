@@ -24,13 +24,13 @@
 
   /* 背景颜色 */
   --beaver-input-bg-color: #fff;
-  --beaver-input-bg-color-disabled: #f9fafb;
+  --beaver-input-bg-color-disabled: #f7f7f7;
 
   /* 前后缀颜色 */
   --beaver-input-affix-color: var(--beaver-color-disabled, #9ca3af);
 
   /* 边框颜色：四种状态 */
-  --beaver-input-border-color: var(--beaver-color-border, #aaa);
+  --beaver-input-border-color: var(--beaver-color-border, #dcdcdc);
   --beaver-input-border-color-focus: var(--beaver-color-primary, #2563eb);
   --beaver-input-border-color-error: var(--beaver-color-error, #e44444);
   --beaver-input-border-color-success: var(--beaver-color-success, #10b987);
@@ -99,6 +99,7 @@
   background: var(--beaver-input-bg-color-disabled);
   color: var(--beaver-input-text-color-disabled);
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* ===== 尺寸变化 ===== */
@@ -222,6 +223,7 @@
 .beaver-input-wrapper:has(.beaver-input:disabled) {
   background: var(--beaver-input-bg-color-disabled);
   border-color: var(--beaver-input-border-color);
+  opacity: 0.6;
 }
 
 /* 禁用状态下的前后缀颜色 */
@@ -322,4 +324,11 @@
 .beaver-input-wrapper:has(.beaver-input--warning:focus-visible) {
   border-color: var(--beaver-input-border-color-warning);
   box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2);
+}
+
+/* Placeholder 颜色 */
+.beaver-input::placeholder,
+.beaver-input-wrapper .beaver-input::placeholder,
+.beaver-input--textarea::placeholder {
+  color: #9aa3ad;
 }

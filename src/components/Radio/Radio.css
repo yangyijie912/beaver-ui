@@ -156,11 +156,20 @@ label .beaver-radio + span,
 }
 
 /* ===== 禁用状态 ===== */
-/* 禁用时的 Radio 外观：灰色背景和边框，不可交互 */
+/* 禁用时的 Radio 外观：灰色背景和边框，不可交互
+   扩展匹配：隐藏原生输入、fieldset:disabled、[disabled]、aria-disabled
+*/
+.beaver-radio-input:disabled {
+  cursor: not-allowed;
+}
+
 .beaver-radio-input:disabled + .beaver-radio,
-.beaver-radio:disabled,
+.beaver-radio[disabled],
+.beaver-radio[aria-disabled='true'],
 .beaver-radio-wrapper--disabled .beaver-radio,
-.beaver-radio--disabled {
+.beaver-radio--disabled,
+fieldset:disabled .beaver-radio,
+fieldset[disabled] .beaver-radio {
   background: var(--beaver-radio-disabled-bg);
   border-color: var(--beaver-radio-disabled-border);
   cursor: not-allowed;
@@ -171,8 +180,19 @@ label .beaver-radio + span,
 /* 禁用时的标签文本：变灰并不可交互 */
 label input[disabled] + .beaver-radio + span,
 .beaver-radio-wrapper input[disabled] + .beaver-radio + span,
-.beaver-radio-wrapper--disabled .beaver-radio + span {
+.beaver-radio-wrapper--disabled .beaver-radio + span,
+fieldset:disabled .beaver-radio + span,
+fieldset[disabled] .beaver-radio + span {
   color: var(--beaver-radio-disabled-text);
+  cursor: not-allowed;
+}
+
+/* 在disabled 属性生效下 wrapper 整体呈现禁用样式 */
+.beaver-radio-wrapper[disabled],
+.beaver-radio-wrapper[aria-disabled='true'],
+.beaver-radio-wrapper--disabled,
+fieldset:disabled .beaver-radio-wrapper,
+fieldset[disabled] .beaver-radio-wrapper {
   cursor: not-allowed;
 }
 

@@ -184,11 +184,23 @@
 }
 
 /* ===== 禁用状态 ===== */
-/* 禁用时的 Checkbox 外观：灰色背景和边框，不可交互 */
+/* 禁用时的 Checkbox 外观：灰色背景和边框，不可交互
+   扩展匹配：
+   - 隐藏原生输入禁用：`.beaver-checkbox-input:disabled`
+   - 视觉元素属性禁用：`[disabled]` / `[aria-disabled="true"]`
+   - 包含在 fieldset:disabled 中的控件
+*/
+.beaver-checkbox-input:disabled {
+  cursor: not-allowed;
+}
+
 .beaver-checkbox-input:disabled + .beaver-checkbox,
-.beaver-checkbox:disabled,
+.beaver-checkbox[disabled],
+.beaver-checkbox[aria-disabled='true'],
 .beaver-checkbox-wrapper--disabled .beaver-checkbox,
-.beaver-checkbox--disabled {
+.beaver-checkbox--disabled,
+fieldset:disabled .beaver-checkbox,
+fieldset[disabled] .beaver-checkbox {
   background: var(--beaver-checkbox-disabled-bg);
   border-color: var(--beaver-checkbox-disabled-border);
   cursor: not-allowed;
@@ -199,8 +211,19 @@
 /* 禁用时的标签文本：变灰并不可交互 */
 label input[disabled] + .beaver-checkbox + span,
 .beaver-checkbox-wrapper input[disabled] + .beaver-checkbox + span,
-.beaver-checkbox-wrapper--disabled .beaver-checkbox + span {
+.beaver-checkbox-wrapper--disabled .beaver-checkbox + span,
+fieldset:disabled .beaver-checkbox + span,
+fieldset[disabled] .beaver-checkbox + span {
   color: var(--beaver-checkbox-disabled-text);
+  cursor: not-allowed;
+}
+
+/* 在disabled 属性生效下 wrapper 整体呈现禁用样式 */
+.beaver-checkbox-wrapper[disabled],
+.beaver-checkbox-wrapper[aria-disabled='true'],
+.beaver-checkbox-wrapper--disabled,
+fieldset:disabled .beaver-checkbox-wrapper,
+fieldset[disabled] .beaver-checkbox-wrapper {
   cursor: not-allowed;
 }
 

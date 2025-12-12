@@ -307,19 +307,60 @@ export const Disabled: Story = {
   name: '禁用状态',
   render: () => {
     return (
-      <Form initialValues={{ username: 'John Doe', email: 'john@example.com' }} layout="vertical" disabled>
-        <FormItem name="username" label="用户名">
-          <Input />
-        </FormItem>
+      <div>
+        <div style={{ margin: '20px 0' }}>整个表单禁用</div>
+        <Form initialValues={{ username: 'John Doe', email: 'john@example.com' }} layout="vertical" disabled>
+          <FormItem name="username" label="用户名">
+            <Input />
+          </FormItem>
 
-        <FormItem name="email" label="邮箱">
-          <Input />
-        </FormItem>
+          <FormItem name="email" label="邮箱">
+            <Input />
+          </FormItem>
 
-        <Button variant="primary" type="submit">
-          提交
-        </Button>
-      </Form>
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+        </Form>
+        <hr style={{ margin: '32px 0' }} />
+        <div style={{ margin: '20px 0' }}>单个字段禁用</div>
+        <Form
+          initialValues={{ username: '', email: '', userType: 'individual', newsletter: false }}
+          layout="horizontal"
+          style={{ maxWidth: 720 }}
+        >
+          <FormItem
+            name={`username`}
+            label="用户名"
+            rules={[{ validate: (value) => (!value ? '用户名不能为空' : undefined) }]}
+          >
+            <Input placeholder="请输入用户名" width={200} disabled />
+          </FormItem>
+
+          <FormItem name={`category`} label="分类">
+            <Select
+              options={[
+                { label: '全部', value: '' },
+                { label: '新闻', value: 'news' },
+                { label: '博客', value: 'blog' },
+                { label: '文档', value: 'docs' },
+              ]}
+              placeholder="请选择"
+              width={200}
+              disabled
+            />
+          </FormItem>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 8 }}>
+            <Button variant="primary" type="submit">
+              提交
+            </Button>
+            <Button type="button" variant="ghost">
+              重置
+            </Button>
+          </div>
+        </Form>
+      </div>
     );
   },
 };
