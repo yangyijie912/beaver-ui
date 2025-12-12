@@ -201,7 +201,7 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
       };
     }, [files]);
 
-    const { drag: _drag, ...restProps } = props as any;
+    const { drag: _drag, defaultFileList: _defaultFileList, ...restProps } = props as any;
 
     return (
       <div
