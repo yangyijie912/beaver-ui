@@ -60,11 +60,13 @@
   --beaver-toast-title-font-size: var(--beaver-font-size-md, 14px);
   --beaver-toast-title-font-weight: 600;
 
-  /* ===== 动画和阴影 ===== */
   /* ===== 动画 ===== */
   /* 动画时长 */
   --beaver-toast-animation-duration: 300ms;
   --beaver-toast-animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===== 层级===== */
+  --beaver-toast-z-index: var(--beaver-z-index-toast, 99999);
 }
 
 /* ===== Toast 容器样式 ===== */
@@ -72,12 +74,40 @@
   position: fixed;
   top: var(--beaver-toast-top);
   right: var(--beaver-toast-right);
-  z-index: 9999;
+  z-index: var(--beaver-toast-z-index);
   pointer-events: none;
   display: flex;
   flex-direction: column;
   gap: var(--beaver-toast-gap);
   max-width: var(--beaver-toast-max-width);
+}
+
+/* 当 Toast 在 Provider 范围内被限定显示时，使用 inline 模式（相对于宿主容器定位） */
+.beaver-toast-container--inline {
+  position: absolute;
+  left: auto;
+  z-index: var(--beaver-toast-z-index);
+  /* 限制最大宽度不超过宿主内部宽度（左右保留12px 内边距） */
+  max-width: min(var(--beaver-toast-max-width), calc(100% - 24px));
+  width: auto;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--beaver-toast-gap);
+  align-items: flex-end; /* 使 toast 项靠右排列，避免变形时靠左堆叠 */
+}
+
+/* Provider 内部宿主（用于限定 toast 的定位上下文） */
+.beaver-toast-provider-host {
+  position: relative;
+  /* 允许内联 toast 溢出显示，避免被父容器的 overflow 限制或滚动影响布局 */
+  overflow: visible;
+}
+
+.beaver-toast-container--inline .beaver-toast {
+  width: 100%;
+  min-width: 200px;
+  box-sizing: border-box;
 }
 
 /* ===== 单条 Toast 通知项样式 ===== */

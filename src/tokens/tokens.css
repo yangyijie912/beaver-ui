@@ -33,4 +33,5 @@
   --beaver-z-index-table-header: 3000;
   --beaver-z-index-table-sticky: 1000;
   --beaver-z-index-datepicker: 5001;
+  --beaver-z-index-toast: 99999;
 }

@@ -51,6 +51,7 @@ export const vars = {
     tableHeader: 3000, // 表格头部层级
     tableSticky: 1000, // 表格粘性列层级
     datepicker: 5001, // 日期选择器层级
+    toast: 99999, // Toast 层级
   },
 };
 

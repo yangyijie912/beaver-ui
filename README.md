@@ -53,6 +53,8 @@
 `Popconfirm` - 弹出式确认框  
 `Drawer` - 抽屉组件  
 `DatePicker` - 日期选择器  
-`Upload` - 文件上传
+`Upload` - 文件上传  
+`Alert` - 警告提示  
+`Toast` - 全局通知
 
 正在更新中......

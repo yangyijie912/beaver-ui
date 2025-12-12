@@ -438,3 +438,60 @@ export const ImperativeNoProvider: StoryObj = {
     </div>
   ),
 };
+
+/**
+ * 通过参数 limitToProvider限定在 Provider 范围内的示例
+ */
+export const LimitedToProvider: StoryObj = {
+  name: '限定在 Provider 范围内',
+  render: () => (
+    <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+      <ToastProvider limitToProvider>
+        <div
+          style={{
+            width: 660,
+            height: 220,
+            border: '2px dashed #9aa4b2',
+            borderRadius: 8,
+            padding: 12,
+            position: 'relative',
+            overflow: 'auto',
+          }}
+        >
+          <div style={{ marginBottom: 8, color: '#556', fontSize: 13 }}>Toast 限定容器（内部）</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                Toast.success('仅在此容器内显示通知');
+              }}
+            >
+              在容器内显示 Toast
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                Toast.clear();
+              }}
+            >
+              清空
+            </Button>
+          </div>
+        </div>
+      </ToastProvider>
+
+      <div style={{ width: 240 }}>
+        <div style={{ marginBottom: 8, color: '#556', fontSize: 13 }}>页面其他位置</div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button
+            onClick={() => {
+              Toast.success('在页面其他位置调用 Toast');
+            }}
+          >
+            在页面其他位置调用
+          </Button>
+        </div>
+      </div>
+    </div>
+  ),
+};

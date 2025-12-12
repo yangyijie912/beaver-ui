@@ -42,24 +42,32 @@ interface ToastItem extends ToastOptions {
  * 用于在页面顶部显示全局通知消息
  * 使用方式：通过 Toast.success()、Toast.warning() 等静态方法调用
  */
-const ToastContainer = React.forwardRef<HTMLDivElement, { items: ToastItem[]; onRemove: (id: string) => void }>(
-  (props, ref) => {
-    const { items, onRemove } = props;
-    if (typeof document === 'undefined') {
-      return null as any;
-    }
-
-    const container = (
-      <div ref={ref} className="beaver-toast-container">
-        {items.map((item) => (
-          <ToastItem key={item.id} item={item} onRemove={() => onRemove(item.id)} />
-        ))}
-      </div>
-    );
-
-    return createPortal(container, document.body);
+const ToastContainer = React.forwardRef<
+  HTMLDivElement,
+  { items: ToastItem[]; onRemove: (id: string) => void; host?: Element | null; disablePortal?: boolean }
+>((props, ref) => {
+  const { items, onRemove, host, disablePortal } = props;
+  if (typeof document === 'undefined') {
+    return null as any;
   }
-);
+
+  const container = (
+    <div
+      ref={ref}
+      className={`beaver-toast-container${disablePortal ? ' beaver-toast-container--inline' : ''}`}
+      {...(disablePortal ? { 'data-inline': 'true' } : {})}
+    >
+      {items.map((item) => (
+        <ToastItem key={item.id} item={item} onRemove={() => onRemove(item.id)} />
+      ))}
+    </div>
+  );
+
+  // 如果显式要求不使用 portal（在 Provider 范围内直接渲染），直接返回 container
+  if (disablePortal) return container;
+
+  return createPortal(container, host ?? document.body);
+});
 
 ToastContainer.displayName = 'ToastContainer';
 
@@ -358,8 +366,12 @@ function cleanupDefaultHost() {
  *
  * 需要在应用的根部包裹此组件，以便全局调用 Toast
  */
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ToastProvider: React.FC<{ children: React.ReactNode; limitToProvider?: boolean }> = ({
+  children,
+  limitToProvider = false,
+}) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const hostRef = React.useRef<HTMLDivElement>(null);
   const [items, setItems] = React.useState<ToastItem[]>([]);
 
   React.useLayoutEffect(() => {
@@ -374,6 +386,9 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
 
+  // 当限定在 provider 范围时，我们将把 ToastContainer 直接渲染在宿主元素内部（disable portal），
+  // 因此不需要在这里等待额外的 hostRef 状态更新。
+
   const handleRemove = (id: string) => {
     toastManager.remove(id);
   };
@@ -381,7 +396,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <>
       {children}
-      <ToastContainer ref={containerRef} items={items} onRemove={handleRemove} />
+      {limitToProvider ? (
+        <div ref={hostRef} className="beaver-toast-provider-host">
+          <ToastContainer ref={containerRef} disablePortal items={items} onRemove={handleRemove} />
+        </div>
+      ) : (
+        <ToastContainer ref={containerRef} items={items} onRemove={handleRemove} />
+      )}
     </>
   );
 };
