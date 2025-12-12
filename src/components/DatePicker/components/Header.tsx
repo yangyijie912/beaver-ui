@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { ArrowLeft, ArrowRight } from '../../../icons';
 import { getMonthCN, getYearCN } from '../utils';
 
 interface HeaderProps {
@@ -34,9 +35,7 @@ const Header: React.FC<HeaderProps> = ({ currentMonth, onPrevMonth, onNextMonth 
         type="button"
         aria-label="上一月"
       >
-        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-        </svg>
+        <ArrowLeft width="1em" height="1em" aria-hidden />
       </button>
 
       {/* 年月显示 */}
@@ -53,9 +52,7 @@ const Header: React.FC<HeaderProps> = ({ currentMonth, onPrevMonth, onNextMonth 
         type="button"
         aria-label="下一月"
       >
-        <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
-          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-        </svg>
+        <ArrowRight width="1em" height="1em" aria-hidden />
       </button>
     </div>
   );

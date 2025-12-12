@@ -1,4 +1,5 @@
 import React from 'react';
+import { Check } from '../../../icons';
 import type { SelectOption } from '../types';
 
 /**
@@ -80,18 +81,7 @@ const OptionItem: React.FC<OptionItemProps> = ({
       </span>
       {isSelected && (
         <span className="beaver-select__opt-checkmark" aria-hidden>
-          <svg
-            viewBox="0 0 24 24"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+          <Check width={16} height={16} aria-hidden />
         </span>
       )}
     </li>

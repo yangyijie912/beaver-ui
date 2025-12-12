@@ -1,5 +1,6 @@
 import React from 'react';
 import './Upload.css';
+import { File } from '../../icons';
 import Button from '../Button/Button';
 import type { UploadProps } from './types';
 import { useUploadFiles, useDragAndDrop } from './hooks';
@@ -324,20 +325,7 @@ const Upload = React.forwardRef<HTMLDivElement, UploadProps>(
               {!triggerNode && (
                 <div className="beaver-upload__area" onClick={open}>
                   <div className="beaver-upload__icon" aria-hidden="true">
-                    <svg
-                      width="40"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      focusable="false"
-                    >
-                      <path
-                        d="M3 7C3 5.89543 3.89543 5 5 5H9L11 7H19C20.1046 7 21 7.89543 21 9V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V7Z"
-                        fill="currentColor"
-                      />
-                      <path d="M3 7H5L7 5" stroke="none" />
-                    </svg>
+                    <File width={40} height={40} focusable={false} aria-hidden />
                   </div>
                   <div className="beaver-upload__text">{dragText}</div>
                   <Button

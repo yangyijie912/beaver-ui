@@ -114,7 +114,7 @@
 .beaver-toast {
   /* 基本布局 */
   display: flex;
-  align-items: flex-start;
+  align-items: center; /* 默认无标题时垂直居中 */
   gap: var(--beaver-toast-icon-gap);
   padding: var(--beaver-toast-padding);
   background-color: var(--beaver-toast-bg-color);
@@ -150,6 +150,17 @@
   transition: color var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
 }
 
+.beaver-toast__icon {
+  line-height: 0;
+}
+
+.beaver-toast__icon > svg {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  transform: translateY(1px);
+}
+
 /* 加载动画spinner */
 .beaver-toast__spinner {
   display: inline-block;
@@ -162,6 +173,22 @@
   min-width: 0;
   word-wrap: break-word;
   overflow-wrap: break-word;
+}
+
+/* 使标题+消息在内容区域垂直居中对齐（与图标居中对齐） */
+.beaver-toast__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 默认无标题时内容垂直居中 */
+}
+
+/* 当包含标题时，把整条 toast 的对齐改为顶部靠齐，使图标与标题同行 */
+.beaver-toast--has-title {
+  align-items: flex-start;
+}
+
+.beaver-toast--has-title .beaver-toast__content {
+  justify-content: flex-start;
 }
 
 /* 标题 */

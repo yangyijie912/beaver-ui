@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowLeft, ArrowRight } from '../../icons';
 import './Pagination.css';
 import Select from '../Select/Select';
 import { defaultLocale, PaginationLocale } from './locales';
@@ -138,23 +139,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={disabled || current === 1}
           aria-label={locale.prev}
         >
-          <svg
-            className="beaver-pagination__icon"
-            width="1em"
-            height="1em"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M10 3L5 8L10 13"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ArrowLeft className="beaver-pagination__icon" width="1em" height="1em" aria-hidden />
         </button>
 
         {/* 页码列表（包含省略号） */}
@@ -188,23 +173,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={disabled || current === pages}
           aria-label={locale.next}
         >
-          <svg
-            className="beaver-pagination__icon"
-            width="1em"
-            height="1em"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M6 3L11 8L6 13"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ArrowRight className="beaver-pagination__icon" width="1em" height="1em" aria-hidden />
         </button>
       </div>
 

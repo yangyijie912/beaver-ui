@@ -1,4 +1,5 @@
 import React from 'react';
+import { UploadCircle } from '../../../icons';
 
 type TriggerSquareProps = {
   onClick?: () => void;
@@ -20,12 +21,7 @@ const TriggerSquare: React.FC<TriggerSquareProps> = ({ onClick }) => {
         }}
         aria-label="上传"
       >
-        <svg viewBox="0 0 24 24" width="32" height="32" style={{ color: '#999', opacity: 0.6 }} aria-hidden="true">
-          <path
-            fill="currentColor"
-            d="M12 2c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
-          />
-        </svg>
+        <UploadCircle width={32} height={32} style={{ color: '#999', opacity: 0.6 }} aria-hidden />
       </div>
     </div>
   );

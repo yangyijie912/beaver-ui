@@ -1,5 +1,6 @@
 import React from 'react';
 import './Toast.css';
+import { Check, Warning, Info, Spinner, Close } from '../../icons';
 import { createRoot, Root } from 'react-dom/client';
 import { createPortal } from 'react-dom';
 
@@ -99,14 +100,15 @@ const ToastItem: React.FC<{
   // 构建类名
   const classList = ['beaver-toast'];
   if (type) classList.push(`beaver-toast--${type}`);
+  if (title) classList.push('beaver-toast--has-title');
 
-  // 默认图标映射
-  const defaultIconMap: Record<ToastType, string> = {
-    success: '✓',
-    warning: '⚠',
-    error: '✕',
-    info: 'ℹ',
-    loading: '⟳',
+  // 默认图标映射（使用统一图标组件）
+  const defaultIconMap: Record<ToastType, React.ReactNode> = {
+    success: <Check width={18} height={18} aria-hidden />,
+    warning: <Warning width={18} height={18} aria-hidden />,
+    error: <Close width={18} height={18} aria-hidden />,
+    info: <Info width={18} height={18} aria-hidden />,
+    loading: <Spinner width={18} height={18} aria-hidden />,
   };
 
   const finalIcon = icon !== undefined ? icon : defaultIconMap[type];
@@ -114,9 +116,7 @@ const ToastItem: React.FC<{
   return (
     <div className={classList.join(' ')} role="alert">
       {/* 图标 */}
-      <div className={`beaver-toast__icon beaver-toast__icon--${type}`}>
-        {type === 'loading' ? <span className="beaver-toast__spinner">{finalIcon}</span> : finalIcon}
-      </div>
+      <div className={`beaver-toast__icon beaver-toast__icon--${type}`}>{finalIcon}</div>
 
       {/* 内容 */}
       <div className="beaver-toast__content">

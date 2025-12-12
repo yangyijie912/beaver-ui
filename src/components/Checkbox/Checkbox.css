@@ -92,8 +92,8 @@
     opacity var(--beaver-checkbox-transition-duration) var(--beaver-checkbox-transition-timing);
   pointer-events: none;
 
-  /* SVG 路径：白色（%23fff）描边的勾选符号，宽度 3.5px，圆角线帽 */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' d='M5 12l5 5L19 7'/></svg>");
+  /* SVG 路径 */
+  background-image: url('../../assets/icons/check.svg');
 }
 
 /* 选中时显示勾选标记 */

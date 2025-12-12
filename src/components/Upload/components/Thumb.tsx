@@ -1,4 +1,5 @@
 import React from 'react';
+import { Eye, Trash } from '../../../icons';
 import type { UploadFile } from '../types';
 
 type ThumbProps = {
@@ -54,13 +55,7 @@ const Thumb: React.FC<ThumbProps> = ({ file, url, onView, onRemove, isList = fal
               }}
               aria-label="查看"
             >
-              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden>
-                <path
-                  fill="currentColor"
-                  d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z"
-                />
-                <circle fill="currentColor" cx="12" cy="12" r="2.5" />
-              </svg>
+              <Eye width={16} height={16} aria-hidden />
             </button>
 
             <button
@@ -72,9 +67,7 @@ const Thumb: React.FC<ThumbProps> = ({ file, url, onView, onRemove, isList = fal
               }}
               aria-label="删除"
             >
-              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden>
-                <path fill="currentColor" d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7zm3-4h6l1 1h4v2H2V4h4l1-1z" />
-              </svg>
+              <Trash width={16} height={16} aria-hidden />
             </button>
           </div>
         )}
@@ -99,13 +92,7 @@ const Thumb: React.FC<ThumbProps> = ({ file, url, onView, onRemove, isList = fal
             }}
             aria-label="查看"
           >
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden>
-              <path
-                fill="currentColor"
-                d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z"
-              />
-              <circle fill="currentColor" cx="12" cy="12" r="2.5" />
-            </svg>
+            <Eye width={16} height={16} aria-hidden />
           </button>
 
           <button
@@ -117,9 +104,7 @@ const Thumb: React.FC<ThumbProps> = ({ file, url, onView, onRemove, isList = fal
             }}
             aria-label="删除"
           >
-            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden>
-              <path fill="currentColor" d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7zm3-4h6l1 1h4v2H2V4h4l1-1z" />
-            </svg>
+            <Trash width={16} height={16} aria-hidden />
           </button>
         </div>
       )}

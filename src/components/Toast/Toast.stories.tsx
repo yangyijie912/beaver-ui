@@ -200,16 +200,16 @@ export const AllTypes: StoryObj = {
   render: () => (
     <ToastProvider>
       <div style={{ display: 'flex', gap: 8 }}>
-        <Button size="small" onClick={() => Toast.success('操作成功')}>
+        <Button size="small" onClick={() => Toast.success('操作成功', { duration: 0 })}>
           Success
         </Button>
-        <Button size="small" onClick={() => Toast.warning('请注意')}>
+        <Button size="small" onClick={() => Toast.warning('请注意', { duration: 0 })}>
           Warning
         </Button>
-        <Button size="small" color="danger" onClick={() => Toast.error('操作失败')}>
+        <Button size="small" color="danger" onClick={() => Toast.error('操作失败', { duration: 0 })}>
           Error
         </Button>
-        <Button size="small" onClick={() => Toast.info('提示信息')}>
+        <Button size="small" onClick={() => Toast.info('提示信息', { duration: 0 })}>
           Info
         </Button>
         <Button
