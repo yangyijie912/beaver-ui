@@ -15,7 +15,7 @@ const decoratorStyle: React.CSSProperties & Record<string, string> = {
  * - 支持自定义样式和图标
  */
 const meta: Meta<typeof Select> = {
-  title: 'Components/Select',
+  title: '表单（Form）/Select',
   component: Select,
   tags: ['autodocs'],
   // 加一个装饰器设置全局默认宽度为 200px，方便在 Storybook 中预览

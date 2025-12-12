@@ -17,7 +17,7 @@ import type { Meta, StoryObj, StoryFn } from '@storybook/react';
  * - 支持日期范围选择
  */
 const meta: Meta<typeof DatePicker> = {
-  title: 'Components/DatePicker',
+  title: '表单（Form）/DatePicker',
   component: DatePicker,
   tags: ['autodocs'],
   decorators: [

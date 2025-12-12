@@ -14,7 +14,7 @@ import Button from '../Button/Button';
  * - 支持遮罩层和点击遮罩关闭
  */
 const meta: Meta<typeof Popconfirm> = {
-  title: 'Components/Popconfirm',
+  title: '浮层（Overlays）/Popconfirm',
   component: Popconfirm,
   parameters: {
     layout: 'centered',

@@ -11,7 +11,7 @@ import Switch from './Switch';
  * - 支持在开关上显示自定义标签
  */
 const meta: Meta<typeof Switch> = {
-  title: 'Components/Switch',
+  title: '表单（Form）/Switch',
   component: Switch,
   tags: ['autodocs'],
 };

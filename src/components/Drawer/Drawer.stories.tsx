@@ -15,7 +15,7 @@ import type { Meta, StoryObj } from '@storybook/react';
  * - 平滑的动画效果，可以通过覆盖css类自定义动画或时长
  */
 const meta: Meta<typeof Drawer> = {
-  title: 'Components/Drawer',
+  title: '浮层（Overlays）/Drawer',
   component: Drawer,
   tags: ['autodocs'],
 };

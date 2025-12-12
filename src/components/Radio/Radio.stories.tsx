@@ -11,7 +11,7 @@ import RadioGroup from './RadioGroup';
  * - 支持自定义标签内容
  */
 const meta: Meta<typeof Radio> = {
-  title: 'Components/Radio',
+  title: '表单（Form）/Radio',
   component: Radio,
   tags: ['autodocs'],
 };

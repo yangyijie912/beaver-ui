@@ -10,7 +10,7 @@ import Checkbox from './Checkbox';
  * - 支持自定义标签内容
  */
 const meta: Meta<typeof Checkbox> = {
-  title: 'Components/Checkbox',
+  title: '表单（Form）/Checkbox',
   component: Checkbox,
   tags: ['autodocs'],
 };

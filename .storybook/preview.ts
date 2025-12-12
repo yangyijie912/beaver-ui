@@ -14,24 +14,21 @@ const preview: Preview = {
 
     options: {
       storySort: {
-        // 首先按组（例如 `Components`) 排序，然后按下面的数组顺序排列该组下的子页面。
-        // 未列出的项会在这些项之后按字母顺序显示。
+        // 按指定分组顺序排列侧边栏：操作、表单、数据展示、浮层、导航、反馈
+        // 未列出的子项会在这些项之后按字母顺序显示。
         order: [
-          'Components',
-          [
-            'Button',
-            'Checkbox',
-            'Radio',
-            'Switch',
-            'Input',
-            'Select',
-            'Pagination',
-            'Table',
-            'Tooltip',
-            'Popconfirm',
-            'Modal',
-            'Drawer',
-          ],
+          '操作（Actions）',
+          ['Button'],
+          '表单（Form）',
+          ['Input', 'Select', 'Checkbox', 'Radio', 'Switch', 'DatePicker', 'Upload'],
+          '数据展示（Data Display）',
+          ['Table'],
+          '浮层（Overlays）',
+          ['Tooltip', 'Popconfirm', 'Modal', 'Drawer'],
+          '导航（Navigation）',
+          ['Pagination'],
+          '反馈（Feedback）',
+          ['Alert', 'Toast'],
         ],
       },
     },

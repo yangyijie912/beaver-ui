@@ -11,7 +11,7 @@ import type { Meta, StoryObj } from '@storybook/react';
  * - 支持动画效果
  */
 const meta: Meta<typeof Modal> = {
-  title: 'Components/Modal',
+  title: '浮层（Overlays）/Modal',
   component: Modal,
   tags: ['autodocs'],
 };

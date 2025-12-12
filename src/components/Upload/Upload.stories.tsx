@@ -14,7 +14,7 @@ import Upload from './Upload';
  * - 支持自定义触发节点渲染
  */
 const meta: Meta<typeof Upload> = {
-  title: 'Components/Upload',
+  title: '表单（Form）/Upload',
   component: Upload,
   tags: ['autodocs'],
 };

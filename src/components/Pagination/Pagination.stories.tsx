@@ -14,7 +14,7 @@ import type { Meta, StoryObj } from '@storybook/react';
  * - 支持受控和非受控用法
  */
 const meta: Meta<typeof Pagination> = {
-  title: 'Components/Pagination',
+  title: '导航（Navigation）/Pagination',
   component: Pagination,
   tags: ['autodocs'],
   argTypes: {

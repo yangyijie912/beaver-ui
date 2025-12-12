@@ -15,7 +15,7 @@ import Button from '../Button/Button';
  * - 可通过 ToastProvider 配置全局选项
  */
 const meta: Meta = {
-  title: 'Components/Toast',
+  title: '反馈（Feedback）/Toast',
   tags: ['autodocs'],
 };
 

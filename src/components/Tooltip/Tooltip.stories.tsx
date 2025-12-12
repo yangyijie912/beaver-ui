@@ -11,7 +11,7 @@ import Button from '../Button/Button';
  * - 支持内容为空时不显示 Tooltip
  */
 const meta: Meta<typeof Tooltip> = {
-  title: 'Components/Tooltip',
+  title: '浮层（Overlays）/Tooltip',
   component: Tooltip,
   tags: ['autodocs'],
 };

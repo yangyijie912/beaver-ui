@@ -13,7 +13,7 @@ import type { Meta, StoryObj } from '@storybook/react';
  * - 支持边框样式和空状态展示
  */
 const meta: Meta<typeof Table> = {
-  title: 'Components/Table',
+  title: '数据展示（Data Display）/Table',
   component: Table,
   tags: ['autodocs'],
 };

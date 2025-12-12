@@ -12,7 +12,7 @@ import type { Meta, StoryObj, StoryFn } from '@storybook/react';
  * - 可以手动关闭提示
  */
 const meta: Meta<typeof Alert> = {
-  title: 'Components/Alert',
+  title: '反馈（Feedback）/Alert',
   component: Alert,
   tags: ['autodocs'],
   // 添加装饰器为 Alert 组件设置固定宽度，便于在 Storybook 中预览

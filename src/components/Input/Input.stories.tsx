@@ -13,7 +13,7 @@ import type { Meta, StoryObj, StoryFn } from '@storybook/react';
  * - 支持多种尺寸（small、medium、large）
  */
 const meta: Meta<typeof Input> = {
-  title: 'Components/Input',
+  title: '表单（Form）/Input',
   component: Input,
   tags: ['autodocs'],
   // 加一个装饰器设置全局默认宽度为 300px，方便在 Storybook 中预览

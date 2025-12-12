@@ -11,7 +11,7 @@ import Button from './Button';
  * - 支持自定义内容（文本、图标等）
  */
 const meta: Meta<typeof Button> = {
-  title: 'Components/Button',
+  title: '操作（Actions）/Button',
   component: Button,
   tags: ['autodocs'],
   argTypes: {
