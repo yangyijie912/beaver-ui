@@ -61,7 +61,7 @@
 
   /* ===== 层级 ===== */
 
-  --beaver-datepicker-picker-z-index: var(--beaver-z-index-datepicker, 5001);
+  --beaver-datepicker-z-index: var(--beaver-z-index-datepicker, 5001);
 }
 
 .beaver-datepicker-wrapper {
@@ -97,7 +97,7 @@
 
 /* 普通日期面板宽度 */
 .beaver-datepicker-panel {
-  z-index: var(--beaver-datepicker-picker-z-index, 5001);
+  z-index: var(--beaver-datepicker-z-index, 5001);
   background-color: var(--beaver-datepicker-picker-bg, #ffffff);
   border: 1px solid var(--beaver-datepicker-picker-border-color, #e8e8e8);
   border-radius: var(--beaver-datepicker-picker-border-radius, 6px);

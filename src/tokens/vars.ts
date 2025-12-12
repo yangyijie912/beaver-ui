@@ -30,7 +30,6 @@ export const vars = {
     md: '12px',
     md2: '14px',
     lg: '16px',
-    xl: '20px',
   },
   font: {
     size: {
