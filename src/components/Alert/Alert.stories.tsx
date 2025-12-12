@@ -161,17 +161,18 @@ export const Compact: Story = {
 };
 
 /**
- * 无左侧边框
- * 当不需要左侧颜色条时可以使用
+ * 无左侧边框和图标
+ * 当不需要左侧颜色条和图标时可以使用
  */
 export const NoBorder: Story = {
-  name: '无左侧边框',
+  name: '无左侧边框和图标',
   args: {
     type: 'warning',
     title: '警告',
-    message: '这个提示没有左侧的颜色条',
+    message: '这个提示没有左侧的颜色条和图标',
     showBorder: false,
     closable: true,
+    showIcon: false,
   },
 };
 

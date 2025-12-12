@@ -107,6 +107,18 @@
   transition: color var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
 }
 
+/* Clear inline SVG baseline gap and ensure SVG fills container */
+.beaver-alert__icon {
+  line-height: 0;
+}
+
+.beaver-alert__icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: translateY(1px);
+}
+
 /* 主要内容区域 */
 .beaver-alert__content {
   flex: 1;
@@ -296,6 +308,16 @@
 /* 调整无边框时的间距 */
 .beaver-alert--no-border {
   gap: var(--beaver-alert-icon-gap);
+}
+
+/* 支持隐藏图标的样式修饰：移除图标显示并调整间距 */
+.beaver-alert--no-icon .beaver-alert__icon {
+  display: none;
+}
+
+.beaver-alert--no-icon {
+  /* 当没有图标时，减少水平间隙使内容更紧凑 */
+  gap: calc(var(--beaver-alert-icon-gap) / 1);
 }
 
 /* ===== 响应式设计 ===== */

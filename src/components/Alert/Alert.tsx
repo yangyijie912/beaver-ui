@@ -1,5 +1,6 @@
 import React from 'react';
 import './Alert.css';
+import { Check, Warning as WarningIcon, Close, Info } from '../../icons';
 
 /**
  * Alert 组件的类型定义
@@ -24,6 +25,8 @@ export type AlertProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'type'> & {
   compact?: boolean;
   /** 自定义图标 */
   icon?: React.ReactNode;
+  /** 是否展示图标 */
+  showIcon?: boolean;
   /** 自定义关闭按钮 */
   closeIcon?: React.ReactNode;
   /** 是否展示左边的颜色条 */
@@ -41,6 +44,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       onClose,
       compact = false,
       icon,
+      showIcon = true,
       closeIcon,
       showBorder = true,
       children,
@@ -71,16 +75,18 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
     if (!showBorder) classList.push('beaver-alert--no-border');
     // 添加用户传入的自定义类名
     if (className) classList.push(className);
+    // 隐藏图标时的修饰类
+    if (!showIcon) classList.push('beaver-alert--no-icon');
 
-    // 默认图标映射（根据类型自动选择）
-    const defaultIconMap: Record<AlertType, string> = {
-      success: '✓',
-      warning: '⚠',
-      error: '✕',
-      info: 'ℹ',
+    // 默认图标映射为 React 节点，使用统一图标组件
+    const defaultIconMap: Record<AlertType, React.ReactNode> = {
+      success: <Check width={20} height={20} aria-hidden />,
+      warning: <WarningIcon width={20} height={20} aria-hidden />,
+      error: <Close width={20} height={20} aria-hidden />,
+      info: <Info width={20} height={20} aria-hidden />,
     };
 
-    // 确定最终使用的图标
+    // 确定最终使用的图标（优先使用传入的 icon）
     const finalIcon = icon !== undefined ? icon : defaultIconMap[type];
 
     return (
@@ -88,8 +94,8 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         {/* 左边的颜色指示条 */}
         {showBorder && <div className="beaver-alert__border" />}
 
-        {/* 图标容器 */}
-        <div className="beaver-alert__icon">{finalIcon}</div>
+        {/* 图标容器（可隐藏） */}
+        {showIcon && <div className="beaver-alert__icon">{finalIcon}</div>}
 
         {/* 主要内容区域 */}
         <div className="beaver-alert__content">
