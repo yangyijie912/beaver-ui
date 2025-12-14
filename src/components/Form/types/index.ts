@@ -6,6 +6,8 @@ export type ValidationRule = {
   validate: (value: any) => string | undefined | Promise<string | undefined>;
   /** 验证触发时机：'onChange' 或 'onBlur' */
   trigger?: 'onChange' | 'onBlur';
+  /** 当字段处于 disabled 时，是否仍然执行该规则（默认 false） */
+  validateWhenDisabled?: boolean;
 };
 
 /**
@@ -44,8 +46,8 @@ export type FormContextType = {
   layout?: 'vertical' | 'horizontal' | 'inline';
   /** 表单的 size */
   size?: 'small' | 'medium' | 'large';
-  /** 注册字段的验证规则 */
-  registerField?: (name: string, rules: ValidationRule[]) => void;
+  /** 注册字段的验证规则（可附带字段元信息，例如 disabled） */
+  registerField?: (name: string, rules: ValidationRule[], meta?: { disabled?: boolean }) => void;
   /** 取消注册字段的验证规则 */
   unregisterField?: (name: string) => void;
   /** 是否已尝试提交表单（用于在提交后显示未触碰字段的错误） */
@@ -82,6 +84,8 @@ export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
   label?: React.ReactNode;
   /** 是否必填（会显示红色 * 标记）*/
   required?: boolean;
+  /** 字段禁用（可用于在 FormItem 中标记字段为 disabled） */
+  disabled?: boolean;
   /** 字段的验证规则数组 */
   rules?: ValidationRule[];
   /** 辅助说明文本 */

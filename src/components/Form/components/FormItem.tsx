@@ -3,7 +3,7 @@ import { useFormContext } from './Form';
 import type { FormItemProps } from '../types';
 
 export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
-  ({ className, name, label, required, rules = [], help, colon = true, children, ...props }, ref) => {
+  ({ className, name, label, required, rules = [], help, colon = true, children, disabled, ...props }, ref) => {
     const form = useFormContext();
     const [touched, setTouched] = useState(false);
 
@@ -13,15 +13,21 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
     // 当字段已被触碰或表单已尝试提交（submitAttempted）时，若存在错误则显示
     const shouldShowError = (touched || Boolean(form.submitAttempted)) && error;
 
-    // 注册和注销字段的验证规则
+    // 计算子组件上是否声明了 disabled（例如 <Input disabled />）
+    const childHasDisabled = React.Children.toArray(children).some((child) => {
+      return React.isValidElement(child) && (child.props as any)?.disabled;
+    });
+
+    // 注册和注销字段的验证规则，同时记录字段的 disabled 状态（用于在表单层跳过校验）
     useEffect(() => {
       if (name && rules.length > 0) {
-        form.registerField?.(name, rules);
+        const isDisabled = Boolean(childHasDisabled || disabled || form.disabled);
+        form.registerField?.(name, rules, { disabled: isDisabled });
         return () => {
           form.unregisterField?.(name);
         };
       }
-    }, [name, rules.length]); // 只依赖 rules.length，而不是整个 rules 对象
+    }, [name, rules.length, childHasDisabled, disabled, form.disabled]); // 依赖 disabled 相关状态
 
     /**
      * 处理字段值变化
@@ -103,7 +109,7 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
               value: value !== undefined && value !== null ? String(value) : '',
               onChange: handleChange,
               onBlur: handleBlur,
-              disabled: childProps.disabled || form.disabled,
+              disabled: childProps.disabled || disabled || form.disabled,
             } as any
           );
         } else {
@@ -133,7 +139,7 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
           const baseProps = {
             onChange: wrappedOnChange,
             onBlur: handleBlur,
-            disabled: childProps.disabled || form.disabled,
+            disabled: childProps.disabled || disabled || form.disabled,
             validation: childProps.validation || validation, // 传递验证状态给子组件
             // 把 style.width 映射到 width prop（仅在子组件未显式设置 width 时使用）
             ...(incomingWidth !== undefined && childProps.width === undefined ? { width: incomingWidth } : {}),

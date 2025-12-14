@@ -34,8 +34,10 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
     const [values, setValues] = useState<FieldValue>(initialValues);
     // 表单错误状态
     const [errors, setErrors] = useState<FieldError>({});
-    // 字段验证规则映射表
-    const [fieldRules, setFieldRules] = useState<Map<string, ValidationRule[]>>(new Map());
+    // 字段验证规则映射表，value 包含 rules 与字段元信息（如 disabled）
+    const [fieldRules, setFieldRules] = useState<Map<string, { rules: ValidationRule[]; disabled?: boolean }>>(
+      new Map()
+    );
     // 是否已尝试提交表单（用于在提交后展示未触碰字段的错误提示）
     const [submitAttempted, setSubmitAttempted] = useState(false);
 
@@ -64,7 +66,8 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
      */
     const getFieldRules = useCallback(
       (name: string): ValidationRule[] => {
-        return fieldRules.get(name) || [];
+        const meta = fieldRules.get(name);
+        return meta ? meta.rules : [];
       },
       [fieldRules]
     );
@@ -75,7 +78,8 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
      */
     const validateField = useCallback(
       async (name: string): Promise<boolean> => {
-        const rules = getFieldRules(name);
+        const meta = fieldRules.get(name);
+        const rules = meta ? meta.rules : [];
         const value = values[name];
 
         // 如果没有规则，则验证通过
@@ -84,10 +88,21 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
           return true;
         }
 
+        // 如果字段处于 disabled，并且没有任何规则声明 validateWhenDisabled，则直接通过
+        const isDisabled = Boolean(meta?.disabled);
+        if (isDisabled) {
+          const rulesForce = rules.filter((r) => r.validateWhenDisabled);
+          if (rulesForce.length === 0) {
+            setFieldError(name, undefined);
+            return true;
+          }
+          // 否则仅对那些带有 validateWhenDisabled 的规则执行校验
+        }
+
+        const rulesToCheck = isDisabled ? rules.filter((r) => r.validateWhenDisabled) : rules;
+
         // 依次执行规则，找到第一个验证失败的规则
-        for (const rule of rules) {
-          // 支持同步或异步的 validate 返回值
-          // 若 validate 返回 Promise，则 await 它以取得错误信息或 undefined
+        for (const rule of rulesToCheck) {
           const maybe = rule.validate(value);
           const error = maybe instanceof Promise ? await maybe : maybe;
           if (error) {
@@ -100,7 +115,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
         setFieldError(name, undefined);
         return true;
       },
-      [values, getFieldRules, setFieldError]
+      [values, getFieldRules, setFieldError, fieldRules]
     );
 
     /**
@@ -108,6 +123,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
      * 返回 Promise，true 表示所有字段验证通过，false 表示至少有一个字段验证失败
      */
     const validateForm = useCallback(async (): Promise<boolean> => {
+      // validateField 会自行跳过 disabled 的字段（除非规则声明了 validateWhenDisabled）
       const fieldsToValidate = Array.from(fieldRules.keys());
       const results = await Promise.all(fieldsToValidate.map((name) => validateField(name)));
       return results.every((result) => result);
@@ -141,8 +157,12 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
     /**
      * 注册字段的验证规则
      */
-    const registerField = useCallback((name: string, rules: ValidationRule[]) => {
-      setFieldRules((prev) => new Map(prev).set(name, rules));
+    const registerField = useCallback((name: string, rules: ValidationRule[], meta?: { disabled?: boolean }) => {
+      setFieldRules((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(name, { rules, disabled: meta?.disabled });
+        return newMap;
+      });
     }, []);
 
     /**

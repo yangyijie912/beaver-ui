@@ -323,11 +323,7 @@ export const Disabled: Story = {
         </Form>
         <hr style={{ margin: '32px 0' }} />
         <div style={{ margin: '20px 0' }}>单个字段禁用</div>
-        <Form
-          initialValues={{ username: '', email: '', userType: 'individual', newsletter: false }}
-          layout="horizontal"
-          style={{ maxWidth: 720 }}
-        >
+        <Form initialValues={{ username: '', category: '' }} layout="horizontal" style={{ maxWidth: 720 }}>
           <FormItem
             name={`username`}
             label="用户名"
@@ -336,7 +332,7 @@ export const Disabled: Story = {
             <Input placeholder="请输入用户名" width={200} disabled />
           </FormItem>
 
-          <FormItem name={`category`} label="分类">
+          <FormItem name={`category`} label="分类" disabled>
             <Select
               options={[
                 { label: '全部', value: '' },
@@ -346,7 +342,6 @@ export const Disabled: Story = {
               ]}
               placeholder="请选择"
               width={200}
-              disabled
             />
           </FormItem>
 
@@ -360,6 +355,52 @@ export const Disabled: Story = {
           </div>
         </Form>
       </div>
+    );
+  },
+};
+
+/**
+ * 自定义验证规则示例
+ * - validateWhenDisabled: true 表示即使字段被禁用也执行该验证规则
+ * - trigger: 'onChange' | 'onBlur' 指定验证触发时机
+ */
+export const ValidateWhenDisabled: Story = {
+  name: '自定义验证',
+  render: () => {
+    const handleSubmit = (values: any) => {
+      console.log('validateWhenDisabled 提交的数据:', values);
+      alert(`提交的数据: ${JSON.stringify(values)}`);
+    };
+
+    return (
+      <Form initialValues={{ username: 'bc', description: '' }} onSubmit={handleSubmit} layout="vertical">
+        <FormItem
+          name="username"
+          label="用户名"
+          required
+          rules={[{ validate: (val) => (val !== 'abc' ? '必须为 abc' : undefined), validateWhenDisabled: true }]}
+        >
+          <Input disabled />
+        </FormItem>
+
+        <FormItem
+          name="description"
+          label="简介"
+          required
+          rules={[
+            { validate: (v) => (!v ? 'onChange 必填' : undefined), trigger: 'onChange' },
+            { validate: (v) => (v && v.length < 3 ? 'onBlur: 至少 3 个字符' : undefined), trigger: 'onBlur' },
+          ]}
+        >
+          <Input placeholder="输入时触发 onChange 规则，失焦时触发 onBlur 规则" />
+        </FormItem>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+        </div>
+      </Form>
     );
   },
 };
