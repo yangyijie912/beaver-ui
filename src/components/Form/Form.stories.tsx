@@ -1,5 +1,6 @@
 import React from 'react';
-import Form, { FormItem, useFormContext } from './index';
+import Form, { FormItem } from './index';
+import { useFormContext } from './components/Form';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Select from '../Select/Select';
