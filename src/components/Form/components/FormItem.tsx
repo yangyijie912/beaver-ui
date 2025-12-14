@@ -57,16 +57,23 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       return [requiredRule];
     }, [rules, required, label, name]);
 
-    // 注册和注销字段的验证规则，同时记录字段的 disabled 状态（用于在表单层跳过校验）
+    // 在卸载时取消注册字段
+    useEffect(() => {
+      return () => {
+        if (name) form.unregisterField?.(name);
+      };
+      // 在 name 改变或组件卸载时运行清理
+    }, [name, form.unregisterField]);
+
+    // 在 rules / disabled 等元信息变化时注册或更新字段，
+    // 注意不要先注销再注册，避免触发先删除后添加导致的中间状态并发渲染循环。
     useEffect(() => {
       if (name && effectiveRules.length > 0) {
         const isDisabled = Boolean(childHasDisabled || disabled || form.disabled);
         form.registerField?.(name, effectiveRules, { disabled: isDisabled });
-        return () => {
-          form.unregisterField?.(name);
-        };
       }
-    }, [name, effectiveRules.length, childHasDisabled, disabled, form.disabled]);
+      // 依赖包含所有会影响 registration 的值
+    }, [name, effectiveRules, childHasDisabled, disabled, form.disabled, form.registerField]);
 
     /**
      * 处理字段值变化

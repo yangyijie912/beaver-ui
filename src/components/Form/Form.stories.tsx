@@ -1,5 +1,5 @@
 import React from 'react';
-import Form, { FormItem } from './index';
+import Form, { FormItem, useFormContext } from './index';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import Select from '../Select/Select';
@@ -450,6 +450,159 @@ export const AsyncValidation: Story = {
 };
 
 /**
+ * 动态字段示例：演示增删字段并校验
+ */
+export const DynamicFields: Story = {
+  name: '动态字段（增/删）',
+  render: () => {
+    const formRef = React.useRef<any>(null);
+    const [keys, setKeys] = React.useState<number[]>([0]);
+    const idRef = React.useRef(1);
+
+    const add = () => setKeys((k) => [...k, idRef.current++]);
+    const remove = (key: number) => setKeys((k) => k.filter((x) => x !== key));
+
+    const handleSubmit = (values: any) => {
+      const activeNames = new Set(keys.map((k) => `item-${k + 1}`));
+      const filtered = Object.fromEntries(Object.entries(values).filter(([name]) => activeNames.has(name)));
+      alert('提交数据：' + JSON.stringify(filtered, null, 2));
+    };
+
+    return (
+      <Form ref={formRef} onSubmit={handleSubmit} layout="horizontal">
+        <div style={{ display: 'flex', flexDirection: 'row-reverse', marginBottom: 8 }}>
+          <Button type="button" onClick={add}>
+            添加字段
+          </Button>
+        </div>
+        {keys.map((k) => (
+          <div key={k}>
+            <FormItem
+              name={`item-${k + 1}`}
+              label={`项 ${k + 1}`}
+              rules={[{ validate: (v) => (!v ? '不能为空' : undefined) }]}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Input placeholder="输入值" style={{ width: '100%' }} />
+                <Button type="button" style={{ width: 80 }} color="danger" onClick={() => remove(k)}>
+                  删除
+                </Button>
+              </div>
+            </FormItem>
+          </div>
+        ))}
+
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+        </div>
+      </Form>
+    );
+  },
+};
+
+/**
+ * 字段依赖示例：根据一个字段值调整另一个字段的校验规则
+ */
+export const DependentFields: Story = {
+  name: '字段依赖',
+  render: () => {
+    const handleSubmit = (values: any) => {
+      alert('提交数据：' + JSON.stringify(values, null, 2));
+    };
+
+    const PhoneField = () => {
+      const form = useFormContext();
+      return (
+        <FormItem
+          name="phone"
+          label="联系电话"
+          required
+          help={(form.values.country ?? 'cn') === 'cn' ? '中国手机号建议以 +86 或区号开头' : '请输入国际/本地号码'}
+          rules={[
+            {
+              validate: (v, allValues) =>
+                (allValues?.country ?? 'cn') === 'cn' && v && !/^\+?86/.test(v)
+                  ? '中国手机号请以 +86 或区号开头'
+                  : undefined,
+            },
+            {
+              validate: (v, allValues) =>
+                (allValues?.country ?? 'cn') === 'us' && v && !/^\+?1/.test(v) ? '美国手机号请以 +1 开头' : undefined,
+            },
+          ]}
+        >
+          <Input placeholder="根据国家不同校验规则不同" />
+        </FormItem>
+      );
+    };
+
+    return (
+      <Form onSubmit={handleSubmit} initialValues={{ country: 'cn', phone: '' }} layout="vertical">
+        <FormItem name="country" label="国家">
+          <Select
+            options={[
+              { label: '中国', value: 'cn' },
+              { label: '美国', value: 'us' },
+            ]}
+          />
+        </FormItem>
+
+        <PhoneField />
+
+        <Button variant="primary" type="submit">
+          提交
+        </Button>
+      </Form>
+    );
+  },
+};
+
+/**
+ * 程序化控制示例：使用 form ref 调用 reset、set、提交（兼容性友好，方法使用可选链）
+ */
+export const ProgrammaticControls: Story = {
+  name: '程序化控制（reset / set）',
+  render: () => {
+    const formRef = React.useRef<any>(null);
+
+    const handleSubmit = (values: any) => {
+      alert('提交数据：' + JSON.stringify(values, null, 2));
+    };
+
+    return (
+      <Form ref={formRef} onSubmit={handleSubmit} initialValues={{ name: '', email: '' }} layout="vertical">
+        <FormItem name="name" label="姓名">
+          <Input placeholder="请输入姓名" />
+        </FormItem>
+
+        <FormItem name="email" label="邮箱">
+          <Input type="email" placeholder="请输入邮箱" />
+        </FormItem>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button type="button" onClick={() => formRef.current?.reset()}>
+            重置（ref.reset）
+          </Button>
+
+          <Button
+            type="button"
+            onClick={() => formRef.current?.setFieldsValue?.({ name: '示例用户', email: 'demo@example.com' })}
+          >
+            填充示例数据（ref.setFieldsValue）
+          </Button>
+
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+        </div>
+      </Form>
+    );
+  },
+};
+
+/**
  * 复杂表单示例（包含多种验证规则和组件）
  */
 export const ComplexForm: Story = {
@@ -726,148 +879,6 @@ export const ComprehensiveForm: Story = {
           </Button>
           <Button type="button" variant="ghost" onClick={() => formRef.current?.reset()}>
             重置表单
-          </Button>
-        </div>
-      </Form>
-    );
-  },
-};
-
-/**
- * 动态字段示例：演示增删字段并校验
- */
-export const DynamicFields: Story = {
-  name: '动态字段（增/删）',
-  render: () => {
-    const formRef = React.useRef<any>(null);
-    const [keys, setKeys] = React.useState<number[]>([0]);
-    const idRef = React.useRef(1);
-
-    const add = () => setKeys((k) => [...k, idRef.current++]);
-    const remove = (key: number) => setKeys((k) => k.filter((x) => x !== key));
-
-    const handleSubmit = (values: any) => {
-      const activeNames = new Set(keys.map((k) => `item-${k + 1}`));
-      const filtered = Object.fromEntries(Object.entries(values).filter(([name]) => activeNames.has(name)));
-      alert('提交数据：' + JSON.stringify(filtered, null, 2));
-    };
-
-    return (
-      <Form ref={formRef} onSubmit={handleSubmit} layout="horizontal">
-        <div style={{ display: 'flex', flexDirection: 'row-reverse', marginBottom: 8 }}>
-          <Button type="button" onClick={add}>
-            添加字段
-          </Button>
-        </div>
-        {keys.map((k) => (
-          <div key={k}>
-            <FormItem
-              name={`item-${k + 1}`}
-              label={`项 ${k + 1}`}
-              rules={[{ validate: (v) => (!v ? '不能为空' : undefined) }]}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Input placeholder="输入值" style={{ width: '100%' }} />
-                <Button type="button" style={{ width: 80 }} color="danger" onClick={() => remove(k)}>
-                  删除
-                </Button>
-              </div>
-            </FormItem>
-          </div>
-        ))}
-
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
-          <Button variant="primary" type="submit">
-            提交
-          </Button>
-        </div>
-      </Form>
-    );
-  },
-};
-
-/**
- * 字段依赖示例：根据一个字段值调整另一个字段的校验规则
- */
-export const DependentFields: Story = {
-  name: '字段依赖',
-  render: () => {
-    const [country, setCountry] = React.useState('cn');
-
-    const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
-    };
-
-    return (
-      <Form onSubmit={handleSubmit} initialValues={{ country: 'cn', phone: '' }} layout="vertical">
-        <FormItem name="country" label="国家">
-          <Select
-            options={[
-              { label: '中国', value: 'cn' },
-              { label: '美国', value: 'us' },
-            ]}
-            onChange={(v: any) => setCountry(v)}
-          />
-        </FormItem>
-
-        <FormItem
-          name="phone"
-          label="联系电话"
-          help={country === 'cn' ? '中国手机号建议以 +86 开头' : '请输入国际/本地号码'}
-          rules={[
-            {
-              validate: (v) =>
-                country === 'cn' && v && !/^\+?86/.test(v) ? '中国手机号请以 +86 或区号开头' : undefined,
-            },
-          ]}
-        >
-          <Input placeholder="根据国家不同校验规则不同" />
-        </FormItem>
-
-        <Button variant="primary" type="submit">
-          提交
-        </Button>
-      </Form>
-    );
-  },
-};
-
-/**
- * 程序化控制示例：使用 form ref 调用 reset、set、提交（兼容性友好，方法使用可选链）
- */
-export const ProgrammaticControls: Story = {
-  name: '程序化控制（reset / set）',
-  render: () => {
-    const formRef = React.useRef<any>(null);
-
-    const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
-    };
-
-    return (
-      <Form ref={formRef} onSubmit={handleSubmit} initialValues={{ name: '', email: '' }} layout="vertical">
-        <FormItem name="name" label="姓名">
-          <Input placeholder="请输入姓名" />
-        </FormItem>
-
-        <FormItem name="email" label="邮箱">
-          <Input type="email" placeholder="请输入邮箱" />
-        </FormItem>
-
-        <div style={{ display: 'flex', gap: 8 }}>
-          <Button type="button" onClick={() => formRef.current?.reset()}>
-            重置（ref.reset）
-          </Button>
-
-          <Button
-            type="button"
-            onClick={() => formRef.current?.setFieldsValue?.({ name: '示例用户', email: 'demo@example.com' })}
-          >
-            填充示例数据（ref.setFieldsValue）
-          </Button>
-
-          <Button variant="primary" type="submit">
-            提交
           </Button>
         </div>
       </Form>

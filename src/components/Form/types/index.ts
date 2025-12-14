@@ -2,8 +2,9 @@
  * 表单字段验证规则类型定义
  */
 export type ValidationRule = {
-  /** 验证方法，返回 undefined 表示验证通过，返回错误信息表示验证失败。支持同步或异步（Promise）返回 */
-  validate: (value: any) => string | undefined | Promise<string | undefined>;
+  /** 验证方法，返回 undefined 表示验证通过，返回错误信息表示验证失败。支持同步或异步（Promise）返回
+   *  第二个参数为表单的所有字段值，方便实现字段间依赖校验 */
+  validate: (value: any, allValues?: FieldValue) => string | undefined | Promise<string | undefined>;
   /** 验证触发时机：'onChange' 或 'onBlur' */
   trigger?: 'onChange' | 'onBlur';
   /** 当字段处于 disabled 时，是否仍然执行该规则（默认 false） */

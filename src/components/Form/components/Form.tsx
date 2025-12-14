@@ -103,7 +103,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
 
         // 依次执行规则，找到第一个验证失败的规则
         for (const rule of rulesToCheck) {
-          const maybe = rule.validate(value);
+          const maybe = rule.validate(value, values);
           const error = maybe instanceof Promise ? await maybe : maybe;
           if (error) {
             setFieldError(name, error);
@@ -159,8 +159,29 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
      */
     const registerField = useCallback((name: string, rules: ValidationRule[], meta?: { disabled?: boolean }) => {
       setFieldRules((prev) => {
+        const prevMeta = prev.get(name);
+        const disabled = Boolean(meta?.disabled);
+
+        // 将规则数组转换为字符串表示以便比较（函数使用 toString），
+        // 这样即使规则函数每次渲染创建了新引用，但其逻辑相同，则不会触发不必要的更新。
+        const rulesToKey = (arr: ValidationRule[] | undefined) =>
+          (arr || [])
+            .map((r) => {
+              try {
+                return typeof r.validate === 'function' ? r.validate.toString() : JSON.stringify(r);
+              } catch {
+                return String(r);
+              }
+            })
+            .join('|');
+
+        const prevKey = prevMeta ? rulesToKey(prevMeta.rules) + `::${Boolean(prevMeta.disabled)}` : null;
+        const nextKey = rulesToKey(rules) + `::${disabled}`;
+
+        if (prevKey === nextKey) return prev;
+
         const newMap = new Map(prev);
-        newMap.set(name, { rules, disabled: meta?.disabled });
+        newMap.set(name, { rules, disabled });
         return newMap;
       });
     }, []);
