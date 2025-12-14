@@ -265,6 +265,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           isEditingRef.current = false;
           singleState.handleDateChange(date);
           singleState.setCurrentMonth(date);
+          // 直接同步输入框显示，确保用户选择后立即可见（避免 isEditingRef 引起的 useEffect 跳过）
+          setInputValue(formatSingleDate(date, picker, format));
           close();
         }
       },
@@ -305,6 +307,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           }
         } else {
           singleState.handleDateChange(date);
+          // 直接同步输入框显示（picker 为 month/year 时也适用）
+          setInputValue(formatSingleDate(date, picker, format));
           close();
         }
       },

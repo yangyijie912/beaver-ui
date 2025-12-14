@@ -208,14 +208,15 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             );
           }
 
-          // DatePicker 使用 value 属性（日期字符串）
+          // DatePicker 使用 value 属性（传入 Date 或 null；其它类型（空字符串等）映射为 undefined）
           if (isDatePicker) {
+            const dateValue = value instanceof Date || value === null ? value : undefined;
             return React.cloneElement(
               child as React.ReactElement<any>,
               {
                 ...childProps,
                 ...baseProps,
-                value: value !== undefined && value !== null ? value : undefined,
+                value: dateValue,
               } as any
             );
           }
