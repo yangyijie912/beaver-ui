@@ -10,7 +10,8 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
     // 获取当前字段的错误信息
     const error = name && form.errors[name];
     const value = name ? form.values[name] : undefined;
-    const shouldShowError = touched && error;
+    // 当字段已被触碰或表单已尝试提交（submitAttempted）时，若存在错误则显示
+    const shouldShowError = (touched || Boolean(form.submitAttempted)) && error;
 
     // 注册和注销字段的验证规则
     useEffect(() => {

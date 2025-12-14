@@ -36,6 +36,8 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
     const [errors, setErrors] = useState<FieldError>({});
     // 字段验证规则映射表
     const [fieldRules, setFieldRules] = useState<Map<string, ValidationRule[]>>(new Map());
+    // 是否已尝试提交表单（用于在提交后展示未触碰字段的错误提示）
+    const [submitAttempted, setSubmitAttempted] = useState(false);
 
     /**
      * 更新单个字段的值
@@ -117,6 +119,9 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
+      // 标记为已尝试提交，以便显示所有字段的错误提示
+      setSubmitAttempted(true);
+
       // 验证整个表单
       const isValid = await validateForm();
       if (!isValid) {
@@ -167,6 +172,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       reset: () => {
         setValues(initialValues);
         setErrors({});
+        setSubmitAttempted(false);
       },
       /** 清空表单 */
       clear: () => {
@@ -176,6 +182,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
         });
         setValues(cleared);
         setErrors({});
+        setSubmitAttempted(false);
       },
     };
 
@@ -203,6 +210,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
         value={{
           values,
           errors,
+          submitAttempted,
           setFieldValue,
           validateField,
           setFieldError,

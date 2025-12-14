@@ -46,6 +46,8 @@ export type FormContextType = {
   registerField?: (name: string, rules: ValidationRule[]) => void;
   /** 取消注册字段的验证规则 */
   unregisterField?: (name: string) => void;
+  /** 是否已尝试提交表单（用于在提交后显示未触碰字段的错误） */
+  submitAttempted?: boolean;
 };
 
 /**
