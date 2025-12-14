@@ -13,8 +13,13 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   value?: string | string[];
   /** 默认值 */
   defaultValue?: string | string[];
-  /** 事件回调，参数为选中的值 */
-  onChange?: (value: string | string[]) => void;
+  /**
+   * 事件回调，参数为 `(value, option, optionList)`：
+   * - `value`: 单选为 `string`，复选为 `string[]`
+   * - `option`: 单选时为 `SelectOption`，复选时为最近一次变更的 `SelectOption` 或 `SelectOption[]`（可选）
+   * - `optionList`: 当前完整的选项数组（可选）
+   */
+  onChange?: (value: string | string[], option?: SelectOption | SelectOption[], optionList?: SelectOption[]) => void;
   /** 是否支持多选 */
   multiple?: boolean;
   /** 是否在下拉中显示搜索框 */

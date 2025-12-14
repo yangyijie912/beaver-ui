@@ -17,7 +17,11 @@ interface UseSelectInputEventsParams {
   searchable: boolean;
   allowCreate: boolean;
   filterSelected: boolean;
-  onChange?: (value: string | string[]) => void;
+  onChange?: (
+    value: string | string[] | undefined,
+    option?: SelectOption | SelectOption[] | undefined,
+    optionList?: SelectOption[] | undefined
+  ) => void;
   committedRef: React.RefObject<boolean>;
   userTypedRef: React.RefObject<boolean>;
   searchRef: React.RefObject<HTMLInputElement | null>;
@@ -60,7 +64,8 @@ export function useSelectInputEvents({
       if (foundIdx >= 0) prev.splice(foundIdx, 1);
       else prev.push(value);
       if (controlledValue === undefined) setInternalValue(prev);
-      onChange?.(prev);
+      const changedOpt = options.find((o) => o.value === value);
+      onChange?.(prev, changedOpt, options);
       setQuery('');
       (committedRef as unknown as { current: boolean | null }).current = true;
       if (filterSelected) {
@@ -71,7 +76,7 @@ export function useSelectInputEvents({
 
     // 单选
     if (controlledValue === undefined) setInternalValue(value);
-    onChange?.(value);
+    onChange?.(value, opt, options);
     if (searchable) {
       (userTypedRef as unknown as { current: boolean | null }).current = false;
       setQuery('');
@@ -91,7 +96,8 @@ export function useSelectInputEvents({
     const idx = prev.indexOf(value);
     if (idx >= 0) prev.splice(idx, 1);
     if (controlledValue === undefined) setInternalValue(prev);
-    onChange?.(prev);
+    const removedOpt = options.find((o) => o.value === value);
+    onChange?.(prev, removedOpt, options);
   };
 
   /**
@@ -144,14 +150,14 @@ export function useSelectInputEvents({
           handleSelectByValue(match.value);
         } else {
           if (controlledValue === undefined) setInternalValue(match.value);
-          onChange?.(match.value);
+          onChange?.(match.value, match, options);
         }
       } else {
         if (multiple) {
           handleSelectByValue(q);
         } else {
           if (controlledValue === undefined) setInternalValue(q);
-          onChange?.(q);
+          onChange?.(q, undefined, options);
         }
       }
     }

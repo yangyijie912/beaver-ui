@@ -197,10 +197,10 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           const match = options.find((o) => o.value === q || o.label === q);
           if (match && !match.disabled) {
             if (controlledValue === undefined) setInternalValue(match.value);
-            onChange?.(match.value);
+            onChange?.(match.value, match, options);
           } else {
             if (controlledValue === undefined) setInternalValue(q);
-            onChange?.(q);
+            onChange?.(q, undefined, options);
           }
         }
         setQuery('');
@@ -262,7 +262,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         if (foundIdx >= 0) prev.splice(foundIdx, 1);
         else prev.push(value);
         if (controlledValue === undefined) setInternalValue(prev);
-        onChange?.(prev);
+        const changed = options.find((o) => o.value === value);
+        onChange?.(prev, changed, options);
         setQuery('');
         committedRef.current = true;
         // 多选时：默认保持下拉打开；如果启用了 filterSelected，则每次选完后关闭下拉（按需行为）
@@ -272,7 +273,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         return;
       }
       if (controlledValue === undefined) setInternalValue(value);
-      onChange?.(value);
+      onChange?.(value, opt, options);
       // 对单选可搜索场景，不把已选 label 写入 `query`（避免影响搜索）；
       // 改为保留 `query` 为空，并把已选项通过 placeholder 的方式展示。
       if (searchable) {
@@ -329,7 +330,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       const idx = prev.indexOf(value);
       if (idx >= 0) prev.splice(idx, 1);
       if (controlledValue === undefined) setInternalValue(prev);
-      onChange?.(prev);
+      const removed = options.find((o) => o.value === value);
+      onChange?.(prev, removed, options);
     }
 
     /**
@@ -397,13 +399,13 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           if (multiple) handleSelectByValue(match.value);
           else {
             if (controlledValue === undefined) setInternalValue(match.value);
-            onChange?.(match.value);
+            onChange?.(match.value, match, options);
           }
         } else {
           if (multiple) handleSelectByValue(q);
           else {
             if (controlledValue === undefined) setInternalValue(q);
-            onChange?.(q);
+            onChange?.(q, undefined, options);
           }
         }
       }
@@ -573,7 +575,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             onChange={(e) => {
               const selected = Array.from(e.target.selectedOptions, (option) => option.value);
               if (controlledValue === undefined) setInternalValue(selected);
-              onChange?.(selected);
+              const selectedOpts = options.filter((o) => selected.includes(o.value));
+              onChange?.(selected, selectedOpts, options);
             }}
             style={{ display: 'none' }}
             aria-hidden
