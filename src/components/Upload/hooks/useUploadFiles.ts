@@ -38,7 +38,6 @@ export const useUploadFiles = (
   const updateFileStatus = (uid: string, status: UploadFile['status'], updates: Partial<UploadFile> = {}) => {
     setFiles((prevFiles) => {
       const newFiles = prevFiles.map((f) => (f.uid === uid ? { ...f, status, ...updates } : f));
-      onChange?.(newFiles);
       return newFiles;
     });
   };
@@ -194,7 +193,6 @@ export const useUploadFiles = (
     // 如果是单文件上传，替换文件列表；否则追加
     const updatedFiles = multiple ? [...files, ...newUploadFiles] : newUploadFiles;
     setFiles(updatedFiles);
-    onChange?.(updatedFiles);
 
     // 自动上传
     if (autoUpload) {
@@ -212,10 +210,24 @@ export const useUploadFiles = (
         onRemove?.(fileToRemove);
       }
       const newFiles = prevFiles.filter((f) => f.uid !== uid);
-      onChange?.(newFiles);
       return newFiles;
     });
   };
+
+  // 使用 ref 持有最新的 onChange，避免 onChange 引用变化触发 effect 循环
+  const onChangeRef = React.useRef(onChange);
+  React.useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  // 在文件列表变化时通知外部（只依赖 files）
+  React.useEffect(() => {
+    try {
+      onChangeRef.current?.(files);
+    } catch (_e) {
+      // 外部回调异常不应影响内部状态
+    }
+  }, [files]);
 
   return {
     files,

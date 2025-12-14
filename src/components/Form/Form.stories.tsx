@@ -604,118 +604,6 @@ export const ProgrammaticControls: Story = {
 };
 
 /**
- * 复杂表单示例（包含多种验证规则和组件）
- */
-export const ComplexForm: Story = {
-  name: '复杂表单示例',
-  render: () => {
-    const formRef = React.useRef<any>(null);
-
-    const handleSubmit = (values: any) => {
-      console.log('提交成功:', values);
-      alert('表单提交成功！');
-    };
-
-    return (
-      <Form
-        ref={formRef}
-        initialValues={{
-          firstName: '',
-          lastName: '',
-          email: '',
-          category: '',
-          phone: '',
-          address: '',
-          agreed: false,
-        }}
-        onSubmit={handleSubmit}
-        layout="vertical"
-      >
-        <div style={{ display: 'flex', gap: 16 }}>
-          <div style={{ flex: 1 }}>
-            <FormItem
-              name="firstName"
-              label="名字"
-              required
-              rules={[
-                {
-                  validate: (value) => (!value ? '名字不能为空' : undefined),
-                },
-              ]}
-            >
-              <Input placeholder="请输入名字" />
-            </FormItem>
-          </div>
-          <div style={{ flex: 1 }}>
-            <FormItem
-              name="lastName"
-              label="姓氏"
-              required
-              rules={[
-                {
-                  validate: (value) => (!value ? '姓氏不能为空' : undefined),
-                },
-              ]}
-            >
-              <Input placeholder="请输入姓氏" />
-            </FormItem>
-          </div>
-        </div>
-
-        <FormItem
-          name="email"
-          label="邮箱"
-          required
-          help="我们不会将您的邮箱分享给第三方"
-          rules={[
-            {
-              validate: (value) => (!value ? '邮箱不能为空' : undefined),
-            },
-            {
-              validate: (value) => (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '请输入有效的邮箱地址' : undefined),
-            },
-          ]}
-        >
-          <Input type="email" placeholder="example@domain.com" />
-        </FormItem>
-
-        <FormItem name="category" label="分类" required rules={[{ validate: (v) => (!v ? '请选择分类' : undefined) }]}>
-          <Select
-            options={[
-              { label: '个人', value: 'personal' },
-              { label: '企业', value: 'enterprise' },
-              { label: '其他', value: 'other' },
-            ]}
-            placeholder="请选择分类"
-          />
-        </FormItem>
-
-        <FormItem name="phone" label="电话" help="可选，格式如：+86 10 12345678">
-          <Input placeholder="请输入电话号码" />
-        </FormItem>
-
-        <FormItem name="address" label="地址">
-          <Input textarea rows={3} placeholder="请输入完整地址" />
-        </FormItem>
-
-        <FormItem name="agreed" label="协议">
-          <Checkbox label="我已阅读并同意服务条款和隐私政策" />
-        </FormItem>
-
-        <div style={{ display: 'flex', gap: 8 }}>
-          <Button variant="primary" type="submit">
-            提交
-          </Button>
-          <Button type="button" variant="ghost" onClick={() => formRef.current?.reset()}>
-            重置
-          </Button>
-        </div>
-      </Form>
-    );
-  },
-};
-
-/**
  * 完整的综合表单 - 包含库里所有主要表单组件
  */
 export const ComprehensiveForm: Story = {
@@ -755,7 +643,7 @@ export const ComprehensiveForm: Story = {
         onSubmit={handleSubmit}
         layout="vertical"
       >
-        <h3 style={{ marginTop: 0, marginBottom: 16 }}>📋 基础信息</h3>
+        <h3>基础信息</h3>
 
         <div style={{ display: 'flex', gap: 16 }}>
           <div style={{ flex: 1 }}>
@@ -794,7 +682,7 @@ export const ComprehensiveForm: Story = {
           <Input placeholder="请输入电话号码" />
         </FormItem>
 
-        <h3 style={{ marginTop: 24, marginBottom: 16 }}>👤 用户类型与分类</h3>
+        <h3>用户类型与分类</h3>
 
         <FormItem name="userType" label="用户类型" required>
           <RadioGroup name="userType">
@@ -823,7 +711,7 @@ export const ComprehensiveForm: Story = {
           />
         </FormItem>
 
-        <h3 style={{ marginTop: 24, marginBottom: 16 }}>⚙️ 偏好设置</h3>
+        <h3>偏好设置</h3>
 
         <FormItem name="notifications" label="通知偏好">
           <Switch checkedChildren="启用推送" unCheckedChildren="关闭推送" />
@@ -833,7 +721,7 @@ export const ComprehensiveForm: Story = {
           <Checkbox label="订阅每周新闻通讯" />
         </FormItem>
 
-        <h3 style={{ marginTop: 24, marginBottom: 16 }}>🏢 工作信息</h3>
+        <h3>工作信息</h3>
 
         <FormItem name="department" label="部门">
           <Select
@@ -857,13 +745,13 @@ export const ComprehensiveForm: Story = {
           <Input textarea rows={4} placeholder="请输入您的个人描述或专业背景" />
         </FormItem>
 
-        <h3 style={{ marginTop: 24, marginBottom: 16 }}>📎 附件上传</h3>
+        <h3>附件上传</h3>
 
         <FormItem name="attachments" label="上传文件" help="支持 PDF、Word、Excel 等常见文件格式，单个文件不超过 10MB">
           <Upload multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" />
         </FormItem>
 
-        <h3 style={{ marginTop: 24, marginBottom: 16 }}>✅ 协议与确认</h3>
+        <h3>协议与确认</h3>
 
         <FormItem
           name="agreement"
