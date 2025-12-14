@@ -35,8 +35,16 @@ export type FormContextType = {
   errors: FieldError;
   /** 更新单个字段值 */
   setFieldValue: (name: string, value: any) => void;
+  /** 批量设置字段值（与 setValues 功能等价） */
+  setFieldsValue?: (newValues: FieldValue) => void;
+  /** 批量设置字段值（与 setFieldsValue 功能等价） */
+  setValues?: (newValues: FieldValue) => void;
+  /** 获取当前所有字段值 */
+  getValues?: () => FieldValue;
   /** 验证单个字段 */
   validateField: (name: string) => Promise<boolean>;
+  /** 验证整个表单，返回是否通过 */
+  validate?: () => Promise<boolean>;
   /** 设置字段错误 */
   setFieldError: (name: string, error: string | undefined) => void;
   /** 获取字段验证规则 */
@@ -51,8 +59,12 @@ export type FormContextType = {
   registerField?: (name: string, rules: ValidationRule[], meta?: { disabled?: boolean }) => void;
   /** 取消注册字段的验证规则 */
   unregisterField?: (name: string) => void;
-  /** 是否已尝试提交表单（用于在提交后显示未触碰字段的错误） */
+  /** 是否已尝试提交表单 */
   submitAttempted?: boolean;
+  /** 重置表单为初始值 */
+  reset?: () => void;
+  /** 清空表单（将所有字段置为空字符串） */
+  clear?: () => void;
 };
 
 /**

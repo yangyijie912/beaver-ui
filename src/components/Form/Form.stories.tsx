@@ -561,10 +561,10 @@ export const DependentFields: Story = {
 };
 
 /**
- * 程序化控制示例：使用 form ref 调用 reset、set、提交（兼容性友好，方法使用可选链）
+ * 使用 ref 进行程序化控制（reset / setFieldsValue）
  */
 export const ProgrammaticControls: Story = {
-  name: '程序化控制（reset / set）',
+  name: '使用ref控制',
   render: () => {
     const formRef = React.useRef<any>(null);
 

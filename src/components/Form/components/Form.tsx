@@ -207,6 +207,14 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       setValues: (newValues: FieldValue) => {
         setValues((prev) => ({ ...prev, ...newValues }));
       },
+      /** 设置单个字段的值 */
+      setFieldValue: (name: string, value: any) => {
+        setFieldValue(name, value);
+      },
+      /** 批量设置字段值 */
+      setFieldsValue: (newValues: FieldValue) => {
+        setValues((prev) => ({ ...prev, ...newValues }));
+      },
       /** 验证整个表单 */
       validate: validateForm,
       /** 重置表单为初始值 */
@@ -249,6 +257,8 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
     return (
       <FormContext.Provider
         value={{
+          // 将对外的 formInstance 方法一并暴露到 context，方便内部组件和 Story 使用
+          ...formInstance,
           values,
           errors,
           submitAttempted,
