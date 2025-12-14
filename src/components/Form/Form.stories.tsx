@@ -561,6 +561,161 @@ export const DependentFields: Story = {
 };
 
 /**
+ * useFormContext 演示
+ * - 展示如何在子组件中通过 hook 访问 `form` 对象（values、errors 等）
+ * - 演示 programmatic setFieldsValue、reset 和触发校验
+ */
+export const UseFormContextDemo: Story = {
+  name: 'useFormContext 用法',
+  render: () => {
+    const handleSubmit = (values: any) => {
+      alert('提交数据：' + JSON.stringify(values, null, 2));
+    };
+
+    const HookControls = () => {
+      const form = useFormContext() as any;
+      const [dynamicRegistered, setDynamicRegistered] = React.useState(false);
+      const [dynamicValue, setDynamicValue] = React.useState('');
+
+      React.useEffect(() => {
+        // 避免注销后值残留在表单数据中
+        if (dynamicRegistered) {
+          const v = form?.values?.dynamicField;
+          setDynamicValue(v ?? '');
+        }
+      }, [dynamicRegistered]);
+
+      const registerDynamic = () => {
+        form?.registerField?.('dynamicField', [{ validate: (v: any) => (!v ? '动态字段不能为空' : undefined) }]);
+        setDynamicRegistered(true);
+      };
+
+      const unregisterDynamic = () => {
+        form?.unregisterField?.('dynamicField');
+        setDynamicRegistered(false);
+        setDynamicValue('');
+      };
+
+      return (
+        <div style={{ marginTop: 12, border: '1px dashed var(--muted-4, #e6e6e6)', padding: 12 }}>
+          <div style={{ marginBottom: 8 }}>
+            <strong>当前表单值：</strong>
+            <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(form?.values ?? {}, null, 2)}</pre>
+          </div>
+          <div style={{ marginBottom: 8 }}>
+            <strong>校验信息：</strong>
+            <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(form?.errors ?? {}, null, 2)}</pre>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+            <Button
+              type="button"
+              onClick={() => form?.setFieldsValue?.({ name: 'hook-user', email: 'hook@example.com' })}
+            >
+              设置示例值
+            </Button>
+
+            <Button type="button" onClick={() => form?.reset?.()}>
+              重置
+            </Button>
+
+            <Button
+              type="button"
+              onClick={() =>
+                form?.validate?.()?.then((ok: boolean) => {
+                  if (ok) alert('表单校验通过');
+                  else alert('表单校验未通过，请检查错误');
+                })
+              }
+            >
+              校验整个表单 (validate)
+            </Button>
+
+            <Button
+              type="button"
+              onClick={() =>
+                form
+                  ?.validateField?.('email')
+                  ?.then((ok: boolean) => alert(ok ? 'email 字段校验通过' : 'email 字段校验未通过'))
+              }
+            >
+              校验 email 字段 (validateField)
+            </Button>
+
+            <Button type="button" onClick={() => console.log('form (from useFormContext):', form)}>
+              打印 form 对象
+            </Button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+            {!dynamicRegistered ? (
+              <Button type="button" onClick={registerDynamic}>
+                注册动态字段 `dynamicField`
+              </Button>
+            ) : (
+              <Button type="button" onClick={unregisterDynamic} color="danger">
+                注销动态字段 `dynamicField`
+              </Button>
+            )}
+
+            {dynamicRegistered && (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <Input
+                  placeholder="动态字段输入"
+                  value={dynamicValue}
+                  onChange={(e: any) => {
+                    const val = e?.target?.value;
+                    setDynamicValue(val);
+                    form?.setFieldValue?.('dynamicField', val);
+                    form?.setFieldsValue?.({ dynamicField: val });
+                  }}
+                  style={{ width: 220 }}
+                />
+                <Button
+                  type="button"
+                  onClick={() =>
+                    form
+                      ?.validateField?.('dynamicField')
+                      ?.then((ok: boolean) => alert(ok ? '动态字段校验通过' : '动态字段校验未通过'))
+                  }
+                >
+                  校验动态字段
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <Form initialValues={{ name: '', email: '' }} onSubmit={handleSubmit} layout="vertical">
+        <FormItem name="name" label="姓名" required rules={[{ validate: (v) => (!v ? '姓名不能为空' : undefined) }]}>
+          <Input placeholder="请输入姓名" />
+        </FormItem>
+
+        <FormItem
+          name="email"
+          label="邮箱"
+          required
+          rules={[{ validate: (v) => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '邮箱格式不正确' : undefined) }]}
+        >
+          <Input placeholder="请输入邮箱" />
+        </FormItem>
+
+        <HookControls />
+
+        <div style={{ marginTop: 8 }}>
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+        </div>
+      </Form>
+    );
+  },
+};
+
+/**
  * 使用 ref 进行程序化控制（reset / setFieldsValue）
  */
 export const ProgrammaticControls: Story = {
