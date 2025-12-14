@@ -12,10 +12,10 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
   resize?: React.CSSProperties['resize'];
   /** 直接设置宽度，支持 number(像素) 或 字符串(如 '100%','200px') */
   width?: number | string;
-  /** 输入框前置内容（图标、文本等） */
-  prefix?: React.ReactNode;
-  /** 输入框后置内容（图标、清除按钮等） */
-  suffix?: React.ReactNode;
+  /** 输入框前置内容（图标、文本等）。支持直接传入 ReactNode 或 返回 ReactNode 的函数 */
+  prefix?: React.ReactNode | (() => React.ReactNode);
+  /** 输入框后置内容（图标、清除按钮等）。支持直接传入 ReactNode 或 返回 ReactNode 的函数 */
+  suffix?: React.ReactNode | (() => React.ReactNode);
   /** 前置内容容器类名 */
   prefixClassName?: string;
   /** 后置内容容器类名 */
@@ -136,9 +136,15 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
       e.stopPropagation();
     };
 
+    // 支持 prefix/suffix 为函数的情况（eg. suffix={() => <span/>}）
+    // 并改为显式的 null/undefined 检查，避免像 0 或 '' 等合法的 falsy 值被忽略
+    const prefixNode = typeof prefix === 'function' ? (prefix as () => React.ReactNode)() : prefix;
+    const suffixNode = typeof suffix === 'function' ? (suffix as () => React.ReactNode)() : suffix;
+    const hasPrefix = prefixNode !== null && prefixNode !== undefined;
+    const hasSuffix = suffixNode !== null && suffixNode !== undefined;
     // 如果有前置或后置内容，或启用了 allowClear，需要包装在容器中
     // 关键：始终返回 wrapper 结构，以保持 DOM 节点稳定（防止焦点丢失）
-    const shouldRenderWrapper = prefix || suffix || allowClear;
+    const shouldRenderWrapper = hasPrefix || hasSuffix || allowClear;
 
     const inputElement = (
       <input
@@ -155,11 +161,11 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
     if (shouldRenderWrapper) {
       return (
         <div className={`beaver-input-wrapper beaver-input-wrapper--${size}`}>
-          {prefix && <div className={`beaver-input-prefix ${prefixClassName || ''}`}>{prefix}</div>}
+          {hasPrefix && <div className={`beaver-input-prefix ${prefixClassName || ''}`}>{prefixNode}</div>}
           {inputElement}
           {/* 如果传入 suffix，优先渲染；否则当 allowClear 为 true 时渲染清除按钮 */}
-          {suffix ? (
-            <div className={`beaver-input-suffix ${suffixClassName || ''}`}>{suffix}</div>
+          {hasSuffix ? (
+            <div className={`beaver-input-suffix ${suffixClassName || ''}`}>{suffixNode}</div>
           ) : (
             allowClear && (
               <div className={`beaver-input-suffix ${suffixClassName || ''}`}>

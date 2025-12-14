@@ -406,6 +406,50 @@ export const ValidateWhenDisabled: Story = {
 };
 
 /**
+ * 异步校验示例
+ */
+export const AsyncValidation: Story = {
+  name: '异步校验',
+  render: () => {
+    const handleSubmit = (values: any) => {
+      alert('提交数据：' + JSON.stringify(values, null, 2));
+    };
+
+    return (
+      <Form initialValues={{ username: '' }} onSubmit={handleSubmit} layout="vertical">
+        <FormItem
+          name="username"
+          label="用户名"
+          required
+          help="输入 taken 会触发占用提示（模拟异步校验）"
+          rules={[
+            {
+              validate: async (value) => {
+                if (!value) return '用户名不能为空';
+                await new Promise((r) => setTimeout(r, 600));
+                if (value === 'taken') return '用户名已被占用';
+                return undefined;
+              },
+            },
+          ]}
+        >
+          <Input placeholder="请输入用户名（试试输入 taken）" />
+        </FormItem>
+
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => window.alert('取消')}>
+            取消
+          </Button>
+        </div>
+      </Form>
+    );
+  },
+};
+
+/**
  * 复杂表单示例（包含多种验证规则和组件）
  */
 export const ComplexForm: Story = {
@@ -690,55 +734,12 @@ export const ComprehensiveForm: Story = {
 };
 
 /**
- * 异步校验示例
- */
-export const AsyncValidation: Story = {
-  name: '异步校验',
-  render: () => {
-    const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
-    };
-
-    return (
-      <Form initialValues={{ username: '' }} onSubmit={handleSubmit} layout="vertical">
-        <FormItem
-          name="username"
-          label="用户名"
-          required
-          help="输入 taken 会触发占用提示（模拟异步校验）"
-          rules={[
-            {
-              validate: async (value) => {
-                if (!value) return '用户名不能为空';
-                await new Promise((r) => setTimeout(r, 600));
-                if (value === 'taken') return '用户名已被占用';
-                return undefined;
-              },
-            },
-          ]}
-        >
-          <Input placeholder="请输入用户名（试试输入 taken）" />
-        </FormItem>
-
-        <div style={{ display: 'flex', gap: 8 }}>
-          <Button variant="primary" type="submit">
-            提交
-          </Button>
-          <Button type="button" variant="ghost" onClick={() => window.alert('取消')}>
-            取消
-          </Button>
-        </div>
-      </Form>
-    );
-  },
-};
-
-/**
  * 动态字段示例：演示增删字段并校验
  */
 export const DynamicFields: Story = {
   name: '动态字段（增/删）',
   render: () => {
+    const formRef = React.useRef<any>(null);
     const [keys, setKeys] = React.useState<number[]>([0]);
     const idRef = React.useRef(1);
 
@@ -746,30 +747,36 @@ export const DynamicFields: Story = {
     const remove = (key: number) => setKeys((k) => k.filter((x) => x !== key));
 
     const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
+      const activeNames = new Set(keys.map((k) => `item-${k + 1}`));
+      const filtered = Object.fromEntries(Object.entries(values).filter(([name]) => activeNames.has(name)));
+      alert('提交数据：' + JSON.stringify(filtered, null, 2));
     };
 
     return (
-      <Form onSubmit={handleSubmit} layout="vertical">
-        {keys.map((k) => (
-          <div key={k} style={{ display: 'flex', gap: 8, alignItems: 'flex-end', marginBottom: 8 }}>
-            <FormItem
-              name={`item-${k}`}
-              label={`项 ${k + 1}`}
-              rules={[{ validate: (v) => (!v ? '不能为空' : undefined) }]}
-            >
-              <Input placeholder="输入值" />
-            </FormItem>
-            <Button type="button" variant="ghost" onClick={() => remove(k)}>
-              删除
-            </Button>
-          </div>
-        ))}
-
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+      <Form ref={formRef} onSubmit={handleSubmit} layout="horizontal">
+        <div style={{ display: 'flex', flexDirection: 'row-reverse', marginBottom: 8 }}>
           <Button type="button" onClick={add}>
             添加字段
           </Button>
+        </div>
+        {keys.map((k) => (
+          <div key={k}>
+            <FormItem
+              name={`item-${k + 1}`}
+              label={`项 ${k + 1}`}
+              rules={[{ validate: (v) => (!v ? '不能为空' : undefined) }]}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Input placeholder="输入值" style={{ width: '100%' }} />
+                <Button type="button" style={{ width: 80 }} color="danger" onClick={() => remove(k)}>
+                  删除
+                </Button>
+              </div>
+            </FormItem>
+          </div>
+        ))}
+
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
           <Button variant="primary" type="submit">
             提交
           </Button>
