@@ -210,8 +210,8 @@ function App() {
 
       <Section title="Button">
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <Button onClick={() => alert('Default clicked')}>Default</Button>
-          <Button variant="ghost" onClick={() => alert('Ghost clicked')}>
+          <Button onClick={() => Toast.info('Default clicked')}>Default</Button>
+          <Button variant="ghost" onClick={() => Toast.info('Ghost clicked')}>
             Ghost
           </Button>
           <Button variant="primary" color="danger" size="small">
@@ -546,7 +546,10 @@ function App() {
               initialValues={{ username: '', email: '', message: '' }}
               onSubmit={(values) => {
                 console.log('表单提交数据:', values);
-                alert(`提交成功！数据：${JSON.stringify(values)}`);
+                Toast.info(`${JSON.stringify(values)}`, {
+                  title: '表单数据',
+                  duration: 0,
+                });
               }}
               layout="vertical"
             >
@@ -637,7 +640,10 @@ function App() {
               initialValues={{ name: '', age: '' }}
               onSubmit={(values) => {
                 console.log('表单提交数据:', values);
-                alert(`提交成功！数据：${JSON.stringify(values)}`);
+                Toast.info(`${JSON.stringify(values)}`, {
+                  title: '表单数据',
+                  duration: 0,
+                });
               }}
               layout="horizontal"
               labelWidth={80}
@@ -697,7 +703,7 @@ function App() {
               initialValues={{ keyword: '', category: '' }}
               onSubmit={(values) => {
                 console.log('表单提交数据:', values);
-                alert(`搜索：${JSON.stringify(values)}`);
+                Toast.success(`搜索：${JSON.stringify(values)}`);
               }}
               layout="inline"
             >

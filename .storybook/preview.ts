@@ -20,7 +20,7 @@ const preview: Preview = {
           '操作（Actions）',
           ['Button'],
           '表单（Form）',
-          ['Input', 'Select', 'Checkbox', 'Radio', 'Switch', 'DatePicker', 'Upload'],
+          ['Input', 'Select', 'Checkbox', 'Radio', 'Switch', 'DatePicker', 'Upload', 'Form'],
           '数据展示（Data Display）',
           ['Table'],
           '浮层（Overlays）',

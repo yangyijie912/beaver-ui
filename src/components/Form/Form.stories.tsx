@@ -3,6 +3,7 @@ import Form, { FormItem } from './index';
 import { useFormContext } from './components/Form';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
+import Toast from '../Toast/Toast';
 import Select from '../Select/Select';
 import Checkbox from '../Checkbox/Checkbox';
 import Radio from '../Radio/Radio';
@@ -49,7 +50,10 @@ export const Default: Story = {
 
     const handleSubmit = (values: any) => {
       console.log('提交的数据:', values);
-      alert(`表单数据: ${JSON.stringify(values)}`);
+      Toast.info(` ${JSON.stringify(values)}`, {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     return (
@@ -370,7 +374,10 @@ export const ValidateWhenDisabled: Story = {
   render: () => {
     const handleSubmit = (values: any) => {
       console.log('validateWhenDisabled 提交的数据:', values);
-      alert(`提交的数据: ${JSON.stringify(values)}`);
+      Toast.info(` ${JSON.stringify(values)}`, {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     return (
@@ -413,7 +420,10 @@ export const AsyncValidation: Story = {
   name: '异步校验',
   render: () => {
     const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
+      Toast.success(JSON.stringify(values, null, 2), {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     return (
@@ -441,9 +451,6 @@ export const AsyncValidation: Story = {
           <Button variant="primary" type="submit">
             提交
           </Button>
-          <Button type="button" variant="ghost" onClick={() => window.alert('取消')}>
-            取消
-          </Button>
         </div>
       </Form>
     );
@@ -466,7 +473,10 @@ export const DynamicFields: Story = {
     const handleSubmit = (values: any) => {
       const activeNames = new Set(keys.map((k) => `item-${k + 1}`));
       const filtered = Object.fromEntries(Object.entries(values).filter(([name]) => activeNames.has(name)));
-      alert('提交数据：' + JSON.stringify(filtered, null, 2));
+      Toast.info(JSON.stringify(filtered, null, 2), {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     return (
@@ -510,7 +520,10 @@ export const DependentFields: Story = {
   name: '字段依赖',
   render: () => {
     const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
+      Toast.info(JSON.stringify(values, null, 2), {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     const PhoneField = () => {
@@ -569,7 +582,10 @@ export const UseFormContextDemo: Story = {
   name: 'useFormContext 用法',
   render: () => {
     const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
+      Toast.info(JSON.stringify(values, null, 2), {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     const HookControls = () => {
@@ -623,8 +639,8 @@ export const UseFormContextDemo: Story = {
               type="button"
               onClick={() =>
                 form?.validate?.()?.then((ok: boolean) => {
-                  if (ok) alert('表单校验通过');
-                  else alert('表单校验未通过，请检查错误');
+                  if (ok) Toast.success('表单校验通过');
+                  else Toast.error('表单校验未通过，请检查错误');
                 })
               }
             >
@@ -636,7 +652,7 @@ export const UseFormContextDemo: Story = {
               onClick={() =>
                 form
                   ?.validateField?.('email')
-                  ?.then((ok: boolean) => alert(ok ? 'email 字段校验通过' : 'email 字段校验未通过'))
+                  ?.then((ok: boolean) => Toast.info(ok ? 'email 字段校验通过' : 'email 字段校验未通过'))
               }
             >
               校验 email 字段 (validateField)
@@ -676,7 +692,7 @@ export const UseFormContextDemo: Story = {
                   onClick={() =>
                     form
                       ?.validateField?.('dynamicField')
-                      ?.then((ok: boolean) => alert(ok ? '动态字段校验通过' : '动态字段校验未通过'))
+                      ?.then((ok: boolean) => Toast.info(ok ? '动态字段校验通过' : '动态字段校验未通过'))
                   }
                 >
                   校验动态字段
@@ -724,7 +740,10 @@ export const ProgrammaticControls: Story = {
     const formRef = React.useRef<any>(null);
 
     const handleSubmit = (values: any) => {
-      alert('提交数据：' + JSON.stringify(values, null, 2));
+      Toast.info(JSON.stringify(values, null, 2), {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     return (
@@ -768,7 +787,10 @@ export const ComprehensiveForm: Story = {
 
     const handleSubmit = (values: any) => {
       console.log('完整表单提交数据:', values);
-      alert('表单提交成功！\n\n' + JSON.stringify(values, null, 2));
+      Toast.info(JSON.stringify(values, null, 2), {
+        duration: 0,
+        title: '表单数据',
+      });
     };
 
     return (

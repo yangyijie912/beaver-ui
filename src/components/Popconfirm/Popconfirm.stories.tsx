@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Popconfirm from './Popconfirm';
+import Toast from '../Toast/Toast';
 import { useState } from 'react';
 import Button from '../Button/Button';
 
@@ -153,7 +154,7 @@ export const AsyncConfirm: Story = {
       // 模拟 API 调用
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setLoading(false);
-      alert('删除成功！');
+      Toast.success('删除成功！');
     };
 
     return (
@@ -190,7 +191,7 @@ export const Controlled: Story = {
           title="确定要执行此操作吗？"
           description="受控组件演示"
           onConfirm={() => {
-            alert('已确认！');
+            Toast.success('已确认！');
           }}
         >
           <Button variant="primary">按钮</Button>
