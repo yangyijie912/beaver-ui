@@ -18,16 +18,55 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       return React.isValidElement(child) && (child.props as any)?.disabled;
     });
 
+    // 计算最终要注册的规则：
+    // - 如果用户传入了自定义 rules，则以用户 rules 为准
+    // - 如果没有传入 rules 且 required 为 true，则注入一个默认的必填校验
+    const effectiveRules = React.useMemo(() => {
+      // 计算可读的字段名：优先使用 label（当为 string/number 时），否则回退到 name
+      const fieldLabelText =
+        label && (typeof label === 'string' || typeof label === 'number')
+          ? String(label)
+          : name
+            ? String(name)
+            : '该字段';
+
+      // 默认必填校验，提示中包含字段名
+      const requiredRule = {
+        validate: (value: any) => {
+          const isEmpty =
+            value === undefined ||
+            value === null ||
+            (typeof value === 'string' && value.trim() === '') ||
+            (Array.isArray(value) && value.length === 0);
+          return isEmpty ? `${fieldLabelText}不能为空` : undefined;
+        },
+        // 标记此规则为框架注入的必填规则，供表单验证器识别并按优先级处理
+        __isRequired: true,
+      } as any;
+
+      // 如果不需要必填，则直接返回用户规则
+      if (!required) return rules;
+
+      // 如果用户提供了 rules，则把默认必填规则放在前面（先做非空校验），
+      // 但后续用户规则可以决定是否覆盖必填校验
+      if (rules && rules.length > 0) {
+        return [requiredRule, ...rules];
+      }
+
+      // 没有用户规则但设置了 required，使用默认必填规则
+      return [requiredRule];
+    }, [rules, required, label, name]);
+
     // 注册和注销字段的验证规则，同时记录字段的 disabled 状态（用于在表单层跳过校验）
     useEffect(() => {
-      if (name && rules.length > 0) {
+      if (name && effectiveRules.length > 0) {
         const isDisabled = Boolean(childHasDisabled || disabled || form.disabled);
-        form.registerField?.(name, rules, { disabled: isDisabled });
+        form.registerField?.(name, effectiveRules, { disabled: isDisabled });
         return () => {
           form.unregisterField?.(name);
         };
       }
-    }, [name, rules.length, childHasDisabled, disabled, form.disabled]); // 依赖 disabled 相关状态
+    }, [name, effectiveRules.length, childHasDisabled, disabled, form.disabled]);
 
     /**
      * 处理字段值变化

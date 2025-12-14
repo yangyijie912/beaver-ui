@@ -62,14 +62,14 @@ export const Default: Story = {
           <FormItem
             name="username"
             label="用户名"
-            required
             help="请输入 3-20 个字符"
+            required
             rules={[
               {
-                validate: (value) => (!value ? '用户名不能为空' : undefined),
+                validate: (value) => (value?.length < 3 ? '用户名至少 3 个字符' : undefined),
               },
               {
-                validate: (value) => (value?.length < 3 ? '用户名至少 3 个字符' : undefined),
+                validate: (value) => (value?.length > 20 ? '用户名不超过 20 个字符' : undefined),
               },
             ]}
           >
