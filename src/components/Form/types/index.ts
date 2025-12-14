@@ -2,8 +2,8 @@
  * 表单字段验证规则类型定义
  */
 export type ValidationRule = {
-  /** 验证方法，返回 undefined 表示验证通过，返回错误信息表示验证失败 */
-  validate: (value: any) => string | undefined;
+  /** 验证方法，返回 undefined 表示验证通过，返回错误信息表示验证失败。支持同步或异步（Promise）返回 */
+  validate: (value: any) => string | undefined | Promise<string | undefined>;
   /** 验证触发时机：'onChange' 或 'onBlur' */
   trigger?: 'onChange' | 'onBlur';
 };

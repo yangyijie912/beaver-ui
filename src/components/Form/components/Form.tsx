@@ -84,7 +84,10 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
 
         // 依次执行规则，找到第一个验证失败的规则
         for (const rule of rules) {
-          const error = rule.validate(value);
+          // 支持同步或异步的 validate 返回值
+          // 若 validate 返回 Promise，则 await 它以取得错误信息或 undefined
+          const maybe = rule.validate(value);
+          const error = maybe instanceof Promise ? await maybe : maybe;
           if (error) {
             setFieldError(name, error);
             return false;
