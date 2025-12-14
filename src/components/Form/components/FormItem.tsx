@@ -182,6 +182,8 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       return child;
     });
 
+    const isInline = form.layout === 'inline';
+
     return (
       <div ref={ref} className={classList.join(' ')} {...props}>
         {/* 标签行 */}
@@ -193,14 +195,21 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
           </label>
         )}
 
-        {/* 输入框容器 */}
-        <div className="beaver-form-item__control">{renderedChildren}</div>
-
-        {/* 错误提示 */}
-        {shouldShowError && <div className="beaver-form-item__error-message">{error}</div>}
-
-        {/* 辅助说明 */}
-        {help && !shouldShowError && <div className="beaver-form-item__help">{help}</div>}
+        {/* 行内布局时：把错误/帮助移到与 label 同级，使其成为独立的弹性子项 */}
+        {isInline ? (
+          <>
+            <div className="beaver-form-item__control">{renderedChildren}</div>
+            <div className="beaver-form-item__error-message">{shouldShowError ? error : ''}</div>
+            <div className="beaver-form-item__help">{help && !shouldShowError ? help : ''}</div>
+          </>
+        ) : (
+          /* 其他布局（vertical/horizontal）：保留原来的结构 */
+          <div className="beaver-form-item__control">
+            {renderedChildren}
+            <div className="beaver-form-item__error-message">{shouldShowError ? error : ''}</div>
+            <div className="beaver-form-item__help">{help && !shouldShowError ? help : ''}</div>
+          </div>
+        )}
       </div>
     );
   }

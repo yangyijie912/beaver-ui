@@ -110,14 +110,20 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: var(--beaver-form-item-margin-bottom-medium);
 }
 
-/* vertical 和 inline 布局下的 FormItem 基础样式 */
-.beaver-form--vertical .beaver-form-item,
-.beaver-form--inline .beaver-form-item {
+/* vertical 布局下的 FormItem 基础样式 */
+.beaver-form--vertical .beaver-form-item {
   margin-bottom: 0;
   flex: 0 0 auto;
+}
+
+/* inline 布局下的 FormItem：允许收缩以便多项能并列在一行 */
+.beaver-form--inline .beaver-form-item {
+  margin-bottom: 0;
+  flex: 0 1 auto;
+  flex-direction: row;
+  align-items: center;
 }
 
 .beaver-form--vertical.beaver-form--small .beaver-form-item {
@@ -129,21 +135,13 @@
 }
 
 /**
- * inline 布局：FormItem 内标签和输入框左右排列
- */
-.beaver-form--inline .beaver-form-item {
-  flex-direction: row;
-  align-items: center;
-  gap: var(--beaver-form-horizontal-gap);
-}
-
-/**
  * horizontal 布局下的 FormItem 样式
  */
 .beaver-form--horizontal .beaver-form-item {
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--beaver-form-horizontal-gap);
   margin-bottom: var(--beaver-form-item-margin-bottom-medium);
 }
@@ -244,8 +242,9 @@
 .beaver-form-item__error-message {
   font-size: 12px;
   color: var(--beaver-form-error-color);
-  margin-top: 4px;
   animation: slideDown var(--beaver-form-transition-duration) ease-out;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 /**
@@ -254,7 +253,7 @@
 .beaver-form-item__help {
   font-size: 12px;
   color: var(--beaver-form-help-color);
-  margin-top: 4px;
+  /* margin-top: 4px; */
 }
 
 /**
@@ -278,15 +277,62 @@
   margin-right: 8px;
 }
 
+/* 在行内布局下，让 control 内部水平排列：输入框与错误信息并列显示；当空间不足时错误信息会自动换行到下一行 */
+.beaver-form--inline .beaver-form-item__control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+}
+
 .beaver-form--inline .beaver-form-item__error-message {
-  flex: 1 0 100%;
+  /* 在行内与输入并列显示，允许换行以免占满整行 */
+  order: 2;
+  flex: 0 1 auto;
+  white-space: normal;
   margin-left: 0;
 }
 
-/**
- * horizontal 布局下，错误提示占满行宽
- */
-.beaver-form--horizontal .beaver-form-item__error-message {
-  margin-left: var(--beaver-form-label-width);
-  margin-top: 4px;
+/* 关键：在行内布局下，输入类元素默认的 100% 宽度会导致占满整行，
+   需要限制它们为可伸缩的弹性项，避免把错误信息推到下一行。 */
+.beaver-form--inline .beaver-form-item__control input,
+.beaver-form--inline .beaver-form-item__control textarea,
+.beaver-form--inline .beaver-form-item__control select {
+  width: auto;
+  flex: 1 1 240px; /* 优先占据可用空间，但在必要时可收缩 */
+  min-width: 120px;
+}
+
+/* 限制错误信息最大宽度，超出后换行 */
+.beaver-form--inline .beaver-form-item__error-message {
+  width: auto;
+  max-width: 360px;
+}
+
+/* horizontal 布局下：不让错误/帮助文本改变标签与输入的垂直对齐 */
+.beaver-form--horizontal .beaver-form-item__control {
+  position: relative;
+}
+
+.beaver-form--horizontal .beaver-form-item__error-message,
+.beaver-form--horizontal .beaver-form-item__help {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 2px);
+  width: 100%;
+}
+
+/* 当有错误或帮助文本时，给 item 额外的底部间距以容纳绝对定位的文本 */
+.beaver-form--horizontal .beaver-form-item.beaver-form-item--error {
+  margin-bottom: calc(var(--beaver-form-item-margin-bottom-medium) + 6px);
+}
+
+.beaver-form--horizontal.beaver-form--small .beaver-form-item.beaver-form-item--error {
+  margin-bottom: calc(var(--beaver-form-item-margin-bottom-small) + 8px);
+}
+
+.beaver-form--horizontal.beaver-form--large .beaver-form-item.beaver-form-item--error {
+  margin-bottom: calc(var(--beaver-form-item-margin-bottom-large) + 2px);
 }

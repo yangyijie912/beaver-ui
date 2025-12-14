@@ -219,6 +219,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
           size,
           registerField,
           unregisterField,
+          layout,
         }}
       >
         <form ref={ref} className={classList.join(' ')} style={style} onSubmit={handleSubmit} noValidate {...props}>

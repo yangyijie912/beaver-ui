@@ -40,6 +40,8 @@ export type FormContextType = {
   getFieldRules: (name: string) => ValidationRule[];
   /** 是否为禁用状态 */
   disabled?: boolean;
+  /** 表单布局方式（用于 FormItem 根据布局调整内部渲染） */
+  layout?: 'vertical' | 'horizontal' | 'inline';
   /** 表单的 size */
   size?: 'small' | 'medium' | 'large';
   /** 注册字段的验证规则 */
