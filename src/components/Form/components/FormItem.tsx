@@ -169,8 +169,8 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
           if (shouldShowError) {
             validation = 'error';
           } else if (touched && !error && value) {
-            // 如果已接触过且没有错误且有值，显示成功状态
-            validation = 'success';
+            // 如果已接触过且没有错误且有值，显示默认状态
+            validation = 'none';
           }
 
           // 创建包装的 onChange，先调用 Form 的 handleChange，再调用子组件的原始 onChange
