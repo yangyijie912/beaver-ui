@@ -23,12 +23,8 @@ export * from './tokens';
 // 这样 Vite 在构建时会把 tokens 放到最终的 CSS 中，保证主题变量可用。
 // tokens CSS 已在 `src/styles/index.ts` 聚合，由 `pnpm run build:css` 负责构建并复制到 dist。
 
-// 在运行时应用 CSS 变量，以便组件可以使用 `var(--beaver-color-primary)`
-// 在浏览器中安全导入，在 SSR 环境中无操作
-try {
-  // 动态导入，以便bundlers/tree-shakers可以在非浏览器目标中移除
-  const applyTokens = require('./tokens/applyTokens').default;
-  if (typeof applyTokens === 'function') applyTokens();
-} catch (_e) {
-  // 忽略错误（例如，服务器端或没有 DOM 的测试环境）
-}
+// 运行时注入已移除以避免 SSR hydration mismatch（hydration warning）。
+// 请确保在构建/SSR 模板中包含生成的 tokens CSS：
+// - 通过在入口或应用的 <head> 中引入 `src/tokens/tokens.css`（推荐将其内联到 SSR 模板），
+// - 或在宿主应用中导入 `src/styles`（会包含 tokens CSS）。
+// 如果需要在客户端动态切换主题，请在客户端生命周期（例如 React 的 useEffect）中调用 `applyTokens()`。
