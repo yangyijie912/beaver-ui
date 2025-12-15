@@ -29,7 +29,9 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    }
+    },
+    "./dist/index.css": "./dist/index.css",
+    "./dist/style.css": "./dist/index.css"
   },
   "publishConfig": {
     "access": "public"
