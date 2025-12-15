@@ -6,10 +6,10 @@
 
 ## 文档
 
-| 文档                                                                          | 说明                    |
-| ----------------------------------------------------------------------------- | ----------------------- |
-| [API 参考](https://github.com/yangyijie912/beaver-ui/blob/master/docs/API.md) | 所有组件的完整 API 定义 |
-| [UI演示(Storybook)](https://yangyijie912.github.io/beaver-ui)                 | 交互式组件演示          |
+| 文档                                                                                   | 说明                    |
+| -------------------------------------------------------------------------------------- | ----------------------- |
+| [API 参考](https://file+.vscode-resource.vscode-cdn.net/d:/Core/github/ui/docs/API.md) | 所有组件的完整 API 定义 |
+| [UI演示(Storybook)](https://yangyijie912.github.io/beaver-ui)                          | 交互式组件演示          |
 
 ## 快速开始
 
@@ -60,7 +60,7 @@ export default function App() {
 
 可以通过覆盖 CSS 变量来自定义主题：
 
-````css
+```css
 :root {
   --beaver-color-primary: #ff6a00;
   --beaver-color-error: #ff4d4f;
@@ -68,27 +68,35 @@ export default function App() {
   --beaver-color-warning: #faad14;
   --beaver-color-info: #1890ff;
 }
+```
 
 动态主题（运行时切换）:
 
-- 如果你需要在客户端运行时切换主题，可以调用库中提供的客户端 helper（`applyTokens()`）。由于该调用会在客户端修改 CSS 变量，请在 React 的客户端生命周期中调用（例如 `useEffect`），以避免与 SSR hydration 冲突：
+库默认不在模块加载阶段修改 `document`，以避免 SSR hydration mismatch。若你需要在客户端运行时切换主题，请在客户端生命周期中调用运行时 helper：
 
 ```tsx
 import React, { useEffect } from 'react';
-import { applyTokens } from 'beaver-ui/dist'; // 如果库导出此 helper（或从 src/tokens/applyTokens 导入）
+import { applyTokens } from 'beaver-ui';
 
 function App() {
   useEffect(() => {
-    applyTokens?.();
+    // 直接调用导出的 helper，写入 CSS 变量到 document.documentElement
+    applyTokens();
   }, []);
 
   return <YourApp />;
 }
-````
-
-注意：推荐保留关键 tokens（影响首屏布局与色彩）在 `dist/index.css` 中静态提供，剩余可动态注入以减少闪烁。
-
 ```
+
+如果需要更细粒度地写入或只修改部分 token，可以使用 `setCssVars`：
+
+```tsx
+import { setCssVars } from 'beaver-ui';
+
+setCssVars({ beaver: { color: { primary: '#ff6a00' } } });
+```
+
+注意：在 SSR 环境下仍建议将 `dist/index.css` 内联或在服务端模板（如 Next.js 的 root layout）中引入，以完全避免首屏样式闪烁和 hydration 警告。参考上方“导入样式”部分的说明。
 
 ## 组件列表
 
@@ -117,4 +125,3 @@ function App() {
 ---
 
 按需更新
-```
