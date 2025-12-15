@@ -33,26 +33,14 @@ import 'beaver-ui/dist/index.css';
 
 这样组件会使用库提供的 `tokens`（颜色、radius、focus 等）和基础样式，保证与 Storybook 中演示一致。
 
-注意（关于 SSR / hydration）:
+**注意（关于 SSR / hydration）:**
 
-- 我们移除了库入口处的同步运行时 tokens 注入（`applyTokens()`）以避免在模块加载阶段修改 `document`，从而引发 SSR hydration mismatch。建议使用下面的方式引入样式以避免 hydration warning：
+- 最新版本移除了库入口处的同步运行时 tokens 注入（`applyTokens()`）以避免在模块加载阶段修改 `document`，从而引发 SSR hydration mismatch。建议使用下面的方式引入样式以避免 hydration warning：
 
-1.  SPA（最简单）: 在应用入口直接 `import 'beaver-ui/dist/index.css'`。
-2.  Next.js / SSR（推荐）: 在 `pages/_app.tsx` 导入 `dist/index.css`，或将 `dist/index.css` 的内容内联进 `pages/_document.tsx` 的 `<head>` 以完全避免首屏闪烁。
-
-示例（Next.js 简单导入）：
-
-```tsx
-// pages/_app.tsx
-import 'beaver-ui/dist/index.css';
-import type { AppProps } from 'next/app';
-
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
-```
-
-示例（Next.js 无闪烁内联，略）：在自定义 `Document` 中读取 `node_modules/beaver-ui/dist/index.css` 并内联到 `<Head>`。
+1. SPA：不变，在应用入口直接 `import 'beaver-ui/dist/index.css'`。
+2. Next.js / SSR：
+   - App Router（Next 13+）：在 `app/layout.tsx` 通过`import 'beaver-ui/dist/index.css'`引入样式。
+   - Pages Router：在 `pages/_app.tsx` 导入 `dist/index.css`，或将 `dist/index.css` 的内容内联进 `pages/_document.tsx` 的 `<head>` 以完全避免首屏闪烁。
 
 ### 3. 使用组件
 

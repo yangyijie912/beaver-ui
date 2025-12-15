@@ -4,7 +4,8 @@ import path from 'path';
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, '../src/index.ts'),
+      // 使用聚合样式入口，确保构建时会输出包含所有组件样式的单一 CSS 文件
+      entry: path.resolve(__dirname, '../src/styles/index.ts'),
       name: 'beaver-ui',
       fileName: 'index',
       // 仅输出 ESM 格式，不生成 UMD
