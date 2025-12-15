@@ -17,8 +17,7 @@
     "check:all": "pnpm run lint && pnpm run typecheck && node scripts/check-tokens-sync.mjs && node scripts/check-naming.mjs && node scripts/find-undefined-css-vars.mjs"
   },
   "files": [
-    "dist",
-    "docs"
+    "dist"
   ],
   "sideEffects": [
     "dist/index.css"

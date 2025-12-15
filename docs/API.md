@@ -631,7 +631,7 @@ Toast.close(id);
 
 ### 注意事项
 
-[Toast 使用说明](https://file+.vscode-resource.vscode-cdn.net/d:/Core/github/ui/docs/TOAST_USAGE.md)
+[Toast 使用说明](./TOAST_USAGE.md)
 
 ---
 
