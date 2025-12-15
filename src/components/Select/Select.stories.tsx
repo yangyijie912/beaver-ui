@@ -42,7 +42,6 @@ const sampleOptions: SelectOption[] = [
   { label: 'Cantaloupe', value: 'cantaloupe' },
   { label: 'Date', value: 'date' },
   { label: 'Fig', value: 'fig' },
-  { label: 'EEE', value: 'eee' },
 ];
 
 export const Default: Story = {

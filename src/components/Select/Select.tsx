@@ -116,27 +116,37 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     }, [open, width]);
 
     // 强制重新计算菜单位置（当容器内容变化时）
+    // NOTE: 监听 DOM 变更会在搜索时被频繁触发（例如输入框 value/子节点更新），
+    // 直接在回调中 setState 会导致大量同步重渲染从而引起卡顿。
+    // 这里使用 requestAnimationFrame 做简单的节流/合并，避免高频回调导致冻结。
     const [, setForceUpdate] = useState(0);
+    const mutationScheduledRef = useRef(false);
     useEffect(() => {
       if (!open) return;
       const el = rootRef.current;
       if (!el) return;
 
-      // 监听容器内所有可能导致布局变化的事件
       const handleMutation = () => {
-        setForceUpdate((prev) => prev + 1);
+        if (mutationScheduledRef.current) return;
+        mutationScheduledRef.current = true;
+        window.requestAnimationFrame(() => {
+          mutationScheduledRef.current = false;
+          setForceUpdate((prev) => prev + 1);
+        });
       };
 
       const mutationObserver = new MutationObserver(handleMutation);
+      // 保持对子节点与属性变化的监听，但通过 RAF 合并高频事件
+      // 移除对 characterData 的监听以降低噪音（input value 的频繁变化会触发 characterData）
       mutationObserver.observe(el, {
         childList: true,
         subtree: true,
-        characterData: true,
         attributes: true,
       });
 
       return () => {
         mutationObserver.disconnect();
+        mutationScheduledRef.current = false;
       };
     }, [open]);
 
@@ -166,9 +176,16 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     }, [open]);
 
     // 过滤 & 展示逻辑抽离到 hook
+    // 为减少每次 keystroke 触发的过滤计算，使用 debouncedQuery 做短延迟（150ms）防抖
+    const [debouncedQuery, setDebouncedQuery] = useState(query);
+    useEffect(() => {
+      const id = window.setTimeout(() => setDebouncedQuery(query), 150);
+      return () => window.clearTimeout(id);
+    }, [query]);
+
     const { displayOptions } = useFilteredOptions({
       options,
-      query,
+      query: debouncedQuery,
       userTyped: userTypedRef.current,
       filterOption,
       searchBy,
