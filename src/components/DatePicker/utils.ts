@@ -2,8 +2,13 @@
  * DatePicker 日期处理工具函数
  */
 
-import { format, parse, isValid, startOfMonth, endOfMonth, addMonths } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
+import { format } from 'date-fns/format';
+import { parse } from 'date-fns/parse';
+import { isValid } from 'date-fns/isValid';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { endOfMonth } from 'date-fns/endOfMonth';
+import { addMonths } from 'date-fns/addMonths';
+import { zhCN } from 'date-fns/locale/zh-CN';
 import type { DateFormat } from './types';
 
 /**

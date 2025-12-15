@@ -2,8 +2,7 @@ import React, { useMemo } from 'react';
 import type { SelectOption } from '../types';
 import OptionItem from './OptionItem';
 
-// @ts-ignore - react-window provides its own types but TS can't find them
-import { FixedSizeList as List } from 'react-window';
+import VirtualList from '../../_internal/VirtualList';
 
 // ListChildComponentProps 的本地类型定义
 type ListChildComponentProps = {
@@ -120,14 +119,14 @@ const OptionList: React.FC<OptionListProps> = ({
         onPointerDownCapture={handlePointerDownCapture}
         onTouchStartCapture={handleTouchStartCapture}
       >
-        <List
+        <VirtualList
           height={Math.min(8, menuOptions.length) * itemHeight}
           itemCount={menuOptions.length}
           itemSize={itemHeight}
           width="100%"
         >
           {Row}
-        </List>
+        </VirtualList>
       </div>
     );
   }
