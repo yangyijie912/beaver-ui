@@ -70,11 +70,17 @@ export type FormContextType = {
 /**
  * Form 组件的属性类型定义
  */
-export type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
+export type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> & {
   /** 初始表单数据 */
   initialValues?: FieldValue;
   /** 提交时的回调函数 */
-  onSubmit?: (values: FieldValue) => void | Promise<void>;
+  /**
+   * 提交前的拦截函数，返回 `false` 则阻止提交。支持同步或异步（返回 Promise<boolean>）。
+   * 若未提供，可在 `onSubmit` 中返回 `false` 作为兼容行为，但推荐使用 `beforeSubmit`。
+   */
+  beforeSubmit?: (values: FieldValue) => boolean | Promise<boolean>;
+  /** 提交时的回调函数。若回调返回 `false`（或 Promise<false>），则视为取消提交。 */
+  onSubmit?: (values: FieldValue) => void | Promise<void> | boolean | Promise<boolean>;
   /** 表单布局方式 */
   layout?: 'vertical' | 'horizontal' | 'inline';
   /** 标签宽度（仅在 horizontal 布局时生效），例如 '100px' 或 120 */

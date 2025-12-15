@@ -778,6 +778,76 @@ export const ProgrammaticControls: Story = {
 };
 
 /**
+ * 提交前拦截示例（同步）
+ */
+export const BeforeSubmitSync: Story = {
+  name: '提交前拦截（同步）',
+  render: () => {
+    const handleSubmit = (values: any) => {
+      Toast.success(JSON.stringify(values, null, 2), { duration: 0, title: '提交成功' });
+    };
+
+    const beforeSubmit = (values: any) => {
+      if (!values?.name) {
+        Toast.error('姓名不能为空，已阻止提交');
+        return false;
+      }
+      return true;
+    };
+
+    return (
+      <Form initialValues={{ name: '' }} beforeSubmit={beforeSubmit} onSubmit={handleSubmit} layout="vertical">
+        <FormItem name="name" label="姓名">
+          <Input placeholder="尝试不填并提交，会被拦截" />
+        </FormItem>
+
+        <div style={{ marginTop: 8 }}>
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+        </div>
+      </Form>
+    );
+  },
+};
+
+/**
+ * 提交前拦截示例（异步）
+ */
+export const BeforeSubmitAsync: Story = {
+  name: '提交前拦截（异步）',
+  render: () => {
+    const handleSubmit = (values: any) => {
+      Toast.success(JSON.stringify(values, null, 2), { duration: 0, title: '提交成功' });
+    };
+
+    const beforeSubmit = async (values: any) => {
+      // 模拟异步检查（例如后端校验或远程规则）
+      await new Promise((r) => setTimeout(r, 800));
+      if (values?.email && values.email.includes('block')) {
+        Toast.error('该邮箱被拦截，无法提交');
+        return false;
+      }
+      return true;
+    };
+
+    return (
+      <Form initialValues={{ email: '' }} beforeSubmit={beforeSubmit} onSubmit={handleSubmit} layout="vertical">
+        <FormItem name="email" label="邮箱">
+          <Input placeholder="输入包含 block 的邮箱会被异步拦截" />
+        </FormItem>
+
+        <div style={{ marginTop: 8 }}>
+          <Button variant="primary" type="submit">
+            提交
+          </Button>
+        </div>
+      </Form>
+    );
+  },
+};
+
+/**
  * 完整的综合表单 - 包含库里所有主要表单组件
  */
 export const ComprehensiveForm: Story = {

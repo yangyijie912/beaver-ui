@@ -21,6 +21,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       className,
       initialValues = {},
       onSubmit,
+      beforeSubmit,
       layout = 'vertical',
       labelWidth,
       disabled = false,
@@ -144,10 +145,22 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
         return;
       }
 
+      // 在提交前执行拦截函数，如果返回 false（同步或异步）则取消提交
+      if (beforeSubmit) {
+        try {
+          const ok = await beforeSubmit(values);
+          if (ok === false) return;
+        } catch (err) {
+          console.error('beforeSubmit 处理失败:', err);
+          return;
+        }
+      }
+
       // 执行提交回调
       if (onSubmit) {
         try {
-          await onSubmit(values);
+          const res = await onSubmit(values as any);
+          if (res === false) return;
         } catch (err) {
           console.error('表单提交失败:', err);
         }
