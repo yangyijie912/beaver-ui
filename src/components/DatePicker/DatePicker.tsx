@@ -11,7 +11,6 @@ import { useMenuPosition } from '../../hooks/useMenuPosition';
 import PanelRenderer from './components/PanelRenderer';
 import { formatSingleDate, formatRangeDate, parseSingleDate } from './utils/inputFormatter';
 import type { DatePickerProps } from './types';
-import './DatePicker.css';
 
 const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
   (

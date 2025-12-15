@@ -3,7 +3,6 @@ import Button from '../Button/Button';
 import Portal from './components/Portal';
 import { usePopconfirmPosition } from './hooks/usePopconfirmPosition';
 import type { PopconfirmProps } from './types';
-import './Popconfirm.css';
 
 const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
   (

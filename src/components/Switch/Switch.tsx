@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import './Switch.css';
 import { FormContext } from '../Form/components/Form';
 import type { FormContextType } from '../Form/types';
 

@@ -1,7 +1,6 @@
 import React, { useId, useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useFloatingPosition } from '../../hooks/useFloatingPosition';
-import './Tooltip.css';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 

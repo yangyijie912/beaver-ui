@@ -1,5 +1,4 @@
 import React from 'react';
-import './Input.css';
 
 export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
   /** 输入校验状态 */

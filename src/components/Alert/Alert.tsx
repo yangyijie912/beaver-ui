@@ -1,5 +1,4 @@
 import React from 'react';
-import './Alert.css';
 import { Check, Warning as WarningIcon, Close, Info } from '../../icons';
 
 /**

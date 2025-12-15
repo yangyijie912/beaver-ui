@@ -1,6 +1,5 @@
 import React from 'react';
 import { ArrowLeft, ArrowRight } from '../../icons';
-import './Pagination.css';
 import Select from '../Select/Select';
 import { defaultLocale, PaginationLocale } from './locales';
 

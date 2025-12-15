@@ -12,7 +12,6 @@ import { SelectTags } from './components/SelectTags';
 import { SelectIcons } from './components/SelectIcons';
 import { renderHighlightedLabel, getWidthStyle, getContainerClassName, getNoDataLabel } from './utils';
 import type { SelectOption, SelectProps } from './types';
-import './Select.css';
 
 const Select = React.forwardRef<HTMLDivElement, SelectProps>(
   (

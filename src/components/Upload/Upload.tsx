@@ -1,5 +1,4 @@
 import React from 'react';
-import './Upload.css';
 import { File } from '../../icons';
 import Button from '../Button/Button';
 import { FormContext } from '../Form/components/Form';

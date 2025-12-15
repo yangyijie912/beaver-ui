@@ -1,5 +1,4 @@
 import React, { useLayoutEffect, useRef, useContext } from 'react';
-import './Checkbox.css';
 import { FormContext } from '../Form/components/Form';
 import type { FormContextType } from '../Form/types';
 

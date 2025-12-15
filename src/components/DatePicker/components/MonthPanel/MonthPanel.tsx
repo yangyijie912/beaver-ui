@@ -4,7 +4,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import './MonthPanel.css';
+// import './MonthPanel.css';
 
 interface MonthPanelProps {
   currentMonth: Date;

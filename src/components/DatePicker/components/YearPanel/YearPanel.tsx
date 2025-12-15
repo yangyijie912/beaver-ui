@@ -3,7 +3,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import './YearPanel.css';
+// import './YearPanel.css';
 
 interface YearPanelProps {
   currentMonth: Date;

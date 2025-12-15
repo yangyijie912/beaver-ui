@@ -1,9 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Pagination from '../Pagination/Pagination';
 import type { PaginationProps } from '../Pagination/Pagination';
-import './styles/Table.base.css';
-import './styles/Table.sticky.css';
-import './styles/Table.bordered.css';
 import TableHeader from './components/TableHeader';
 import TableBody from './components/TableBody';
 import { Props } from './types';

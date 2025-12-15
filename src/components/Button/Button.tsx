@@ -1,5 +1,4 @@
 import React from 'react';
-import './Button.css';
 
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'default' | 'primary' | 'ghost' | 'link';

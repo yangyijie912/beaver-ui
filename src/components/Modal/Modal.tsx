@@ -5,7 +5,6 @@ import ModalFooter from './components/ModalFooter';
 import Portal from './components/Portal';
 import Button from '../Button/Button';
 import type { ModalProps } from './types';
-import './Modal.css';
 
 const sizeMap: Record<string, string> = {
   small: '300px',

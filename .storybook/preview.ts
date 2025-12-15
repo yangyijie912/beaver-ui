@@ -1,4 +1,4 @@
-import '../src/tokens/tokens.css';
+import '../src/styles/index.ts';
 
 // 不要在此处导入 .css.ts tokens，以避免在vanilla-extract Vite插件处理文件之前进行运行时评估
 import type { Preview } from '@storybook/react-vite';

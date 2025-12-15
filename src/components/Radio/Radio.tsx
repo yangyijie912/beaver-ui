@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import './Radio.css';
 import { RadioGroupContext } from './RadioGroup';
 import { FormContext } from '../Form/components/Form';
 import type { FormContextType } from '../Form/types';

@@ -1,5 +1,4 @@
 import React from 'react';
-import './Toast.css';
 import { Check, Warning, Info, Spinner, Close } from '../../icons';
 import { createRoot, Root } from 'react-dom/client';
 import { createPortal } from 'react-dom';

@@ -4,7 +4,6 @@ import DrawerHeader from './components/DrawerHeader';
 import DrawerFooter from './components/DrawerFooter';
 import Portal from './components/Portal';
 import type { DrawerProps } from './types';
-import './Drawer.css';
 
 /**
  * 尺寸映射表
