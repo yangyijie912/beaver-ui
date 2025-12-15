@@ -6,10 +6,10 @@
 
 ## 文档
 
-| 文档                                                                                   | 说明                    |
-| -------------------------------------------------------------------------------------- | ----------------------- |
-| [API 参考](https://file+.vscode-resource.vscode-cdn.net/d:/Core/github/ui/docs/API.md) | 所有组件的完整 API 定义 |
-| [UI演示(Storybook)](https://yangyijie912.github.io/beaver-ui)                          | 交互式组件演示          |
+| 文档 | 说明 |
+| --- | --- |
+| [API 参考](https://file+.vscode-resource.vscode-cdn.net/d:/Core/github/ui/docs/API.md) | 所有组件的完整 API 定义，或者点击[github文档](https://github.com/yangyijie912/beaver-ui/blob/master/docs/API.md)浏览 |
+| [UI演示(Storybook)](https://yangyijie912.github.io/beaver-ui) | 交互式组件演示 |
 
 ## 快速开始
 
