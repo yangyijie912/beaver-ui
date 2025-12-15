@@ -57,10 +57,10 @@ export const AlignCenter: Story = {
 };
 
 export const AlignRight: Story = {
-  name: '右对齐',
+  name: '左对齐',
   args: {
     total: 100,
-    align: 'right',
+    align: 'left',
   },
 };
 
@@ -93,8 +93,8 @@ export const Controlled: Story = {
     const [page, setPage] = React.useState(3);
     return (
       <div>
-        <Pagination total={200} current={page} onChange={(p) => setPage(p)} />
         <div style={{ marginTop: 8 }}>当前页: {String(page)}</div>
+        <Pagination total={200} current={page} onChange={(p) => setPage(p)} />
       </div>
     );
   },

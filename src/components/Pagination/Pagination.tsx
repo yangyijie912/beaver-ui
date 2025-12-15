@@ -21,7 +21,7 @@ export type PaginationProps = {
   showSizeChanger?: boolean;
   /** 国际化配置，可覆盖默认文案 */
   locale?: Partial<PaginationLocale>;
-  /** 对齐方向：'left' | 'center' | 'right'（默认 'left'） */
+  /** 对齐方向：'left' | 'center' | 'right'（默认 'right'） */
   align?: 'left' | 'center' | 'right';
   /** 是否禁用整个分页控件 */
   disabled?: boolean;
@@ -48,7 +48,7 @@ const Pagination: React.FC<PaginationProps> = ({
   showQuickJumper = false,
   showSizeChanger = false,
   locale: localeProp,
-  align = 'left',
+  align = 'right',
   disabled = false,
   width,
 }) => {

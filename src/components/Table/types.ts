@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { PaginationProps } from '../Pagination/Pagination';
 
 /**
  * 表格列类型定义
@@ -74,6 +75,9 @@ export type Props = React.HTMLAttributes<HTMLDivElement> & {
   empty?: ReactNode;
   /** 空状态默认文案（当未提供 `empty` 时使用） */
   emptyText?: ReactNode;
+
+  /** 分页配置；设置为 `false` 禁用分页，或传入 Pagination 的部分 props 以启用分页（支持受控或非受控用法） */
+  pagination?: false | Partial<PaginationProps>;
 };
 
 /**

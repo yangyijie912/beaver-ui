@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import Pagination from '../Pagination/Pagination';
+import type { PaginationProps } from '../Pagination/Pagination';
 import './styles/Table.base.css';
 import './styles/Table.sticky.css';
 import './styles/Table.bordered.css';
@@ -16,6 +18,7 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
     {
       columns,
       data,
+      pagination,
       rowKey = 'id',
       defaultAlign = 'left',
       showCheckbox = false,
@@ -35,6 +38,47 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
     },
     ref
   ) => {
+    // pagination prop 类型：false | Partial<PaginationProps> | undefined
+    // 如果父组件传入了分页配置且未提供 onChange，则 Table 会在本地做 client-side 分页（对 data 切片）
+    const paginationEnabled = pagination !== false && pagination != null;
+    const paginationObj =
+      paginationEnabled && typeof pagination === 'object' ? (pagination as Partial<PaginationProps>) : undefined;
+    const isClientSidePagination =
+      paginationEnabled && !(paginationObj && typeof paginationObj.onChange === 'function');
+
+    const [internalPage, setInternalPage] = useState<number>(paginationObj?.current ?? 1);
+    const [internalPageSize, setInternalPageSize] = useState<number>(paginationObj?.pageSize ?? 10);
+
+    useEffect(() => {
+      if (paginationObj && typeof paginationObj.current === 'number') setInternalPage(paginationObj.current);
+    }, [paginationObj?.current]);
+
+    useEffect(() => {
+      if (paginationObj && typeof paginationObj.pageSize === 'number') setInternalPageSize(paginationObj.pageSize);
+    }, [paginationObj?.pageSize]);
+
+    const totalCount = paginationObj?.total ?? data.length;
+    // 保证当前页不超过最大页数
+    useEffect(() => {
+      const pages = Math.max(1, Math.ceil(totalCount / internalPageSize));
+      if (internalPage > pages) setInternalPage(pages);
+    }, [totalCount, internalPageSize]);
+
+    const effectiveCurrent = paginationObj?.current ?? internalPage;
+    const effectivePageSize = paginationObj?.pageSize ?? internalPageSize;
+
+    const handlePageChange = (page: number, pageSize?: number) => {
+      if (paginationObj && typeof paginationObj.onChange === 'function') {
+        paginationObj.onChange(page, pageSize);
+      } else {
+        if (typeof pageSize === 'number') setInternalPageSize(pageSize);
+        setInternalPage(page);
+      }
+    };
+    // 根据是否为 client-side 分页决定展示的数据切片
+    const displayData = isClientSidePagination
+      ? data.slice((effectiveCurrent - 1) * effectivePageSize, effectiveCurrent * effectivePageSize)
+      : data;
     const [internalSelected, setInternalSelected] = useState<Record<string, boolean>>({});
     const isControlled = Array.isArray(selectedKeys);
 
@@ -83,7 +127,7 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
     const toggleAll = (checked: boolean) => {
       if (checked) {
         const map: Record<string, boolean> = {};
-        data.forEach((r, i) => {
+        displayData.forEach((r, i) => {
           const k = String(r[rowKey] ?? i);
           map[k] = true;
         });
@@ -103,9 +147,9 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
       }
     };
 
-    const total = data.length;
+    const total = displayData.length;
     const selectedCount = Object.keys(selectedMap).reduce((sum, k) => (selectedMap[k] ? sum + 1 : sum), 0);
-    const headerChecked = total > 0 && data.every((r, i) => !!selectedMap[String(r[rowKey] ?? i)]);
+    const headerChecked = total > 0 && displayData.every((r, i) => !!selectedMap[String(r[rowKey] ?? i)]);
     const headerIndeterminate = selectedCount > 0 && !headerChecked;
 
     // 限制固定列：避免左 + 右 固定列数量覆盖或重叠整个表格
@@ -234,7 +278,7 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
 
             <TableBody
               columns={columns}
-              data={data}
+              data={displayData}
               rowKey={rowKey}
               selectedMap={selectedMap}
               showCheckbox={showCheckbox}
@@ -249,6 +293,23 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
             />
           </table>
         </div>
+        {/* 分页区 */}
+        {paginationEnabled ? (
+          <div className="beaver-table__footer">
+            <Pagination
+              total={totalCount}
+              current={effectiveCurrent}
+              pageSize={effectivePageSize}
+              onChange={handlePageChange}
+              showQuickJumper={paginationObj?.showQuickJumper}
+              showSizeChanger={paginationObj?.showSizeChanger}
+              pageSizeOptions={paginationObj?.pageSizeOptions}
+              align={paginationObj?.align}
+              disabled={paginationObj?.disabled}
+              width={paginationObj?.width}
+            />
+          </div>
+        ) : null}
       </div>
     );
   }

@@ -399,6 +399,88 @@ export const ColumnLevelRender: Story = {
   args: {},
 };
 
+// --- 分页示例：非受控（client-side） ---
+const ClientSidePaginationTemplate = (args: TableArgs) => {
+  const many = Array.from({ length: 20 }).flatMap((_, pageIdx) =>
+    data.map((d) => ({ ...d, id: d.id + pageIdx * data.length, unique_id: d.unique_id + pageIdx * data.length }))
+  );
+  return (
+    <div>
+      <p>非受控分页：Table 内部处理分页（对传入的 data 做切片）。</p>
+      <Table
+        columns={columns}
+        data={many}
+        rowKey="id"
+        pagination={{ pageSize: 5, pageSizeOptions: [5, 10, 20], showSizeChanger: true, showQuickJumper: true }}
+        {...args}
+      />
+    </div>
+  );
+};
+
+export const ClientSidePagination: Story = {
+  name: '分页（非受控）',
+  render: ClientSidePaginationTemplate,
+  args: {},
+};
+
+// --- 分页示例：受控（父组件管理 current/total/onChange） ---
+const ControlledPaginationTemplate = (args: TableArgs) => {
+  // 模拟服务端数据集
+  const serverData = React.useMemo(
+    () =>
+      Array.from({ length: 67 }).map((_, i) => ({
+        id: i + 1,
+        unique_id: i + 1,
+        orderNumber: 10000 + i,
+        quantityOrdered: Math.ceil(Math.random() * 100),
+        priceEach: Number((Math.random() * 200).toFixed(2)),
+        orderGoods: `货物 ${i + 1}`,
+        sales: Math.floor(Math.random() * 10000),
+        orderDate: '2025-01-01',
+        statusName: i % 3 === 0 ? '待处理' : i % 3 === 1 ? '已发货' : '处理中',
+      })),
+    []
+  );
+
+  const [current, setCurrent] = React.useState<number>(1);
+  const [pageSize, setPageSize] = React.useState<number>(10);
+
+  const currentPageData = React.useMemo(() => {
+    const start = (current - 1) * pageSize;
+    return serverData.slice(start, start + pageSize);
+  }, [serverData, current, pageSize]);
+
+  return (
+    <div>
+      <p>受控分页：父组件负责提供当前页数据并处理 `onChange`。</p>
+      <Table
+        columns={columns}
+        data={currentPageData}
+        rowKey="id"
+        pagination={{
+          total: serverData.length,
+          current,
+          pageSize,
+          onChange: (p, ps) => {
+            setPageSize(ps ?? pageSize);
+            setCurrent(p);
+          },
+          showSizeChanger: true,
+          showQuickJumper: true,
+        }}
+        {...args}
+      />
+    </div>
+  );
+};
+
+export const ControlledPagination: Story = {
+  name: '分页（受控）',
+  render: ControlledPaginationTemplate,
+  args: {},
+};
+
 // 更明显的跨行/跨列示例，带可视化样式以便在 Storybook 中能一眼看出合并效果
 const visibleSpanColumns: Column[] = [
   { key: 'a', title: '列 A' },
