@@ -2,80 +2,88 @@
 
 个人用的组件库，React + TypeScript + tsup + Storybook。
 
-**文档**
+包含 17+ 个常用 UI 组件，提供完整的 TypeScript 类型定义和灵活的样式定制选项。
 
-[UI演示(Docs/Storybook)](https://yangyijie912.github.io/beaver-ui)
+## 文档
 
-**如何使用**
+| 文档                                                                                   | 说明                    |
+| -------------------------------------------------------------------------------------- | ----------------------- |
+| [API 参考](https://file+.vscode-resource.vscode-cdn.net/d:/Core/github/ui/docs/API.md) | 所有组件的完整 API 定义 |
+| [UI演示(Storybook)](https://yangyijie912.github.io/beaver-ui)                          | 交互式组件演示          |
 
-1. **下载**
+## 快速开始
 
-   ```
-   npm install beaver-ui
-   ```
+### 1. 安装
 
-2. **引入样式**
+```bash
+npm install beaver-ui
+# 或使用 pnpm
+pnpm install beaver-ui
+# 或使用 yarn
+yarn add beaver-ui
+```
 
-- 显式引入全局样式（推荐）：
+### 2. 导入样式
 
-  在应用入口（例如 `src/main.tsx` 或 `src/index.tsx`）中只需引入一次合并后的样式：
+在应用入口（如 `src/main.tsx` 或 `src/index.tsx`）引入样式：
 
-  ```javascript
-  import 'beaver-ui/dist/index.css';
-  ```
+```tsx
+import 'beaver-ui/dist/index.css';
+```
 
-  这样组件会使用库提供的 `tokens`（颜色、radius、focus 等）和基础样式，保证与 Storybook 中演示一致。
+这样组件会使用库提供的 `tokens`（颜色、radius、focus 等）和基础样式，保证与 Storybook 中演示一致。
 
-- 按需或自定义：
+### 3. 使用组件
 
-  如果使用 CSS 按需加载或希望自定义主题，也可以只引入需要的组件 CSS 或自行覆盖 CSS 变量：
+```tsx
+import { Button, Input, Modal } from 'beaver-ui';
 
-  ```css
-  :root {
-    --beaver-color-primary: #ff6a00;
-  }
-  ```
+export default function App() {
+  return (
+    <div>
+      <Button variant="primary">Click me</Button>
+    </div>
+  );
+}
+```
 
-  不过为了避免样式不一致（例如浏览器默认焦点环），建议至少包含 `tokens.css`（或合并后的 `dist/index.css`）。
+## 样式自定义
 
-**当前已实现组件：**
+可以通过覆盖 CSS 变量来自定义主题：
+
+```css
+:root {
+  --beaver-color-primary: #ff6a00;
+  --beaver-color-error: #ff4d4f;
+  --beaver-color-success: #52c41a;
+  --beaver-color-warning: #faad14;
+  --beaver-color-info: #1890ff;
+}
+```
+
+## 组件列表
 
 ---
 
-**操作（Actions）**
-
-`Button` - 按钮
-
-**表单（Form）**
-
-`Input` - 输入框  
-`Select` - 下拉选择框  
-`Checkbox` - 复选框  
-`Radio` - 单选框  
-`Switch` - 开关  
-`DatePicker` - 日期选择器  
-`Upload` - 文件上传  
-`Form` - 表单
-
-**数据展示（Data Display）**
-
-`Table` - 表格
-
-**浮层（Overlays）**
-
-`Tooltip` - 文字提示组件  
-`Popconfirm` - 弹出式确认框  
-`Modal` - 模态框  
-`Drawer` - 抽屉组件
-
-**导航（Navigation）**
-
-`Pagination` - 分页
-
-**反馈（Feedback）**
-
-`Alert` - 警告提示  
-`Toast` - 全局通知
+| 分类     | 组件              | 说明       |
+| -------- | ----------------- | ---------- |
+| **操作** | Button            | 按钮       |
+| **表单** | Input             | 输入框     |
+|          | Select            | 下拉选择框 |
+|          | Checkbox          | 复选框     |
+|          | Radio, RadioGroup | 单选框     |
+|          | Switch            | 开关       |
+|          | DatePicker        | 日期选择器 |
+|          | Upload            | 文件上传   |
+|          | Form, FormItem    | 表单容器   |
+| **展示** | Table             | 表格       |
+| **导航** | Pagination        | 分页器     |
+| **反馈** | Alert             | 警告提示   |
+|          | Toast             | 消息提示   |
+| **浮层** | Tooltip           | 文字提示   |
+|          | Popconfirm        | 气泡确认框 |
+|          | Modal             | 对话框     |
+|          | Drawer            | 抽屉       |
 
 ---
 
