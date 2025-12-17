@@ -40,6 +40,16 @@ jobs:
       - name: Build Storybook
         run: pnpm run build-storybook
 
+      - name: Copy generated CSS into Storybook assets
+        run: |
+          if [ -f dist-css/index.css ]; then
+            mkdir -p storybook-static/assets
+            cp dist-css/index.css storybook-static/assets/index.css
+            echo "copied dist-css/index.css -> storybook-static/assets/index.css"
+          else
+            echo "dist-css/index.css not found; skipping copy"
+          fi
+
       - name: Deploy to GitHub Pages (peaceiris)
         uses: peaceiris/actions-gh-pages@v4
         with:
