@@ -17,7 +17,28 @@ export { default as Tooltip } from './components/Tooltip/Tooltip';
 export { default as Popconfirm } from './components/Popconfirm/Popconfirm';
 export { default as Upload } from './components/Upload/Upload';
 export { default as Form, FormItem } from './components/Form';
+export { default as Alert } from './components/Alert/Alert';
 export * from './tokens';
+
+// 组件类型导出，方便从包根路径直接引用 TypeScript 类型
+export type { ButtonProps } from './components/Button/Button';
+export type { RadioProps } from './components/Radio/Radio';
+export type { RadioGroupProps } from './components/Radio/RadioGroup';
+export type { CheckboxProps } from './components/Checkbox/Checkbox';
+export type { InputProps } from './components/Input/Input';
+export type { SelectProps, SelectOption } from './components/Select/types';
+export type { DatePickerProps } from './components/DatePicker/types';
+export type { SwitchProps } from './components/Switch/Switch';
+export type { PaginationProps } from './components/Pagination/Pagination';
+export type { Column as TableColumn, Row as TableRow, Props as TableProps } from './components/Table/types';
+export type { ModalProps, ModalSize } from './components/Modal/types';
+export type { DrawerProps, DrawerPlacement, DrawerSize } from './components/Drawer/types';
+export type { TooltipProps, TooltipPlacement } from './components/Tooltip/Tooltip';
+export type { PopconfirmProps } from './components/Popconfirm/types';
+export type { UploadProps, UploadFile } from './components/Upload/types';
+export type { ToastType, ToastOptions } from './components/Toast/Toast';
+export type { AlertProps, AlertType } from './components/Alert/Alert';
+export type { FormProps, FormItemProps, ValidationRule, FieldValue, FieldError } from './components/Form';
 
 // 导入生成的 tokens CSS（由 `npm run gen:tokens` 生成为 `src/tokens/tokens.css`）
 // 这样 Vite 在构建时会把 tokens 放到最终的 CSS 中，保证主题变量可用。
