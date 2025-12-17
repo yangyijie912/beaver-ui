@@ -17,7 +17,7 @@ import Tooltip from '../components/Tooltip/Tooltip';
 import Popconfirm from '../components/Popconfirm/Popconfirm';
 import Upload from '../components/Upload/Upload';
 import Form, { FormItem } from '../components/Form';
-import '../tokens/tokens.css';
+import '../styles/index.ts';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
