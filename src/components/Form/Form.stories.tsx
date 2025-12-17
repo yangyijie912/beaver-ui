@@ -613,7 +613,7 @@ export const UseFormContextDemo: Story = {
       };
 
       return (
-        <div style={{ marginTop: 12, border: '1px dashed var(--muted-4, #e6e6e6)', padding: 12 }}>
+        <div style={{ marginTop: 12, border: '1px dashed #e6e6e6', padding: 12 }}>
           <div style={{ marginBottom: 8 }}>
             <strong>当前表单值：</strong>
             <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(form?.values ?? {}, null, 2)}</pre>
