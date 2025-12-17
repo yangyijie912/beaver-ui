@@ -695,26 +695,42 @@ export type TableProps = {
 export type PaginationProps = React.HTMLAttributes<HTMLDivElement> & {
   current?: number;
   pageSize?: number;
-  total?: number;
-  onChange?: (page: number) => void;
-  onPageSizeChange?: (pageSize: number) => void;
+  total: number;
+  /** 是否显示总数（默认为 false） */
+  showTotal?: boolean;
+  /** 页码或 pageSize 变化回调，pageSize 在切换每页数量时作为第二个参数传入 */
+  onChange?: (page: number, pageSize?: number) => void;
+  /** 是否显示页大小切换器 */
   showSizeChanger?: boolean;
   pageSizeOptions?: number[];
   showQuickJumper?: boolean;
+  /** 国际化配置（参见 `PaginationLocale`） */
+  locale?: Partial<PaginationLocale>;
+  /** 对齐方式，'left' | 'center' | 'right'（默认 'right'） */
+  align?: 'left' | 'center' | 'right';
+  /** 是否禁用整个分页控件 */
+  disabled?: boolean;
+  /** 可选的宽度配置，用于 sizeChanger 和 quickJumper */
+  width?: { sizeChanger?: number | string; quickJumper?: number | string };
 };
 ```
 
 ### 属性
 
-| 属性               | 类型             | 默认值              | 说明                 |
-| ------------------ | ---------------- | ------------------- | -------------------- |
-| `current`          | `number`         | `1`                 | 当前页码             |
-| `pageSize`         | `number`         | `10`                | 每页条数             |
-| `total`            | `number`         | -                   | 总条数               |
-| `onChange`         | `(page) => void` | -                   | 页码改变回调         |
-| `onPageSizeChange` | `(size) => void` | -                   | 页大小改变回调       |
-| `showSizeChanger`  | `boolean`        | `true`              | 是否显示页大小选择器 |
-| `pageSizeOptions`  | `number[]`       | `[10, 20, 50, 100]` | 页大小选项           |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `current` | `number` | `1` | 当前页码 |
+| `pageSize` | `number` | `10` | 每页条数 |
+| `total` | `number` | - | 总条数（必填），仅在 `showTotal` 为 `true` 时显示 |
+| `showTotal` | `boolean` | `false` | 是否显示总条数 |
+| `onChange` | `(page, pageSize?) => void` | - | 页码或每页数量变化回调，切换 pageSize 时会传入第二个参数 |
+| `showSizeChanger` | `boolean` | `false` | 是否显示页大小选择器 |
+| `pageSizeOptions` | `number[]` | `[10, 20, 50, 100]` | 页大小选项 |
+| `showQuickJumper` | `boolean` | `false` | 是否显示快速跳转输入框 |
+| `locale` | `Partial<PaginationLocale>` | - | 国际化文案，自定义 `prev`/`next`/`jumpTo`/`page`/`itemsPerPage` |
+| `align` | `'left' \| 'center' \| 'right'` | `'right'` | 对齐方式 |
+| `disabled` | `boolean` | `false` | 是否禁用分页控件 |
+| `width` | `object` | - | 宽度配置（`sizeChanger` / `quickJumper`） |
 
 ### 示例
 

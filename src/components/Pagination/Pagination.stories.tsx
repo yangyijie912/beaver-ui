@@ -48,6 +48,17 @@ export const WithSizeChangerAndQuickJumper: Story = {
   },
 };
 
+/**
+ * 展示总数
+ */
+export const WithTotal: Story = {
+  name: '带总数显示',
+  args: {
+    total: 123,
+    showTotal: true,
+  },
+};
+
 export const AlignCenter: Story = {
   name: '居中对齐',
   args: {
@@ -70,6 +81,7 @@ export const WithEnglish: Story = {
     total: 150,
     showQuickJumper: true,
     showSizeChanger: true,
+    showTotal: true,
     locale: en,
     width: {
       sizeChanger: 102,

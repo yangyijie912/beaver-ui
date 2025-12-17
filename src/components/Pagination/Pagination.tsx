@@ -16,6 +16,8 @@ export type PaginationProps = {
   pageSizeOptions?: number[];
   /** 是否显示快速跳转输入框 */
   showQuickJumper?: boolean;
+  /** 是否显示总数（默认 false） */
+  showTotal?: boolean;
   /** 是否显示每页数量切换器 */
   showSizeChanger?: boolean;
   /** 国际化配置，可覆盖默认文案 */
@@ -45,6 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onChange,
   pageSizeOptions = [10, 20, 50, 100],
   showQuickJumper = false,
+  showTotal = false,
   showSizeChanger = false,
   locale: localeProp,
   align = 'right',
@@ -130,6 +133,12 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className={rootClassFinal}>
       <div className="beaver-pagination__controls">
+        {/* 总数展示（可选） */}
+        {showTotal && (
+          <div className="beaver-pagination__total" aria-hidden>
+            {(locale as any).total ? (locale as any).total(total) : `共 ${total} 条`}
+          </div>
+        )}
         {/* 上一页 */}
         <button
           type="button"

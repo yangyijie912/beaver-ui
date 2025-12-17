@@ -3,6 +3,8 @@ export type PaginationLocale = {
   next?: string;
   jumpTo?: string;
   page?: string;
+  /** 总数格式化函数，例如 n => `共 ${n} 条` */
+  total?: (n: number) => string;
   itemsPerPage?: (n: number) => string;
 };
 
@@ -11,6 +13,7 @@ export const zh: PaginationLocale = {
   next: '下一页',
   jumpTo: '跳到',
   page: '页',
+  total: (n: number) => `共 ${n} 条`,
   itemsPerPage: (n: number) => `${n} / 页`,
 };
 
@@ -19,6 +22,7 @@ export const en: PaginationLocale = {
   next: 'Next',
   jumpTo: 'Jump to',
   page: '',
+  total: (n: number) => `${n} items`,
   itemsPerPage: (n: number) => `${n} / page`,
 };
 
