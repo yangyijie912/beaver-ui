@@ -34,7 +34,7 @@ export function computeColumnWidths(
 
   // 解析列提供的 width，标记百分比类型以便后续缩放
   const cols: ColInfo[] = columns.map((c) => {
-    const raw = c.width?.trim();
+    const raw = typeof c.width === 'number' ? `${c.width}px` : typeof c.width === 'string' ? c.width.trim() : undefined;
     if (raw && raw.endsWith('%')) {
       const n = parseFloat(raw.slice(0, -1));
       if (!Number.isNaN(n)) return { key: c.key, raw, kind: 'percent', value: n };
@@ -50,7 +50,7 @@ export function computeColumnWidths(
   const maxPercentBudget = Math.max(0, 100 - minTotalPercentReserved);
 
   // 如果百分比总和超过预算，则按比例缩放百分比列
-  let scaledCols: { key: string; width?: string }[];
+  let scaledCols: { key: string; width?: string | number }[];
   if (totalPercent > 0 && totalPercent > maxPercentBudget) {
     const scale = maxPercentBudget / totalPercent;
     scaledCols = cols.map((c) => {
@@ -73,7 +73,7 @@ export function computeColumnWidths(
       desiredPxTotal += MIN_PX_PER_UNSPECIFIED;
       return;
     }
-    const ws = w.trim();
+    const ws = String(w).trim();
     if (ws.endsWith('px')) {
       const n = parseFloat(ws.slice(0, -2));
       if (!Number.isNaN(n)) {

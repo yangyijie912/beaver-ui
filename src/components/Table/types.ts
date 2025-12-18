@@ -6,7 +6,7 @@ import type { PaginationProps } from '../Pagination/Pagination';
  *
  * - `key`: 列的唯一标识，用于渲染和列宽/偏移计算
  * - `title`: 列头显示文本
- * - `width`: 可选宽度字符串（支持 'px' 与 '%'），用于固定或按比例布局
+ * - `width`: 可选宽度，可为字符串（支持 'px' 与 '%'）或数字（视为像素）
  * - `align`: 单元格文本对齐方式
  * - `render`: 自定义单元格渲染函数（优先于全局 `renderCell`）
  * - `span`: 返回单元格的合并信息（colSpan / rowSpan），用于合并单元格
@@ -14,7 +14,7 @@ import type { PaginationProps } from '../Pagination/Pagination';
 export type Column = {
   key: string;
   title: string;
-  width?: string;
+  width?: string | number;
   align?: 'left' | 'center' | 'right';
   render?: (value: any, row: Row, rowIndex: number, column: Column) => ReactNode | null | undefined;
   span?: (row: Row, rowIndex: number, column: Column) => { colSpan?: number; rowSpan?: number } | undefined;
@@ -83,7 +83,7 @@ export type Props = React.HTMLAttributes<HTMLDivElement> & {
 /**
  * 计算后列宽表示：仅携带 key 与计算出的 width（如果有）
  */
-export type ComputedColumnWidth = { key: string; width?: string };
+export type ComputedColumnWidth = { key: string; width?: string | number };
 
 /**
  * 列宽计算结果

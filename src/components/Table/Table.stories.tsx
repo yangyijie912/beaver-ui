@@ -56,14 +56,14 @@ const columnsWithPx: Column[] = [
 ];
 
 const columnsWithMix: Column[] = [
-  { key: 'unique_id', title: 'ID编号', width: '100px' },
+  { key: 'unique_id', title: 'ID编号', width: 100 },
   { key: 'orderNumber', title: '订单号', width: '10%' },
   { key: 'quantityOrdered', title: '订购数量', width: '10%' },
   { key: 'priceEach', title: '单价', width: '10%' },
   { key: 'orderGoods', title: '订单货物', width: '50%' },
   { key: 'sales', title: '销售额', width: '10%' },
   { key: 'orderDate', title: '订单日期', width: '10%' },
-  { key: 'statusName', title: '状态', width: '100px' },
+  { key: 'statusName', title: '状态', width: 100 },
 ];
 
 const data = [
