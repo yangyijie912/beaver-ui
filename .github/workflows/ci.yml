@@ -37,8 +37,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run unit tests (node env)
-        # vitest CLI does not accept `--env`; use config defaults (node) or `--environment`.
-        run: pnpm test -- --run
+        # Run vitest in single-run mode via pnpm exec to avoid watch/dev mode
+        run: pnpm exec vitest run
 
   e2e:
     name: E2E / Browser Tests + Build
@@ -80,6 +80,6 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
       - name: Run browser tests
-        run: pnpm test -- -c vitest.browser.config.ts --run
+        run: pnpm exec vitest -c vitest.browser.config.ts run
       - name: Build
         run: pnpm run build
