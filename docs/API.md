@@ -89,22 +89,24 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
 
 ### 属性
 
-| 属性           | 类型                                          | 默认值     | 说明             |
-| -------------- | --------------------------------------------- | ---------- | ---------------- |
-| `textarea`     | `boolean`                                     | `false`    | 是否为多行文本域 |
-| `size`         | `'small' \| 'medium' \| 'large'`              | `'medium'` | 输入框大小       |
-| `validation`   | `'error' \| 'success' \| 'warning' \| 'none'` | `'none'`   | 验证状态         |
-| `prefix`       | `ReactNode \| () => ReactNode`                | -          | 前置内容         |
-| `suffix`       | `ReactNode \| () => ReactNode`                | -          | 后置内容         |
-| `allowClear`   | `boolean`                                     | `false`    | 是否显示清除按钮 |
-| `onClear`      | `() => void`                                  | -          | 清除时的回调     |
-| `rows`         | `number`                                      | `3`        | 文本域的行数     |
-| `width`        | `number \| string`                            | -          | 输入框宽度       |
-| `placeholder`  | `string`                                      | -          | 占位符           |
-| `disabled`     | `boolean`                                     | `false`    | 禁用状态         |
-| `value`        | `string \| number`                            | -          | 输入框值（受控） |
-| `defaultValue` | `string \| number`                            | -          | 默认值           |
-| `onChange`     | `(e: React.ChangeEvent) => void`              | -          | 值改变回调       |
+| 属性              | 类型                                          | 默认值     | 说明             |
+| ----------------- | --------------------------------------------- | ---------- | ---------------- |
+| `textarea`        | `boolean`                                     | `false`    | 是否为多行文本域 |
+| `size`            | `'small' \| 'medium' \| 'large'`              | `'medium'` | 输入框大小       |
+| `validation`      | `'error' \| 'success' \| 'warning' \| 'none'` | `'none'`   | 验证状态         |
+| `prefix`          | `ReactNode \| () => ReactNode`                | -          | 前置内容         |
+| `suffix`          | `ReactNode \| () => ReactNode`                | -          | 后置内容         |
+| `allowClear`      | `boolean`                                     | `false`    | 是否显示清除按钮 |
+| `onClear`         | `() => void`                                  | -          | 清除时的回调     |
+| `rows`            | `number`                                      | `3`        | 文本域的行数     |
+| `width`           | `number \| string`                            | -          | 输入框宽度       |
+| `placeholder`     | `string`                                      | -          | 占位符           |
+| `prefixClassName` | `string`                                      | -          | 前置内容的类名   |
+| `suffixClassName` | `string`                                      | -          | 后置内容的类名   |
+| `disabled`        | `boolean`                                     | `false`    | 禁用状态         |
+| `value`           | `string \| number`                            | -          | 输入框值（受控） |
+| `defaultValue`    | `string \| number`                            | -          | 默认值           |
+| `onChange`        | `(e: React.ChangeEvent) => void`              | -          | 值改变回调       |
 
 ### 示例
 
@@ -139,54 +141,64 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
 
 ## Select
 
-```tsx
+```typescript
 export type SelectOption = {
-  label: React.ReactNode;
+  label: string;
   value: string;
   disabled?: boolean;
 };
 
-export type SelectProps = {
+export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange' | 'size'> & {
   options?: SelectOption[];
   placeholder?: string;
-  value?: string | string[] | undefined;
+  value?: string | string[];
   defaultValue?: string | string[];
-  onChange?: (value: string | string[] | undefined) => void;
+  /**
+   * 事件回调，参数为 `(value, option, optionList)`：
+   * - `value`: 单选为 `string`，复选为 `string[]`
+   * - `option`: 单选时为 `SelectOption`，复选时为最近一次变更的 `SelectOption` 或 `SelectOption[]`（可选）
+   * - `optionList`: 当前完整的选项数组（可选）
+   */
+  onChange?: (value: string | string[], option?: SelectOption | SelectOption[], optionList?: SelectOption[]) => void;
+  multiple?: boolean;
   searchable?: boolean;
   allowCreate?: boolean;
   filterOption?: (input: string, option: SelectOption) => boolean;
   searchBy?: 'label' | 'value' | 'both';
+  filterSelected?: boolean;
   disabled?: boolean;
   loading?: boolean;
   icon?: React.ReactNode;
   loadingIcon?: React.ReactNode;
-  className?: string;
-  size?: 'small' | 'medium' | 'large';
-  menuClassName?: string;
   width?: number | string;
-  style?: React.CSSProperties;
-  multiple?: boolean;
-  filterSelected?: boolean;
+  size?: 'small' | 'medium' | 'large';
+  className?: string;
+  /**
+   * 下拉菜单的额外 className（菜单通过 portal 渲染到 body，
+   * 可用于在父组件上下文中添加特定样式，比如在分页中使用紧凑样式）
+   */
+  menuClassName?: string;
 };
 ```
 
 ### 属性
 
-| 属性             | 类型                              | 默认值     | 说明                 |
-| ---------------- | --------------------------------- | ---------- | -------------------- |
-| `options`        | `SelectOption[]`                  | `[]`       | 选项列表             |
-| `value`          | `string \| string[] \| undefined` | -          | 当前值               |
-| `placeholder`    | `string`                          | `'请选择'` | 占位符               |
-| `onChange`       | `(value) => void`                 | -          | 值改变回调           |
-| `multiple`       | `boolean`                         | `false`    | 多选模式             |
-| `searchable`     | `boolean`                         | `false`    | 是否可搜索           |
-| `allowCreate`    | `boolean`                         | `false`    | 允许创建新选项       |
-| `disabled`       | `boolean`                         | `false`    | 禁用状态             |
-| `loading`        | `boolean`                         | `false`    | 加载状态             |
-| `size`           | `'small' \| 'medium' \| 'large'`  | `'medium'` | 选择框大小           |
-| `width`          | `number \| string`                | -          | 选择框宽度           |
-| `searchBy`       | `'label' \| 'value' \| 'both'`    | `'both'`   | 搜索范围             |
-| `filterSelected` | `boolean`                         | `false`    | 多选时是否隐藏已选项 |
+| 属性             | 类型                             | 默认值     | 说明                     |
+| ---------------- | -------------------------------- | ---------- | ------------------------ |
+| `options`        | `SelectOption[]`                 | `[]`       | 选项列表                 |
+| `value`          | `string \| string[]`             | -          | 当前值                   |
+| `placeholder`    | `string`                         | `'请选择'` | 占位符                   |
+| `onChange`       | `(value, option?, optionList?)`  | -          | 值改变回调（见签名说明） |
+| `multiple`       | `boolean`                        | `false`    | 多选模式                 |
+| `searchable`     | `boolean`                        | `false`    | 是否可搜索               |
+| `allowCreate`    | `boolean`                        | `false`    | 允许创建新选项           |
+| `disabled`       | `boolean`                        | `false`    | 禁用状态                 |
+| `loading`        | `boolean`                        | `false`    | 加载状态                 |
+| `size`           | `'small' \| 'medium' \| 'large'` | `'medium'` | 选择框大小               |
+| `width`          | `number \| string`               | -          | 选择框宽度               |
+| `searchBy`       | `'label' \| 'value' \| 'both'`   | `'both'`   | 搜索范围                 |
+| `filterSelected` | `boolean`                        | `false`    | 多选时是否隐藏已选项     |
+| `menuClassName`  | `string`                         | -          | 下拉菜单额外类名         |
 
 ### 示例
 
@@ -220,22 +232,25 @@ const options = [
 ```tsx
 export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: React.ReactNode;
+  /** 控制三态（中间态）显示，不会被透传到 DOM 属性 */
   indeterminate?: boolean;
+  /** 如果需要给 input 本身加额外 class，请使用该属性 */
   inputClassName?: string;
 };
 ```
 
 ### 属性
 
-| 属性            | 类型                             | 默认值  | 说明         |
-| --------------- | -------------------------------- | ------- | ------------ |
-| `label`         | `ReactNode`                      | -       | 复选框标签   |
-| `checked`       | `boolean`                        | -       | 选中状态     |
-| `indeterminate` | `boolean`                        | `false` | 中间状态     |
-| `disabled`      | `boolean`                        | `false` | 禁用状态     |
-| `onChange`      | `(e: React.ChangeEvent) => void` | -       | 状态改变回调 |
-| `name`          | `string`                         | -       | 表单字段名   |
-| `value`         | `string`                         | -       | 字段值       |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `label` | `ReactNode` | - | 复选框标签 |
+| `checked` | `boolean` | - | 选中状态 |
+| `indeterminate` | `boolean` | `false` | 中间状态（受 `indeterminate` 控制，组件会在内部将其设置到 DOM 上，但该 prop 不会作为原生属性直接透传） |
+| `inputClassName` | `string` | - | 应用于实际 `input` 元素的类名 |
+| `disabled` | `boolean` | `false` | 禁用状态 |
+| `onChange` | `(e: React.ChangeEvent) => void` | - | 状态改变回调 |
+| `name` | `string` | - | 表单字段名 |
+| `value` | `string` | - | 字段值 |
 
 ### 示例
 
@@ -256,13 +271,17 @@ export type CheckboxProps = React.InputHTMLAttributes<HTMLInputElement> & {
 ```tsx
 export type RadioProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: React.ReactNode;
+  /** 如果需要给 input 本身加额外 class，请使用该属性 */
+  inputClassName?: string;
 };
 
-export type RadioGroupProps = React.HTMLAttributes<HTMLDivElement> & {
+export type RadioGroupProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> & {
+  name?: string;
   value?: string | number;
   defaultValue?: string | number;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
+  vertical?: boolean;
+  onChange?: (value: string | number, event?: React.ChangeEvent<HTMLInputElement>) => void;
 };
 ```
 
@@ -270,20 +289,24 @@ export type RadioGroupProps = React.HTMLAttributes<HTMLDivElement> & {
 
 #### Radio
 
-| 属性       | 类型               | 默认值  | 说明       |
-| ---------- | ------------------ | ------- | ---------- |
-| `label`    | `ReactNode`        | -       | 单选框标签 |
-| `value`    | `string \| number` | -       | 选项值     |
-| `checked`  | `boolean`          | -       | 选中状态   |
-| `disabled` | `boolean`          | `false` | 禁用状态   |
+| 属性             | 类型               | 默认值  | 说明                          |
+| ---------------- | ------------------ | ------- | ----------------------------- |
+| `label`          | `ReactNode`        | -       | 单选框标签                    |
+| `value`          | `string \| number` | -       | 选项值                        |
+| `checked`        | `boolean`          | -       | 选中状态                      |
+| `disabled`       | `boolean`          | `false` | 禁用状态                      |
+| `inputClassName` | `string`           | -       | 应用于实际 `input` 元素的类名 |
 
 #### RadioGroup
 
-| 属性       | 类型               | 默认值  | 说明       |
-| ---------- | ------------------ | ------- | ---------- |
-| `value`    | `string \| number` | -       | 当前值     |
-| `onChange` | `(e) => void`      | -       | 值改变回调 |
-| `disabled` | `boolean`          | `false` | 禁用整个组 |
+| 属性           | 类型                      | 默认值  | 说明                                   |
+| -------------- | ------------------------- | ------- | -------------------------------------- |
+| `name`         | `string`                  | -       | 表单字段名                             |
+| `value`        | `string \| number`        | -       | 当前值（受控）                         |
+| `defaultValue` | `string \| number`        | -       | 非受控初始值                           |
+| `onChange`     | `(value, event?) => void` | -       | 值改变回调，返回选中值和可选的事件对象 |
+| `disabled`     | `boolean`                 | `false` | 禁用整个组                             |
+| `vertical`     | `boolean`                 | `false` | 是否垂直排列（默认水平）               |
 
 ### 示例
 
@@ -299,28 +322,55 @@ export type RadioGroupProps = React.HTMLAttributes<HTMLDivElement> & {
 ## DatePicker
 
 ```tsx
-export type DatePickerProps = React.HTMLAttributes<HTMLDivElement> & {
-  value?: Date | [Date, Date] | undefined;
-  defaultValue?: Date | [Date, Date];
-  onChange?: (value: Date | [Date, Date] | undefined) => void;
-  placeholder?: string;
+export type DatePickerProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'onChange' | 'value' | 'defaultValue' | 'type' | 'size'
+> & {
+  picker?: 'year' | 'month' | 'date' | 'datetime';
   range?: boolean;
+  value?: Date | null;
+  defaultValue?: Date | null;
+  valueRange?: { startDate: Date; endDate: Date } | null;
+  defaultValueRange?: { startDate: Date; endDate: Date } | null;
+  onChange?: (date: Date | null) => void;
+  onRangeChange?: (range: { startDate: Date; endDate: Date } | null) => void;
+  format?: 'YYYY' | 'YYYY-MM' | 'MM/YYYY' | 'YYYY-MM-DD' | 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY/MM/DD';
+  placeholder?: string;
   disabled?: boolean;
-  format?: string;
+  readOnly?: boolean;
+  allowClear?: boolean;
   disabledDate?: (date: Date) => boolean;
+  timeFormat?: '24h' | '12h';
+  size?: 'small' | 'medium' | 'large';
+  width?: number | string;
+  className?: string;
+  style?: React.CSSProperties;
 };
 ```
 
 ### 属性
 
-| 属性           | 类型                                | 默认值  | 说明             |
-| -------------- | ----------------------------------- | ------- | ---------------- |
-| `value`        | `Date \| [Date, Date] \| undefined` | -       | 选中日期         |
-| `onChange`     | `(value) => void`                   | -       | 日期改变回调     |
-| `placeholder`  | `string`                            | -       | 占位符           |
-| `range`        | `boolean`                           | `false` | 范围选择模式     |
-| `disabled`     | `boolean`                           | `false` | 禁用状态         |
-| `disabledDate` | `(date: Date) => boolean`           | -       | 禁用日期判断函数 |
+| 属性                | 类型                                                          | 默认值  | 说明               |
+| ------------------- | ------------------------------------------------------------- | ------- | ------------------ |
+| `picker`            | `'year' \| 'month' \| 'date' \| 'datetime'`                   | -       | 选择粒度           |
+| `range`             | `boolean`                                                     | `false` | 是否为范围选择     |
+| `value`             | `Date \| null`                                                | -       | 单选模式下选中日期 |
+| `defaultValue`      | `Date \| null`                                                | -       | 单选模式下默认日期 |
+| `valueRange`        | `{ startDate: Date; endDate: Date } \| null`                  | -       | 范围模式下选中范围 |
+| `defaultValueRange` | `{ startDate: Date; endDate: Date } \| null`                  | -       | 范围模式下默认范围 |
+| `onChange`          | `(date: Date \| null) => void`                                | -       | 单选模式下的回调   |
+| `onRangeChange`     | `(range: { startDate: Date; endDate: Date } \| null) => void` | -       | 范围模式下的回调   |
+| `format`            | `DateFormat`（见类型定义）                                    | -       | 日期显示/解析格式  |
+| `placeholder`       | `string`                                                      | -       | 占位符             |
+| `disabled`          | `boolean`                                                     | `false` | 禁用状态           |
+| `readOnly`          | `boolean`                                                     | `false` | 只读状态           |
+| `allowClear`        | `boolean`                                                     | -       | 是否显示清除按钮   |
+| `disabledDate`      | `(date: Date) => boolean`                                     | -       | 禁用日期判断函数   |
+| `timeFormat`        | `'24h' \| '12h'`                                              | -       | 时间格式           |
+| `size`              | `'small' \| 'medium' \| 'large'`                              | -       | 组件尺寸           |
+| `width`             | `number \| string`                                            | -       | 宽度配置           |
+| `className`         | `string`                                                      | -       | 自定义类名         |
+| `style`             | `React.CSSProperties`                                         | -       | 自定义样式         |
 
 ### 示例
 
@@ -343,32 +393,37 @@ export type DatePickerProps = React.HTMLAttributes<HTMLDivElement> & {
 ## Switch
 
 ```tsx
-export type SwitchProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & {
-  label?: React.ReactNode;
-  checked?: boolean;
+export type SwitchProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> & {
   defaultChecked?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  onChangeEvent?: React.FormEventHandler<HTMLButtonElement>;
   disabled?: boolean;
+  loading?: boolean;
+  size?: 'small' | 'medium' | 'large';
+  checkedChildren?: React.ReactNode;
+  unCheckedChildren?: React.ReactNode;
 };
 ```
 
 ### 属性
 
-| 属性             | 类型          | 默认值  | 说明         |
-| ---------------- | ------------- | ------- | ------------ |
-| `checked`        | `boolean`     | -       | 开关状态     |
-| `defaultChecked` | `boolean`     | `false` | 默认状态     |
-| `onChange`       | `(e) => void` | -       | 状态改变回调 |
-| `disabled`       | `boolean`     | `false` | 禁用状态     |
-| `label`          | `ReactNode`   | -       | 开关标签     |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `checked` | `boolean` | - | 受控开关状态 |
+| `defaultChecked` | `boolean` | `false` | 非受控初始状态 |
+| `onChange` | `(checked: boolean) => void` | - | 状态切换回调（返回变更后的布尔值） |
+| `onChangeEvent` | `React.FormEventHandler<HTMLButtonElement>` | - | 原生事件回调（如果需要原始事件对象） |
+| `disabled` | `boolean` | `false` | 禁用状态 |
+| `loading` | `boolean` | `false` | 加载状态（显示 loading 样式并禁用交互） |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 组件尺寸 |
+| `checkedChildren` | `ReactNode` | - | 打开时显示的内容 |
+| `unCheckedChildren` | `ReactNode` | - | 关闭时显示的内容 |
 
 ### 示例
 
 ```tsx
-<Switch
-  checked={enabled}
-  onChange={handleChange}
-/>
+<Switch checked={enabled} onChange={(v) => setEnabled(v)} />
 
 <label>
   <Switch />
@@ -399,15 +454,16 @@ export type AlertProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'type'> & {
 
 ### 属性
 
-| 属性       | 类型                                          | 默认值   | 说明         |
-| ---------- | --------------------------------------------- | -------- | ------------ |
-| `type`     | `'success' \| 'warning' \| 'error' \| 'info'` | `'info'` | 提示类型     |
-| `title`    | `ReactNode`                                   | -        | 标题         |
-| `message`  | `ReactNode`                                   | -        | 内容         |
-| `closable` | `boolean`                                     | `false`  | 是否可关闭   |
-| `onClose`  | `() => void`                                  | -        | 关闭回调     |
-| `showIcon` | `boolean`                                     | `true`   | 是否显示图标 |
-| `compact`  | `boolean`                                     | `false`  | 紧凑模式     |
+| 属性         | 类型                                          | 默认值   | 说明                           |
+| ------------ | --------------------------------------------- | -------- | ------------------------------ |
+| `type`       | `'success' \| 'warning' \| 'error' \| 'info'` | `'info'` | 提示类型                       |
+| `title`      | `ReactNode`                                   | -        | 标题                           |
+| `message`    | `ReactNode`                                   | -        | 内容                           |
+| `closable`   | `boolean`                                     | `false`  | 是否可关闭                     |
+| `onClose`    | `() => void`                                  | -        | 关闭回调                       |
+| `showIcon`   | `boolean`                                     | `true`   | 是否显示图标                   |
+| `compact`    | `boolean`                                     | `false`  | 紧凑模式                       |
+| `showBorder` | `boolean`                                     | `true`   | 是否展示左侧颜色条（默认显示） |
 
 ### 示例
 
@@ -420,35 +476,38 @@ export type AlertProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'type'> & {
 ## Modal
 
 ```tsx
-export type ModalProps = React.HTMLAttributes<HTMLDivElement> & {
-  open?: boolean;
+export type ModalSize = 'small' | 'medium' | 'large';
+
+export type ModalProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
+  open: boolean;
   onClose?: () => void;
   onOk?: () => void;
   title?: React.ReactNode;
   width?: number | string;
-  size?: 'small' | 'medium' | 'large';
+  size?: ModalSize;
   closable?: boolean;
   maskClosable?: boolean;
-  footer?: React.ReactNode;
+  children?: React.ReactNode;
+  footer?: React.ReactNode | null | false;
+  className?: string;
   maskClassName?: string;
   contentClassName?: string;
-  children?: React.ReactNode;
 };
 ```
 
 ### 属性
 
-| 属性           | 类型                             | 默认值     | 说明                          |
-| -------------- | -------------------------------- | ---------- | ----------------------------- |
-| `open`         | `boolean`                        | `false`    | 打开状态                      |
-| `title`        | `ReactNode`                      | -          | 标题                          |
-| `width`        | `number \| string`               | -          | 宽度                          |
-| `size`         | `'small' \| 'medium' \| 'large'` | `'medium'` | 预设大小（300px/520px/800px） |
-| `closable`     | `boolean`                        | `true`     | 显示关闭按钮                  |
-| `maskClosable` | `boolean`                        | `true`     | 点击遮罩是否关闭              |
-| `onClose`      | `() => void`                     | -          | 关闭回调                      |
-| `onOk`         | `() => void`                     | -          | 确认回调                      |
-| `footer`       | `ReactNode`                      | -          | 自定义页脚                    |
+| 属性           | 类型                             | 默认值     | 说明                                |
+| -------------- | -------------------------------- | ---------- | ----------------------------------- |
+| `open`         | `boolean`                        | -          | 控制 Modal 是否打开（该字段为必填） |
+| `title`        | `ReactNode`                      | -          | 标题                                |
+| `width`        | `number \| string`               | `520px`    | 宽度（默认 520px）                  |
+| `size`         | `'small' \| 'medium' \| 'large'` | `'medium'` | 预设大小（300px/520px/800px）       |
+| `closable`     | `boolean`                        | `true`     | 显示关闭按钮                        |
+| `maskClosable` | `boolean`                        | `true`     | 点击遮罩是否关闭                    |
+| `onClose`      | `() => void`                     | -          | 关闭回调                            |
+| `onOk`         | `() => void`                     | -          | 确认回调                            |
+| `footer`       | `ReactNode \| null \| false`     | -          | 自定义页脚（设为 null/false 隐藏）  |
 
 ### 示例
 
@@ -471,33 +530,50 @@ export type ModalProps = React.HTMLAttributes<HTMLDivElement> & {
 
 ## Drawer
 
-```tsx
-export type DrawerProps = React.HTMLAttributes<HTMLDivElement> & {
-  open?: boolean;
+```typescript
+export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
+
+export type DrawerSize = 'small' | 'medium' | 'large';
+
+export type DrawerProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
+  open: boolean;
   onClose?: () => void;
   title?: React.ReactNode;
-  placement?: 'left' | 'right';
+  /**
+   * Drawer的宽度（水平方向）或高度（竖向方向），可以是px单位或百分比
+   * 当placement为 'left' 或 'right' 时，此值作为宽度
+   * 当placement为 'top' 或 'bottom' 时，此值作为高度
+   */
   width?: number | string;
+  placement?: DrawerPlacement;
+  size?: DrawerSize;
   closable?: boolean;
   maskClosable?: boolean;
-  footer?: React.ReactNode;
+  children?: React.ReactNode;
+  footer?: React.ReactNode | null | false;
+  className?: string;
   maskClassName?: string;
   contentClassName?: string;
-  children?: React.ReactNode;
+  offset?: number;
+  mask?: boolean;
 };
 ```
 
 ### 属性
 
-| 属性           | 类型                | 默认值    | 说明             |
-| -------------- | ------------------- | --------- | ---------------- |
-| `open`         | `boolean`           | `false`   | 打开状态         |
-| `title`        | `ReactNode`         | -         | 标题             |
-| `placement`    | `'left' \| 'right'` | `'right'` | 抽屉位置         |
-| `width`        | `number \| string`  | -         | 抽屉宽度         |
-| `closable`     | `boolean`           | `true`    | 显示关闭按钮     |
-| `maskClosable` | `boolean`           | `true`    | 点击遮罩是否关闭 |
-| `onClose`      | `() => void`        | -         | 关闭回调         |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `open` | `boolean` | - | 控制 Drawer 是否打开（必填） |
+| `title` | `ReactNode` | - | 标题 |
+| `placement` | `'left' \| 'right' \| 'top' \| 'bottom'` | `'right'` | 抽屉位置 |
+| `width` | `number \| string` | - | 宽度（横向）或高度（纵向），可为 px 或 % |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 预设尺寸（当未指定 `width` 时生效，small/medium/large） |
+| `closable` | `boolean` | `true` | 是否显示关闭按钮 |
+| `maskClosable` | `boolean` | `true` | 点击遮罩是否关闭 |
+| `onClose` | `() => void` | - | 关闭回调 |
+| `footer` | `ReactNode \| null \| false` | - | 自定义页脚（设为 null/false 隐藏） |
+| `offset` | `number` | `0` | 抽屉与视口边缘间距 |
+| `mask` | `boolean` | `true` | 是否展示遮罩 |
 
 ### 示例
 
@@ -512,19 +588,23 @@ export type DrawerProps = React.HTMLAttributes<HTMLDivElement> & {
 ## Tooltip
 
 ```tsx
-export type TooltipProps = React.HTMLAttributes<HTMLDivElement> & {
-  title: React.ReactNode;
-  placement?: 'top' | 'right' | 'bottom' | 'left';
+export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
+
+export type TooltipProps = Omit<React.HTMLAttributes<HTMLSpanElement>, 'content' | 'children'> & {
+  content: React.ReactNode;
+  placement?: TooltipPlacement;
   children: React.ReactElement;
+  portal?: boolean;
 };
 ```
 
 ### 属性
 
-| 属性        | 类型                                     | 默认值  | 说明     |
-| ----------- | ---------------------------------------- | ------- | -------- |
-| `title`     | `ReactNode`                              | -       | 提示内容 |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | 提示位置 |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `content` | `ReactNode` | - | tooltip 要显示的内容 |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | 显示位置 |
+| `portal` | `boolean` | `true` | 是否通过 portal 渲染到 `document.body`（避免被裁剪） |
 
 ### 示例
 
@@ -538,29 +618,47 @@ export type TooltipProps = React.HTMLAttributes<HTMLDivElement> & {
 
 ## Popconfirm
 
-```tsx
-export type PopconfirmProps = React.HTMLAttributes<HTMLDivElement> & {
-  title?: React.ReactNode;
-  message?: React.ReactNode;
-  onConfirm?: () => void;
-  onCancel?: () => void;
-  okText?: string;
-  cancelText?: string;
-  placement?: string;
+```typescript
+export type PopconfirmProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   children: React.ReactElement;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  okText?: React.ReactNode;
+  cancelText?: React.ReactNode;
+  okVariant?: 'primary' | 'ghost';
+  cancelVariant?: 'primary' | 'ghost';
+  onConfirm?: (e?: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
+  onCancel?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+  maskClosable?: boolean;
+  showMask?: boolean;
+  placement?: 'top' | 'bottom' | 'left' | 'right';
+  contentClassName?: string;
+  maskClassName?: string;
+  okDisabled?: boolean;
+  okLoading?: boolean;
 };
 ```
 
 ### 属性
 
-| 属性         | 类型         | 默认值     | 说明         |
-| ------------ | ------------ | ---------- | ------------ |
-| `title`      | `ReactNode`  | -          | 标题         |
-| `message`    | `ReactNode`  | -          | 内容         |
-| `onConfirm`  | `() => void` | -          | 确认回调     |
-| `onCancel`   | `() => void` | -          | 取消回调     |
-| `okText`     | `string`     | `'OK'`     | 确认按钮文字 |
-| `cancelText` | `string`     | `'Cancel'` | 取消按钮文字 |
+| 属性           | 类型                                     | 默认值  | 说明                     |
+| -------------- | ---------------------------------------- | ------- | ------------------------ |
+| `children`     | `ReactElement`                           | -       | 触发 Popconfirm 的子元素 |
+| `open`         | `boolean`                                | -       | 控制显示（可受控）       |
+| `onOpenChange` | `(open: boolean) => void`                | -       | 打开状态变化回调         |
+| `title`        | `ReactNode`                              | -       | 标题（必填）             |
+| `description`  | `ReactNode`                              | -       | 标题下方的描述           |
+| `okText`       | `ReactNode`                              | `确定`  | 确认按钮文本             |
+| `cancelText`   | `ReactNode`                              | `取消`  | 取消按钮文本             |
+| `onConfirm`    | `(e?) => void \| Promise<void>`          | -       | 点击确认回调             |
+| `onCancel`     | `(e?) => void`                           | -       | 点击取消回调             |
+| `placement`    | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Popconfirm 出现位置      |
+| `maskClosable` | `boolean`                                | `true`  | 点击遮罩是否关闭         |
+| `showMask`     | `boolean`                                | `false` | 是否显示遮罩             |
+| `okDisabled`   | `boolean`                                | `false` | 禁用确认按钮             |
+| `okLoading`    | `boolean`                                | `false` | 确认按钮加载中状态       |
 
 ### 示例
 
@@ -575,8 +673,10 @@ export type PopconfirmProps = React.HTMLAttributes<HTMLDivElement> & {
 ## Toast
 
 ```tsx
+export type ToastType = 'success' | 'warning' | 'error' | 'info' | 'loading';
+
 export interface ToastOptions {
-  type?: 'success' | 'warning' | 'error' | 'info' | 'loading';
+  type?: ToastType;
   title?: React.ReactNode;
   message?: React.ReactNode;
   duration?: number;
@@ -586,13 +686,14 @@ export interface ToastOptions {
 }
 
 export interface Toast {
-  success(message: string | React.ReactNode, options?: ToastOptions): void;
-  warning(message: string | React.ReactNode, options?: ToastOptions): void;
-  error(message: string | React.ReactNode, options?: ToastOptions): void;
-  info(message: string | React.ReactNode, options?: ToastOptions): void;
-  loading(message: string | React.ReactNode, options?: ToastOptions): void;
+  success(message: React.ReactNode, options?: Omit<ToastOptions, 'type' | 'message'>): string;
+  warning(message: React.ReactNode, options?: Omit<ToastOptions, 'type' | 'message'>): string;
+  error(message: React.ReactNode, options?: Omit<ToastOptions, 'type' | 'message'>): string;
+  info(message: React.ReactNode, options?: Omit<ToastOptions, 'type' | 'message'>): string;
+  loading(message: React.ReactNode, options?: Omit<ToastOptions, 'type' | 'message'>): string;
+  show(options: ToastOptions): string;
   close(id: string): void;
-  closeAll(): void;
+  clear(): void;
 }
 ```
 
@@ -606,7 +707,7 @@ export interface Toast {
 | `Toast.info(message, options?)`    | 显示信息提示 |
 | `Toast.loading(message, options?)` | 显示加载提示 |
 | `Toast.close(id)`                  | 关闭指定提示 |
-| `Toast.closeAll()`                 | 关闭所有提示 |
+| `Toast.clear()`                    | 清空所有提示 |
 
 ### 选项
 
@@ -637,49 +738,80 @@ Toast.close(id);
 
 ## Table
 
-```tsx
-export type TableColumn = {
+```typescript
+import type { ReactNode } from 'react';
+import type { PaginationProps } from '../Pagination/Pagination';
+
+export type Column = {
   key: string;
-  label: React.ReactNode;
+  title: string;
   width?: string | number;
   align?: 'left' | 'center' | 'right';
-  render?: (value: any, record: any, index: number) => React.ReactNode;
+  render?: (value: any, row: Row, rowIndex: number, column: Column) => ReactNode | null | undefined;
+  span?: (row: Row, rowIndex: number, column: Column) => { colSpan?: number; rowSpan?: number } | undefined;
 };
 
-export type TableProps = {
-  columns: TableColumn[];
-  data: any[];
-  bordered?: boolean;
-  striped?: boolean;
-  hover?: boolean;
+export type Row = Record<string, any>;
+
+export type Props = React.HTMLAttributes<HTMLDivElement> & {
+  columns: Column[];
+  data: Row[];
+  rowKey?: string;
+  defaultAlign?: 'left' | 'center' | 'right';
+  showCheckbox?: boolean;
+  selectedKeys?: string[];
+  onSelectionChange?: (keys: string[]) => void;
+  renderCell?: (row: Row, column: Column, rowIndex: number) => ReactNode | null | undefined;
+  preservePxAsMin?: boolean;
+  minColumnPx?: number;
+  fixedHeader?: boolean;
+  headerOffset?: number;
+  maxHeight?: number | string;
+  fixedColumnCount?: number;
+  fixedRightCount?: number;
+  border?: boolean;
+  empty?: ReactNode;
+  emptyText?: ReactNode;
   loading?: boolean;
-  emptyText?: string;
-  className?: string;
-  style?: React.CSSProperties;
+  pagination?: false | Partial<PaginationProps>;
 };
 ```
 
 ### 属性
 
-| 属性        | 类型            | 默认值      | 说明               |
-| ----------- | --------------- | ----------- | ------------------ |
-| `columns`   | `TableColumn[]` | -           | 列定义             |
-| `data`      | `any[]`         | -           | 表格数据           |
-| `bordered`  | `boolean`       | `true`      | 是否显示边框       |
-| `hover`     | `boolean`       | `true`      | 是否启用行悬停效果 |
-| `loading`   | `boolean`       | `false`     | 加载状态           |
-| `emptyText` | `string`        | `'No data'` | 空状态文字         |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `columns` | `Column[]` | - | 列定义（每列使用 `key` 与 `title`） |
+| `data` | `Row[]` | - | 表格数据 |
+| `rowKey` | `string` | - | 行唯一标识字段 |
+| `defaultAlign` | `'left' \| 'center' \| 'right'` | - | 默认列对齐方式 |
+| `showCheckbox` | `boolean` | `false` | 是否展示行前复选框 |
+| `selectedKeys` | `string[]` | - | 受控选中 keys |
+| `onSelectionChange` | `(keys: string[]) => void` | - | 选中变化回调 |
+| `renderCell` | `(row, column, rowIndex) => ReactNode \| null` | - | 自定义单元格渲染器 |
+| `preservePxAsMin` | `boolean` | `true` | 混合宽度时是否把 px 列作为最小宽度（避免不必要横向滚动） |
+| `minColumnPx` | `number` | `80` | 默认最小列宽（当未指定或无法换算宽度时） |
+| `fixedHeader` | `boolean` | `false` | 是否固定表头 |
+| `headerOffset` | `number` | `0` | 表头距离容器顶部的偏移 |
+| `maxHeight` | `number \| string` | - | 表格容器最大高度（启用纵向滚动配合粘性表头） |
+| `fixedColumnCount` | `number` | `0` | 固定左侧列数量（不含复选框列） |
+| `fixedRightCount` | `number` | `0` | 固定右侧列数量 |
+| `border` | `boolean` | `false` | 是否展示边框 |
+| `empty` | `ReactNode` | - | 自定义空状态节点 |
+| `emptyText` | `ReactNode` | `'No data'` | 空状态默认文案（当未提供 `empty` 时使用） |
+| `loading` | `boolean` | `false` | 是否显示加载状态 |
+| `pagination` | `false \| Partial<PaginationProps>` | - | 分页配置，传入 `false` 可禁用分页，或传入部分 `PaginationProps` 启用分页 |
 
 ### 示例
 
 ```tsx
 <Table
   columns={[
-    { key: 'name', label: 'Name', width: '150px' },
-    { key: 'email', label: 'Email' },
+    { key: 'name', title: 'Name', width: '150px' },
+    { key: 'email', title: 'Email' },
     {
       key: 'actions',
-      label: 'Actions',
+      title: 'Actions',
       render: (_, record) => <Button size="small">Edit</Button>,
     },
   ]}
@@ -692,45 +824,41 @@ export type TableProps = {
 ## Pagination
 
 ```tsx
-export type PaginationProps = React.HTMLAttributes<HTMLDivElement> & {
-  current?: number;
-  pageSize?: number;
+export type PaginationProps = {
   total: number;
-  /** 是否显示总数（默认为 false） */
-  showTotal?: boolean;
-  /** 页码或 pageSize 变化回调，pageSize 在切换每页数量时作为第二个参数传入 */
+  pageSize?: number;
+  current?: number;
   onChange?: (page: number, pageSize?: number) => void;
-  /** 是否显示页大小切换器 */
-  showSizeChanger?: boolean;
   pageSizeOptions?: number[];
   showQuickJumper?: boolean;
-  /** 国际化配置（参见 `PaginationLocale`） */
+  showTotal?: boolean;
+  showSizeChanger?: boolean;
   locale?: Partial<PaginationLocale>;
-  /** 对齐方式，'left' | 'center' | 'right'（默认 'right'） */
   align?: 'left' | 'center' | 'right';
-  /** 是否禁用整个分页控件 */
   disabled?: boolean;
-  /** 可选的宽度配置，用于 sizeChanger 和 quickJumper */
-  width?: { sizeChanger?: number | string; quickJumper?: number | string };
+  width?: {
+    sizeChanger?: number | string;
+    quickJumper?: number | string;
+  };
 };
 ```
 
 ### 属性
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `current` | `number` | `1` | 当前页码 |
-| `pageSize` | `number` | `10` | 每页条数 |
-| `total` | `number` | - | 总条数（必填），仅在 `showTotal` 为 `true` 时显示 |
-| `showTotal` | `boolean` | `false` | 是否显示总条数 |
-| `onChange` | `(page, pageSize?) => void` | - | 页码或每页数量变化回调，切换 pageSize 时会传入第二个参数 |
-| `showSizeChanger` | `boolean` | `false` | 是否显示页大小选择器 |
-| `pageSizeOptions` | `number[]` | `[10, 20, 50, 100]` | 页大小选项 |
-| `showQuickJumper` | `boolean` | `false` | 是否显示快速跳转输入框 |
-| `locale` | `Partial<PaginationLocale>` | - | 国际化文案，自定义 `prev`/`next`/`jumpTo`/`page`/`itemsPerPage` |
-| `align` | `'left' \| 'center' \| 'right'` | `'right'` | 对齐方式 |
-| `disabled` | `boolean` | `false` | 是否禁用分页控件 |
-| `width` | `object` | - | 宽度配置（`sizeChanger` / `quickJumper`） |
+| 属性              | 类型                            | 默认值           | 说明                                      |
+| ----------------- | ------------------------------- | ---------------- | ----------------------------------------- |
+| `total`           | `number`                        | -                | 总条数（必填）                            |
+| `pageSize`        | `number`                        | `10`             | 每页条数（初始）                          |
+| `current`         | `number`                        | `1`              | 当前页码（受控）                          |
+| `onChange`        | `(page, pageSize?) => void`     | -                | 页码或每页数量变化回调                    |
+| `pageSizeOptions` | `number[]`                      | `[10,20,50,100]` | 可选的每页数量下拉选项                    |
+| `showQuickJumper` | `boolean`                       | `false`          | 是否显示快速跳转输入框                    |
+| `showTotal`       | `boolean`                       | `false`          | 是否显示总数                              |
+| `showSizeChanger` | `boolean`                       | `false`          | 是否显示页大小切换器                      |
+| `locale`          | `Partial<PaginationLocale>`     | -                | 国际化配置（覆盖默认文案）                |
+| `align`           | `'left' \| 'center' \| 'right'` | `'right'`        | 对齐方式                                  |
+| `disabled`        | `boolean`                       | `false`          | 是否禁用分页控件                          |
+| `width`           | `object`                        | -                | 宽度配置（`sizeChanger` / `quickJumper`） |
 
 ### 示例
 
@@ -743,27 +871,78 @@ export type PaginationProps = React.HTMLAttributes<HTMLDivElement> & {
 ## Upload
 
 ```tsx
-export type UploadProps = React.HTMLAttributes<HTMLDivElement> & {
+export type UploadFile = {
+  uid: string;
+  name: string;
+  file: File;
+  status: 'ready' | 'uploading' | 'success' | 'error';
+  percent?: number;
+  response?: any;
+  error?: string;
+};
+
+export type UploadProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'onError' | 'onProgress'> & {
   action?: string;
-  method?: 'POST' | 'PUT';
   multiple?: boolean;
   accept?: string;
-  onChange?: (files: File[]) => void;
-  onUpload?: (files: File[]) => Promise<any>;
+  showFileList?: boolean;
   disabled?: boolean;
-  tip?: React.ReactNode;
+  autoUpload?: boolean;
+  onChange?: (files: UploadFile[]) => void;
+  beforeUpload?: (file: File) => boolean | Promise<boolean>;
+  onSuccess?: (response: any, file: UploadFile) => void;
+  onError?: (error: Error, file: UploadFile) => void;
+  onProgress?: (event: ProgressEvent, file: UploadFile) => void;
+  onRemove?: (file: UploadFile) => void;
+  customRequest?: (file: File) => Promise<any>;
+  dragText?: string;
+  buttonText?: string;
+  size?: 'small' | 'medium' | 'large';
+  maxCount?: number;
+  maxSize?: number;
+  sizeLimitMessage?: string;
+  headers?: Record<string, string>;
+  fieldName?: string;
+  data?: Record<string, any>;
+  variant?: 'default' | 'avatar' | 'drag';
+  listType?: 'list' | 'picture';
+  defaultFileList?: UploadFile[];
+  renderTrigger?: (controls: { open: () => void }) => React.ReactNode;
+  children?: React.ReactNode;
 };
 ```
 
 ### 属性
 
-| 属性       | 类型              | 默认值  | 说明           |
-| ---------- | ----------------- | ------- | -------------- |
-| `action`   | `string`          | -       | 上传地址       |
-| `multiple` | `boolean`         | `false` | 是否多选       |
-| `accept`   | `string`          | -       | 接受的文件类型 |
-| `disabled` | `boolean`         | `false` | 禁用状态       |
-| `onChange` | `(files) => void` | -       | 文件改变回调   |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `action` | `string` | - | 上传地址 |
+| `multiple` | `boolean` | `true` | 是否支持多选 |
+| `accept` | `string` | - | 接受的文件类型（input accept） |
+| `showFileList` | `boolean` | `true` | 是否显示文件列表 |
+| `disabled` | `boolean` | `false` | 禁用状态 |
+| `autoUpload` | `boolean` | `true` | 是否自动上传 |
+| `onChange` | `(files: UploadFile[]) => void` | - | 文件列表变化回调 |
+| `beforeUpload` | `(file: File) => boolean \u007f Promise<boolean>` | - | 上传前钩子，返回 false 则取消上传 |
+| `onSuccess` | `(response: any, file: UploadFile) => void` | - | 单文件上传成功回调 |
+| `onError` | `(error: Error, file: UploadFile) => void` | - | 单文件上传失败回调 |
+| `onProgress` | `(event: ProgressEvent, file: UploadFile) => void` | - | 上传进度回调 |
+| `onRemove` | `(file: UploadFile) => void` | - | 移除文件回调 |
+| `customRequest` | `(file: File) => Promise<any>` | - | 自定义上传实现 |
+| `dragText` | `string` | `'拖拽文件到此处，或点击选择文件'` | 拖拽区域文字 |
+| `buttonText` | `string` | `'选择文件'` | 上传按钮文本 |
+| `size` | `'small' \u007f 'medium' \u007f 'large'` | - | 尺寸（优先级：props > Form 上下文） |
+| `maxCount` | `number` | - | 最大文件数 |
+| `maxSize` | `number` | - | 最大文件大小（字节） |
+| `sizeLimitMessage` | `string` | `'文件大小超出限制'` | 超出大小提示 |
+| `headers` | `Record<string,string>` | `{}` | 自定义请求头 |
+| `fieldName` | `string` | `'file'` | 表单字段名 |
+| `data` | `Record<string, any>` | `{}` | 附加到请求的数据 |
+| `variant` | `'default' \u007f 'avatar' \u007f 'drag'` | `'default'` | 内置样式变体 |
+| `listType` | `'list' \u007f 'picture'` | `variant === 'avatar' ? 'picture' : 'list'` | 文件列表展示风格 |
+| `defaultFileList` | `UploadFile[]` | - | 初始文件列表（受控场景） |
+| `renderTrigger` | `(controls: { open: () => void }) => ReactNode` | - | 自定义触发渲染 |
+| `children` | `ReactNode` | - | 自定义触发节点（优先于内置触发） |
 
 ### 示例
 
@@ -776,18 +955,47 @@ export type UploadProps = React.HTMLAttributes<HTMLDivElement> & {
 ## Form & FormItem
 
 ```tsx
-export type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
-  layout?: 'horizontal' | 'vertical' | 'inline';
-  colon?: boolean;
+export type FormContextType = {
+  values: { [key: string]: any };
+  errors: { [key: string]: string | undefined };
+  setFieldValue: (name: string, value: any) => void;
+  setFieldsValue?: (newValues: { [key: string]: any }) => void;
+  setValues?: (newValues: { [key: string]: any }) => void;
+  getValues?: () => { [key: string]: any };
+  validateField: (name: string) => Promise<boolean>;
+  validate?: () => Promise<boolean>;
+  setFieldError: (name: string, error: string | undefined) => void;
+  getFieldRules: (name: string) => any[];
+  disabled?: boolean;
+  layout?: 'vertical' | 'horizontal' | 'inline';
   size?: 'small' | 'medium' | 'large';
+  registerField?: (name: string, rules: any[], meta?: { disabled?: boolean }) => void;
+  unregisterField?: (name: string) => void;
+  submitAttempted?: boolean;
+  reset?: () => void;
+  clear?: () => void;
+};
+
+export type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> & {
+  initialValues?: { [key: string]: any };
+  beforeSubmit?: (values: { [key: string]: any }) => boolean | Promise<boolean>;
+  onSubmit?: (values: { [key: string]: any }) => void | Promise<void> | boolean | Promise<boolean>;
+  layout?: 'vertical' | 'horizontal' | 'inline';
+  labelWidth?: number | string;
+  disabled?: boolean;
+  size?: 'small' | 'medium' | 'large';
+  children?: React.ReactNode;
 };
 
 export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
+  name?: string;
   label?: React.ReactNode;
   required?: boolean;
+  disabled?: boolean;
+  rules?: any[];
   help?: React.ReactNode;
-  validateStatus?: 'success' | 'error' | 'warning' | 'validating';
-  className?: string;
+  colon?: boolean;
+  children?: React.ReactNode;
 };
 ```
 
@@ -795,21 +1003,29 @@ export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
 
 #### Form
 
-| 属性       | 类型                                     | 默认值       | 说明             |
-| ---------- | ---------------------------------------- | ------------ | ---------------- |
-| `layout`   | `'horizontal' \| 'vertical' \| 'inline'` | `'vertical'` | 表单布局         |
-| `colon`    | `boolean`                                | `true`       | 是否显示标签冒号 |
-| `size`     | `'small' \| 'medium' \| 'large'`         | `'medium'`   | 表单项大小       |
-| `onSubmit` | `(e) => void`                            | -            | 提交回调         |
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `initialValues` | `Record<string, any>` | `{}` | 初始表单数据 |
+| `beforeSubmit` | `(values) => boolean  Promise<boolean>` | - | 提交前拦截函数，返回 false 则取消提交 |
+| `onSubmit` | `(values) => void  Promise<void>  boolean  Promise<boolean>` | - | 提交回调（返回 false 可取消提交） |
+| `layout` | `'vertical'  'horizontal'  'inline'` | `'vertical'` | 表单布局 |
+| `labelWidth` | `number  string` | - | 标签宽度（horizontal 布局时生效） |
+| `disabled` | `boolean` | `false` | 整体禁用 |
+| `size` | `'small'  'medium'  'large'` | `'medium'` | 表单尺寸 |
+| `children` | `ReactNode` | - | 子元素 |
 
 #### FormItem
 
-| 属性             | 类型        | 默认值  | 说明     |
-| ---------------- | ----------- | ------- | -------- |
-| `label`          | `ReactNode` | -       | 标签     |
-| `required`       | `boolean`   | `false` | 是否必填 |
-| `help`           | `ReactNode` | -       | 帮助文字 |
-| `validateStatus` | `string`    | -       | 验证状态 |
+| 属性       | 类型               | 默认值  | 说明                           |
+| ---------- | ------------------ | ------- | ------------------------------ |
+| `name`     | `string`           | -       | 字段名，用于与 Form 值绑定     |
+| `label`    | `ReactNode`        | -       | 标签文本                       |
+| `required` | `boolean`          | `false` | 是否必填（会注入默认必填规则） |
+| `disabled` | `boolean`          | -       | 字段禁用（可影响验证注册）     |
+| `rules`    | `ValidationRule[]` | `[]`    | 验证规则数组                   |
+| `help`     | `ReactNode`        | -       | 辅助说明文本                   |
+| `colon`    | `boolean`          | `true`  | 是否显示标签冒号               |
+| `children` | `ReactNode`        | -       | 表单控件                       |
 
 ### 示例
 
