@@ -2,6 +2,7 @@ import React from 'react';
 import Empty from './Empty';
 import Checkbox from '../../Checkbox/Checkbox';
 import { Column, Row } from '../types';
+import { Spinner } from '../../../icons';
 
 /**
  * TableBody 负责渲染 <tbody> 区域
@@ -31,6 +32,7 @@ type Props = {
   defaultAlign: 'left' | 'center' | 'right';
   empty?: React.ReactNode;
   emptyText?: React.ReactNode;
+  loading?: boolean;
 };
 
 const TableBody: React.FC<Props> = ({
@@ -47,9 +49,29 @@ const TableBody: React.FC<Props> = ({
   defaultAlign,
   empty,
   emptyText,
+  loading,
 }) => {
   if (!data || data.length === 0) {
     const colspan = columns.length + (showCheckbox ? 1 : 0);
+    if (loading) {
+      return (
+        <tbody>
+          <tr key="__empty__" className="beaver-table__empty-row">
+            <td className="beaver-table__empty-cell" colSpan={colspan}>
+              <div className="beaver-table__empty-inner" role="status" aria-live="polite">
+                <div className="beaver-table__empty-box" aria-hidden>
+                  <div className="beaver-table__loading-icon-wrapper">
+                    <Spinner className="beaver-table__empty-icon" aria-hidden />
+                  </div>
+                  <div className="beaver-table__empty-text">加载中</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      );
+    }
+
     const content = empty ?? <Empty text={emptyText ?? '暂无数据'} />;
     return (
       <tbody>

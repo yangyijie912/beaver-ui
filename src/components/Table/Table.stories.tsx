@@ -208,6 +208,13 @@ export const EmptyState: Story = {
   args: {},
 };
 
+const LoadingTemplate = (args: TableArgs) => <Table columns={columns} data={[]} rowKey="id" loading {...args} />;
+export const Loading: Story = {
+  name: '加载中',
+  render: LoadingTemplate,
+  args: {},
+};
+
 const WithCheckboxesTemplate = (args: TableArgs) => <Table columns={columns} data={data} rowKey="id" {...args} />;
 export const WithCheckboxes: Story = {
   name: '带复选框',

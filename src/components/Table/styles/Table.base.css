@@ -52,6 +52,7 @@
   border: 1px solid var(--beaver-table-border-color, #f0f0f0);
   border-radius: var(--beaver-radius-sm);
   overflow: visible;
+  position: relative;
 }
 
 .beaver-table {
@@ -235,4 +236,56 @@
   padding: 12px 16px;
   border-top: 1px solid var(--beaver-table-border-color, #f0f0f0);
   background: transparent;
+}
+
+/* loading overlay */
+.beaver-table__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.beaver-table__loading-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.beaver-table__loading-spinner {
+  color: var(--beaver-color-primary, #1e90ff);
+  animation: beaver-table-spinner-rot 1s linear infinite;
+}
+
+.beaver-table__loading-text {
+  color: var(--beaver-table-empty-color, #909399);
+  font-size: 14px;
+}
+
+@keyframes beaver-table-spinner-rot {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.beaver-table__loading-icon-wrapper {
+  /* 保持和空状态图标高度一致 */
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+/* 加载的图标高度 */
+.beaver-table__loading-icon-wrapper .beaver-table__empty-icon {
+  width: 36px;
+  height: 36px;
 }

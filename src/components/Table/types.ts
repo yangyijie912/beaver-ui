@@ -76,6 +76,9 @@ export type Props = React.HTMLAttributes<HTMLDivElement> & {
   /** 空状态默认文案（当未提供 `empty` 时使用） */
   emptyText?: ReactNode;
 
+  /** 是否显示加载中状态（在数据加载时可用） */
+  loading?: boolean;
+
   /** 分页配置；设置为 `false` 禁用分页，或传入 Pagination 的部分 props 以启用分页（支持受控或非受控用法） */
   pagination?: false | Partial<PaginationProps>;
 };

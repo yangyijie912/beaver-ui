@@ -15,6 +15,7 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
     {
       columns,
       data,
+      loading = false,
       pagination,
       rowKey = 'id',
       defaultAlign = 'left',
@@ -283,12 +284,14 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
               effectiveLeftFixed={effectiveLeftFixed}
               effectiveRightFixed={effectiveRightFixed}
               columnPxOffsets={columnPxOffsets}
+              loading={loading}
               renderCell={renderCell}
               defaultAlign={defaultAlign}
               empty={empty}
               emptyText={emptyText}
             />
           </table>
+          {/* loading visual is rendered inside TableBody to reuse empty-state styles */}
         </div>
         {/* 分页区 */}
         {paginationEnabled ? (
