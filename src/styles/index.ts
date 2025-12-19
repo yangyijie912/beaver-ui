@@ -25,6 +25,7 @@ import '../components/Table/styles/Table.sticky.css';
 import '../components/Table/styles/Table.bordered.css';
 import '../components/Tooltip/Tooltip.css';
 import '../components/Toast/Toast.css';
+import '../components/Tag/Tag.css';
 import '../components/DatePicker/components/TimePanel/TimePanel.css';
 import '../components/DatePicker/components/YearPanel/YearPanel.css';
 import '../components/DatePicker/components/MonthPanel/MonthPanel.css';

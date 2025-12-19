@@ -13,13 +13,14 @@
 - [Radio](#radio)
 - [DatePicker](#datepicker)
 - [Switch](#switch)
+- [Tag](#tag)
+- [Table](#table)
 - [Alert](#alert)
 - [Modal](#modal)
 - [Drawer](#drawer)
 - [Tooltip](#tooltip)
 - [Popconfirm](#popconfirm)
 - [Toast](#toast)
-- [Table](#table)
 - [Pagination](#pagination)
 - [Upload](#upload)
 - [Form](#form)
@@ -433,6 +434,162 @@ export type SwitchProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'o
 
 ---
 
+## Tag
+
+```tsx
+export type TagProps = React.HTMLAttributes<HTMLSpanElement> & {
+  size?: 'small' | 'medium' | 'large';
+  type?: 'default' | 'primary' | 'success' | 'warning' | 'error';
+  variant?: 'solid' | 'outline' | 'light';
+  disabled?: boolean;
+  closable?: boolean;
+  onClose?: (e: React.MouseEvent) => void;
+  icon?: React.ReactNode;
+  closeIcon?: React.ReactNode;
+  customColor?: {
+    bg?: string;
+    text?: string;
+    border?: string;
+  };
+  children?: React.ReactNode;
+};
+```
+
+### 属性
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 标签大小 |
+| `type` | `'default' \| 'primary' \| 'success' \| 'warning' \| 'error'` | `'default'` | 标签类型 |
+| `variant` | `'solid' \| 'outline' \| 'light'` | `'solid'` | 标签变体（实心、边框、浅色） |
+| `disabled` | `boolean` | `false` | 禁用状态 |
+| `closable` | `boolean` | `false` | 是否可关闭 |
+| `onClose` | `(e: React.MouseEvent) => void` | - | 关闭回调 |
+| `icon` | `ReactNode` | - | 前置图标 |
+| `closeIcon` | `ReactNode` | - | 自定义关闭按钮图标 |
+| `customColor` | `{ bg?, text?, border? }` | - | 自定义颜色（bg：背景色，text：文字色，border：边框色） |
+
+### 示例
+
+```tsx
+// 基础使用
+<Tag>标签</Tag>
+
+// 不同类型
+<Tag type="primary">主色</Tag>
+<Tag type="success">成功</Tag>
+<Tag type="warning">警告</Tag>
+<Tag type="error">错误</Tag>
+
+// 不同变体
+<Tag variant="solid">实心</Tag>
+<Tag variant="outline">边框</Tag>
+<Tag variant="light">浅色</Tag>
+
+// 不同尺寸
+<Tag size="small">小</Tag>
+<Tag size="medium">中</Tag>
+<Tag size="large">大</Tag>
+
+// 可关闭
+<Tag closable onClose={() => console.log('关闭')}>可关闭</Tag>
+
+// 带图标
+<Tag icon={<CheckIcon />} type="success">成功完成</Tag>
+
+// 自定义颜色
+<Tag customColor={{ bg: '#e6f7ff', text: '#0050b3', border: '#91d5ff' }}>
+  自定义
+</Tag>
+```
+
+---
+
+## Table
+
+```typescript
+import type { ReactNode } from 'react';
+import type { PaginationProps } from '../Pagination/Pagination';
+
+export type Column = {
+  key: string;
+  title: string;
+  width?: string | number;
+  align?: 'left' | 'center' | 'right';
+  render?: (value: any, row: Row, rowIndex: number, column: Column) => ReactNode | null | undefined;
+  span?: (row: Row, rowIndex: number, column: Column) => { colSpan?: number; rowSpan?: number } | undefined;
+};
+
+export type Row = Record<string, any>;
+
+export type Props = React.HTMLAttributes<HTMLDivElement> & {
+  columns: Column[];
+  data: Row[];
+  rowKey?: string;
+  defaultAlign?: 'left' | 'center' | 'right';
+  showCheckbox?: boolean;
+  selectedKeys?: string[];
+  onSelectionChange?: (keys: string[]) => void;
+  renderCell?: (row: Row, column: Column, rowIndex: number) => ReactNode | null | undefined;
+  preservePxAsMin?: boolean;
+  minColumnPx?: number;
+  fixedHeader?: boolean;
+  headerOffset?: number;
+  maxHeight?: number | string;
+  fixedColumnCount?: number;
+  fixedRightCount?: number;
+  border?: boolean;
+  empty?: ReactNode;
+  emptyText?: ReactNode;
+  loading?: boolean;
+  pagination?: false | Partial<PaginationProps>;
+};
+```
+
+### 属性
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `columns` | `Column[]` | - | 列定义（每列使用 `key` 与 `title`） |
+| `data` | `Row[]` | - | 表格数据 |
+| `rowKey` | `string` | - | 行唯一标识字段 |
+| `defaultAlign` | `'left' \| 'center' \| 'right'` | - | 默认列对齐方式 |
+| `showCheckbox` | `boolean` | `false` | 是否展示行前复选框 |
+| `selectedKeys` | `string[]` | - | 受控选中 keys |
+| `onSelectionChange` | `(keys: string[]) => void` | - | 选中变化回调 |
+| `renderCell` | `(row, column, rowIndex) => ReactNode \| null` | - | 自定义单元格渲染器 |
+| `preservePxAsMin` | `boolean` | `true` | 混合宽度时是否把 px 列作为最小宽度（避免不必要横向滚动） |
+| `minColumnPx` | `number` | `80` | 默认最小列宽（当未指定或无法换算宽度时） |
+| `fixedHeader` | `boolean` | `false` | 是否固定表头 |
+| `headerOffset` | `number` | `0` | 表头距离容器顶部的偏移 |
+| `maxHeight` | `number \| string` | - | 表格容器最大高度（启用纵向滚动配合粘性表头） |
+| `fixedColumnCount` | `number` | `0` | 固定左侧列数量（不含复选框列） |
+| `fixedRightCount` | `number` | `0` | 固定右侧列数量 |
+| `border` | `boolean` | `false` | 是否展示边框 |
+| `empty` | `ReactNode` | - | 自定义空状态节点 |
+| `emptyText` | `ReactNode` | `'No data'` | 空状态默认文案（当未提供 `empty` 时使用） |
+| `loading` | `boolean` | `false` | 是否显示加载状态 |
+| `pagination` | `false \| Partial<PaginationProps>` | - | 分页配置，传入 `false` 可禁用分页，或传入部分 `PaginationProps` 启用分页 |
+
+### 示例
+
+```tsx
+<Table
+  columns={[
+    { key: 'name', title: 'Name', width: '150px' },
+    { key: 'email', title: 'Email' },
+    {
+      key: 'actions',
+      title: 'Actions',
+      render: (_, record) => <Button size="small">Edit</Button>,
+    },
+  ]}
+  data={data}
+/>
+```
+
+---
+
 ## Alert
 
 ```tsx
@@ -735,91 +892,6 @@ Toast.close(id);
 ### 注意事项
 
 [Toast 使用说明](./TOAST_USAGE.md)
-
----
-
-## Table
-
-```typescript
-import type { ReactNode } from 'react';
-import type { PaginationProps } from '../Pagination/Pagination';
-
-export type Column = {
-  key: string;
-  title: string;
-  width?: string | number;
-  align?: 'left' | 'center' | 'right';
-  render?: (value: any, row: Row, rowIndex: number, column: Column) => ReactNode | null | undefined;
-  span?: (row: Row, rowIndex: number, column: Column) => { colSpan?: number; rowSpan?: number } | undefined;
-};
-
-export type Row = Record<string, any>;
-
-export type Props = React.HTMLAttributes<HTMLDivElement> & {
-  columns: Column[];
-  data: Row[];
-  rowKey?: string;
-  defaultAlign?: 'left' | 'center' | 'right';
-  showCheckbox?: boolean;
-  selectedKeys?: string[];
-  onSelectionChange?: (keys: string[]) => void;
-  renderCell?: (row: Row, column: Column, rowIndex: number) => ReactNode | null | undefined;
-  preservePxAsMin?: boolean;
-  minColumnPx?: number;
-  fixedHeader?: boolean;
-  headerOffset?: number;
-  maxHeight?: number | string;
-  fixedColumnCount?: number;
-  fixedRightCount?: number;
-  border?: boolean;
-  empty?: ReactNode;
-  emptyText?: ReactNode;
-  loading?: boolean;
-  pagination?: false | Partial<PaginationProps>;
-};
-```
-
-### 属性
-
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `columns` | `Column[]` | - | 列定义（每列使用 `key` 与 `title`） |
-| `data` | `Row[]` | - | 表格数据 |
-| `rowKey` | `string` | - | 行唯一标识字段 |
-| `defaultAlign` | `'left' \| 'center' \| 'right'` | - | 默认列对齐方式 |
-| `showCheckbox` | `boolean` | `false` | 是否展示行前复选框 |
-| `selectedKeys` | `string[]` | - | 受控选中 keys |
-| `onSelectionChange` | `(keys: string[]) => void` | - | 选中变化回调 |
-| `renderCell` | `(row, column, rowIndex) => ReactNode \| null` | - | 自定义单元格渲染器 |
-| `preservePxAsMin` | `boolean` | `true` | 混合宽度时是否把 px 列作为最小宽度（避免不必要横向滚动） |
-| `minColumnPx` | `number` | `80` | 默认最小列宽（当未指定或无法换算宽度时） |
-| `fixedHeader` | `boolean` | `false` | 是否固定表头 |
-| `headerOffset` | `number` | `0` | 表头距离容器顶部的偏移 |
-| `maxHeight` | `number \| string` | - | 表格容器最大高度（启用纵向滚动配合粘性表头） |
-| `fixedColumnCount` | `number` | `0` | 固定左侧列数量（不含复选框列） |
-| `fixedRightCount` | `number` | `0` | 固定右侧列数量 |
-| `border` | `boolean` | `false` | 是否展示边框 |
-| `empty` | `ReactNode` | - | 自定义空状态节点 |
-| `emptyText` | `ReactNode` | `'No data'` | 空状态默认文案（当未提供 `empty` 时使用） |
-| `loading` | `boolean` | `false` | 是否显示加载状态 |
-| `pagination` | `false \| Partial<PaginationProps>` | - | 分页配置，传入 `false` 可禁用分页，或传入部分 `PaginationProps` 启用分页 |
-
-### 示例
-
-```tsx
-<Table
-  columns={[
-    { key: 'name', title: 'Name', width: '150px' },
-    { key: 'email', title: 'Email' },
-    {
-      key: 'actions',
-      title: 'Actions',
-      render: (_, record) => <Button size="small">Edit</Button>,
-    },
-  ]}
-  data={data}
-/>
-```
 
 ---
 

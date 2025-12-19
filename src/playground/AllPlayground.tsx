@@ -17,6 +17,8 @@ import Tooltip from '../components/Tooltip/Tooltip';
 import Popconfirm from '../components/Popconfirm/Popconfirm';
 import Upload from '../components/Upload/Upload';
 import Form, { FormItem } from '../components/Form';
+import Tag from '../components/Tag/Tag';
+import { Check, Warning, Info, Trash } from '../icons';
 import '../styles/index.ts';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -532,6 +534,184 @@ function App() {
           <div>
             <div style={{ marginBottom: 8 }}>禁用状态</div>
             <Upload disabled dragText="上传已禁用" buttonText="选择文件" />
+          </div>
+        </div>
+      </Section>
+
+      {/* Tag演示 */}
+      <Section title="Tag">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* 基本类型 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>基本类型</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Tag type="default">默认</Tag>
+              <Tag type="primary">主色调</Tag>
+              <Tag type="success">成功</Tag>
+              <Tag type="warning">警告</Tag>
+              <Tag type="error">错误</Tag>
+            </div>
+          </div>
+
+          {/* 不同尺寸 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>不同尺寸</div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              <Tag size="small" type="primary">
+                小标签
+              </Tag>
+              <Tag size="medium" type="primary">
+                中标签
+              </Tag>
+              <Tag size="large" type="primary">
+                大标签
+              </Tag>
+            </div>
+          </div>
+
+          {/* 不同变体 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>不同变体</div>
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ fontSize: 11, color: '#999', marginBottom: 4 }}>实心 (solid)</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  <Tag variant="solid" type="primary">
+                    主色
+                  </Tag>
+                  <Tag variant="solid" type="success">
+                    成功
+                  </Tag>
+                  <Tag variant="solid" type="warning">
+                    警告
+                  </Tag>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, color: '#999', marginBottom: 4 }}>边框 (outline)</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  <Tag variant="outline" type="primary">
+                    主色
+                  </Tag>
+                  <Tag variant="outline" type="success">
+                    成功
+                  </Tag>
+                  <Tag variant="outline" type="warning">
+                    警告
+                  </Tag>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, color: '#999', marginBottom: 4 }}>浅色 (light)</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  <Tag variant="light" type="primary">
+                    主色
+                  </Tag>
+                  <Tag variant="light" type="success">
+                    成功
+                  </Tag>
+                  <Tag variant="light" type="warning">
+                    警告
+                  </Tag>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 可关闭的标签 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>可关闭标签</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Tag closable type="primary" onClose={() => console.log('关闭')}>
+                可关闭 #1
+              </Tag>
+              <Tag closable type="success" onClose={() => console.log('关闭')}>
+                可关闭 #2
+              </Tag>
+              <Tag closable type="warning" onClose={() => console.log('关闭')}>
+                可关闭 #3
+              </Tag>
+            </div>
+          </div>
+
+          {/* 带图标的标签 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>带图标的标签</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Tag icon={<Check width={14} height={14} />} type="success">
+                成功完成
+              </Tag>
+              <Tag icon={<Warning width={14} height={14} />} type="warning">
+                需要注意
+              </Tag>
+              <Tag icon={<Trash width={14} height={14} />} type="error">
+                操作失败
+              </Tag>
+              <Tag icon={<Info width={14} height={14} />} type="primary">
+                信息提示
+              </Tag>
+            </div>
+          </div>
+
+          {/* 禁用状态 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>禁用状态</div>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Tag disabled>禁用标签</Tag>
+              <Tag disabled type="primary">
+                禁用主色
+              </Tag>
+              <Tag disabled closable>
+                禁用可关闭
+              </Tag>
+            </div>
+          </div>
+
+          {/* 实际应用示例 - 标签云 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>标签云示例</div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              <Tag size="small" type="primary">
+                React
+              </Tag>
+              <Tag size="small" type="primary" variant="light">
+                TypeScript
+              </Tag>
+              <Tag size="small" type="success">
+                完成
+              </Tag>
+              <Tag size="small" type="warning">
+                进行中
+              </Tag>
+              <Tag size="small" type="default" variant="outline">
+                标签1
+              </Tag>
+              <Tag size="small" type="default" variant="outline">
+                标签2
+              </Tag>
+              <Tag size="small" type="default" variant="outline">
+                标签3
+              </Tag>
+            </div>
+          </div>
+
+          {/* 实际应用示例 - 状态指示 */}
+          <div>
+            <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>状态指示示例</div>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <Tag icon={<Check width={14} height={14} />} type="success" variant="light">
+                已发布
+              </Tag>
+              <Tag icon={<Info width={14} height={14} />} type="warning" variant="light">
+                待审核
+              </Tag>
+              <Tag icon={<Trash width={14} height={14} />} type="error" variant="light">
+                已拒绝
+              </Tag>
+              <Tag icon={<Info width={14} height={14} />} type="primary" variant="light">
+                草稿
+              </Tag>
+            </div>
           </div>
         </div>
       </Section>

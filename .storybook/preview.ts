@@ -22,7 +22,7 @@ const preview: Preview = {
           '表单（Form）',
           ['Input', 'Select', 'Checkbox', 'Radio', 'Switch', 'DatePicker', 'Upload', 'Form'],
           '数据展示（Data Display）',
-          ['Table'],
+          ['Tag', 'Table'],
           '浮层（Overlays）',
           ['Tooltip', 'Popconfirm', 'Modal', 'Drawer'],
           '导航（Navigation）',

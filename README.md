@@ -113,7 +113,8 @@ setCssVars({ beaver: { color: { primary: '#ff6a00' } } });
 |          | DatePicker        | 日期选择器 |
 |          | Upload            | 文件上传   |
 |          | Form, FormItem    | 表单容器   |
-| **展示** | Table             | 表格       |
+| **展示** | Tag               | 标签       |
+|          | Table             | 表格       |
 | **导航** | Pagination        | 分页器     |
 | **反馈** | Alert             | 警告提示   |
 |          | Toast             | 消息提示   |
