@@ -63,7 +63,6 @@
   /* ===== 基础样式 ===== */
   --beaver-button-border-radius: var(--beaver-radius-md, 6px);
   --beaver-button-default-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
-  /* --beaver-button-line-height: 1; */
 }
 
 /* ===== 基础按钮样式 ===== */
@@ -71,12 +70,33 @@
   border-radius: var(--beaver-button-border-radius);
   border: none;
   cursor: pointer;
-  /* line-height: var(--beaver-button-line-height); */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   color: var(--beaver-button-default-text);
+}
+
+/* ===== 通用尺寸类（防止在每个变体重复） ===== */
+.beaver-button--small {
+  height: var(--beaver-button-height-small);
+  padding: var(--beaver-button-padding-small);
+  font-size: var(--beaver-button-font-size-small);
+  line-height: var(--beaver-button-height-small);
+}
+
+.beaver-button--medium {
+  height: var(--beaver-button-height-medium);
+  padding: var(--beaver-button-padding-medium);
+  font-size: var(--beaver-button-font-size-medium);
+  line-height: var(--beaver-button-height-medium);
+}
+
+.beaver-button--large {
+  height: var(--beaver-button-height-large);
+  padding: var(--beaver-button-padding-large);
+  font-size: var(--beaver-button-font-size-large);
+  line-height: var(--beaver-button-height-large);
 }
 
 /* ===== Default 按钮（普通按钮） ===== */
@@ -86,28 +106,6 @@
   color: var(--beaver-button-color, var(--beaver-button-default-text));
   border: 1px solid var(--beaver-button-color, var(--beaver-button-default-border));
   box-shadow: var(--beaver-button-default-shadow);
-}
-
-/* Default 尺寸变化 */
-.beaver-button--default.beaver-button--small {
-  height: var(--beaver-button-height-small);
-  padding: var(--beaver-button-padding-small);
-  font-size: var(--beaver-button-font-size-small);
-  line-height: var(--beaver-button-height-small);
-}
-
-.beaver-button--default.beaver-button--medium {
-  height: var(--beaver-button-height-medium);
-  padding: var(--beaver-button-padding-medium);
-  font-size: var(--beaver-button-font-size-medium);
-  line-height: var(--beaver-button-height-medium);
-}
-
-.beaver-button--default.beaver-button--large {
-  height: var(--beaver-button-height-large);
-  padding: var(--beaver-button-padding-large);
-  font-size: var(--beaver-button-font-size-large);
-  line-height: var(--beaver-button-height-large);
 }
 
 /* Default Hover 状态 */
@@ -123,26 +121,7 @@
 .beaver-button--primary {
   background-color: var(--beaver-button-color, var(--beaver-button-primary-bg));
   color: var(--beaver-button-primary-text);
-  border: none;
-}
-
-/* Primary 尺寸变化 */
-.beaver-button--primary.beaver-button--small {
-  height: var(--beaver-button-height-small);
-  padding: var(--beaver-button-padding-small);
-  font-size: var(--beaver-button-font-size-small);
-}
-
-.beaver-button--primary.beaver-button--medium {
-  height: var(--beaver-button-height-medium);
-  padding: var(--beaver-button-padding-medium);
-  font-size: var(--beaver-button-font-size-medium);
-}
-
-.beaver-button--primary.beaver-button--large {
-  height: var(--beaver-button-height-large);
-  padding: var(--beaver-button-padding-large);
-  font-size: var(--beaver-button-font-size-large);
+  border: 1px solid transparent;
 }
 
 /* Primary Hover 状态 */
@@ -158,25 +137,6 @@
   background-color: var(--beaver-button-ghost-bg);
   color: var(--beaver-button-color, var(--beaver-button-ghost-text));
   border: 1px solid var(--beaver-button-color, var(--beaver-button-ghost-border));
-}
-
-/* Ghost 尺寸变化 */
-.beaver-button--ghost.beaver-button--small {
-  height: var(--beaver-button-height-small);
-  padding: var(--beaver-button-padding-small);
-  font-size: var(--beaver-button-font-size-small);
-}
-
-.beaver-button--ghost.beaver-button--medium {
-  height: var(--beaver-button-height-medium);
-  padding: var(--beaver-button-padding-medium);
-  font-size: var(--beaver-button-font-size-medium);
-}
-
-.beaver-button--ghost.beaver-button--large {
-  height: var(--beaver-button-height-large);
-  padding: var(--beaver-button-padding-large);
-  font-size: var(--beaver-button-font-size-large);
 }
 
 /* Ghost Hover 状态 */
