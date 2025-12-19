@@ -55,7 +55,9 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
       if (paginationObj && typeof paginationObj.pageSize === 'number') setInternalPageSize(paginationObj.pageSize);
     }, [paginationObj?.pageSize]);
 
-    const totalCount = paginationObj?.total ?? data.length;
+    const isDataNull = data == null;
+    const safeData = data ?? [];
+    const totalCount = paginationObj?.total ?? safeData.length;
     // 保证当前页不超过最大页数
     useEffect(() => {
       const pages = Math.max(1, Math.ceil(totalCount / internalPageSize));
@@ -75,8 +77,9 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
     };
     // 根据是否为 client-side 分页决定展示的数据切片
     const displayData = isClientSidePagination
-      ? data.slice((effectiveCurrent - 1) * effectivePageSize, effectiveCurrent * effectivePageSize)
-      : data;
+      ? safeData.slice((effectiveCurrent - 1) * effectivePageSize, effectiveCurrent * effectivePageSize)
+      : safeData;
+    const effectiveLoading = Boolean(loading) || isDataNull;
     const [internalSelected, setInternalSelected] = useState<Record<string, boolean>>({});
     const isControlled = Array.isArray(selectedKeys);
 
@@ -284,7 +287,7 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
               effectiveLeftFixed={effectiveLeftFixed}
               effectiveRightFixed={effectiveRightFixed}
               columnPxOffsets={columnPxOffsets}
-              loading={loading}
+              loading={effectiveLoading}
               renderCell={renderCell}
               defaultAlign={defaultAlign}
               empty={empty}
