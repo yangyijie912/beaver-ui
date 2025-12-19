@@ -3,7 +3,7 @@ const tsPlugin = require('@typescript-eslint/eslint-plugin');
 
 module.exports = [
   {
-    ignores: ['node_modules/**', 'dist/**'],
+    ignores: ['node_modules/**', 'dist/**', 'storybook-static/**', 'dist-analyze/**'],
   },
   {
     files: ['src/**/*.{ts,tsx}', 'stories/**/*.{ts,tsx}', 'playground/**/*.{ts,tsx}'],
@@ -13,7 +13,6 @@ module.exports = [
         project: './tsconfig.json',
         ecmaVersion: 'latest',
         sourceType: 'module',
-        ecmaFeatures: { jsx: true },
       },
     },
     plugins: { '@typescript-eslint': tsPlugin },
@@ -32,7 +31,6 @@ module.exports = [
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
-        ecmaFeatures: { jsx: true },
       },
     },
     plugins: { '@typescript-eslint': tsPlugin },
@@ -49,7 +47,9 @@ module.exports = [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      ecmaFeatures: { jsx: true },
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
     },
     rules: {},
   },

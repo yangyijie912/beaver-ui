@@ -126,75 +126,93 @@
 
 /* ===== 基础样式 ===== */
 .beaver-tag {
-  /* 使用弹性布局来处理内容对齐 */
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
   box-sizing: border-box;
-
-  /* 基础尺寸和外观 */
-  padding: var(--beaver-tag-padding-medium);
-  height: var(--beaver-tag-height-medium);
-  border-radius: var(--beaver-tag-border-radius-medium);
-  border: 1px solid;
-  font-size: var(--beaver-tag-font-size-medium);
-  font-weight: 500;
-  line-height: 1;
+  vertical-align: middle;
   white-space: nowrap;
 
-  /* 默认样式（类型为 default，变体为 solid） */
+  height: var(--beaver-tag-height-medium);
+  padding: var(--beaver-tag-padding-medium);
+  padding-block: 0;
+  font-size: var(--beaver-tag-font-size-medium);
+
+  border: 1px solid var(--beaver-tag-border-color-default-solid);
+  border-radius: var(--beaver-tag-border-radius-medium);
   background-color: var(--beaver-tag-bg-color-default-solid);
   color: var(--beaver-tag-text-color-default-solid);
-  border-color: var(--beaver-tag-border-color-default-solid);
 
-  /* 过渡效果 */
+  font-weight: 500;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+
   transition:
     background-color var(--beaver-tag-transition-duration) var(--beaver-tag-transition-timing),
     color var(--beaver-tag-transition-duration) var(--beaver-tag-transition-timing),
     border-color var(--beaver-tag-transition-duration) var(--beaver-tag-transition-timing);
-
-  /* 禁止文本选中（因为是视觉元素，不是文本内容） */
-  user-select: none;
 }
 
-/* ===== 尺寸变体 ===== */
-
+/* ===== 通用尺寸类（避免重复写在每个类型/变体上） ===== */
 .beaver-tag--small {
-  padding: var(--beaver-tag-padding-small);
   height: var(--beaver-tag-height-small);
+  padding: var(--beaver-tag-padding-small);
+  padding-block: 0;
   font-size: var(--beaver-tag-font-size-small);
   border-radius: var(--beaver-tag-border-radius-small);
 }
 
+.beaver-tag--medium {
+  height: var(--beaver-tag-height-medium);
+  padding: var(--beaver-tag-padding-medium);
+  padding-block: 0;
+  font-size: var(--beaver-tag-font-size-medium);
+  border-radius: var(--beaver-tag-border-radius-medium);
+}
+
 .beaver-tag--large {
-  padding: var(--beaver-tag-padding-large);
   height: var(--beaver-tag-height-large);
+  padding: var(--beaver-tag-padding-large);
+  padding-block: 0;
   font-size: var(--beaver-tag-font-size-large);
   border-radius: var(--beaver-tag-border-radius-large);
 }
 
-/* ===== 类型变体：Default ===== */
-
-.beaver-tag--default {
-  background-color: var(--beaver-tag-bg-color-default-solid);
-  color: var(--beaver-tag-text-color-default-solid);
-  border-color: var(--beaver-tag-border-color-default-solid);
+/* ===== 文本行高：绑定到尺寸高度（你要改的点） ===== */
+.beaver-tag__content {
+  display: inline-block;
+  line-height: var(--beaver-tag-height-medium);
 }
 
-.beaver-tag--default.beaver-tag--outline {
+.beaver-tag--small .beaver-tag__content {
+  line-height: var(--beaver-tag-height-small);
+}
+
+.beaver-tag--medium .beaver-tag__content {
+  line-height: var(--beaver-tag-height-medium);
+}
+
+.beaver-tag--large .beaver-tag__content {
+  line-height: var(--beaver-tag-height-large);
+}
+
+/* ===== 变体 + 类型：直接落到颜色（不做变量映射） ===== */
+
+/* Default */
+.beaver-tag--outline {
   background-color: var(--beaver-tag-bg-color-default-outline);
   color: var(--beaver-tag-text-color-default-outline);
   border-color: var(--beaver-tag-border-color-default-outline);
 }
 
-.beaver-tag--default.beaver-tag--light {
+.beaver-tag--light {
   background-color: var(--beaver-tag-bg-color-default-light);
   color: var(--beaver-tag-text-color-default-light);
   border-color: var(--beaver-tag-border-color-default-light);
 }
 
-/* ===== 类型变体：Primary ===== */
-
+/* Primary */
 .beaver-tag--primary {
   background-color: var(--beaver-tag-bg-color-primary-solid);
   color: var(--beaver-tag-text-color-primary-solid);
@@ -213,8 +231,7 @@
   border-color: var(--beaver-tag-border-color-primary-light);
 }
 
-/* ===== 类型变体：Success ===== */
-
+/* Success */
 .beaver-tag--success {
   background-color: var(--beaver-tag-bg-color-success-solid);
   color: var(--beaver-tag-text-color-success-solid);
@@ -233,8 +250,7 @@
   border-color: var(--beaver-tag-border-color-success-light);
 }
 
-/* ===== 类型变体：Warning ===== */
-
+/* Warning */
 .beaver-tag--warning {
   background-color: var(--beaver-tag-bg-color-warning-solid);
   color: var(--beaver-tag-text-color-warning-solid);
@@ -253,8 +269,7 @@
   border-color: var(--beaver-tag-border-color-warning-light);
 }
 
-/* ===== 类型变体：Error ===== */
-
+/* Error */
 .beaver-tag--error {
   background-color: var(--beaver-tag-bg-color-error-solid);
   color: var(--beaver-tag-text-color-error-solid);
@@ -273,113 +288,59 @@
   border-color: var(--beaver-tag-border-color-error-light);
 }
 
-/* ===== 禁用状态 ===== */
-
+/* ===== 禁用 ===== */
 .beaver-tag--disabled {
   background-color: var(--beaver-tag-bg-color-disabled);
   color: var(--beaver-tag-text-color-disabled);
   border-color: var(--beaver-tag-border-color-disabled);
   cursor: not-allowed;
-  opacity: 0.6;
+}
+
+.beaver-tag--disabled .beaver-tag__close {
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 /* ===== 内容布局 ===== */
-
-/* 图标内容 - 使用 SVG 图标库中的图标 */
 .beaver-tag__icon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-right: var(--beaver-tag-icon-margin);
-  line-height: 1;
   flex-shrink: 0;
-  /* 确保 SVG 图标的尺寸与文字相匹配 */
   width: 1em;
   height: 1em;
-  font-size: inherit;
+  margin-right: var(--beaver-tag-icon-margin);
 }
 
-/* 图标内的 SVG 元素确保继承颜色和尺寸 */
-.beaver-tag__icon svg {
+.beaver-tag__icon > svg {
   width: 100%;
   height: 100%;
   display: block;
 }
-
-/* 文本内容 */
-.beaver-tag__content {
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  line-height: 1;
-}
-
-/* ===== 关闭按钮样式 ===== */
 
 .beaver-tag__close {
-  /* 按钮重置 */
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  margin-left: var(--beaver-tag-close-margin);
-
-  /* 尺寸和对齐 */
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   width: 1em;
   height: 1em;
-
-  /* 文本样式 */
-  font-size: 1em;
-  line-height: 1;
+  margin-left: var(--beaver-tag-close-margin);
+  padding: 0;
+  border: none;
+  background: none;
   color: inherit;
   cursor: pointer;
-
-  /* 外观 */
-  border-radius: 2px;
-  transition:
-    background-color var(--beaver-tag-transition-duration) var(--beaver-tag-transition-timing),
-    transform var(--beaver-tag-transition-duration) var(--beaver-tag-transition-timing);
-
-  /* 禁止文本选中 */
-  user-select: none;
-  -webkit-user-select: none;
+  line-height: 1;
 }
 
-/* 关闭按钮内的 SVG 图标 */
-.beaver-tag__close svg {
+.beaver-tag__close > svg {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-/* 关闭按钮 hover 效果 */
-.beaver-tag__close:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-  transform: scale(1.15);
-}
-
-/* 关闭按钮 focus 效果 */
-.beaver-tag__close:focus {
-  outline: 2px solid var(--beaver-color-primary, #0eaae0);
-  outline-offset: 1px;
-}
-
-/* 关闭按钮 active 效果 */
-.beaver-tag__close:active {
-  transform: scale(0.95);
-}
-
-/* 禁用状态下关闭按钮 */
-.beaver-tag--disabled .beaver-tag__close {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.beaver-tag--disabled .beaver-tag__close:hover {
-  background-color: transparent;
-  transform: none;
+.beaver-tag__close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }

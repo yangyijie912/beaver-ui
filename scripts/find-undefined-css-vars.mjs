@@ -2,10 +2,12 @@
  *  查找开发和重构过程中因为疏忽和失误而产生的未定义的或定义了没有使用的 CSS 变量
  * （一般因为忘记定义或者已经移除或者拼写错误等，用于开发时自测）
  * 说明：
- *   扫描指定目录（或整个仓库）下的所有 CSS/HTML/JS/TS 文件，
+ *   默认仅扫描 src/ 下的所有 CSS/HTML/JS/TS 文件，
+ *   可通过 --repo 扫描整个仓库（会跳过构建产物目录）。
  *   查找使用了 var(--xxx) 但未定义 --xxx 的 CSS 变量。
  *  用法：
- *   node scripts/find-undefined-css-vars.mjs            # 扫描整个仓库
+ *   node scripts/find-undefined-css-vars.mjs            # 默认只扫描 src/
+ *   node scripts/find-undefined-css-vars.mjs --repo     # 扫描整个仓库（排除构建产物）
  *   node scripts/find-undefined-css-vars.mjs <path>...  # 只扫描指定的文件或目录
  *  示例：
  *   node scripts/find-undefined-css-vars.mjs src/components/Input/Input.css
@@ -17,7 +19,8 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ROOT = path.resolve(__dirname, '..');
-const IGNORE_DIRS = ['node_modules', '.git', 'dist', 'build'];
+const SRC = path.resolve(ROOT, 'src');
+const IGNORE_DIRS = ['node_modules', '.git', 'dist', 'build', 'storybook-static', 'dist-analyze'];
 const FILE_EXTS = ['.css', '.scss', '.less', '.sass', '.html', '.htm', '.js', '.ts', '.jsx', '.tsx'];
 
 function walk(dir) {
@@ -141,8 +144,9 @@ function extract(file) {
 
 function printUsageAndExit() {
   console.log('\n用法：');
-  console.log('  node scripts/find-undefined-css-vars.mjs            # 扫描整个仓库');
-  console.log('  node scripts/find-undefined-css-vars.mjs <path>...  # 只扫描指定的文件或目录');
+  console.log('  node scripts/find-undefined-css-vars.mjs                 # 默认只扫描 src/');
+  console.log('  node scripts/find-undefined-css-vars.mjs --repo           # 扫描整个仓库（排除构建产物）');
+  console.log('  node scripts/find-undefined-css-vars.mjs <path>...         # 只扫描指定的文件或目录');
   console.log('  可选：添加 `--local` 标志使定义/使用限定在目标范围（仅目标文件内查找定义和使用）');
   console.log('示例：');
   console.log('  node scripts/find-undefined-css-vars.mjs src/components/Input/Input.css');
@@ -156,9 +160,12 @@ function main() {
   // 支持可选标志：--local
   const localIndex = argv.indexOf('--local');
   const localScope = localIndex !== -1;
+  // 支持可选标志：--repo
+  const repoIndex = argv.indexOf('--repo');
+  const scanRepo = repoIndex !== -1;
   // 过滤掉 flags，剩下的为目标路径
-  const targets = argv.filter((a) => a !== '--local');
-  const effectiveTargets = targets.length ? targets : [ROOT];
+  const targets = argv.filter((a) => a !== '--local' && a !== '--repo');
+  const effectiveTargets = targets.length ? targets : [scanRepo ? ROOT : SRC];
   const tokensPath = path.resolve(ROOT, 'src', 'tokens', 'tokens.css');
 
   console.log('开始扫描...');
@@ -189,8 +196,10 @@ function main() {
   // 根据 --local 标志选择作用域：
   // - 默认（全局）：在整个仓库中收集 defs 和 uses（更准确，避免跨文件误报）。
   // - --local：仅在用户指定的目标文件集合内收集 defs 和 uses（用于检测目标范围内的缺失定义）。
-  const defsFiles = localScope ? files : walk(ROOT);
-  const usesFiles = localScope ? files : walk(ROOT);
+  // 现在默认仅扫描 src/；如果传了 --repo，则扫描整个仓库。
+  const rootScope = scanRepo ? ROOT : SRC;
+  const defsFiles = localScope ? files : walk(rootScope);
+  const usesFiles = localScope ? files : walk(rootScope);
 
   for (const f of defsFiles) {
     try {
