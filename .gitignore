@@ -10,3 +10,4 @@ storybook-static/
 /.cache/storybook
 beaver-ui-*.tgz
 *.example.ts
+examples/
