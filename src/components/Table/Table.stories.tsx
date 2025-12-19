@@ -418,7 +418,13 @@ const ClientSidePaginationTemplate = (args: TableArgs) => {
         columns={columns}
         data={many}
         rowKey="id"
-        pagination={{ pageSize: 5, pageSizeOptions: [5, 10, 20], showSizeChanger: true, showQuickJumper: true }}
+        pagination={{
+          pageSize: 5,
+          pageSizeOptions: [5, 10, 20],
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: true,
+        }}
         {...args}
       />
     </div>
@@ -475,6 +481,7 @@ const ControlledPaginationTemplate = (args: TableArgs) => {
           },
           showSizeChanger: true,
           showQuickJumper: true,
+          showTotal: true,
         }}
         {...args}
       />

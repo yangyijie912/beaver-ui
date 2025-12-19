@@ -297,16 +297,11 @@ const Table = React.forwardRef<HTMLDivElement, Props>(
         {paginationEnabled ? (
           <div className="beaver-table__footer">
             <Pagination
+              {...paginationObj}
               total={totalCount}
               current={effectiveCurrent}
               pageSize={effectivePageSize}
               onChange={handlePageChange}
-              showQuickJumper={paginationObj?.showQuickJumper}
-              showSizeChanger={paginationObj?.showSizeChanger}
-              pageSizeOptions={paginationObj?.pageSizeOptions}
-              align={paginationObj?.align}
-              disabled={paginationObj?.disabled}
-              width={paginationObj?.width}
             />
           </div>
         ) : null}
