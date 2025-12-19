@@ -1,5 +1,7 @@
 import React from 'react';
 import Alert from './Alert';
+import Button from '../Button/Button';
+import Toast from '../Toast/Toast';
 import type { Meta, StoryObj, StoryFn } from '@storybook/react';
 
 /**
@@ -244,6 +246,32 @@ export const CustomCloseIcon: Story = {
       />
     );
   },
+};
+
+/**
+ * 自定义尾部操作区示例
+ * 展示如何通过 `actions` prop 在 Alert 右侧放置自定义操作按钮
+ */
+export const WithActions: Story = {
+  name: '自定义操作区',
+  render: () => (
+    <Alert
+      type="info"
+      title="需要操作的提示"
+      message="这是一个包含自定义操作区的提示。您可以在右侧放置按钮或链接作为快速操作。"
+      closable
+      actions={
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Button size="small" onClick={() => Toast.success('操作 1')}>
+            操作 1
+          </Button>
+          <Button size="small" onClick={() => Toast.success('操作 2')}>
+            操作 2
+          </Button>
+        </div>
+      }
+    />
+  ),
 };
 
 /**

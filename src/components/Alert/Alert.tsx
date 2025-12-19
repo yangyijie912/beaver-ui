@@ -30,6 +30,8 @@ export type AlertProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'type'> & {
   closeIcon?: React.ReactNode;
   /** 是否展示左边的颜色条 */
   showBorder?: boolean;
+  /** 右侧的自定义操作区域（例如按钮组） */
+  actions?: React.ReactNode;
 };
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
@@ -46,6 +48,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       showIcon = true,
       closeIcon,
       showBorder = true,
+      actions,
       children,
       ...props
     },
@@ -105,6 +108,9 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
           {/* 描述/消息行（可选） */}
           {(message || children) && <div className="beaver-alert__message">{message || children}</div>}
         </div>
+
+        {/* 可自定义的尾部操作区（例如操作按钮），位于内容右侧 */}
+        {actions && <div className="beaver-alert__actions">{actions}</div>}
 
         {/* 关闭按钮（可选） */}
         {closable && (
