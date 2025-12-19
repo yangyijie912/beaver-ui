@@ -63,7 +63,6 @@
 .beaver-alert {
   /* 基本布局和样式 */
   display: flex;
-  align-items: flex-start;
   gap: var(--beaver-alert-icon-gap);
   padding: var(--beaver-alert-padding);
   background-color: var(--beaver-alert-bg-color);
@@ -78,6 +77,16 @@
 
   /* 确保 Alert 占据足够的宽度 */
   width: 100%;
+}
+
+/* 当存在标题时，内容顶部对齐以保留标题与消息的层次 */
+.beaver-alert--has-title {
+  align-items: flex-start;
+}
+
+/* 明确无标题时的调整（备用） */
+.beaver-alert--no-title {
+  align-items: center;
 }
 
 /* ===== Alert 内部元素结构 ===== */

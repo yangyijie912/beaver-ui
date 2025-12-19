@@ -80,6 +80,10 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
     // 隐藏图标时的修饰类
     if (!showIcon) classList.push('beaver-alert--no-icon');
 
+    // 根据是否有标题设置状态类，便于样式上区分有标题/无标题的垂直对齐
+    if (title) classList.push('beaver-alert--has-title');
+    else classList.push('beaver-alert--no-title');
+
     // 默认图标映射为 React 节点，使用统一图标组件
     const defaultIconMap: Record<AlertType, React.ReactNode> = {
       success: <Check width={20} height={20} aria-hidden />,
