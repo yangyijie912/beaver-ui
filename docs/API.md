@@ -449,21 +449,23 @@ export type AlertProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'type'> & {
   showIcon?: boolean;
   closeIcon?: React.ReactNode;
   showBorder?: boolean;
+  actions?: React.ReactNode;
 };
 ```
 
 ### 属性
 
-| 属性         | 类型                                          | 默认值   | 说明                           |
-| ------------ | --------------------------------------------- | -------- | ------------------------------ |
-| `type`       | `'success' \| 'warning' \| 'error' \| 'info'` | `'info'` | 提示类型                       |
-| `title`      | `ReactNode`                                   | -        | 标题                           |
-| `message`    | `ReactNode`                                   | -        | 内容                           |
-| `closable`   | `boolean`                                     | `false`  | 是否可关闭                     |
-| `onClose`    | `() => void`                                  | -        | 关闭回调                       |
-| `showIcon`   | `boolean`                                     | `true`   | 是否显示图标                   |
-| `compact`    | `boolean`                                     | `false`  | 紧凑模式                       |
-| `showBorder` | `boolean`                                     | `true`   | 是否展示左侧颜色条（默认显示） |
+| 属性         | 类型                                          | 默认值   | 说明                                 |
+| ------------ | --------------------------------------------- | -------- | ------------------------------------ |
+| `type`       | `'success' \| 'warning' \| 'error' \| 'info'` | `'info'` | 提示类型                             |
+| `title`      | `ReactNode`                                   | -        | 标题                                 |
+| `message`    | `ReactNode`                                   | -        | 内容                                 |
+| `closable`   | `boolean`                                     | `false`  | 是否可关闭                           |
+| `onClose`    | `() => void`                                  | -        | 关闭回调                             |
+| `showIcon`   | `boolean`                                     | `true`   | 是否显示图标                         |
+| `compact`    | `boolean`                                     | `false`  | 紧凑模式                             |
+| `showBorder` | `boolean`                                     | `true`   | 是否展示左侧颜色条（默认显示）       |
+| `actions`    | `ReactNode`                                   | -        | 右侧自定义操作区（例如按钮组或链接） |
 
 ### 示例
 
