@@ -1063,23 +1063,35 @@ export const NativeElements: Story = {
 };
 
 /**
- * 由 Form 控制的多选示例（不在子组件上传 value）
+ * 外部受控（多选）示例：父组件显式传入 value/onChange
  */
-export const ControlledByFormMultiple: Story = {
-  name: '由 Form 控制的多选',
+export const ExternallyControlledMultiple: Story = {
+  name: '外部受控（多选）',
   render: () => {
+    const [nativeTags, setNativeTags] = React.useState<string[]>(['b']);
+    const [customTags, setCustomTags] = React.useState<string[]>(['b']);
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ fontSize: 12, opacity: 0.8 }}>
+          外部受控状态：nativeTags={nativeTags.join(',')} customTags={customTags.join(',')}
+        </div>
+
         <Form initialValues={{ nativeTags: ['a'], customTags: ['a'] }} layout="vertical">
-          <FormItem name="nativeTags" label="原生 multiple（由 Form 控制）">
-            <select multiple aria-label="native-form-multi">
+          <FormItem name="nativeTags" label="原生 multiple（外部受控）">
+            <select
+              multiple
+              aria-label="native-external-multi"
+              value={nativeTags}
+              onChange={(e) => setNativeTags(Array.from(e.target.selectedOptions, (o) => o.value))}
+            >
               <option value="a">A</option>
               <option value="b">B</option>
               <option value="c">C</option>
             </select>
           </FormItem>
 
-          <FormItem name="customTags" label="自家 Select multiple（由 Form 控制）">
+          <FormItem name="customTags" label="自家 Select multiple（外部受控）">
             <Select
               multiple
               options={[
@@ -1087,6 +1099,8 @@ export const ControlledByFormMultiple: Story = {
                 { label: 'B', value: 'b' },
                 { label: 'C', value: 'c' },
               ]}
+              value={customTags}
+              onChange={(v) => setCustomTags(v as string[])}
               style={{ width: 240 }}
             />
           </FormItem>
