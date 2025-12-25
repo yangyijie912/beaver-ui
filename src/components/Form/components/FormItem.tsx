@@ -147,14 +147,31 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
         const isDatePicker = childDisplayName === 'DatePicker';
 
         if (isNativeInput) {
-          // 原生 HTML 元素：保留原始 childProps（例如 style）并覆盖需要的属性
+          const nativeOnChange = (e: any) => {
+            if (childProps.onChange) childProps.onChange(e);
+            handleChange(e);
+          };
+
+          const nativeOnBlur = (e: any) => {
+            if (childProps.onBlur) childProps.onBlur(e);
+            handleBlur(e);
+          };
+
+          const isNativeCheckboxLike =
+            child.type === 'input' && (childProps.type === 'checkbox' || childProps.type === 'radio');
+
+          const shouldInjectChecked = isNativeCheckboxLike && childProps.checked === undefined;
+          const shouldInjectValue = !isNativeCheckboxLike && childProps.value === undefined;
+
+          // 原生 HTML 元素：不覆盖外部受控 value/checked；只在 child 未显式传入时注入
           return React.cloneElement(
             child as React.ReactElement<any>,
             {
               ...childProps,
-              value: value !== undefined && value !== null ? String(value) : '',
-              onChange: handleChange,
-              onBlur: handleBlur,
+              ...(shouldInjectChecked ? { checked: Boolean(value) } : {}),
+              ...(shouldInjectValue ? { value: value !== undefined && value !== null ? String(value) : '' } : {}),
+              onChange: nativeOnChange,
+              onBlur: nativeOnBlur,
               disabled: childProps.disabled || disabled || form.disabled,
             } as any
           );
@@ -173,18 +190,20 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             validation = 'none';
           }
 
-          // 创建包装的 onChange，先调用 Form 的 handleChange，再调用子组件的原始 onChange
+          // 创建包装的 onChange/onBlur：不覆盖语义，串联子组件原始回调
           const wrappedOnChange = (eventOrValue: any) => {
+            if (childProps.onChange) childProps.onChange(eventOrValue);
             handleChange(eventOrValue);
-            // 调用子组件的原始 onChange（如果存在）
-            if (childProps.onChange) {
-              childProps.onChange(eventOrValue);
-            }
+          };
+
+          const wrappedOnBlur = (event: any) => {
+            if (childProps.onBlur) childProps.onBlur(event);
+            handleBlur(event);
           };
 
           const baseProps = {
             onChange: wrappedOnChange,
-            onBlur: handleBlur,
+            onBlur: wrappedOnBlur,
             disabled: childProps.disabled || disabled || form.disabled,
             validation: childProps.validation || validation, // 传递验证状态给子组件
             // 把 style.width 映射到 width prop（仅在子组件未显式设置 width 时使用）
@@ -198,12 +217,13 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
 
           // Checkbox 和 Switch 使用 checked 属性，保留 childProps
           if (isCheckbox || isSwitch) {
+            const shouldInjectChecked = childProps.checked === undefined;
             return React.cloneElement(
               child as React.ReactElement<any>,
               {
                 ...childProps,
                 ...baseProps,
-                checked: Boolean(value),
+                ...(shouldInjectChecked ? { checked: Boolean(value) } : {}),
               } as any
             );
           }
@@ -211,23 +231,25 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
           // DatePicker 使用 value 属性（传入 Date 或 null；其它类型（空字符串等）映射为 undefined）
           if (isDatePicker) {
             const dateValue = value instanceof Date || value === null ? value : undefined;
+            const shouldInjectValue = childProps.value === undefined;
             return React.cloneElement(
               child as React.ReactElement<any>,
               {
                 ...childProps,
                 ...baseProps,
-                value: dateValue,
+                ...(shouldInjectValue ? { value: dateValue } : {}),
               } as any
             );
           }
 
           // 其他自定义组件使用 value 属性
+          const shouldInjectValue = childProps.value === undefined;
           return React.cloneElement(
             child as React.ReactElement<any>,
             {
               ...childProps,
               ...baseProps,
-              value: value !== undefined && value !== null ? value : '',
+              ...(shouldInjectValue ? { value: value !== undefined && value !== null ? value : '' } : {}),
             } as any
           );
         }

@@ -1021,3 +1021,43 @@ export const ComprehensiveForm: Story = {
     );
   },
 };
+
+/**
+ * 原生表单控件（用于验证 FormItem 不覆盖外部受控 value）
+ */
+export const NativeElements: Story = {
+  name: '原生组件（Native）',
+  render: () => {
+    const [nativeTag, setNativeTag] = React.useState('b');
+    const [customTag, setCustomTag] = React.useState<string>('b');
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ fontSize: 12, opacity: 0.8 }}>
+          当前外部受控值：nativeTag={nativeTag}，customTag={customTag}
+        </div>
+
+        <Form initialValues={{ nativeTag: 'a', customTag: 'a' }} layout="vertical">
+          <FormItem name="nativeTag" label="原生 Select（外部受控）">
+            <select value={nativeTag} onChange={(e) => setNativeTag(e.target.value)}>
+              <option value="a">A</option>
+              <option value="b">B</option>
+            </select>
+          </FormItem>
+
+          <FormItem name="customTag" label="自家 Select（外部受控）">
+            <Select
+              options={[
+                { label: 'A', value: 'a' },
+                { label: 'B', value: 'b' },
+              ]}
+              value={customTag}
+              onChange={(v) => setCustomTag(v as string)}
+              style={{ width: 200 }}
+            />
+          </FormItem>
+        </Form>
+      </div>
+    );
+  },
+};
