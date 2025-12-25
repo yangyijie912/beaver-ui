@@ -296,8 +296,8 @@ export const MultipleFilterSelected: Story = {
     options: sampleOptions,
     placeholder: '多选并隐藏已选项，选中后关闭',
     multiple: true,
-    searchable: false,
-    allowCreate: false,
+    searchable: true,
+    allowCreate: true,
     filterSelected: true,
   },
   render: (args: React.ComponentProps<typeof Select>) => {

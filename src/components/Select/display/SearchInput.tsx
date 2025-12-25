@@ -51,7 +51,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
   if (multiple) {
     return (
       <div className={`beaver-select__tags-input`} onMouseDown={onMouseDown} onClick={onClick}>
-        <Tags values={selectedValues} options={options} onRemove={removeTag ?? (() => {})} />
+        {selectedValues.length > 0 && (
+          <Tags values={selectedValues} options={options} onRemove={removeTag ?? (() => {})} />
+        )}
         <input
           ref={searchRef}
           className="beaver-select__input"

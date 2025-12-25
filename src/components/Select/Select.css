@@ -268,7 +268,6 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--beaver-space-sm, 8px);
   flex: 1 1 auto;
   min-width: 50px;
 }
