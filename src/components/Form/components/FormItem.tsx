@@ -89,11 +89,20 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             const target = eventOrValue.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
             // 对于 checkbox/radio，需要使用 checked。注意：直接用 'checked' in target 会在所有 input 上为 true（属性存在），
             // 因此应基于 element 类型判断（只能在真正的 checkbox/radio 上使用 checked）。
+            const tagName = (target as any).tagName;
             const isCheckboxLike =
-              (target as HTMLInputElement).tagName === 'INPUT' &&
+              tagName === 'INPUT' &&
               ((target as HTMLInputElement).type === 'checkbox' || (target as HTMLInputElement).type === 'radio');
+
+            // 对于原生多选 select，需要使用 selectedOptions 收集所有被选中的 value
+            const isNativeSelect = tagName === 'SELECT';
+            const isNativeMultipleSelect = isNativeSelect && (target as HTMLSelectElement).multiple;
+
             if (isCheckboxLike) {
               newValue = (target as HTMLInputElement).checked;
+            } else if (isNativeMultipleSelect) {
+              const sel = target as HTMLSelectElement;
+              newValue = Array.from(sel.selectedOptions, (opt) => opt.value);
             } else {
               newValue = (target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value;
             }
@@ -161,15 +170,24 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             child.type === 'input' && (childProps.type === 'checkbox' || childProps.type === 'radio');
 
           const shouldInjectChecked = isNativeCheckboxLike && childProps.checked === undefined;
+          const isNativeSelect = child.type === 'select';
+          const isNativeMultiple = isNativeSelect && Boolean(childProps.multiple);
           const shouldInjectValue = !isNativeCheckboxLike && childProps.value === undefined;
 
           // 原生 HTML 元素：不覆盖外部受控 value/checked；只在 child 未显式传入时注入
+          // 对于原生多选 select，注入数组（空数组作为默认值）而不是字符串
+          const injectedValue = (() => {
+            if (!shouldInjectValue) return undefined;
+            if (isNativeMultiple) return value !== undefined && value !== null ? value : [];
+            return value !== undefined && value !== null ? String(value) : '';
+          })();
+
           return React.cloneElement(
             child as React.ReactElement<any>,
             {
               ...childProps,
               ...(shouldInjectChecked ? { checked: Boolean(value) } : {}),
-              ...(shouldInjectValue ? { value: value !== undefined && value !== null ? String(value) : '' } : {}),
+              ...(injectedValue !== undefined ? { value: injectedValue } : {}),
               onChange: nativeOnChange,
               onBlur: nativeOnBlur,
               disabled: childProps.disabled || disabled || form.disabled,

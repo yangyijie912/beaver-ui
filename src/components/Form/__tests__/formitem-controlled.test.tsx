@@ -56,4 +56,64 @@ describe('FormItem controlled children', () => {
     const trigger = screen.getByRole('button');
     expect(within(trigger).getByText('B')).toBeTruthy();
   });
+
+  test('supports native multiple <select> controlled value', () => {
+    function Demo() {
+      const [tags, setTags] = useState<string[]>(['b']);
+
+      return (
+        <Form initialValues={{ tags: ['a'] }}>
+          <div data-testid="current">{tags.join(',')}</div>
+          <FormItem name="tags" label="Tags">
+            <select
+              aria-label="native-multi"
+              multiple
+              value={tags}
+              onChange={(e) => setTags(Array.from(e.target.selectedOptions, (o) => o.value))}
+            >
+              <option value="a">A</option>
+              <option value="b">B</option>
+              <option value="c">C</option>
+            </select>
+          </FormItem>
+        </Form>
+      );
+    }
+
+    render(<Demo />);
+
+    const current = screen.getByTestId('current');
+    expect(current.textContent).toBe('b');
+  });
+
+  test('supports custom Select multiple controlled value', () => {
+    function Demo() {
+      const [tags, setTags] = useState<string[]>(['b']);
+
+      return (
+        <Form initialValues={{ tags: ['a'] }}>
+          <FormItem name="tags" label="Tags">
+            <Select
+              multiple
+              options={[
+                { label: 'A', value: 'a' },
+                { label: 'B', value: 'b' },
+                { label: 'C', value: 'c' },
+              ]}
+              value={tags}
+              onChange={(v) => setTags(v as string[])}
+            />
+          </FormItem>
+        </Form>
+      );
+    }
+
+    render(<Demo />);
+
+    const triggers = screen.getAllByRole('button');
+    const trigger = triggers.find((t) => t.getAttribute('aria-haspopup') === 'listbox');
+    if (!trigger) throw new Error('Select trigger not found');
+    // should render tag 'B' inside trigger
+    expect(within(trigger).getByText('B')).toBeTruthy();
+  });
 });

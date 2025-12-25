@@ -1061,3 +1061,37 @@ export const NativeElements: Story = {
     );
   },
 };
+
+/**
+ * 由 Form 控制的多选示例（不在子组件上传 value）
+ */
+export const ControlledByFormMultiple: Story = {
+  name: '由 Form 控制的多选',
+  render: () => {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <Form initialValues={{ nativeTags: ['a'], customTags: ['a'] }} layout="vertical">
+          <FormItem name="nativeTags" label="原生 multiple（由 Form 控制）">
+            <select multiple aria-label="native-form-multi">
+              <option value="a">A</option>
+              <option value="b">B</option>
+              <option value="c">C</option>
+            </select>
+          </FormItem>
+
+          <FormItem name="customTags" label="自家 Select multiple（由 Form 控制）">
+            <Select
+              multiple
+              options={[
+                { label: 'A', value: 'a' },
+                { label: 'B', value: 'b' },
+                { label: 'C', value: 'c' },
+              ]}
+              style={{ width: 240 }}
+            />
+          </FormItem>
+        </Form>
+      </div>
+    );
+  },
+};
