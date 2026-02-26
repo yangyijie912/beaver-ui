@@ -4,7 +4,17 @@ module.exports = {
     ...(process.env.NODE_ENV === 'production'
       ? [
           require('cssnano')({
-            preset: 'default',
+            preset: [
+              'default',
+              {
+                discardComments: {
+                  removeAll: true,
+                },
+                discardOverridden: true,
+                discardDuplicates: true,
+                mergeRules: true,
+              },
+            ],
           }),
         ]
       : []),

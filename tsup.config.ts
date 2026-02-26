@@ -4,7 +4,7 @@ export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
   dts: true,
-  sourcemap: true,
+  sourcemap: false, // 移除sourcemap减少包大小，开发调试时本地构建可使用
   clean: true,
   splitting: true,
   minify: true,
