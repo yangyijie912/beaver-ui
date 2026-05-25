@@ -136,7 +136,7 @@
     border-color var(--beaver-input-transition-duration) var(--beaver-input-transition-timing);
   box-sizing: border-box;
   font-size: var(--beaver-input-font-size-medium);
-  line-height: 1;
+  line-height: 1.2;
 }
 
 /* ===== Wrapper 尺寸变化 ===== */
@@ -167,7 +167,7 @@
   padding: 0;
   background: transparent;
   font-size: inherit;
-  line-height: 1;
+  line-height: inherit;
   height: 100%;
 }
 
@@ -185,6 +185,9 @@
 .beaver-input:-webkit-autofill:active {
   -webkit-text-fill-color: var(--beaver-input-text-color);
   caret-color: var(--beaver-input-text-color);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
   box-shadow: 0 0 0 1000px var(--beaver-input-bg-color) inset;
   transition: background-color 9999s ease-out;
 }
