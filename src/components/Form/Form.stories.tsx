@@ -90,7 +90,8 @@ export const Default: Story = {
                 validate: (value) => (!value ? '邮箱不能为空' : undefined),
               },
               {
-                validate: (value) => (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '请输入有效的邮箱地址' : undefined),
+                validate: (value) =>
+                  !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? '请输入有效的邮箱地址' : undefined,
               },
             ]}
           >
@@ -134,7 +135,12 @@ export const HorizontalLayout: Story = {
     };
 
     return (
-      <Form initialValues={{ name: '', age: '' }} onSubmit={handleSubmit} layout="horizontal" labelWidth={100}>
+      <Form
+        initialValues={{ name: '', age: '', password: '' }}
+        onSubmit={handleSubmit}
+        layout="horizontal"
+        labelWidth={100}
+      >
         <FormItem
           name="name"
           label="姓名"
@@ -162,6 +168,18 @@ export const HorizontalLayout: Story = {
           ]}
         >
           <Input type="number" placeholder="请输入年龄" />
+        </FormItem>
+
+        <FormItem
+          name="password"
+          label="密码"
+          rules={[
+            {
+              validate: (value) => (!value ? '密码不能为空' : undefined),
+            },
+          ]}
+        >
+          <Input type="password" placeholder="请输入密码" showPasswordToggle />
         </FormItem>
 
         <div style={{ marginLeft: 116 }}>
@@ -313,7 +331,11 @@ export const Disabled: Story = {
     return (
       <div>
         <div style={{ margin: '20px 0' }}>整个表单禁用</div>
-        <Form initialValues={{ username: 'John Doe', email: 'john@example.com' }} layout="vertical" disabled>
+        <Form
+          initialValues={{ username: 'John Doe', email: 'john@example.com' }}
+          layout="vertical"
+          disabled
+        >
           <FormItem name="username" label="用户名">
             <Input />
           </FormItem>
@@ -328,7 +350,11 @@ export const Disabled: Story = {
         </Form>
         <hr style={{ margin: '32px 0' }} />
         <div style={{ margin: '20px 0' }}>单个字段禁用</div>
-        <Form initialValues={{ username: '', category: '' }} layout="horizontal" style={{ maxWidth: 720 }}>
+        <Form
+          initialValues={{ username: '', category: '' }}
+          layout="horizontal"
+          style={{ maxWidth: 720 }}
+        >
           <FormItem
             name={`username`}
             label="用户名"
@@ -381,12 +407,21 @@ export const ValidateWhenDisabled: Story = {
     };
 
     return (
-      <Form initialValues={{ username: 'bc', description: '' }} onSubmit={handleSubmit} layout="vertical">
+      <Form
+        initialValues={{ username: 'bc', description: '' }}
+        onSubmit={handleSubmit}
+        layout="vertical"
+      >
         <FormItem
           name="username"
           label="用户名"
           required
-          rules={[{ validate: (val) => (val !== 'abc' ? '必须为 abc' : undefined), validateWhenDisabled: true }]}
+          rules={[
+            {
+              validate: (val) => (val !== 'abc' ? '必须为 abc' : undefined),
+              validateWhenDisabled: true,
+            },
+          ]}
         >
           <Input disabled />
         </FormItem>
@@ -397,7 +432,10 @@ export const ValidateWhenDisabled: Story = {
           required
           rules={[
             { validate: (v) => (!v ? 'onChange 必填' : undefined), trigger: 'onChange' },
-            { validate: (v) => (v && v.length < 3 ? 'onBlur: 至少 3 个字符' : undefined), trigger: 'onBlur' },
+            {
+              validate: (v) => (v && v.length < 3 ? 'onBlur: 至少 3 个字符' : undefined),
+              trigger: 'onBlur',
+            },
           ]}
         >
           <Input placeholder="输入时触发 onChange 规则，失焦时触发 onBlur 规则" />
@@ -472,7 +510,9 @@ export const DynamicFields: Story = {
 
     const handleSubmit = (values: any) => {
       const activeNames = new Set(keys.map((k) => `item-${k + 1}`));
-      const filtered = Object.fromEntries(Object.entries(values).filter(([name]) => activeNames.has(name)));
+      const filtered = Object.fromEntries(
+        Object.entries(values).filter(([name]) => activeNames.has(name)),
+      );
       Toast.info(JSON.stringify(filtered, null, 2), {
         duration: 0,
         title: '表单数据',
@@ -495,7 +535,12 @@ export const DynamicFields: Story = {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Input placeholder="输入值" style={{ width: '100%' }} />
-                <Button type="button" style={{ width: 80 }} color="danger" onClick={() => remove(k)}>
+                <Button
+                  type="button"
+                  style={{ width: 80 }}
+                  color="danger"
+                  onClick={() => remove(k)}
+                >
                   删除
                 </Button>
               </div>
@@ -533,7 +578,11 @@ export const DependentFields: Story = {
           name="phone"
           label="联系电话"
           required
-          help={(form.values.country ?? 'cn') === 'cn' ? '中国手机号建议以 +86 或区号开头' : '请输入国际/本地号码'}
+          help={
+            (form.values.country ?? 'cn') === 'cn'
+              ? '中国手机号建议以 +86 或区号开头'
+              : '请输入国际/本地号码'
+          }
           rules={[
             {
               validate: (v, allValues) =>
@@ -543,7 +592,9 @@ export const DependentFields: Story = {
             },
             {
               validate: (v, allValues) =>
-                (allValues?.country ?? 'cn') === 'us' && v && !/^\+?1/.test(v) ? '美国手机号请以 +1 开头' : undefined,
+                (allValues?.country ?? 'cn') === 'us' && v && !/^\+?1/.test(v)
+                  ? '美国手机号请以 +1 开头'
+                  : undefined,
             },
           ]}
         >
@@ -602,7 +653,9 @@ export const UseFormContextDemo: Story = {
       }, [dynamicRegistered]);
 
       const registerDynamic = () => {
-        form?.registerField?.('dynamicField', [{ validate: (v: any) => (!v ? '动态字段不能为空' : undefined) }]);
+        form?.registerField?.('dynamicField', [
+          { validate: (v: any) => (!v ? '动态字段不能为空' : undefined) },
+        ]);
         setDynamicRegistered(true);
       };
 
@@ -616,17 +669,23 @@ export const UseFormContextDemo: Story = {
         <div style={{ marginTop: 12, border: '1px dashed #e6e6e6', padding: 12 }}>
           <div style={{ marginBottom: 8 }}>
             <strong>当前表单值：</strong>
-            <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(form?.values ?? {}, null, 2)}</pre>
+            <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+              {JSON.stringify(form?.values ?? {}, null, 2)}
+            </pre>
           </div>
           <div style={{ marginBottom: 8 }}>
             <strong>校验信息：</strong>
-            <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{JSON.stringify(form?.errors ?? {}, null, 2)}</pre>
+            <pre style={{ whiteSpace: 'pre-wrap', margin: 0 }}>
+              {JSON.stringify(form?.errors ?? {}, null, 2)}
+            </pre>
           </div>
 
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
             <Button
               type="button"
-              onClick={() => form?.setFieldsValue?.({ name: 'hook-user', email: 'hook@example.com' })}
+              onClick={() =>
+                form?.setFieldsValue?.({ name: 'hook-user', email: 'hook@example.com' })
+              }
             >
               设置示例值
             </Button>
@@ -652,7 +711,9 @@ export const UseFormContextDemo: Story = {
               onClick={() =>
                 form
                   ?.validateField?.('email')
-                  ?.then((ok: boolean) => Toast.info(ok ? 'email 字段校验通过' : 'email 字段校验未通过'))
+                  ?.then((ok: boolean) =>
+                    Toast.info(ok ? 'email 字段校验通过' : 'email 字段校验未通过'),
+                  )
               }
             >
               校验 email 字段 (validateField)
@@ -692,7 +753,9 @@ export const UseFormContextDemo: Story = {
                   onClick={() =>
                     form
                       ?.validateField?.('dynamicField')
-                      ?.then((ok: boolean) => Toast.info(ok ? '动态字段校验通过' : '动态字段校验未通过'))
+                      ?.then((ok: boolean) =>
+                        Toast.info(ok ? '动态字段校验通过' : '动态字段校验未通过'),
+                      )
                   }
                 >
                   校验动态字段
@@ -706,7 +769,12 @@ export const UseFormContextDemo: Story = {
 
     return (
       <Form initialValues={{ name: '', email: '' }} onSubmit={handleSubmit} layout="vertical">
-        <FormItem name="name" label="姓名" required rules={[{ validate: (v) => (!v ? '姓名不能为空' : undefined) }]}>
+        <FormItem
+          name="name"
+          label="姓名"
+          required
+          rules={[{ validate: (v) => (!v ? '姓名不能为空' : undefined) }]}
+        >
           <Input placeholder="请输入姓名" />
         </FormItem>
 
@@ -714,7 +782,12 @@ export const UseFormContextDemo: Story = {
           name="email"
           label="邮箱"
           required
-          rules={[{ validate: (v) => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '邮箱格式不正确' : undefined) }]}
+          rules={[
+            {
+              validate: (v) =>
+                v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '邮箱格式不正确' : undefined,
+            },
+          ]}
         >
           <Input placeholder="请输入邮箱" />
         </FormItem>
@@ -747,7 +820,12 @@ export const ProgrammaticControls: Story = {
     };
 
     return (
-      <Form ref={formRef} onSubmit={handleSubmit} initialValues={{ name: '', email: '' }} layout="vertical">
+      <Form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        initialValues={{ name: '', email: '' }}
+        layout="vertical"
+      >
         <FormItem name="name" label="姓名">
           <Input placeholder="请输入姓名" />
         </FormItem>
@@ -763,7 +841,9 @@ export const ProgrammaticControls: Story = {
 
           <Button
             type="button"
-            onClick={() => formRef.current?.setFieldsValue?.({ name: '示例用户', email: 'demo@example.com' })}
+            onClick={() =>
+              formRef.current?.setFieldsValue?.({ name: '示例用户', email: 'demo@example.com' })
+            }
           >
             填充示例数据（ref.setFieldsValue）
           </Button>
@@ -796,7 +876,12 @@ export const BeforeSubmitSync: Story = {
     };
 
     return (
-      <Form initialValues={{ name: '' }} beforeSubmit={beforeSubmit} onSubmit={handleSubmit} layout="vertical">
+      <Form
+        initialValues={{ name: '' }}
+        beforeSubmit={beforeSubmit}
+        onSubmit={handleSubmit}
+        layout="vertical"
+      >
         <FormItem name="name" label="姓名">
           <Input placeholder="尝试不填并提交，会被拦截" />
         </FormItem>
@@ -832,7 +917,12 @@ export const BeforeSubmitAsync: Story = {
     };
 
     return (
-      <Form initialValues={{ email: '' }} beforeSubmit={beforeSubmit} onSubmit={handleSubmit} layout="vertical">
+      <Form
+        initialValues={{ email: '' }}
+        beforeSubmit={beforeSubmit}
+        onSubmit={handleSubmit}
+        layout="vertical"
+      >
         <FormItem name="email" label="邮箱">
           <Input placeholder="输入包含 block 的邮箱会被异步拦截" />
         </FormItem>
@@ -919,7 +1009,10 @@ export const ComprehensiveForm: Story = {
           required
           rules={[
             { validate: (v) => (!v ? '邮箱不能为空' : undefined) },
-            { validate: (v) => (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '请输入有效的邮箱' : undefined) },
+            {
+              validate: (v) =>
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '请输入有效的邮箱' : undefined,
+            },
           ]}
         >
           <Input type="email" placeholder="example@domain.com" />
@@ -994,7 +1087,11 @@ export const ComprehensiveForm: Story = {
 
         <h3>附件上传</h3>
 
-        <FormItem name="attachments" label="上传文件" help="支持 PDF、Word、Excel 等常见文件格式，单个文件不超过 10MB">
+        <FormItem
+          name="attachments"
+          label="上传文件"
+          help="支持 PDF、Word、Excel 等常见文件格式，单个文件不超过 10MB"
+        >
           <Upload multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" />
         </FormItem>
 

@@ -178,6 +178,17 @@
   border: none;
 }
 
+/* Chrome 自动填充会给 input 强制刷一层蓝灰底；这里把它压回组件背景，避免 wrapper 密码框里出现内嵌色块。 */
+.beaver-input:-webkit-autofill,
+.beaver-input:-webkit-autofill:hover,
+.beaver-input:-webkit-autofill:focus,
+.beaver-input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--beaver-input-text-color);
+  caret-color: var(--beaver-input-text-color);
+  box-shadow: 0 0 0 1000px var(--beaver-input-bg-color) inset;
+  transition: background-color 9999s ease-out;
+}
+
 /* ===== 前缀样式 ===== */
 /* 前缀容器：用于放置图标或标签，位于输入框左侧 */
 .beaver-input-prefix {
