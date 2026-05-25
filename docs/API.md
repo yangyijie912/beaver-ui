@@ -84,6 +84,7 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
   size?: 'small' | 'medium' | 'large';
   htmlSize?: number;
   allowClear?: boolean;
+  showPasswordToggle?: boolean;
   onClear?: () => void;
 };
 ```
@@ -98,6 +99,7 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
 | `prefix`          | `ReactNode \| () => ReactNode`                | -          | 前置内容         |
 | `suffix`          | `ReactNode \| () => ReactNode`                | -          | 后置内容         |
 | `allowClear`      | `boolean`                                     | `false`    | 是否显示清除按钮 |
+| `showPasswordToggle` | `boolean`                                  | `true`     | 密码输入框是否显示眼睛按钮，用于切换明文/密文 |
 | `onClear`         | `() => void`                                  | -          | 清除时的回调     |
 | `rows`            | `number`                                      | `3`        | 文本域的行数     |
 | `width`           | `number \| string`                            | -          | 输入框宽度       |
@@ -699,9 +701,9 @@ export type DrawerProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & 
   onClose?: () => void;
   title?: React.ReactNode;
   /**
-   * Drawer的宽度（水平方向）或高度（竖向方向），可以是px单位或百分比
-   * 当placement为 'left' 或 'right' 时，此值作为宽度
-   * 当placement为 'top' 或 'bottom' 时，此值作为高度
+   * Drawer 的宽度（水平方向）或高度（竖向方向），可以是 px 单位或百分比
+   * 当 placement 为 'left' 或 'right' 时，此值作为宽度
+   * 当 placement 为 'top' 或 'bottom' 时，此值作为高度
    */
   width?: number | string;
   placement?: DrawerPlacement;
