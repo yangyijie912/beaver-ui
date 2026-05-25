@@ -69,7 +69,6 @@
   border: 1px solid var(--beaver-alert-border-color-info);
   border-radius: 6px;
   font-size: var(--beaver-alert-font-size);
-  line-height: 1.5;
   box-sizing: border-box;
 
   /* 动画过渡 */
@@ -99,7 +98,8 @@
   min-height: 24px;
   background-color: var(--beaver-alert-border-color-info);
   border-radius: 2px;
-  transition: background-color var(--beaver-alert-transition-duration) var(--beaver-alert-transition-timing);
+  transition: background-color var(--beaver-alert-transition-duration)
+    var(--beaver-alert-transition-timing);
 }
 
 /* 图标容器 */

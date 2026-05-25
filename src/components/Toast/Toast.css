@@ -114,7 +114,6 @@
 .beaver-toast {
   /* 基本布局 */
   display: flex;
-  align-items: center; /* 默认无标题时垂直居中 */
   gap: var(--beaver-toast-icon-gap);
   padding: var(--beaver-toast-padding);
   background-color: var(--beaver-toast-bg-color);
