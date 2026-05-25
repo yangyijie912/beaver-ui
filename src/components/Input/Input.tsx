@@ -1,4 +1,5 @@
 import React from 'react';
+import Eye from '../../icons/Eye';
 
 export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
   /** 输入校验状态 */
@@ -25,6 +26,8 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size
   htmlSize?: number;
   /** 是否展示清除按钮（点击会清空输入）*/
   allowClear?: boolean;
+  /** 密码输入框是否展示眼睛按钮，默认展示 */
+  showPasswordToggle?: boolean;
   /** 清除时触发的回调 */
   onClear?: () => void;
 };
@@ -45,11 +48,17 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
       suffixClassName,
       size = 'medium',
       htmlSize,
+      showPasswordToggle = true,
       ...props
     },
-    ref
+    ref,
   ) => {
     const inputRef = React.useRef<HTMLInputElement | null>(null);
+    const [passwordVisible, setPasswordVisible] = React.useState(false);
+    const inputType = textarea
+      ? undefined
+      : (props as React.InputHTMLAttributes<HTMLInputElement>).type;
+    const isPasswordInput = inputType === 'password';
     // 支持转发 ref 的合并
     const setRefs = (node: HTMLInputElement | null) => {
       inputRef.current = node;
@@ -96,7 +105,13 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
     }
 
     // 非 textarea 的 input
-    const { style, allowClear, onClear, ...restInput } = props as React.InputHTMLAttributes<HTMLInputElement> & {
+    const {
+      style,
+      allowClear,
+      onClear,
+      type: _inputType,
+      ...restInput
+    } = props as React.InputHTMLAttributes<HTMLInputElement> & {
       allowClear?: boolean;
       onClear?: () => void;
     };
@@ -141,9 +156,26 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
     const suffixNode = typeof suffix === 'function' ? (suffix as () => React.ReactNode)() : suffix;
     const hasPrefix = prefixNode !== null && prefixNode !== undefined;
     const hasSuffix = suffixNode !== null && suffixNode !== undefined;
+    const passwordToggleNode =
+      isPasswordInput && showPasswordToggle ? (
+        <button
+          type="button"
+          className="beaver-input-password-toggle"
+          onMouseDown={handleClearMouseDown}
+          onClick={() => {
+            setPasswordVisible((visible) => !visible);
+            inputRef.current?.focus();
+          }}
+          aria-label={passwordVisible ? '隐藏密码' : '显示密码'}
+          aria-pressed={passwordVisible}
+        >
+          <Eye width={16} height={16} aria-hidden />
+        </button>
+      ) : null;
     // 如果有前置或后置内容，或启用了 allowClear，需要包装在容器中
     // 关键：始终返回 wrapper 结构，以保持 DOM 节点稳定（防止焦点丢失）
-    const shouldRenderWrapper = hasPrefix || hasSuffix || allowClear;
+    const shouldRenderWrapper =
+      hasPrefix || hasSuffix || allowClear || (isPasswordInput && showPasswordToggle);
 
     const inputElement = (
       <input
@@ -151,6 +183,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
         className={classList.join(' ')}
         aria-invalid={validation === 'error'}
         disabled={disabled}
+        type={isPasswordInput && passwordVisible ? 'text' : inputType}
         size={htmlSize}
         style={mergedStyle}
         {...(restInput as React.InputHTMLAttributes<HTMLInputElement>)}
@@ -160,14 +193,15 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
     if (shouldRenderWrapper) {
       return (
         <div className={`beaver-input-wrapper beaver-input-wrapper--${size}`}>
-          {hasPrefix && <div className={`beaver-input-prefix ${prefixClassName || ''}`}>{prefixNode}</div>}
+          {hasPrefix && (
+            <div className={`beaver-input-prefix ${prefixClassName || ''}`}>{prefixNode}</div>
+          )}
           {inputElement}
           {/* 如果传入 suffix，优先渲染；否则当 allowClear 为 true 时渲染清除按钮 */}
-          {hasSuffix ? (
-            <div className={`beaver-input-suffix ${suffixClassName || ''}`}>{suffixNode}</div>
-          ) : (
-            allowClear && (
-              <div className={`beaver-input-suffix ${suffixClassName || ''}`}>
+          {(hasSuffix || allowClear || passwordToggleNode) && (
+            <div className={`beaver-input-suffix ${suffixClassName || ''}`}>
+              {hasSuffix && suffixNode}
+              {!hasSuffix && allowClear && (
                 <button
                   type="button"
                   className="beaver-input-clear"
@@ -183,8 +217,9 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
                 >
                   ✕
                 </button>
-              </div>
-            )
+              )}
+              {passwordToggleNode}
+            </div>
           )}
         </div>
       );
@@ -201,7 +236,7 @@ const Input = React.forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProp
         {...(restInput as React.InputHTMLAttributes<HTMLInputElement>)}
       />
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

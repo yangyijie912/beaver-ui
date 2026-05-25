@@ -197,6 +197,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   color: var(--beaver-input-affix-color);
   white-space: nowrap;
   flex-shrink: 0;
@@ -256,6 +257,33 @@
   border-radius: 4px;
 }
 
+/* ===== 密码可见性切换按钮 ===== */
+.beaver-input-password-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 4px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--beaver-input-affix-color);
+  cursor: pointer;
+}
+
+.beaver-input-password-toggle:hover {
+  color: var(--beaver-input-text-color);
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+}
+
+.beaver-input-password-toggle:focus-visible {
+  outline: 2px solid var(--beaver-input-border-color-focus);
+  outline-offset: 2px;
+}
+
 /* ===== 文本域特定样式 ===== */
 /* Textarea 需要特殊处理：允许调整大小、最小高度等 */
 .beaver-input--textarea {
@@ -280,13 +308,17 @@
 }
 /* 成功状态：Hover时颜色变淡 */
 .beaver-input--success:not(:disabled):not(.beaver-input--disabled):hover,
-.beaver-input-wrapper:has(.beaver-input--success:not(:disabled):not(.beaver-input--disabled):hover) {
+.beaver-input-wrapper:has(
+  .beaver-input--success:not(:disabled):not(.beaver-input--disabled):hover
+) {
   border-color: var(--beaver-input-border-color-hover-success);
 }
 
 /* 警告状态：Hover时颜色变淡 */
 .beaver-input--warning:not(:disabled):not(.beaver-input--disabled):hover,
-.beaver-input-wrapper:has(.beaver-input--warning:not(:disabled):not(.beaver-input--disabled):hover) {
+.beaver-input-wrapper:has(
+  .beaver-input--warning:not(:disabled):not(.beaver-input--disabled):hover
+) {
   border-color: var(--beaver-input-border-color-hover-warning);
 }
 

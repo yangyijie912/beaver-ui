@@ -29,6 +29,7 @@ const meta: Meta<typeof Input> = {
 export default meta;
 
 type Story = StoryObj<typeof Input>;
+type InputStoryArgs = React.ComponentProps<typeof Input>;
 
 /**
  * 基本使用，可以通过`width`直接控制输入框宽度
@@ -120,10 +121,76 @@ export const WithPrefixAndSuffix: Story = {
 
 export const WithClearButton: Story = {
   name: '可清除输入框',
-  render: () => {
+  args: {
+    value: 'hello',
+    placeholder: '输入文本',
+    allowClear: true,
+  },
+  render: (args: InputStoryArgs) => {
     const [value, setValue] = React.useState('hello');
+    React.useEffect(() => {
+      setValue(typeof args.value === 'string' ? args.value : '');
+    }, [args.value]);
+
     return (
-      <Input value={value} onChange={(e) => setValue((e as any).target.value)} allowClear placeholder="输入文本" />
+      <Input
+        value={value}
+        onChange={(e) => setValue((e as any).target.value)}
+        allowClear={args.allowClear}
+        placeholder={args.placeholder}
+      />
+    );
+  },
+};
+
+export const PasswordVariants: Story = {
+  name: '密码框示例',
+  args: {
+    value: 'beaver-ui',
+    placeholder: '请输入密码',
+    suffix: 'KB',
+  },
+  render: (args: InputStoryArgs) => {
+    const [value, setValue] = React.useState(typeof args.value === 'string' ? args.value : '');
+
+    React.useEffect(() => {
+      setValue(typeof args.value === 'string' ? args.value : '');
+    }, [args.value]);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div>
+          <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>带眼睛</div>
+          <Input
+            type="password"
+            value={value}
+            onChange={(e) => setValue((e as any).target.value)}
+            placeholder={args.placeholder}
+            showPasswordToggle
+          />
+        </div>
+        <div>
+          <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>隐藏眼睛</div>
+          <Input
+            type="password"
+            value={value}
+            onChange={(e) => setValue((e as any).target.value)}
+            placeholder={args.placeholder}
+            showPasswordToggle={false}
+          />
+        </div>
+        <div>
+          <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>眼睛 + 自定义后缀</div>
+          <Input
+            type="password"
+            value={value}
+            onChange={(e) => setValue((e as any).target.value)}
+            placeholder={args.placeholder}
+            suffix={args.suffix}
+            showPasswordToggle
+          />
+        </div>
+      </div>
     );
   },
 };
@@ -134,15 +201,33 @@ export const SizesWithSuffixAndSuccess: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div>
         <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Small</h3>
-        <Input size="small" validation="success" defaultValue="example" placeholder="输入用户名" suffix="✓" />
+        <Input
+          size="small"
+          validation="success"
+          defaultValue="example"
+          placeholder="输入用户名"
+          suffix="✓"
+        />
       </div>
       <div>
         <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Medium</h3>
-        <Input size="medium" validation="success" defaultValue="example" placeholder="输入用户名" suffix="✓" />
+        <Input
+          size="medium"
+          validation="success"
+          defaultValue="example"
+          placeholder="输入用户名"
+          suffix="✓"
+        />
       </div>
       <div>
         <h3 style={{ margin: '0 0 8px 0', fontSize: '12px', color: '#666' }}>Large</h3>
-        <Input size="large" validation="success" defaultValue="example" placeholder="输入用户名" suffix="✓" />
+        <Input
+          size="large"
+          validation="success"
+          defaultValue="example"
+          placeholder="输入用户名"
+          suffix="✓"
+        />
       </div>
     </div>
   ),
