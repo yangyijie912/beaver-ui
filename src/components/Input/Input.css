@@ -185,9 +185,6 @@
 .beaver-input:-webkit-autofill:active {
   -webkit-text-fill-color: var(--beaver-input-text-color);
   caret-color: var(--beaver-input-text-color);
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
   box-shadow: 0 0 0 1000px var(--beaver-input-bg-color) inset;
   transition: background-color 9999s ease-out;
 }
