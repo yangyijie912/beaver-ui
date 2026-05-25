@@ -1,5 +1,4 @@
-ignoredBuiltDependencies:
-  - '@swc/core'
-
-onlyBuiltDependencies:
-  - esbuild
+# pnpm v11 只认 allowBuilds：true 表示允许执行安装脚本，false 表示明确拒绝
+allowBuilds:
+  '@swc/core': false
+  esbuild: true

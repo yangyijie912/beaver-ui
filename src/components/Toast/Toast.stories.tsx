@@ -1,7 +1,219 @@
 import React from 'react';
-import Toast, { ToastProvider } from './Toast';
 import type { Meta, StoryObj } from '@storybook/react';
 import Button from '../Button/Button';
+import Toast, { ToastProvider } from './Toast';
+import type { ToastOptions, ToastType } from './Toast';
+
+type BaseToastArgs = {
+  type: ToastType;
+  title: string;
+  message: string;
+  duration: number;
+  closable: boolean;
+  icon: string;
+};
+
+type PairToastArgs = BaseToastArgs & {
+  secondaryTitle: string;
+  secondaryMessage: string;
+  secondaryDuration: number;
+};
+
+type LoadingToastArgs = BaseToastArgs & {
+  loadingMessage: string;
+  loadingSuccessMessage: string;
+  loadingDelay: number;
+};
+
+type MultiToastArgs = BaseToastArgs & {
+  firstMessage: string;
+  secondMessage: string;
+  thirdMessage: string;
+  repeatDelay: number;
+  repeatCount: number;
+  loadingDelay: number;
+};
+
+type DurationToastArgs = BaseToastArgs & {
+  shortMessage: string;
+  shortDuration: number;
+  longMessage: string;
+  longDuration: number;
+  manualMessage: string;
+};
+
+type IconToastArgs = BaseToastArgs & {
+  emojiIcon: string;
+  textIcon: string;
+  infoMessage: string;
+  textMessage: string;
+};
+
+type CallbackToastArgs = BaseToastArgs & {
+  callbackLabel: string;
+};
+
+type LongContentToastArgs = BaseToastArgs & {
+  longMessage: string;
+};
+
+type ProviderToastArgs = BaseToastArgs & {
+  insideMessage: string;
+  outsideMessage: string;
+};
+
+const toastTypeOptions: ToastType[] = ['success', 'warning', 'error', 'info', 'loading'];
+
+const baseArgTypes = {
+  type: {
+    control: { type: 'radio' },
+    options: toastTypeOptions,
+  },
+  title: {
+    control: { type: 'text' },
+  },
+  message: {
+    control: { type: 'text' },
+  },
+  duration: {
+    control: { type: 'number', min: 0, step: 500 },
+  },
+  closable: {
+    control: { type: 'boolean' },
+  },
+  icon: {
+    control: { type: 'text' },
+  },
+} as const;
+
+const pairArgTypes = {
+  ...baseArgTypes,
+  secondaryTitle: {
+    control: { type: 'text' },
+  },
+  secondaryMessage: {
+    control: { type: 'text' },
+  },
+  secondaryDuration: {
+    control: { type: 'number', min: 0, step: 500 },
+  },
+} as const;
+
+const loadingArgTypes = {
+  ...baseArgTypes,
+  loadingMessage: {
+    control: { type: 'text' },
+  },
+  loadingSuccessMessage: {
+    control: { type: 'text' },
+  },
+  loadingDelay: {
+    control: { type: 'number', min: 0, step: 500 },
+  },
+} as const;
+
+const multiArgTypes = {
+  ...baseArgTypes,
+  firstMessage: {
+    control: { type: 'text' },
+  },
+  secondMessage: {
+    control: { type: 'text' },
+  },
+  thirdMessage: {
+    control: { type: 'text' },
+  },
+  repeatDelay: {
+    control: { type: 'number', min: 0, step: 100 },
+  },
+  repeatCount: {
+    control: { type: 'number', min: 1, step: 1 },
+  },
+  loadingDelay: {
+    control: { type: 'number', min: 0, step: 500 },
+  },
+} as const;
+
+const durationArgTypes = {
+  ...baseArgTypes,
+  shortMessage: {
+    control: { type: 'text' },
+  },
+  shortDuration: {
+    control: { type: 'number', min: 0, step: 500 },
+  },
+  longMessage: {
+    control: { type: 'text' },
+  },
+  longDuration: {
+    control: { type: 'number', min: 0, step: 500 },
+  },
+  manualMessage: {
+    control: { type: 'text' },
+  },
+} as const;
+
+const iconArgTypes = {
+  ...baseArgTypes,
+  emojiIcon: {
+    control: { type: 'text' },
+  },
+  textIcon: {
+    control: { type: 'text' },
+  },
+  infoMessage: {
+    control: { type: 'text' },
+  },
+  textMessage: {
+    control: { type: 'text' },
+  },
+} as const;
+
+const callbackArgTypes = {
+  ...baseArgTypes,
+  callbackLabel: {
+    control: { type: 'text' },
+  },
+} as const;
+
+const longContentArgTypes = {
+  ...baseArgTypes,
+  longMessage: {
+    control: { type: 'text' },
+  },
+} as const;
+
+const providerArgTypes = {
+  ...baseArgTypes,
+  insideMessage: {
+    control: { type: 'text' },
+  },
+  outsideMessage: {
+    control: { type: 'text' },
+  },
+} as const;
+
+const toOptionalText = (value: string) => value.trim() || undefined;
+
+const buildToastOptions = (
+  args: BaseToastArgs,
+  overrides: Partial<BaseToastArgs> = {},
+): ToastOptions => {
+  const merged = { ...args, ...overrides };
+
+  return {
+    title: toOptionalText(merged.title),
+    message: merged.message,
+    duration: merged.duration,
+    closable: merged.closable,
+    icon: toOptionalText(merged.icon),
+  };
+};
+
+const showFreshToast = (type: ToastType, options: ToastOptions) => {
+  Toast.clear();
+  return Toast.show({ type, ...options });
+};
 
 /**
  * Toast 全局通知组件
@@ -24,15 +236,30 @@ export default meta;
 /**
  * 成功通知
  */
-export const Success: StoryObj = {
+export const Success: StoryObj<PairToastArgs> = {
   name: '成功通知',
-  render: () => (
+  args: {
+    type: 'success',
+    title: '保存成功',
+    message: '个人资料已更新',
+    duration: 3000,
+    closable: true,
+    icon: '',
+    secondaryTitle: '保存成功',
+    secondaryMessage: '个人资料已更新',
+    secondaryDuration: 5000,
+  },
+  argTypes: pairArgTypes,
+  render: (args: PairToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Button
           variant="primary"
           onClick={() => {
-            Toast.success('保存成功');
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, { title: '', message: args.message }),
+            );
           }}
         >
           显示成功提示
@@ -40,7 +267,14 @@ export const Success: StoryObj = {
         <Button
           variant="primary"
           onClick={() => {
-            Toast.success('个人资料已更新', { title: '保存成功' });
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, {
+                title: args.secondaryTitle,
+                message: args.secondaryMessage,
+                duration: args.secondaryDuration,
+              }),
+            );
           }}
         >
           带标题的成功提示
@@ -53,15 +287,30 @@ export const Success: StoryObj = {
 /**
  * 错误通知
  */
-export const Error: StoryObj = {
+export const Error: StoryObj<PairToastArgs> = {
   name: '错误通知',
-  render: () => (
+  args: {
+    type: 'error',
+    title: '操作失败',
+    message: '网络连接失败，请检查网络设置',
+    duration: 5000,
+    closable: true,
+    icon: '',
+    secondaryTitle: '操作失败',
+    secondaryMessage: '网络连接失败，请检查网络设置',
+    secondaryDuration: 5000,
+  },
+  argTypes: pairArgTypes,
+  render: (args: PairToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Button
           color="danger"
           onClick={() => {
-            Toast.error('操作失败，请重试');
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, { title: '', message: args.message }),
+            );
           }}
         >
           显示错误提示
@@ -69,10 +318,14 @@ export const Error: StoryObj = {
         <Button
           color="danger"
           onClick={() => {
-            Toast.error('网络连接失败，请检查网络设置', {
-              title: '操作失败',
-              duration: 5000,
-            });
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, {
+                title: args.secondaryTitle,
+                message: args.secondaryMessage,
+                duration: args.secondaryDuration,
+              }),
+            );
           }}
         >
           长时间显示的错误提示
@@ -85,23 +338,43 @@ export const Error: StoryObj = {
 /**
  * 警告通知
  */
-export const Warning: StoryObj = {
+export const Warning: StoryObj<PairToastArgs> = {
   name: '警告通知',
-  render: () => (
+  args: {
+    type: 'warning',
+    title: '提醒',
+    message: '此操作不可撤销',
+    duration: 3000,
+    closable: true,
+    icon: '',
+    secondaryTitle: '提醒',
+    secondaryMessage: '你有2条未读消息需要处理',
+    secondaryDuration: 3000,
+  },
+  argTypes: pairArgTypes,
+  render: (args: PairToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Button
           onClick={() => {
-            Toast.warning('此操作不可撤销');
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, { title: '', message: args.message }),
+            );
           }}
         >
           显示警告提示
         </Button>
         <Button
           onClick={() => {
-            Toast.warning('你有2条未读消息需要处理', {
-              title: '提醒',
-            });
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, {
+                title: args.secondaryTitle,
+                message: args.secondaryMessage,
+                duration: args.secondaryDuration,
+              }),
+            );
           }}
         >
           带标题的警告提示
@@ -114,24 +387,43 @@ export const Warning: StoryObj = {
 /**
  * 信息通知
  */
-export const Info: StoryObj = {
+export const Info: StoryObj<PairToastArgs> = {
   name: '信息通知',
-  render: () => (
+  args: {
+    type: 'info',
+    title: '系统通知',
+    message: '页面将在5秒后刷新',
+    duration: 5000,
+    closable: true,
+    icon: '',
+    secondaryTitle: '系统通知',
+    secondaryMessage: '系统将在今晚10点进行维护，请提前保存数据',
+    secondaryDuration: 5000,
+  },
+  argTypes: pairArgTypes,
+  render: (args: PairToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Button
           onClick={() => {
-            Toast.info('页面将在5秒后刷新');
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, { title: '', message: args.message }),
+            );
           }}
         >
           显示信息提示
         </Button>
         <Button
           onClick={() => {
-            Toast.info('系统将在今晚10点进行维护，请提前保存数据', {
-              title: '系统通知',
-              duration: 5000,
-            });
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, {
+                title: args.secondaryTitle,
+                message: args.secondaryMessage,
+                duration: args.secondaryDuration,
+              }),
+            );
           }}
         >
           长通知内容
@@ -144,43 +436,77 @@ export const Info: StoryObj = {
 /**
  * 加载通知
  */
-export const Loading: StoryObj = {
+export const Loading: StoryObj<LoadingToastArgs> = {
   name: '加载通知',
-  render: () => {
+  args: {
+    type: 'loading',
+    title: '文件上传',
+    message: '正在加载数据...',
+    duration: 3000,
+    closable: true,
+    icon: '',
+    loadingMessage: '正在加载数据...',
+    loadingSuccessMessage: '加载完成',
+    loadingDelay: 3000,
+  },
+  argTypes: loadingArgTypes,
+  render: (args: LoadingToastArgs) => {
     const [loadingId, setLoadingId] = React.useState<string | null>(null);
+    const timerRef = React.useRef<number | null>(null);
 
-    const handleStartLoading = () => {
-      const id = Toast.loading('正在加载数据...');
+    React.useEffect(() => {
+      return () => {
+        if (timerRef.current) {
+          window.clearTimeout(timerRef.current);
+        }
+      };
+    }, []);
+
+    const showLoading = (withTitle: boolean) => {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+      }
+
+      const id = showFreshToast('loading', {
+        title: toOptionalText(args.title),
+        message: withTitle ? args.loadingMessage : args.message,
+        duration: 0,
+        closable: args.closable,
+        icon: toOptionalText(args.icon),
+      });
       setLoadingId(id);
 
-      setTimeout(() => {
+      timerRef.current = window.setTimeout(() => {
         Toast.close(id);
-        Toast.success('加载完成');
-      }, 3000);
+        showFreshToast('success', {
+          title: toOptionalText(args.title),
+          message: args.loadingSuccessMessage,
+          duration: args.duration,
+          closable: args.closable,
+          icon: toOptionalText(args.icon),
+        });
+        setLoadingId(null);
+      }, args.loadingDelay);
     };
 
     return (
       <ToastProvider>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <Button variant="primary" onClick={handleStartLoading}>
-            显示加载中（3秒后自动完成）
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <Button variant="primary" onClick={() => showLoading(false)}>
+            显示加载中（{args.loadingDelay / 1000}秒后自动完成）
           </Button>
-          <Button
-            variant="primary"
-            onClick={() => {
-              const id = Toast.loading('处理中...', { title: '文件上传' });
-              setLoadingId(id);
-            }}
-          >
+          <Button variant="primary" onClick={() => showLoading(true)}>
             带标题的加载提示
           </Button>
           {loadingId && (
             <Button
               onClick={() => {
-                if (loadingId) {
-                  Toast.close(loadingId);
-                  setLoadingId(null);
+                if (timerRef.current) {
+                  window.clearTimeout(timerRef.current);
+                  timerRef.current = null;
                 }
+                Toast.close(loadingId);
+                setLoadingId(null);
               }}
             >
               手动关闭
@@ -195,28 +521,100 @@ export const Loading: StoryObj = {
 /**
  * 所有类型对比
  */
-export const AllTypes: StoryObj = {
+export const AllTypes: StoryObj<MultiToastArgs> = {
   name: '所有类型对比',
-  render: () => (
+  args: {
+    type: 'success',
+    title: '所有类型对比',
+    message: '操作成功',
+    duration: 0,
+    closable: true,
+    icon: '',
+    firstMessage: '操作成功',
+    secondMessage: '请注意',
+    thirdMessage: '操作失败',
+    repeatDelay: 300,
+    repeatCount: 3,
+    loadingDelay: 2000,
+  },
+  argTypes: multiArgTypes,
+  render: (args: MultiToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 8 }}>
-        <Button size="small" onClick={() => Toast.success('操作成功', { duration: 0 })}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <Button
+          size="small"
+          onClick={() => {
+            showFreshToast(
+              'success',
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.firstMessage,
+                duration: args.duration,
+              }),
+            );
+          }}
+        >
           Success
         </Button>
-        <Button size="small" onClick={() => Toast.warning('请注意', { duration: 0 })}>
+        <Button
+          size="small"
+          onClick={() => {
+            showFreshToast(
+              'warning',
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.secondMessage,
+                duration: args.duration,
+              }),
+            );
+          }}
+        >
           Warning
         </Button>
-        <Button size="small" color="danger" onClick={() => Toast.error('操作失败', { duration: 0 })}>
+        <Button
+          size="small"
+          color="danger"
+          onClick={() => {
+            showFreshToast(
+              'error',
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.thirdMessage,
+                duration: args.duration,
+              }),
+            );
+          }}
+        >
           Error
         </Button>
-        <Button size="small" onClick={() => Toast.info('提示信息', { duration: 0 })}>
+        <Button
+          size="small"
+          onClick={() => {
+            showFreshToast(
+              'info',
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.message,
+                duration: args.duration,
+              }),
+            );
+          }}
+        >
           Info
         </Button>
         <Button
           size="small"
           onClick={() => {
-            const id = Toast.loading('加载中...');
-            setTimeout(() => Toast.close(id), 2000);
+            const id = showFreshToast('loading', {
+              title: toOptionalText(args.title),
+              message: '加载中...',
+              duration: 0,
+              closable: args.closable,
+              icon: toOptionalText(args.icon),
+            });
+            window.setTimeout(() => {
+              Toast.close(id);
+            }, args.loadingDelay || 2000);
           }}
         >
           Loading
@@ -229,17 +627,48 @@ export const AllTypes: StoryObj = {
 /**
  * 多条通知堆叠
  */
-export const MultipleToasts: StoryObj = {
+export const MultipleToasts: StoryObj<MultiToastArgs> = {
   name: '多条通知堆叠',
-  render: () => (
+  args: {
+    type: 'success',
+    title: '第一条通知',
+    message: '第一条通知',
+    duration: 3000,
+    closable: true,
+    icon: '',
+    firstMessage: '第一条通知',
+    secondMessage: '第二条通知',
+    thirdMessage: '第三条通知',
+    repeatDelay: 300,
+    repeatCount: 5,
+  },
+  argTypes: multiArgTypes,
+  render: (args: MultiToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Button
           variant="primary"
           onClick={() => {
-            Toast.success('第一条通知');
-            setTimeout(() => Toast.info('第二条通知'), 300);
-            setTimeout(() => Toast.warning('第三条通知'), 600);
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, { title: args.title, message: args.firstMessage }),
+            );
+            window.setTimeout(
+              () =>
+                showFreshToast(
+                  'info',
+                  buildToastOptions(args, { title: args.title, message: args.secondMessage }),
+                ),
+              args.repeatDelay,
+            );
+            window.setTimeout(
+              () =>
+                showFreshToast(
+                  'warning',
+                  buildToastOptions(args, { title: args.title, message: args.thirdMessage }),
+                ),
+              args.repeatDelay * 2,
+            );
           }}
         >
           显示多条通知
@@ -247,12 +676,20 @@ export const MultipleToasts: StoryObj = {
         <Button
           variant="primary"
           onClick={() => {
-            for (let i = 1; i <= 5; i++) {
-              setTimeout(
+            Toast.clear();
+            for (let i = 1; i <= args.repeatCount; i++) {
+              window.setTimeout(
                 () => {
-                  Toast.info(`通知 ${i}`);
+                  Toast.show({
+                    type: 'info',
+                    title: toOptionalText(args.title),
+                    message: `${args.firstMessage} ${i}`,
+                    duration: args.duration,
+                    closable: args.closable,
+                    icon: toOptionalText(args.icon),
+                  });
                 },
-                (i - 1) * 300
+                (i - 1) * args.repeatDelay,
               );
             }
           }}
@@ -270,28 +707,64 @@ export const MultipleToasts: StoryObj = {
 /**
  * 自定义时长
  */
-export const CustomDuration: StoryObj = {
+export const CustomDuration: StoryObj<DurationToastArgs> = {
   name: '自定义时长',
-  render: () => (
+  args: {
+    type: 'success',
+    title: '自定义时长',
+    message: '1秒后关闭',
+    duration: 1000,
+    closable: true,
+    icon: '',
+    shortMessage: '1秒后关闭',
+    shortDuration: 1000,
+    longMessage: '5秒后关闭',
+    longDuration: 5000,
+    manualMessage: '不会自动关闭，需手动关闭',
+  },
+  argTypes: durationArgTypes,
+  render: (args: DurationToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Button
           onClick={() => {
-            Toast.success('1秒后关闭', { duration: 1000 });
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.shortMessage,
+                duration: args.shortDuration,
+              }),
+            );
           }}
         >
           1秒后自动关闭
         </Button>
         <Button
           onClick={() => {
-            Toast.info('5秒后关闭', { duration: 5000 });
+            showFreshToast(
+              'info',
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.longMessage,
+                duration: args.longDuration,
+              }),
+            );
           }}
         >
           5秒后自动关闭
         </Button>
         <Button
           onClick={() => {
-            Toast.warning('不会自动关闭，需手动关闭', { duration: 0, closable: true });
+            showFreshToast(
+              'warning',
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.manualMessage,
+                duration: 0,
+                closable: true,
+              }),
+            );
           }}
         >
           永不自动关闭
@@ -304,33 +777,58 @@ export const CustomDuration: StoryObj = {
 /**
  * 自定义图标
  */
-export const CustomIcon: StoryObj = {
+export const CustomIcon: StoryObj<IconToastArgs> = {
   name: '自定义图标',
-  render: () => (
+  args: {
+    type: 'success',
+    title: '自定义图标',
+    message: '任务完成',
+    duration: 3000,
+    closable: true,
+    icon: '🎉',
+    emojiIcon: '🎉',
+    textIcon: '★',
+    infoMessage: '提示信息',
+    textMessage: '使用任意内容作为图标',
+  },
+  argTypes: iconArgTypes,
+  render: (args: IconToastArgs) => (
     <ToastProvider>
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         <Button
           onClick={() => {
-            Toast.success('任务完成', { icon: '🎉' });
+            showFreshToast(
+              args.type,
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.message,
+                icon: args.emojiIcon,
+              }),
+            );
           }}
         >
           使用 Emoji 图标
         </Button>
         <Button
           onClick={() => {
-            Toast.info('提示信息', { icon: '📌' });
+            showFreshToast(
+              'info',
+              buildToastOptions(args, { title: args.title, message: args.infoMessage, icon: '📌' }),
+            );
           }}
         >
           Emoji 提示符
         </Button>
         <Button
           onClick={() => {
-            Toast.show({
-              type: 'success',
-              title: '自定义图标',
-              message: '使用任意内容作为图标',
-              icon: '★',
-            });
+            showFreshToast(
+              'success',
+              buildToastOptions(args, {
+                title: args.title,
+                message: args.textMessage,
+                icon: args.textIcon,
+              }),
+            );
           }}
         >
           使用文本符号
@@ -343,9 +841,19 @@ export const CustomIcon: StoryObj = {
 /**
  * 回调函数
  */
-export const Callbacks: StoryObj = {
+export const Callbacks: StoryObj<CallbackToastArgs> = {
   name: '回调函数',
-  render: () => {
+  args: {
+    type: 'success',
+    title: '已保存',
+    message: '已保存',
+    duration: 3000,
+    closable: true,
+    icon: '',
+    callbackLabel: '成功通知已关闭',
+  },
+  argTypes: callbackArgTypes,
+  render: (args: CallbackToastArgs) => {
     const [log, setLog] = React.useState<string[]>([]);
 
     const addLog = (msg: string) => {
@@ -354,11 +862,12 @@ export const Callbacks: StoryObj = {
 
     return (
       <ToastProvider>
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
           <Button
             onClick={() => {
-              Toast.success('已保存', {
-                onClose: () => addLog('成功通知已关闭'),
+              showFreshToast(args.type, {
+                ...buildToastOptions(args),
+                onClose: () => addLog(args.callbackLabel),
               });
             }}
           >
@@ -397,19 +906,32 @@ export const Callbacks: StoryObj = {
 /**
  * 长内容处理
  */
-export const LongContent: StoryObj = {
+export const LongContent: StoryObj<LongContentToastArgs> = {
   name: '长内容处理',
-  render: () => (
+  args: {
+    type: 'warning',
+    title: '操作需要确认',
+    message:
+      '这是一个很长的消息内容。Toast 组件能够正确地处理多行文本，并确保内容的可读性。当内容超过容器宽度时，文本会自动换行，不会影响整体的布局。',
+    duration: 5000,
+    closable: true,
+    icon: '',
+    longMessage:
+      '这是一个很长的消息内容。Toast 组件能够正确地处理多行文本，并确保内容的可读性。当内容超过容器宽度时，文本会自动换行，不会影响整体的布局。',
+  },
+  argTypes: longContentArgTypes,
+  render: (args: LongContentToastArgs) => (
     <ToastProvider>
       <Button
         onClick={() => {
-          Toast.show({
-            type: 'warning',
-            title: '操作需要确认',
-            message:
-              '这是一个很长的消息内容。Toast 组件能够正确地处理多行文本，并确保内容的可读性。当内容超过容器宽度时，文本会自动换行，不会影响整体的布局。',
-            duration: 5000,
-          });
+          showFreshToast(
+            args.type,
+            buildToastOptions(args, {
+              title: args.title,
+              message: args.longMessage,
+              duration: args.duration,
+            }),
+          );
         }}
       >
         显示长内容通知
@@ -423,14 +945,23 @@ export const LongContent: StoryObj = {
  * 在没有显式包裹 `ToastProvider` 时，直接调用 `Toast` 会自动在 `document.body` 创建宿主容器并渲染
  * 适用于简单场景或临时使用，无需手动添加 Provider，注意不要在 SSR 环境调用
  */
-export const ImperativeNoProvider: StoryObj = {
+export const ImperativeNoProvider: StoryObj<BaseToastArgs> = {
   name: '命令式（无需 Provider）',
-  render: () => (
-    <div style={{ display: 'flex', gap: 12 }}>
+  args: {
+    type: 'success',
+    title: '直接调用 Toast.success',
+    message: '直接调用 Toast.success，无需 Provider',
+    duration: 3000,
+    closable: true,
+    icon: '',
+  },
+  argTypes: baseArgTypes,
+  render: (args: BaseToastArgs) => (
+    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
       <Button
         variant="primary"
         onClick={() => {
-          Toast.success('直接调用 Toast.success，无需 Provider');
+          showFreshToast(args.type, buildToastOptions(args));
         }}
       >
         直接调用（自动挂载）
@@ -442,9 +973,20 @@ export const ImperativeNoProvider: StoryObj = {
 /**
  * 通过参数 limitToProvider限定在 Provider 范围内的示例
  */
-export const LimitedToProvider: StoryObj = {
+export const LimitedToProvider: StoryObj<ProviderToastArgs> = {
   name: '限定在 Provider 范围内',
-  render: () => (
+  args: {
+    type: 'success',
+    title: 'Toast 限定容器（内部）',
+    message: '仅在此容器内显示通知',
+    duration: 3000,
+    closable: true,
+    icon: '',
+    insideMessage: '仅在此容器内显示通知',
+    outsideMessage: '在页面其他位置调用 Toast',
+  },
+  argTypes: providerArgTypes,
+  render: (args: ProviderToastArgs) => (
     <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
       <ToastProvider limitToProvider>
         <div
@@ -459,21 +1001,19 @@ export const LimitedToProvider: StoryObj = {
           }}
         >
           <div style={{ marginBottom: 8, color: '#556', fontSize: 13 }}>Toast 限定容器（内部）</div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <Button
               variant="primary"
               onClick={() => {
-                Toast.success('仅在此容器内显示通知');
+                showFreshToast(
+                  args.type,
+                  buildToastOptions(args, { title: args.title, message: args.insideMessage }),
+                );
               }}
             >
               在容器内显示 Toast
             </Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                Toast.clear();
-              }}
-            >
+            <Button variant="ghost" onClick={() => Toast.clear()}>
               清空
             </Button>
           </div>
@@ -482,10 +1022,13 @@ export const LimitedToProvider: StoryObj = {
 
       <div style={{ width: 240 }}>
         <div style={{ marginBottom: 8, color: '#556', fontSize: 13 }}>页面其他位置</div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <Button
             onClick={() => {
-              Toast.success('在页面其他位置调用 Toast');
+              showFreshToast(
+                args.type,
+                buildToastOptions(args, { title: args.title, message: args.outsideMessage }),
+              );
             }}
           >
             在页面其他位置调用

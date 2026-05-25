@@ -130,7 +130,8 @@
   pointer-events: auto;
 
   /* 动画 */
-  animation: beaver-toast-slide-in var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
+  animation: beaver-toast-slide-in var(--beaver-toast-animation-duration)
+    var(--beaver-toast-animation-timing);
   transition: all var(--beaver-toast-animation-duration) var(--beaver-toast-animation-timing);
 }
 
@@ -215,6 +216,11 @@
 
 .beaver-toast__message:first-child {
   margin-top: 0;
+}
+
+/* 无标题时只有一行消息，收紧行高以避免 Chrome 下图标与文字视觉偏移 */
+.beaver-toast:not(.beaver-toast--has-title) .beaver-toast__message:first-child {
+  line-height: 1;
 }
 
 /* 关闭按钮 */
