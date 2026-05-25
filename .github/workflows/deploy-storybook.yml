@@ -7,6 +7,7 @@ on:
 
 # Minimal permissions: allow Pages deployment
 permissions:
+  contents: write
   pages: write
   id-token: write
 
@@ -53,7 +54,7 @@ jobs:
       - name: Deploy to GitHub Pages (peaceiris)
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.GH_PAGES_PAT }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./storybook-static
           publish_branch: gh-pages
           user_name: github-actions[bot]
