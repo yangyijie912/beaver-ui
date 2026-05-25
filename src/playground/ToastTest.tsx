@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import Toast, { ToastProvider } from '../components/Toast/Toast';
 import Button from '../components/Button/Button';
 import Input from '../components/Input/Input';
+import '../styles/index.ts';
 import '../tokens/tokens.css';
 
 /**
@@ -74,7 +75,9 @@ const FormDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'resul
       <h2>Toast 表单提交演示</h2>
       <div style={{ maxWidth: 500 }}>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 500 }}>邮箱</label>
+          <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 500 }}>
+            邮箱
+          </label>
           <Input
             type="email"
             placeholder="请输入邮箱地址"
@@ -85,7 +88,9 @@ const FormDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'resul
         </div>
 
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 500 }}>密码</label>
+          <label style={{ display: 'block', marginBottom: 8, fontSize: 14, fontWeight: 500 }}>
+            密码
+          </label>
           <Input
             type="password"
             placeholder="请输入密码"
@@ -95,7 +100,12 @@ const FormDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'resul
           />
         </div>
 
-        <Button variant="primary" onClick={handleFormSubmit} disabled={isSubmitting} style={{ width: '100%' }}>
+        <Button
+          variant="primary"
+          onClick={handleFormSubmit}
+          disabled={isSubmitting}
+          style={{ width: '100%' }}
+        >
           {isSubmitting ? '提交中...' : '提交表单（成功率 70%）'}
         </Button>
         <p style={{ fontSize: 13, color: '#999', marginTop: 8, margin: '8px 0 0 0' }}>
@@ -107,7 +117,11 @@ const FormDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'resul
 };
 
 // 表单提交结果页面（成功后跳转到这里）
-const ResultDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'result') => void }) => {
+const ResultDemo = ({
+  onNavigate,
+}: {
+  onNavigate: (page: 'form' | 'async' | 'result') => void;
+}) => {
   // 检查是否有有效的结果数据
   const hasResult = _formResult !== null;
 
@@ -131,10 +145,14 @@ const ResultDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'res
                 <h3 style={{ margin: 0, color: '#16a34a' }}>提交成功！</h3>
               </div>
 
-              <div style={{ backgroundColor: '#fff', padding: 16, borderRadius: 4, marginBottom: 16 }}>
+              <div
+                style={{ backgroundColor: '#fff', padding: 16, borderRadius: 4, marginBottom: 16 }}
+              >
                 <div style={{ marginBottom: 12 }}>
                   <label style={{ fontSize: 12, color: '#999', fontWeight: 500 }}>邮箱地址</label>
-                  <p style={{ margin: '4px 0 0 0', fontSize: 14, fontWeight: 500 }}>{_formResult!.email}</p>
+                  <p style={{ margin: '4px 0 0 0', fontSize: 14, fontWeight: 500 }}>
+                    {_formResult!.email}
+                  </p>
                 </div>
                 <div>
                   <label style={{ fontSize: 12, color: '#999', fontWeight: 500 }}>提交时间</label>
@@ -142,7 +160,9 @@ const ResultDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'res
                 </div>
               </div>
 
-              <p style={{ margin: 0, fontSize: 14, color: '#666' }}>✓ 表单已成功提交！您将收到一封确认邮件</p>
+              <p style={{ margin: 0, fontSize: 14, color: '#666' }}>
+                ✓ 表单已成功提交！您将收到一封确认邮件
+              </p>
             </div>
 
             {/* 清空结果并返回 */}
@@ -167,8 +187,15 @@ const ResultDemo = ({ onNavigate }: { onNavigate: (page: 'form' | 'async' | 'res
               marginBottom: 24,
             }}
           >
-            <p style={{ margin: 0, marginBottom: 16 }}>⚠ 没有待显示的提交结果，请从表单页面提交表单</p>
-            <Button size="small" variant="ghost" onClick={() => onNavigate('form')} style={{ width: '100%' }}>
+            <p style={{ margin: 0, marginBottom: 16 }}>
+              ⚠ 没有待显示的提交结果，请从表单页面提交表单
+            </p>
+            <Button
+              size="small"
+              variant="ghost"
+              onClick={() => onNavigate('form')}
+              style={{ width: '100%' }}
+            >
               返回表单提交
             </Button>
           </div>
@@ -206,7 +233,11 @@ const AsyncDemo = ({}: { onNavigate: (page: 'form' | 'async' | 'result') => void
       <div style={{ maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div>
           <h4>模拟网络请求</h4>
-          <Button variant="primary" disabled={isLoading} onClick={() => simulateApiCall(2000, true)}>
+          <Button
+            variant="primary"
+            disabled={isLoading}
+            onClick={() => simulateApiCall(2000, true)}
+          >
             {isLoading ? '加载中...' : '发起请求（2秒后成功）'}
           </Button>
         </div>
@@ -275,7 +306,9 @@ function ToastTestApp() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       {/* 顶部导航栏 */}
-      <div style={{ backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', padding: '12px 24px' }}>
+      <div
+        style={{ backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', padding: '12px 24px' }}
+      >
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <h1 style={{ margin: '0 0 12px 0', fontSize: 24 }}>Toast 通知组件测试</h1>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -323,5 +356,5 @@ const root = createRoot(container);
 root.render(
   <ToastProvider>
     <ToastTestApp />
-  </ToastProvider>
+  </ToastProvider>,
 );
