@@ -13,9 +13,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - name: Enable corepack
-        run: corepack enable && corepack prepare pnpm@latest --activate
+        run: corepack enable && corepack prepare pnpm@11.3.0 --activate
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Install Playwright browsers
