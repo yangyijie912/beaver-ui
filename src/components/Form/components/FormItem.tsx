@@ -111,13 +111,18 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             newValue = eventOrValue;
           }
 
+          const nextValues = {
+            ...form.values,
+            [name]: newValue,
+          };
+
           form.setFieldValue(name, newValue);
 
           // 触发验证（如果规则设置为 onChange）
           const fieldRules = form.getFieldRules(name);
           const shouldValidateOnChange = fieldRules.some((rule) => rule.trigger !== 'onBlur');
           if (shouldValidateOnChange) {
-            form.validateField(name);
+            form.validateField(name, nextValues);
           }
         }
       },

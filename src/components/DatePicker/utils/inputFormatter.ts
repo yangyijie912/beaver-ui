@@ -82,15 +82,18 @@ export const parseSingleDate = (dateString: string, picker: PickerType, format: 
 
   if (picker === 'year') {
     const year = parseInt(dateString, 10);
-    return !isNaN(year) ? new Date(year, 0, 1) : null;
+    return /^\d{4}$/.test(dateString.trim()) && !isNaN(year) ? new Date(year, 0, 1) : null;
   }
 
   if (picker === 'month') {
-    const parts = dateString.split('-');
+    const normalized = dateString.trim();
+    const parts = normalized.split('-');
     if (parts.length === 2) {
       const year = parseInt(parts[0], 10);
       const month = parseInt(parts[1], 10) - 1;
-      return !isNaN(year) && !isNaN(month) ? new Date(year, month, 1) : null;
+      if (/^\d{4}$/.test(parts[0]) && /^\d{2}$/.test(parts[1]) && !isNaN(year) && month >= 0 && month <= 11) {
+        return new Date(year, month, 1);
+      }
     }
     return null;
   }

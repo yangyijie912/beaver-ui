@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+﻿import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useContext } from 'react';
 import { FormContext } from '../Form/components/Form';
 import type { FormContextType } from '../Form/types';
@@ -34,6 +34,9 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       className = '',
       style = {},
       timeFormat = '24h',
+      onBlur,
+      onFocus,
+      onKeyDown,
       ...rest
     },
     ref
@@ -57,6 +60,8 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
     const inputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
+    const blurTimerRef = useRef<number | null>(null);
+    const pointerDownInsidePickerRef = useRef(false);
 
     // 使用 floating-ui 计算面板位置（gap = 6 是面板和输入框之间的距离）
     const panelPosition = useMenuPosition(wrapperRef, panelRef, isOpen, 6);
@@ -108,6 +113,21 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       return () => window.removeEventListener('pointermove', handler);
     }, [isOpen, rangeState]);
 
+    React.useEffect(() => {
+      return () => {
+        if (blurTimerRef.current !== null) {
+          window.clearTimeout(blurTimerRef.current);
+        }
+      };
+    }, []);
+
+    const markPointerDownInsidePicker = useCallback(() => {
+      pointerDownInsidePickerRef.current = true;
+      window.setTimeout(() => {
+        pointerDownInsidePickerRef.current = false;
+      }, 0);
+    }, []);
+
     /**
      * 同步 inputValue 与当前选中的日期
      * 仅在用户未主动编辑时进行同步
@@ -127,29 +147,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       }
     }, [isRange, singleState.currentDate, rangeState.currentRange, picker, format]);
 
-    /**
-     * 处理输入框值变化
-     * 允许用户输入，但这些输入不会改变任何日期状态
-     * 只在打开面板时影响用户体验
-     */
-    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value;
-      isEditingRef.current = true;
-      setInputValue(val);
-      // 用户的手动输入仅用于显示，不会导致任何状态改变
-      // 失焦时这些输入会被清空，恢复为最后选择的有效日期
-    }, []);
-
-    /**
-     * 处理输入框失焦
-     * 清除任何手动输入，恢复为基于 currentDate 的有效日期
-     */
-    const handleInputBlur = useCallback(() => {
-      // 清除编辑标记
-      isEditingRef.current = false;
-
-      // 立即重置 inputValue，触发 useEffect 来根据 currentDate 同步显示
-      // 这会清除用户的任何手动输入
+    const resetInputValue = useCallback(() => {
       if (isRange && rangeState.currentRange) {
         setInputValue(formatRangeDate(rangeState.currentRange, picker, format));
       } else if (!isRange && singleState.currentDate) {
@@ -157,7 +155,71 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
       } else {
         setInputValue('');
       }
-    }, [isRange, singleState.currentDate, rangeState.currentRange, picker, format, singleState, rangeState]);
+    }, [isRange, rangeState.currentRange, singleState.currentDate, picker, format]);
+
+    /**
+     * 提交单选模式下的手动输入。
+     * 有效输入应该和面板选择一样触发 onChange，Form 才能拿到真实值并清理校验状态。
+     */
+    const commitSingleInputValue = useCallback(() => {
+      if (isRange || readOnly) {
+        resetInputValue();
+        return false;
+      }
+
+      const trimmedValue = inputValue.trim();
+      if (!trimmedValue) {
+        singleState.handleDateChange(null);
+        setInputValue('');
+        return true;
+      }
+
+      const parsed = parseSingleDate(trimmedValue, picker, format);
+      if (!parsed || disabledDate?.(parsed)) {
+        resetInputValue();
+        return false;
+      }
+
+      singleState.handleDateChange(parsed);
+      singleState.setCurrentMonth(parsed);
+      setInputValue(formatSingleDate(parsed, picker, format));
+      return true;
+    }, [disabledDate, format, inputValue, isRange, picker, readOnly, resetInputValue, singleState]);
+
+    /**
+     * 处理输入框值变化
+     */
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      isEditingRef.current = true;
+      setInputValue(val);
+    }, []);
+
+    /**
+     * 处理输入框失焦
+     */
+    const handleInputBlur = useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+      if (blurTimerRef.current !== null) {
+        window.clearTimeout(blurTimerRef.current);
+      }
+
+      // 面板通过 portal 渲染，点击面板会让输入框先 blur。
+      // 但从用户视角焦点仍在 DatePicker 内部，此时不应该触发表单失焦校验。
+      blurTimerRef.current = window.setTimeout(() => {
+        const activeElement = document.activeElement;
+        const isFocusInsidePicker =
+          activeElement &&
+          (wrapperRef.current?.contains(activeElement) || panelRef.current?.contains(activeElement));
+
+        if (!isFocusInsidePicker && !pointerDownInsidePickerRef.current) {
+          isEditingRef.current = false;
+          commitSingleInputValue();
+          onBlur?.(event);
+        }
+
+        blurTimerRef.current = null;
+      }, 0);
+    }, [commitSingleInputValue, onBlur]);
 
     /**
      * 处理输入框获焦 - 打开选择器
@@ -205,6 +267,18 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
       open();
     }, [picker, isRange, setIsFocused, open, rangeState]);
+
+    const handleComposedInputFocus = useCallback(
+      (event: React.FocusEvent<HTMLInputElement>) => {
+        if (blurTimerRef.current !== null) {
+          window.clearTimeout(blurTimerRef.current);
+          blurTimerRef.current = null;
+        }
+        handleInputFocus();
+        onFocus?.(event);
+      },
+      [handleInputFocus, onFocus]
+    );
 
     /**
      * 处理日期单元格点击
@@ -461,29 +535,26 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
           }
 
           close();
-        } else if (e.key === 'Enter' && isOpen && inputValue && !isRange) {
-          const parsed = parseSingleDate(inputValue, picker, format);
-          if (parsed && !disabledDate?.(parsed)) {
-            singleState.handleDateChange(parsed);
-            singleState.setCurrentMonth(parsed);
+        } else if (e.key === 'Enter' && inputValue && !isRange) {
+          if (commitSingleInputValue()) {
             close();
           }
         }
+        onKeyDown?.(e);
       },
       [
-        isOpen,
         inputValue,
         isRange,
         picker,
         format,
-        disabledDate,
-        singleState,
+        commitSingleInputValue,
         close,
         rangeState.selectingStart,
         rangeState.tempDateTimeStart,
         rangeState.confirmedStartDate,
         rangeState.tempDateTimeEnd,
         rangeState.tempStartDate,
+        onKeyDown,
       ]
     );
 
@@ -612,14 +683,19 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
 
     return (
       <>
-        <div ref={wrapperRef} className={wrapperClassName} style={wrapperStyle}>
+        <div
+          ref={wrapperRef}
+          className={wrapperClassName}
+          style={wrapperStyle}
+          onMouseDownCapture={markPointerDownInsidePicker}
+        >
           <Input
             ref={setInputRefs}
             type="text"
             placeholder={placeholder}
             value={inputValue}
             onChange={handleInputChange}
-            onFocus={handleInputFocus}
+            onFocus={handleComposedInputFocus}
             onBlur={handleInputBlur}
             onKeyDown={handleKeyDown}
             disabled={disabled}
@@ -637,6 +713,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
               <div
                 ref={panelRef}
                 className="beaver-datepicker-panel"
+                onMouseDownCapture={markPointerDownInsidePicker}
                 style={{
                   position: 'fixed',
                   left: `${panelPosition.x}px`,

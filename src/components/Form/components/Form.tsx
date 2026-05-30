@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import type { FormContextType, FormProps, FieldValue, FieldError, ValidationRule } from '../types';
 
 /** Form 上下文 */
@@ -33,6 +33,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
   ) => {
     // 表单数据状态
     const [values, setValues] = useState<FieldValue>(initialValues);
+    const valuesRef = useRef<FieldValue>(initialValues);
     // 表单错误状态
     const [errors, setErrors] = useState<FieldError>({});
     // 字段验证规则映射表，value 包含 rules 与字段元信息（如 disabled）
@@ -46,6 +47,10 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
      * 更新单个字段的值
      */
     const setFieldValue = useCallback((name: string, value: any) => {
+      valuesRef.current = {
+        ...valuesRef.current,
+        [name]: value,
+      };
       setValues((prev) => ({
         ...prev,
         [name]: value,
@@ -78,10 +83,11 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
      * 返回 Promise，true 表示验证通过，false 表示验证失败
      */
     const validateField = useCallback(
-      async (name: string): Promise<boolean> => {
+      async (name: string, nextValues?: FieldValue): Promise<boolean> => {
         const meta = fieldRules.get(name);
         const rules = meta ? meta.rules : [];
-        const value = values[name];
+        const valuesToValidate = nextValues ?? valuesRef.current;
+        const value = valuesToValidate[name];
 
         // 如果没有规则，则验证通过
         if (rules.length === 0) {
@@ -104,7 +110,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
 
         // 依次执行规则，找到第一个验证失败的规则
         for (const rule of rulesToCheck) {
-          const maybe = rule.validate(value, values);
+          const maybe = rule.validate(value, valuesToValidate);
           const error = maybe instanceof Promise ? await maybe : maybe;
           if (error) {
             setFieldError(name, error);
@@ -116,7 +122,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
         setFieldError(name, undefined);
         return true;
       },
-      [values, getFieldRules, setFieldError, fieldRules]
+      [setFieldError, fieldRules]
     );
 
     /**
@@ -148,7 +154,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       // 在提交前执行拦截函数，如果返回 false（同步或异步）则取消提交
       if (beforeSubmit) {
         try {
-          const ok = await beforeSubmit(values);
+          const ok = await beforeSubmit(valuesRef.current);
           if (ok === false) return;
         } catch (err) {
           console.error('beforeSubmit 处理失败:', err);
@@ -159,7 +165,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       // 执行提交回调
       if (onSubmit) {
         try {
-          const res = await onSubmit(values as any);
+          const res = await onSubmit(valuesRef.current as any);
           if (res === false) return;
         } catch (err) {
           console.error('表单提交失败:', err);
@@ -215,9 +221,10 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
      */
     const formInstance = {
       /** 获取表单的所有字段值 */
-      getValues: () => values,
+      getValues: () => valuesRef.current,
       /** 设置表单的字段值 */
       setValues: (newValues: FieldValue) => {
+        valuesRef.current = { ...valuesRef.current, ...newValues };
         setValues((prev) => ({ ...prev, ...newValues }));
       },
       /** 设置单个字段的值 */
@@ -226,12 +233,14 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
       },
       /** 批量设置字段值 */
       setFieldsValue: (newValues: FieldValue) => {
+        valuesRef.current = { ...valuesRef.current, ...newValues };
         setValues((prev) => ({ ...prev, ...newValues }));
       },
       /** 验证整个表单 */
       validate: validateForm,
       /** 重置表单为初始值 */
       reset: () => {
+        valuesRef.current = initialValues;
         setValues(initialValues);
         setErrors({});
         setSubmitAttempted(false);
@@ -242,6 +251,7 @@ const Form = React.forwardRef<HTMLFormElement, FormProps>(
         Object.keys(values).forEach((key) => {
           cleared[key] = '';
         });
+        valuesRef.current = cleared;
         setValues(cleared);
         setErrors({});
         setSubmitAttempted(false);

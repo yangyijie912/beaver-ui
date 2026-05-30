@@ -42,7 +42,7 @@ export type FormContextType = {
   /** 获取当前所有字段值 */
   getValues?: () => FieldValue;
   /** 验证单个字段 */
-  validateField: (name: string) => Promise<boolean>;
+  validateField: (name: string, nextValues?: FieldValue) => Promise<boolean>;
   /** 验证整个表单，返回是否通过 */
   validate?: () => Promise<boolean>;
   /** 设置字段错误 */
