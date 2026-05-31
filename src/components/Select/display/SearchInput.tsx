@@ -57,6 +57,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         <input
           ref={searchRef}
           className="beaver-select__input"
+          autoComplete="off"
           value={query}
           onChange={(e) => (onChangeEvent ? onChangeEvent(e) : undefined)}
           onFocus={onFocus}
@@ -72,6 +73,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     <input
       ref={searchRef}
       className="beaver-select__input"
+      autoComplete="off"
       value={query}
       onChange={(e) => (onChangeEvent ? onChangeEvent(e) : undefined)}
       onFocus={onFocus}

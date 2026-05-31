@@ -1066,6 +1066,7 @@ export type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, 'onSubmi
 export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
   name?: string;
   label?: React.ReactNode;
+  htmlFor?: string;
   required?: boolean;
   disabled?: boolean;
   rules?: any[];
@@ -1096,6 +1097,7 @@ export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
 | ---------- | ------------------ | ------- | ------------------------------ |
 | `name`     | `string`           | -       | 字段名，用于与 Form 值绑定     |
 | `label`    | `ReactNode`        | -       | 标签文本                       |
+| `htmlFor`  | `string`           | -       | 显式关联标签与目标控件的 `id`  |
 | `required` | `boolean`          | `false` | 是否必填（会注入默认必填规则） |
 | `disabled` | `boolean`          | -       | 字段禁用（可影响验证注册）     |
 | `rules`    | `ValidationRule[]` | `[]`    | 验证规则数组                   |
@@ -1107,12 +1109,12 @@ export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
 
 ```tsx
 <Form layout="vertical" onSubmit={handleSubmit}>
-  <FormItem label="Name" required>
-    <Input />
+  <FormItem name="name" label="Name" htmlFor="name-input" required>
+    <Input id="name-input" name="name" />
   </FormItem>
 
-  <FormItem label="Email" required>
-    <Input type="email" />
+  <FormItem name="email" label="Email" htmlFor="email-input" required>
+    <Input id="email-input" name="email" type="email" />
   </FormItem>
 
   <FormItem>
@@ -1120,6 +1122,12 @@ export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
   </FormItem>
 </Form>
 ```
+
+`FormItem` 直接包裹单一原生表单控件，或组件库明确认识的 `Input`、`DatePicker`、
+`Select`、`Checkbox`、`Radio` 时，会在缺失的情况下自动注入 `id` / `name`，并将标签关联到目标控件。
+对于复杂布局、`Switch` 或陌生自定义组件，`FormItem` 不会猜测关联目标。需要关联
+标签时，请显式传入 `htmlFor`，并为目标控件设置相同的 `id`。
+未指定关联目标时，标题会使用普通容器渲染，避免生成无法关联控件的空标签。
 
 ---
 

@@ -2,10 +2,27 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useFormContext } from './Form';
 import type { FormItemProps } from '../types';
 
+const AUTO_ASSOCIATED_COMPONENTS = new Set(['Input', 'Select', 'DatePicker', 'Checkbox', 'Radio']);
+
+function isAutoAssociatedControl(child: React.ReactElement) {
+  if (child.type === 'input' || child.type === 'textarea' || child.type === 'select') {
+    return true;
+  }
+
+  const childDisplayName = (child.type as any)?.displayName || '';
+  return AUTO_ASSOCIATED_COMPONENTS.has(childDisplayName);
+}
+
 export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
-  ({ className, name, label, required, rules = [], help, colon = true, children, disabled, ...props }, ref) => {
+  ({ className, name, label, htmlFor, required, rules = [], help, colon = true, children, disabled, ...props }, ref) => {
     const form = useFormContext();
     const [touched, setTouched] = useState(false);
+    const generatedControlId = React.useId().replace(/:/g, '');
+    const onlyChild = React.isValidElement(children) ? children : null;
+    const canAutoAssociate = React.isValidElement(onlyChild) && isAutoAssociatedControl(onlyChild);
+    const onlyChildId = React.isValidElement(onlyChild) ? (onlyChild.props as any).id : undefined;
+    const associatedControlId =
+      htmlFor ?? (canAutoAssociate ? onlyChildId ?? `beaver-form-control-${generatedControlId}` : undefined);
 
     // 获取当前字段的错误信息
     const error = name && form.errors[name];
@@ -153,6 +170,13 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
       if (React.isValidElement(child)) {
         const childProps = child.props as any;
         const isNativeInput = child.type === 'input' || child.type === 'textarea' || child.type === 'select';
+        const shouldAssociateChild = child === onlyChild && canAutoAssociate;
+        const associatedProps = shouldAssociateChild
+          ? {
+              ...(childProps.id === undefined && associatedControlId ? { id: associatedControlId } : {}),
+              ...(childProps.name === undefined && name ? { name } : {}),
+            }
+          : {};
 
         // 识别特殊组件（通过 displayName）
         const childDisplayName = (child.type as any)?.displayName || '';
@@ -191,6 +215,7 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             child as React.ReactElement<any>,
             {
               ...childProps,
+              ...associatedProps,
               ...(shouldInjectChecked ? { checked: Boolean(value) } : {}),
               ...(injectedValue !== undefined ? { value: injectedValue } : {}),
               onChange: nativeOnChange,
@@ -229,6 +254,7 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
             onBlur: wrappedOnBlur,
             disabled: childProps.disabled || disabled || form.disabled,
             validation: childProps.validation || validation, // 传递验证状态给子组件
+            ...associatedProps,
             // 把 style.width 映射到 width prop（仅在子组件未显式设置 width 时使用）
             ...(incomingWidth !== undefined && childProps.width === undefined ? { width: incomingWidth } : {}),
           } as any;
@@ -285,13 +311,20 @@ export const FormItem = React.forwardRef<HTMLDivElement, FormItemProps>(
     return (
       <div ref={ref} className={classList.join(' ')} {...props}>
         {/* 标签行 */}
-        {label && (
-          <label className="beaver-form-item__label">
-            {required && <span className="beaver-form-item__required-mark">*</span>}
-            <span>{label}</span>
-            {colon && <span className="beaver-form-item__colon">:</span>}
-          </label>
-        )}
+        {label &&
+          (associatedControlId ? (
+            <label className="beaver-form-item__label" htmlFor={associatedControlId}>
+              {required && <span className="beaver-form-item__required-mark">*</span>}
+              <span>{label}</span>
+              {colon && <span className="beaver-form-item__colon">:</span>}
+            </label>
+          ) : (
+            <div className="beaver-form-item__label">
+              {required && <span className="beaver-form-item__required-mark">*</span>}
+              <span>{label}</span>
+              {colon && <span className="beaver-form-item__colon">:</span>}
+            </div>
+          ))}
 
         {/* 行内布局时：把错误/帮助移到与 label 同级，使其成为独立的弹性子项 */}
         {isInline ? (

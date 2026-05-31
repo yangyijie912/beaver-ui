@@ -32,7 +32,9 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       className,
       size = 'medium',
       menuClassName,
+      id,
       name,
+      autoComplete = 'off',
       width,
       style,
       multiple = false,
@@ -585,7 +587,9 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         {/* 隐藏的原生 select，用于保持表单兼容性 */}
         {multiple === true ? (
           <select
+            id={id}
             name={name}
+            autoComplete={autoComplete}
             multiple
             value={Array.isArray(internalValue) ? internalValue : []}
             onChange={(e) => {
@@ -605,7 +609,9 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
           </select>
         ) : (
           <select
+            id={id}
             name={name}
+            autoComplete={autoComplete}
             value={(Array.isArray(internalValue) ? (internalValue as string[])[0] : internalValue) ?? ''}
             onChange={(e) => {
               handleSelectByValue(e.target.value);

@@ -101,6 +101,8 @@ export type FormItemProps = React.HTMLAttributes<HTMLDivElement> & {
   name?: string;
   /** 标签文本 */
   label?: React.ReactNode;
+  /** 标签关联的表单控件 id。复杂结构或陌生组件需要由调用方显式指定 */
+  htmlFor?: string;
   /** 是否必填（会显示红色 * 标记）*/
   required?: boolean;
   /** 字段禁用（可用于在 FormItem 中标记字段为 disabled） */
