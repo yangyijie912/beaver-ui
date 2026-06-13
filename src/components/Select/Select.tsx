@@ -39,6 +39,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       style,
       multiple = false,
       filterSelected = false,
+      allowClear = false,
+      onClear,
       ...rest
     },
     ref
@@ -361,6 +363,19 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       removeTag(v, e);
     };
 
+    /** 单选清除按钮仅在非多选且存在选中值时显示。 */
+    const hasValue = !multiple && internalValue !== undefined && internalValue !== '' && internalValue !== null;
+
+    /** 清除单选值；多选场景继续使用 tag 自带的逐项删除。 */
+    const handleClear = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!disabled) {
+        if (controlledValue === undefined) setInternalValue('');
+        onChange?.('', undefined, options);
+        onClear?.();
+      }
+    };
+
     // ---------- 输入区事件处理器（用于传入 SearchInput） ----------
     // multi / single 共用部分逻辑被抽出为函数以保持行为一致
 
@@ -539,7 +554,14 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
             )}
           </div>
           {/* 图标区 */}
-          <SelectIcons loading={loading} loadingIcon={loadingIcon} icon={icon} />
+          <SelectIcons
+            loading={loading}
+            loadingIcon={loadingIcon}
+            icon={icon}
+            allowClear={allowClear}
+            hasValue={hasValue}
+            onClear={handleClear}
+          />
         </div>
 
         {/* 下拉菜单 */}
@@ -553,7 +575,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
                 top: `${menuPosition.y}px`,
                 visibility: menuPosition.measured ? 'visible' : 'hidden',
                 pointerEvents: menuPosition.measured ? undefined : 'none',
-                zIndex: 'var(--beaver-select-z-index, 5000)',
+                zIndex: 'var(--beaver-select-z-index, 10000)',
                 width: menuWidth ? `${menuWidth}px` : 'auto',
                 boxSizing: 'border-box',
                 minWidth: menuWidth ? `${menuWidth}px` : undefined,

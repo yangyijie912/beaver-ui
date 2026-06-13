@@ -221,6 +221,32 @@ export const Controlled: Story = {
   },
 };
 
+export const AllowClear: Story = {
+  name: '单选可清除',
+  args: {
+    options: sampleOptions,
+    placeholder: '请选择一个水果',
+    allowClear: true,
+  },
+  render: (args: React.ComponentProps<typeof Select>) => {
+    const [val, setVal] = React.useState<string | undefined>('banana');
+    const [clearedCount, setClearedCount] = React.useState(0);
+
+    return (
+      <div style={{ width: 320 }}>
+        <Select
+          {...args}
+          value={val}
+          onChange={(v) => setVal(Array.isArray(v) ? (v[0] as string | undefined) : (v as string | undefined))}
+          onClear={() => setClearedCount((count) => count + 1)}
+        />
+        <div style={{ marginTop: 12 }}>当前值: {val || '未选择'}</div>
+        <div style={{ marginTop: 4 }}>清除次数: {clearedCount}</div>
+      </div>
+    );
+  },
+};
+
 export const CustomIcon: Story = {
   name: '自定义图标',
   render: (args: React.ComponentProps<typeof Select>) => {

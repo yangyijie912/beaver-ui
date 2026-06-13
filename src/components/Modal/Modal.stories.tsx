@@ -331,6 +331,34 @@ export const OnOkDefault: Story = {
 };
 
 /**
+ * 自定义默认页脚的按钮文案
+ */
+export const CustomButtonText: Story = {
+  name: '自定义按钮文案',
+  render: () => {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <Button variant="primary" onClick={() => setOpen(true)}>
+          打开Modal
+        </Button>
+        <Modal
+          open={open}
+          title="保存设置"
+          okText="保存"
+          cancelText="暂不保存"
+          onClose={() => setOpen(false)}
+          onOk={() => setOpen(false)}
+        >
+          <p>默认页脚按钮会使用 okText 和 cancelText 展示自定义文案。</p>
+        </Modal>
+      </>
+    );
+  },
+};
+
+/**
  * 交互示例
  */
 export const Interactive: Story = {

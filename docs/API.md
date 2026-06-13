@@ -169,6 +169,9 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   filterOption?: (input: string, option: SelectOption) => boolean;
   searchBy?: 'label' | 'value' | 'both';
   filterSelected?: boolean;
+  /** 是否显示清除按钮，仅单选模式生效 */
+  allowClear?: boolean;
+  onClear?: () => void;
   disabled?: boolean;
   loading?: boolean;
   icon?: React.ReactNode;
@@ -201,6 +204,8 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
 | `width`          | `number \| string`               | -          | 选择框宽度               |
 | `searchBy`       | `'label' \| 'value' \| 'both'`   | `'both'`   | 搜索范围                 |
 | `filterSelected` | `boolean`                        | `false`    | 多选时是否隐藏已选项     |
+| `allowClear`     | `boolean`                        | `false`    | 是否显示清除按钮，仅单选模式生效 |
+| `onClear`        | `() => void`                     | -          | 单选清除时的回调         |
 | `menuClassName`  | `string`                         | -          | 下拉菜单额外类名         |
 
 ### 示例
@@ -225,6 +230,14 @@ const options = [
   filterOption={(input, option) =>
     option.label.toLowerCase().includes(input)
   }
+/>
+
+<Select
+  options={options}
+  value={value}
+  allowClear
+  onChange={(nextValue) => setValue(Array.isArray(nextValue) ? nextValue[0] : nextValue)}
+  onClear={() => setValue('')}
 />
 ```
 
@@ -648,6 +661,8 @@ export type ModalProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   size?: ModalSize;
   closable?: boolean;
   maskClosable?: boolean;
+  okText?: React.ReactNode;
+  cancelText?: React.ReactNode;
   children?: React.ReactNode;
   footer?: React.ReactNode | null | false;
   className?: string;
@@ -666,6 +681,8 @@ export type ModalProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
 | `size`         | `'small' \| 'medium' \| 'large'` | `'medium'` | 预设大小（300px/520px/800px）       |
 | `closable`     | `boolean`                        | `true`     | 显示关闭按钮                        |
 | `maskClosable` | `boolean`                        | `true`     | 点击遮罩是否关闭                    |
+| `okText`       | `ReactNode`                      | `'确定'`   | 确认按钮文字                        |
+| `cancelText`   | `ReactNode`                      | `'取消'`   | 取消按钮文字                        |
 | `onClose`      | `() => void`                     | -          | 关闭回调                            |
 | `onOk`         | `() => void`                     | -          | 确认回调                            |
 | `footer`       | `ReactNode \| null \| false`     | -          | 自定义页脚（设为 null/false 隐藏）  |
@@ -788,8 +805,8 @@ export type PopconfirmProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'
   description?: React.ReactNode;
   okText?: React.ReactNode;
   cancelText?: React.ReactNode;
-  okVariant?: 'primary' | 'ghost';
-  cancelVariant?: 'primary' | 'ghost';
+  okVariant?: 'default' | 'primary' | 'ghost' | 'link';
+  cancelVariant?: 'default' | 'primary' | 'ghost' | 'link';
   onConfirm?: (e?: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
   onCancel?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   maskClosable?: boolean;
@@ -816,7 +833,9 @@ export type PopconfirmProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'
 | `onConfirm`    | `(e?) => void \| Promise<void>`          | -       | 点击确认回调             |
 | `onCancel`     | `(e?) => void`                           | -       | 点击取消回调             |
 | `placement`    | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Popconfirm 出现位置      |
-| `maskClosable` | `boolean`                                | `true`  | 点击遮罩是否关闭         |
+| `okVariant`    | `'default' \| 'primary' \| 'ghost' \| 'link'` | `'primary'` | 确认按钮变体             |
+| `cancelVariant` | `'default' \| 'primary' \| 'ghost' \| 'link'` | `'ghost'` | 取消按钮变体             |
+| `maskClosable` | `boolean`                                | `true`  | 点击遮罩或浮层外部区域是否关闭 |
 | `showMask`     | `boolean`                                | `false` | 是否显示遮罩             |
 | `okDisabled`   | `boolean`                                | `false` | 禁用确认按钮             |
 | `okLoading`    | `boolean`                                | `false` | 确认按钮加载中状态       |

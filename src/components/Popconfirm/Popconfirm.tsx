@@ -120,7 +120,7 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
 
     /**
      * 处理外部点击
-     * 点击触发元素外的元素时关闭 popconfirm
+     * 当 maskClosable 为 true 时，点击触发元素外的元素关闭 popconfirm
      */
     useEffect(() => {
       if (!open) {
@@ -128,6 +128,7 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
       }
 
       const handleClickOutside = (e: MouseEvent) => {
+        if (!maskClosable) return;
         const target = e.target as Node;
         if (
           triggerRef.current &&
@@ -148,7 +149,7 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
         clearTimeout(timerId);
         document.removeEventListener('mousedown', handleClickOutside);
       };
-    }, [open, handleOpenChange]);
+    }, [open, maskClosable, handleOpenChange]);
 
     /**
      * 处理键盘事件
@@ -271,10 +272,11 @@ const Popconfirm = React.forwardRef<HTMLDivElement, PopconfirmProps>(
 
                     {/* 确认按钮 */}
                     <Button
-                      className={`beaver-popconfirm__ok ${okLoading ? 'beaver-popconfirm--ok-loading' : ''}`}
+                      className="beaver-popconfirm__ok"
                       variant={okVariant}
                       size="small"
-                      disabled={okDisabled || okLoading}
+                      loading={okLoading}
+                      disabled={okDisabled}
                       onClick={handleConfirm}
                     >
                       {okText}

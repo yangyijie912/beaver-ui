@@ -63,6 +63,25 @@ export const CustomButtonText: Story = {
 };
 
 /**
+ * 自定义按钮变体 - 确认和取消按钮都交给 Button 的 variant 体系渲染
+ */
+export const ButtonVariants: Story = {
+  name: '自定义按钮变体',
+  render: () => (
+    <Popconfirm
+      title="确认提交审核吗？"
+      description="确认按钮使用 primary，取消按钮使用 default。"
+      okText="提交"
+      cancelText="返回"
+      okVariant="primary"
+      cancelVariant="default"
+    >
+      <Button variant="primary">提交审核</Button>
+    </Popconfirm>
+  ),
+};
+
+/**
  * 位置
  */
 export const PlacementVariants: Story = {
@@ -113,6 +132,25 @@ export const WithMask: Story = {
   render: () => (
     <Popconfirm title="确定要执行此操作吗？" description="点击遮罩可关闭" showMask={true}>
       <Button variant="primary">操作</Button>
+    </Popconfirm>
+  ),
+};
+
+/**
+ * 不允许点击遮罩关闭 - maskClosable=false 时点击遮罩和外部区域都不会关闭
+ */
+export const MaskNotClosable: Story = {
+  name: '不可通过遮罩关闭',
+  render: () => (
+    <Popconfirm
+      title="确认执行敏感操作吗？"
+      description="点击遮罩不会关闭，请通过取消或确认按钮关闭。"
+      showMask={true}
+      maskClosable={false}
+      okText="确认"
+      cancelText="取消"
+    >
+      <Button variant="primary">打开确认框</Button>
     </Popconfirm>
   ),
 };

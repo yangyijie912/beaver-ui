@@ -33,6 +33,10 @@ export type ModalProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   maskClassName?: string;
   /** 自定义内容className */
   contentClassName?: string;
+  /** 确认按钮文字，默认 "确定" */
+  okText?: React.ReactNode;
+  /** 取消按钮文字，默认 "关闭" */
+  cancelText?: React.ReactNode;
   /** 是否禁用动画 */
   /** `animated` prop 已移除：组件默认启用动画。如需修改动画，请覆盖 CSS 类。 */
 };

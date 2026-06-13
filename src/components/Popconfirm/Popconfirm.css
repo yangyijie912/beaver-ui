@@ -55,32 +55,6 @@
   --beaver-popconfirm-button-font-size: 12px;
   --beaver-popconfirm-button-border-radius: 6px;
 
-  /* 确认按钮颜色 */
-  --beaver-popconfirm-button-ok-bg: var(--beaver-color-primary, #0eaae0);
-  --beaver-popconfirm-button-ok-color: var(--beaver-color-on-primary, #ffffff);
-  --beaver-popconfirm-button-ok-hover-opacity: 0.9;
-  --beaver-popconfirm-button-ok-active-opacity: 0.85;
-  --beaver-popconfirm-button-ok-disabled-opacity: 0.6;
-
-  /* 取消按钮颜色：灰色系，次要操作 */
-  --beaver-popconfirm-button-cancel-bg: #f5f5f5;
-  --beaver-popconfirm-button-cancel-color: var(--beaver-color-text, #333333);
-  --beaver-popconfirm-button-cancel-border-color: #d9d9d9;
-  --beaver-popconfirm-button-cancel-hover-bg: #eeeeee;
-  --beaver-popconfirm-button-cancel-hover-border-color: #b3b3b3;
-  --beaver-popconfirm-button-cancel-active-bg: #e6e6e6;
-  --beaver-popconfirm-button-cancel-active-border-color: #8c8c8c;
-  --beaver-popconfirm-button-cancel-disabled-opacity: 0.6;
-
-  /* ===== 加载态相关 ===== */
-  /* 加载旋转圆的尺寸：越大显示越清晰 */
-  --beaver-popconfirm-loader-size: 12px;
-  --beaver-popconfirm-loader-border-width: 2px;
-  --beaver-popconfirm-loader-duration: 0.6s;
-
-  /* 加载旋转圆颜色：与按钮文字颜色保持一致 */
-  --beaver-popconfirm-loader-color: var(--beaver-color-on-primary, #ffffff);
-
   /* ===== 动画相关 ===== */
   /* 淡入动画时长 */
   --beaver-popconfirm-fade-in-duration: 0.3s;
@@ -90,7 +64,7 @@
 
   /* ===== 层级管理 ===== */
   /* popconfirm 的 z-index */
-  --beaver-popconfirm-z-index: var(--beaver-z-index-popconfirm, 5999);
+  --beaver-popconfirm-z-index: var(--beaver-z-index-popconfirm, 10999);
 }
 
 /**
@@ -234,83 +208,11 @@
   font-size: var(--beaver-popconfirm-button-font-size);
   padding: var(--beaver-popconfirm-button-padding);
   border-radius: var(--beaver-popconfirm-button-border-radius);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
   white-space: nowrap;
   flex: 0 0 auto;
 }
 
-/* 确认按钮 - primary 变体 */
-.beaver-popconfirm__ok {
-  background-color: var(--beaver-popconfirm-button-ok-bg);
-  color: var(--beaver-popconfirm-button-ok-color);
-}
-
-.beaver-popconfirm__ok:hover:not(:disabled) {
-  opacity: var(--beaver-popconfirm-button-ok-hover-opacity);
-}
-
-.beaver-popconfirm__ok:active:not(:disabled) {
-  opacity: var(--beaver-popconfirm-button-ok-active-opacity);
-}
-
-.beaver-popconfirm__ok:disabled {
-  opacity: var(--beaver-popconfirm-button-ok-disabled-opacity);
-  cursor: not-allowed;
-}
-
-/* 确认按钮的加载态 */
-.beaver-popconfirm__ok.beaver-popconfirm--ok-loading {
-  position: relative;
-  color: transparent;
-}
-
-.beaver-popconfirm__ok.beaver-popconfirm--ok-loading::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: var(--beaver-popconfirm-loader-size);
-  height: var(--beaver-popconfirm-loader-size);
-  border: var(--beaver-popconfirm-loader-border-width) solid transparent;
-  border-top-color: var(--beaver-popconfirm-loader-color);
-  border-right-color: var(--beaver-popconfirm-loader-color);
-  border-radius: 50%;
-  animation: popconfirmSpinner var(--beaver-popconfirm-loader-duration) linear infinite;
-}
-
-/* 取消按钮 - ghost 变体 */
-.beaver-popconfirm__cancel {
-  background-color: var(--beaver-popconfirm-button-cancel-bg);
-  color: var(--beaver-popconfirm-button-cancel-color);
-  border: 1px solid var(--beaver-popconfirm-button-cancel-border-color);
-}
-
-.beaver-popconfirm__cancel:hover:not(:disabled) {
-  background-color: var(--beaver-popconfirm-button-cancel-hover-bg);
-  border-color: var(--beaver-popconfirm-button-cancel-hover-border-color);
-}
-
-.beaver-popconfirm__cancel:active:not(:disabled) {
-  background-color: var(--beaver-popconfirm-button-cancel-active-bg);
-  border-color: var(--beaver-popconfirm-button-cancel-active-border-color);
-}
-
-.beaver-popconfirm__cancel:disabled {
-  opacity: var(--beaver-popconfirm-button-cancel-disabled-opacity);
-  cursor: not-allowed;
-}
-
 /* ===== 动画定义 ===== */
-
-/* 加载旋转动画 */
-@keyframes popconfirmSpinner {
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
 
 /* Popconfirm 淡入动画：从小到正常大小并逐渐显示 */
 @keyframes popconfirmFadeIn {

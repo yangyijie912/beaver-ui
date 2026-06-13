@@ -720,7 +720,7 @@ const DatePicker = React.forwardRef<HTMLInputElement, DatePickerProps>(
                   top: `${panelPosition.y}px`,
                   visibility: panelPosition.measured ? 'visible' : 'hidden',
                   pointerEvents: panelPosition.measured ? undefined : 'none',
-                  zIndex: 'var(--beaver-datepicker-z-index, 5000)',
+                  zIndex: 'var(--beaver-datepicker-z-index, 10050)',
                 }}
               >
                 <PanelRenderer

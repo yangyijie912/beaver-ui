@@ -97,6 +97,27 @@ export const WithReactNode: Story = {
     </div>
   ),
 };
+
+export const MultilineContent: Story = {
+  name: '多行内容',
+  render: () => (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+      <Tooltip
+        content={
+          <div>
+            <strong>多行提示</strong>
+            <p>第一行用于说明当前操作。</p>
+            <p>第二行继续补充约束和风险。</p>
+          </div>
+        }
+        placement="top"
+      >
+        <Button variant="primary">查看多行提示</Button>
+      </Tooltip>
+    </div>
+  ),
+};
+
 export const PortalComparison: Story = {
   name: 'Portal 对比（裁切与局部样式继承）',
   render: () => (

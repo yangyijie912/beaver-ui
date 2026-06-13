@@ -42,15 +42,15 @@ export const vars = {
     ring: '4px',
   },
   zIndex: {
+    toast: 99999, // Toast 层级（始终最高）
+    tooltip: 11000, // Tooltip 层级（浮动提示，应在所有弹层之上）
+    popconfirm: 10999, // Popconfirm 层级（确认弹窗）
+    datepicker: 10050, // 日期选择器层级（日期面板为浮动层）
+    selectMenu: 10000, // 选择框下拉菜单层级（下拉菜单为浮动层，需高于 Modal/Drawer）
     modal: 9999, // Modal 层级
     drawer: 9998, // Drawer 层级
-    tooltip: 6000, // Tooltip 层级
-    popconfirm: 5999, // Popconfirm 层级
-    selectMenu: 5000, // 选择框下拉菜单 层级
     tableHeader: 3000, // 表格头部层级
     tableSticky: 1000, // 表格粘性列层级
-    datepicker: 5001, // 日期选择器层级
-    toast: 99999, // Toast 层级
   },
 };
 

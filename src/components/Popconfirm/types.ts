@@ -26,10 +26,10 @@ export type PopconfirmProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'
   cancelText?: React.ReactNode;
 
   /**  确认按钮的样式变体，默认为 'primary' */
-  okVariant?: 'primary' | 'ghost';
+  okVariant?: 'default' | 'primary' | 'ghost' | 'link';
 
   /**  取消按钮的样式变体，默认为 'ghost' */
-  cancelVariant?: 'primary' | 'ghost';
+  cancelVariant?: 'default' | 'primary' | 'ghost' | 'link';
 
   /**  点击确认按钮时的回调 */
   onConfirm?: (e?: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;

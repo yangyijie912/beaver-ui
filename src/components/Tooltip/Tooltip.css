@@ -14,7 +14,7 @@
   /* ===== 间距 ===== */
 
   /* 内边距 */
-  --beaver-tooltip-padding: 6px 10px;
+  --beaver-tooltip-padding: 8px 10px;
   /* 箭头尺寸：8x8 的正方形旋转后形成三角形 */
   --beaver-tooltip-arrow-size: 8px;
   /* 箭头偏移距离：箭头与内容框的距离 */
@@ -24,6 +24,8 @@
 
   /* 字体大小：较小的辅助信息文字 */
   --beaver-tooltip-font-size: 12px;
+  /* 行高：保证多行提示和 React 节点内容不显得拥挤 */
+  --beaver-tooltip-line-height: 1.5;
   /* 圆角半径：温和的 4px 圆角 */
   --beaver-tooltip-border-radius: 4px;
 
@@ -40,7 +42,7 @@
   /* ===== 层级 ===== */
 
   /* z-index：确保 tooltip 显示在其他元素之上 */
-  --beaver-tooltip-z-index: var(--beaver-z-index-tooltip, 6000);
+  --beaver-tooltip-z-index: var(--beaver-z-index-tooltip, 11000);
 }
 
 .beaver-tooltip {
@@ -76,8 +78,16 @@
   font-size: var(--beaver-tooltip-font-size);
   box-shadow: var(--beaver-tooltip-box-shadow);
   text-align: center;
-  line-height: 1;
+  line-height: var(--beaver-tooltip-line-height);
   pointer-events: auto;
+}
+
+.beaver-tooltip__inner :where(p, div, span, strong, em) {
+  line-height: inherit;
+}
+
+.beaver-tooltip__inner :where(p) {
+  margin: 0;
 }
 
 /* 箭头：相对于 tooltip content 定位 */

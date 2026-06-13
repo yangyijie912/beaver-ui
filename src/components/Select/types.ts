@@ -51,4 +51,8 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
    * 可用于在父组件上下文中添加特定样式，比如在分页中使用紧凑样式）
    */
   menuClassName?: string;
+  /** 是否显示清除按钮（仅在单选有值时显示） */
+  allowClear?: boolean;
+  /** 清除时的回调 */
+  onClear?: () => void;
 };

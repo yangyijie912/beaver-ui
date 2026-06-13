@@ -24,13 +24,13 @@
   --beaver-font-size-md: 14px;
   --beaver-font-size-lg: 16px;
   --beaver-focus-ring: 4px;
+  --beaver-z-index-toast: 99999;
+  --beaver-z-index-tooltip: 11000;
+  --beaver-z-index-popconfirm: 10999;
+  --beaver-z-index-datepicker: 10050;
+  --beaver-z-index-select-menu: 10000;
   --beaver-z-index-modal: 9999;
   --beaver-z-index-drawer: 9998;
-  --beaver-z-index-tooltip: 6000;
-  --beaver-z-index-popconfirm: 5999;
-  --beaver-z-index-select-menu: 5000;
   --beaver-z-index-table-header: 3000;
   --beaver-z-index-table-sticky: 1000;
-  --beaver-z-index-datepicker: 5001;
-  --beaver-z-index-toast: 99999;
 }

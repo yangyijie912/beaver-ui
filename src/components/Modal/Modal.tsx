@@ -23,6 +23,8 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       size = 'medium',
       closable = true,
       maskClosable = true,
+      okText = '确定',
+      cancelText = '取消',
       children,
       footer,
       className = '',
@@ -30,7 +32,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
       contentClassName = '',
       ...rest
     },
-    ref
+    ref,
   ) => {
     const { mounted, animating } = useModalAnimation(open);
     const contentRef = useRef<HTMLDivElement>(null);
@@ -72,8 +74,10 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     if (!mounted) return null;
 
     const modalWidth = width || sizeMap[size];
-    const maskClass = `beaver-modal__mask ${animating ? 'beaver-modal--active' : ''} ${maskClassName}`.trim();
-    const wrapperClass = `beaver-modal-wrapper ${animating ? 'beaver-modal--active' : ''} ${className}`.trim();
+    const maskClass =
+      `beaver-modal__mask ${animating ? 'beaver-modal--active' : ''} ${maskClassName}`.trim();
+    const wrapperClass =
+      `beaver-modal-wrapper ${animating ? 'beaver-modal--active' : ''} ${className}`.trim();
     const contentClass = `beaver-modal__content ${contentClassName}`.trim();
 
     // Modal 内容（包括遮罩）
@@ -111,7 +115,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
               ) : (
                 <>
                   <Button color="primary" onClick={onClose}>
-                    关闭
+                    {cancelText}
                   </Button>
                   <Button
                     variant="primary"
@@ -123,7 +127,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
                       }
                     }}
                   >
-                    确定
+                    {okText}
                   </Button>
                 </>
               )}
@@ -134,7 +138,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     );
 
     return <Portal>{modalContent}</Portal>;
-  }
+  },
 );
 
 Modal.displayName = 'Modal';
