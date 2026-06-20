@@ -28,6 +28,13 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   allowCreate?: boolean;
   /** 定制过滤函数：如果提供，将优先使用 */
   filterOption?: (input: string, option: SelectOption) => boolean;
+  /**
+   * 远程搜索模式。开启后，Select 不再按输入内容本地过滤 options，
+   * 由外部在 onSearch 中请求数据并回填 options。
+   */
+  remoteSearch?: boolean;
+  /** 搜索输入变化回调，适用于远程搜索或外部同步查询状态。 */
+  onSearch?: (input: string) => void;
   /** 搜索策略：'label' 只按 label 搜索，'value' 只按 value，'both' 按 label 与 value 搜索但优先 label 匹配 */
   searchBy?: 'label' | 'value' | 'both';
   /** 仅在 `multiple` 为 true 时生效：在下拉中隐藏已选项，并在每次多选后关闭下拉。 */

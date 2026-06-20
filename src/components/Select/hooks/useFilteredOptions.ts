@@ -15,6 +15,7 @@ import type { SelectOption } from '../types';
  * - userTyped: 用户是否有真实输入（用于区分程序性回显与用户输入）
  * - filterOption: 自定义过滤器，若提供则优先使用
  * - searchBy: 搜索字段策略 ('label'|'value'|'both')
+ * - remoteSearch: 远程搜索模式下跳过本地过滤，直接展示外部传入 options
  * - allowCreate: 在无匹配时是否返回一个 __isNew 的新项
  * - multiple: 是否多选（用于配合 filterSelected）
  * - filterSelected: 多选时是否从下拉中隐藏已选项
@@ -32,6 +33,7 @@ export type UseFilteredOptionsParams = {
   query: string;
   userTyped: boolean;
   filterOption?: (input: string, option: SelectOption) => boolean;
+  remoteSearch?: boolean;
   searchBy?: 'label' | 'value' | 'both';
   allowCreate?: boolean;
   multiple?: boolean;
@@ -44,6 +46,7 @@ export default function useFilteredOptions({
   query,
   userTyped,
   filterOption,
+  remoteSearch = false,
   searchBy = 'both',
   allowCreate = false,
   multiple = false,
@@ -53,6 +56,11 @@ export default function useFilteredOptions({
   const selectedVals = Array.isArray(internalValue) ? (internalValue as string[]) : [];
 
   const filteredOptions = useMemo(() => {
+    if (remoteSearch) {
+      const base = options;
+      return multiple && filterSelected ? base.filter((o) => !selectedVals.includes(o.value)) : base;
+    }
+
     // 仅当用户实际输入过（而不是程序预置的回显）时才按 query 过滤
     if (!query || !userTyped) {
       const base = options;
@@ -78,7 +86,7 @@ export default function useFilteredOptions({
     );
     const res = [...labelMatches, ...valueOnlyMatches];
     return multiple && filterSelected ? res.filter((o) => !selectedVals.includes(o.value)) : res;
-  }, [options, query, userTyped, filterOption, searchBy, multiple, filterSelected, internalValue]);
+  }, [options, query, userTyped, filterOption, remoteSearch, searchBy, multiple, filterSelected, internalValue]);
 
   const displayOptions = useMemo(() => {
     const src = filteredOptions;

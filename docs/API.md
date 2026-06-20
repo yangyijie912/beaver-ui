@@ -167,6 +167,8 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
   searchable?: boolean;
   allowCreate?: boolean;
   filterOption?: (input: string, option: SelectOption) => boolean;
+  remoteSearch?: boolean;
+  onSearch?: (input: string) => void;
   searchBy?: 'label' | 'value' | 'both';
   filterSelected?: boolean;
   /** 是否显示清除按钮，仅单选模式生效 */
@@ -198,6 +200,9 @@ export type SelectProps = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'o
 | `multiple`       | `boolean`                        | `false`    | 多选模式                 |
 | `searchable`     | `boolean`                        | `false`    | 是否可搜索               |
 | `allowCreate`    | `boolean`                        | `false`    | 允许创建新选项           |
+| `filterOption`   | `(input, option) => boolean`      | -          | 自定义本地过滤函数       |
+| `remoteSearch`   | `boolean`                        | `false`    | 远程搜索模式，跳过本地过滤 |
+| `onSearch`       | `(input: string) => void`         | -          | 搜索输入变化回调         |
 | `disabled`       | `boolean`                        | `false`    | 禁用状态                 |
 | `loading`        | `boolean`                        | `false`    | 加载状态                 |
 | `size`           | `'small' \| 'medium' \| 'large'` | `'medium'` | 选择框大小               |
@@ -230,6 +235,16 @@ const options = [
   filterOption={(input, option) =>
     option.label.toLowerCase().includes(input)
   }
+/>
+
+<Select
+  options={userOptions}
+  searchable
+  remoteSearch
+  loading={loadingUsers}
+  placeholder="输入用户名 / 邮箱 / 手机号"
+  onSearch={(keyword) => searchUsers(keyword)}
+  onChange={(nextValue) => setUserId(Array.isArray(nextValue) ? nextValue[0] : nextValue)}
 />
 
 <Select

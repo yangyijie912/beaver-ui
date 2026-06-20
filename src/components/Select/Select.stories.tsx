@@ -165,6 +165,62 @@ export const Searchable: Story = {
   },
 };
 
+export const RemoteSearch: Story = {
+  name: '异步搜索',
+  render: (args: React.ComponentProps<typeof Select>) => {
+    const remoteOptions: SelectOption[] = [
+      { label: '张三（zhangsan@example.com / 13800000001）', value: 'user-1' },
+      { label: '李四（lisi@example.com / 13800000002）', value: 'user-2' },
+      { label: '王五（wangwu@example.com / 13800000003）', value: 'user-3' },
+      { label: '赵六（zhaoliu@example.com / 13800000004）', value: 'user-4' },
+    ];
+    const [value, setValue] = React.useState('');
+    const [options, setOptions] = React.useState<SelectOption[]>([]);
+    const [loading, setLoading] = React.useState(false);
+    const requestIdRef = React.useRef(0);
+
+    const handleSearch = (keyword: string) => {
+      const requestId = requestIdRef.current + 1;
+      requestIdRef.current = requestId;
+      setLoading(true);
+
+      window.setTimeout(() => {
+        if (requestIdRef.current !== requestId) return;
+
+        const normalizedKeyword = keyword.trim().toLowerCase();
+        setOptions(
+          normalizedKeyword
+            ? remoteOptions.filter(
+                (option) =>
+                  option.label.toLowerCase().includes(normalizedKeyword) ||
+                  option.value.toLowerCase().includes(normalizedKeyword),
+              )
+            : [],
+        );
+        setLoading(false);
+      }, 500);
+    };
+
+    return (
+      <div style={{ width: 420 }}>
+        <Select
+          {...args}
+          value={value}
+          width="100%"
+          options={options}
+          searchable
+          remoteSearch
+          loading={loading}
+          placeholder="输入用户名 / 邮箱 / 手机号"
+          onSearch={handleSearch}
+          onChange={(nextValue) => setValue(Array.isArray(nextValue) ? nextValue[0] : nextValue)}
+        />
+        <div style={{ marginTop: 12 }}>当前值：{value || '未选择'}</div>
+      </div>
+    );
+  },
+};
+
 export const AllowCreate: Story = {
   name: '允许创建',
   args: {

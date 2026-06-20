@@ -24,6 +24,8 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       searchable = false,
       allowCreate = false,
       filterOption,
+      remoteSearch = false,
+      onSearch,
       searchBy = 'both',
       disabled = false,
       loading = false,
@@ -191,6 +193,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
       query: debouncedQuery,
       userTyped: userTypedRef.current,
       filterOption,
+      remoteSearch,
       searchBy,
       allowCreate,
       multiple,
@@ -244,7 +247,7 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
     const selectedValues: string[] = Array.isArray(internalValue) ? (internalValue as string[]) : [];
 
     // 是否禁用
-    const isDisabled = disabled || loading;
+    const isDisabled = disabled;
 
     // 切换下拉打开状态
     function toggleOpen() {
@@ -383,9 +386,11 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
      *  多选时每次输入变化均视为用户输入，直接更新 query 并重置高亮
      */
     const handleMultiInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const nextQuery = e.target.value;
       userTypedRef.current = true;
-      setQuery(e.target.value);
+      setQuery(nextQuery);
       setHighlighted(0);
+      onSearch?.(nextQuery);
     };
 
     /**  处理单选输入变化事件
@@ -399,11 +404,13 @@ const Select = React.forwardRef<HTMLDivElement, SelectProps>(
         userTypedRef.current = true;
         setQuery(added);
         setHighlighted(0);
+        onSearch?.(added);
         return;
       }
       userTypedRef.current = true;
       setQuery(raw);
       setHighlighted(0);
+      onSearch?.(raw);
     };
 
     /**  处理输入区聚焦事件  */
